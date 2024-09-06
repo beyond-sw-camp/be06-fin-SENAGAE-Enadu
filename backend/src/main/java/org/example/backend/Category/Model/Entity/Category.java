@@ -21,7 +21,7 @@ public class Category {
     @Column(nullable = false)
     private String categoryName;
 
-    @Column(nullable = true)
-    private Long superCategory;
+    @OneToOne
+    private Category superCategory;
 
 }
