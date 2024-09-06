@@ -1,10 +1,12 @@
-package org.example.backend.Answer.Entity;
+package org.example.backend.Answer.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.backend.User.Model.Entity.User;
+
 import java.time.LocalDateTime;
 
 
@@ -19,12 +21,12 @@ public class AnswerComment {
         private Long id;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @Column(name = "answer_id", nullable = false)
+        @JoinColumn(name = "answer_id", nullable = false)
         private Answer answer;
 
-//        @ManyToOne(fetch = FetchType.LAZY)
-//        @Column(name = "user_id", nullable = false)
-//        private User user;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id", nullable = false)
+        private User user;
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "super_comment_id", nullable = false)

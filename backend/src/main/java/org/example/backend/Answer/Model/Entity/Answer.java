@@ -1,11 +1,12 @@
-package org.example.backend.Answer.Entity;
+package org.example.backend.Answer.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.backend.Qna.Entity.QnaBorad;
+import org.example.backend.Qna.model.Entity.QnaBorad;
+import org.example.backend.User.Model.Entity.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ import java.util.List;
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // bigint
+    private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qna_board_id", nullable = false)
