@@ -22,57 +22,35 @@
 
 <script>
 import ChatRoomComponent from "@/components/Chat/ChatRoomComponent.vue";
+import { useChatStore } from '@/store/useChatStore';
+import { mapStores } from 'pinia';
 
 export default {
-  name: "ChatNavComponent.vue",
+  name: "ChatNavComponent",
   components: {ChatRoomComponent},
   data() {
     return {
-      isLoading: false,
+      isLoading: true,
       selectedChatRoomId: 0,
-      chatRoomList: [
-        {
-          recipientName: "홍길동",
-          chatRoomId: 1,
-          recipientProfile: "",
-          lastMessage:"Last Message",
-          lastMessageDay: "2024-11-11 11:11"
-        },
-        {
-          recipientName: "홍길동",
-          chatRoomId: 2,
-          recipientProfile: "",
-          lastMessage:"Last Message",
-          lastMessageDay: "2024-11-11 11:11"
-        },
-        {
-          recipientName: "홍길동",
-          chatRoomId: 3,
-          recipientProfile: "",
-          lastMessage:"Last Message",
-          lastMessageDay: "2024-11-11 11:11"
-        },
-        {
-          recipientName: "홍길동",
-          chatRoomId: 4,
-          recipientProfile: "",
-          lastMessage:"Last Message",
-          lastMessageDay: "2024-11-11 11:11"
-        },
-        {
-          recipientName: "홍길동",
-          chatRoomId: 5,
-          recipientProfile: "",
-          lastMessage:"Last Message",
-          lastMessageDay: "2024-11-11 11:11"
-        }
-      ],
+      chatRoomList:[],
     }
   },
+  computed: {
+    ...mapStores(useChatStore) // 어떤 저장소랑 연결시켜 주겠다.
+  },
   methods: {
+    async getChatRoomList() {
+      await this.chatStore.getChatRoomList();
+      this.isLoading=false;
+      this.chatRoomList=this.chatStore.chatRoomList;
+
+    },
     handleSelectChatRoom(chatRoomId){
       this.selectedChatRoomId = chatRoomId;
-    }
+    },
+  },
+  mounted() {
+    this.getChatRoomList();
   }
 }
 </script>
