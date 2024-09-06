@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+// import axios from "axios";
 
-const backend = "";
+// const backend = "";
 
 export const useUserStore = defineStore('user', {
-    state: () => ({}),
+    state: () => ({
+        isLoggedIn: false,
+    }),
     actions: {
     }
 });

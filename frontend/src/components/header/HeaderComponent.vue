@@ -1,0 +1,181 @@
+<template>
+    <header>
+        <div class="logo">
+            <h1>Enadu</h1>
+        </div>
+        <nav class="navigation">
+            <ul>
+                <li><a href="#"><i class="fas fa-code"></i> 아카이브</a></li>
+                <li class="divider">|</li>
+                <li><a href="#"><i class="fas fa-book"></i> 위키</a></li>
+                <li class="divider">|</li>
+                <li><a href="#"><i class="fas fa-question-circle"></i> QnA</a></li>
+            </ul>
+        </nav>
+        <div class="search-bar">
+            <input type="text" placeholder="검색어를 입력하세요">
+            <button @click="showAlert"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="auth-navigation">
+          <div v-if="!isLoggedIn">
+            <ul>
+                <li><a href="#">로그인</a></li>
+                <li class="divider">|</li>
+                <li><a href="#">회원가입</a></li>
+            </ul>
+          </div>
+          <div v-else>
+            <ul>
+                <li><a href="#">로그아웃</a></li>
+                <li class="divider">|</li>
+                <li><a href="#">포인트</a></li>
+                <li class="divider">|</li>
+                <li><a href="#">마이페이지</a></li>
+            </ul>
+          </div>
+        </div>
+    </header>
+</template>
+
+<script>
+  import { mapStores } from "pinia";
+  import { useUserStore } from "@/store/useUserStore";
+  export default {
+    name: "HeaderComponent",
+    computed: {
+      ...mapStores(useUserStore),
+      isLoggedIn() {
+        return this.userStore.isLoggedIn;
+      },
+    },
+    methods: {
+      showAlert() {
+        alert("통합 검색은 추후 추가 예정입니다.")
+      }
+    }
+  }
+</script>
+
+<style scoped lang="scss">
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 15px 30px;
+    border-bottom: 2px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    margin-right: 50px;
+  }
+  
+  .logo h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .navigation {
+    flex-grow: 1; 
+  }
+  
+  .navigation ul, .auth-navigation ul {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .navigation ul li, .auth-navigation ul li {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navigation ul li.divider, .auth-navigation ul li.divider {
+    font-size: 20px;
+    color: #ccc;
+  }
+  
+  .navigation ul li a, .auth-navigation ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+  }
+  
+  .navigation ul li a:hover, .auth-navigation ul li a:hover {
+    color: var(--main-color);
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #fafcfc;
+    padding: 8px;
+    border-radius: 25px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: 30px;
+    border: 1px solid var(--main-color);
+  }
+  
+  .search-bar input {
+    border: none;
+    outline: none;
+    background: none;
+    padding: 7px;
+    width: 300px;
+    font-size: 16px;
+    height: 32.5px !important;
+  }
+  
+  .search-bar button {
+    background-color: #fafcfc;
+    border: none;
+    border-radius: 7px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+  }
+  
+  .search-bar i{
+    color: var(--main-color);
+  }
+  
+  @media (max-width: 768px) {
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .navigation ul, .auth-navigation ul {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .search-bar {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+
+  .custom-container {
+    width: 75%;
+    max-width: 1400px;
+    margin: 50px auto;
+    /* background-color: #fff; */
+    padding: 30px;
+    border-radius: 10px;
+    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
+}
+</style>
