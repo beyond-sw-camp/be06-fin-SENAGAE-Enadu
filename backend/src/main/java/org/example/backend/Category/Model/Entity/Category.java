@@ -22,6 +22,6 @@ public class Category {
     private String categoryName;
 
     @Column(nullable = true)
-    private Long superCategoryId;
+    private Long superCategory;
 
 }

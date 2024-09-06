@@ -33,7 +33,7 @@ public class QnaBorad {
 //        ErrorArchive errorArchive;
 
         @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
-        List<Answer> answerList = new ArrayList<>();
+        private List<Answer> answerList = new ArrayList<>();
 
 
 
