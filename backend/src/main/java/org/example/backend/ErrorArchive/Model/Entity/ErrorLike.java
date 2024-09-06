@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.example.backend.User.Model.Entity.User;
+
 
 @Entity
 @NoArgsConstructor
@@ -14,13 +16,16 @@ public class ErrorLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id",nullable = false)
+    private User user;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "errorArchive_id", nullable = false)
     private ErrorArchive errorArchive;
 
-    //@ManyToOne
-   // @Column(nullable = false)
-   // private User user_id;
+
 
     @Column(nullable = false)
     private boolean state;
