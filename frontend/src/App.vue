@@ -5,5 +5,5 @@
 <script>
 </script>
 
-<style>g
+<style>
 </style>
