@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.Qna.Entity.QnaBorad;
 import org.example.backend.User.Model.Entity.User;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +27,7 @@ public class ErrorArchive {
     private List<ErrorScrap> errorScrapList; // bigint
 
     @OneToMany(mappedBy = "errorArchive", fetch = FetchType.LAZY)
+
     private List<ErrorLike> errorLikeList; // bigint
 
 
@@ -38,6 +38,7 @@ public class ErrorArchive {
     @OneToOne
     @JoinColumn(name = "qna_board_id", nullable = false)
     private QnaBorad qnaBoard; // bigint
+
 
     @Column(name = "title", length = 100, nullable = false)
     private String title; // varchar(100)
