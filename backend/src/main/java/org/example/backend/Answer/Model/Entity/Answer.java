@@ -5,8 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.backend.Qna.model.Entity.QnaBorad;
+<<<<<<< Updated upstream:backend/src/main/java/org/example/backend/Answer/Model/Entity/Answer.java
 import org.example.backend.User.Model.Entity.User;
+=======
+<<<<<<< Updated upstream:backend/src/main/java/org/example/backend/Answer/Entity/Answer.java
+import org.example.backend.Qna.Entity.QnaBorad;
+=======
+import org.example.backend.Qna.model.Entity.QnaBoard;
+>>>>>>> Stashed changes:backend/src/main/java/org/example/backend/Answer/Model/Entity/Answer.java
+>>>>>>> Stashed changes:backend/src/main/java/org/example/backend/Answer/Entity/Answer.java
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,7 +36,7 @@ public class Answer {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qna_board_id", nullable = false)
-    private QnaBorad qnaBorad;
+    private QnaBoard qnaBoard;
 
     @OneToMany(mappedBy = "answer_commnet", fetch = FetchType.LAZY)
     List<AnswerComment> answerCommentList = new ArrayList<>();

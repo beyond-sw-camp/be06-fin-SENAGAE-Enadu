@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class QnaBorad {
+public class QnaBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // bigint

@@ -22,7 +22,7 @@ public class Chat {
     @Column(nullable = false)
     @Builder.Default
     private LocalDateTime sendTime = LocalDateTime.now();
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String message;
 
     @ManyToOne
