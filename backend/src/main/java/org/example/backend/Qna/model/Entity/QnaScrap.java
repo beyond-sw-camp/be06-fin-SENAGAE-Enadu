@@ -24,5 +24,5 @@ public class QnaScrap {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qna_board_id", nullable = false)
-    private QnaBorad qnaBoard;
+    private QnaBoard qnaBoard;
 }
