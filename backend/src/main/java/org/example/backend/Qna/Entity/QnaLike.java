@@ -12,17 +12,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class QnaLikeEntity {
+public class QnaLike {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id; // bigint
+        private Long id;
 
-        @Column(name = "user_id", nullable = false)
-        private Long userId; // bigint
+//        @ManyToOne(fetch = FetchType.LAZY)
+//        @Column(name = "user_id", nullable = false)
+//        private User user;
 
-        @Column(name = "qna_board_id", nullable = false)
-        private Long qnaBoardId; // bigint
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "qna_board_id", nullable = false)
+        private QnaBorad qnaBoard;
 
         @Column(name = "state", nullable = false)
-        private boolean state; // boolean (추천: true, 비추천: false)
+        private boolean state;
 }

@@ -6,22 +6,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class QnaScrapEntity {
+public class QnaScrap {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id; // bigint
+        private Long id;
 
-        @Column(name = "user_id", nullable = false)
-        private Long userId; // bigint
+//        @ManyToOne(fetch = FetchType.LAZY)
+//        @Column(name = "user_id", nullable = false)
+//        private User user;
 
+        @ManyToOne(fetch = FetchType.LAZY)
         @Column(name = "qna_board_id", nullable = false)
-        private Long qnaBoardId; // bigint
+        private QnaBorad qnaBoard;
 }

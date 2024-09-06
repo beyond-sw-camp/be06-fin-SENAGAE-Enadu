@@ -6,26 +6,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AnswerLikeEntity {
+public class AnswerLike {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id; // bigint
 
-        @Column(name = "user_id", nullable = false)
-        private Long userId; // bigint
+//        @ManyToOne(fetch = FetchType.LAZY)
+//        @Column(name = "user_id", nullable = false)
+//        private User user;
 
+        @ManyToOne(fetch = FetchType.LAZY)
         @Column(name = "answer_id", nullable = false)
-        private Long answerId; // bigint
+        private Answer anser;
 
         @Column(name = "state", nullable = false)
-        private boolean state; // boolean (추천/비추천)
+        private boolean state;
 
 }

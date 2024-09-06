@@ -13,27 +13,30 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AnswerCommentEntity {
+public class AnswerComment {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id; // bigint
+        private Long id;
 
+        @ManyToOne(fetch = FetchType.LAZY)
         @Column(name = "answer_id", nullable = false)
-        private Long answerId; // bigint
+        private Answer answer;
 
-        @Column(name = "user_id", nullable = false)
-        private Long userId; // bigint
+//        @ManyToOne(fetch = FetchType.LAZY)
+//        @Column(name = "user_id", nullable = false)
+//        private User user;
 
-        @Column(name = "super_comment_id")
-        private Long superCommentId; // bigint (NULL 가능)
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "super_comment_id", nullable = false)
+        private AnswerComment answerComment;
 
         @Column(name = "content", columnDefinition = "TEXT", nullable = false)
-        private String content; // text
+        private String content;
 
         @Column(name = "created_at", nullable = false)
-        private LocalDateTime createdAt; // datetime
+        private LocalDateTime createdAt;
 
         @Column(name = "enable", nullable = false)
-        private boolean enable; // boolean
+        private boolean enable;
 
 }

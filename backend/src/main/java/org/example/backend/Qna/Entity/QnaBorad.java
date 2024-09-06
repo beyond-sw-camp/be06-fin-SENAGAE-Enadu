@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.backend.Answer.Entity.Answer;
+
 import java.time.LocalDateTime;
+import java.util.*;
 
 
 @Entity
@@ -13,16 +16,26 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class QnaBoradEntity {
+public class QnaBorad {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id; // bigint
 
-        @Column(name = "user_id", nullable = false)
-        private Long userId; // bigint
+//        @ManyToOne(fetch = FetchType.LAZY)
+//        @JoinColumn(name = "user_id", nullable = false)
+//        private User user;
 
-        @Column(name = "category_id", nullable = false)
-        private Long categoryId; // bigint
+//        @OneToOne(fetch = FetchType.LAZY)
+//        @JoinColumn(name = "category_id", nullable = false)
+//        private Category category;
+
+//        @OneToOne(mappedBy = "errorArchive", fetch = FetchType.LAZY)
+//        ErrorArchive errorArchive;
+
+        @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
+        List<Answer> answerList = new ArrayList<>();
+
+
 
         @Column(name = "title", length = 100, nullable = false)
         private String title; // varchar(100)
