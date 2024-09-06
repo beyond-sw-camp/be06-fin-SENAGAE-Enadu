@@ -2,31 +2,31 @@
   <div class="card">
     <div class="mantine-2j9uwr">
       <div class="mantine-1uguyhf">
-        <a
-          class="mantine-Avatar-root mantine-18l6s08"
-          href="https://www.inflearn.com/users/14769/@weekendcode"
-          ><img
+        <a class="mantine-Avatar-root mantine-18l6s08">
+          <img
             class="mantine-9rx0rd mantine-Avatar-image"
-            src="https://cdn.inflearn.com/public/users/thumbnails/14769/aa751976-0548-441b-9084-d71ff6327348?w=76"
-            alt="주말코딩님의 프로필 이미지"
-        /></a>
+            :src="qnaCard.profileImage"
+          />
+        </a>
         <div class="mantine-Stack-root mantine-1l47z8p">
           <div class="mantine-824czz">
-            <a
-              class="mantine-Text-root mantine-3qdwx9"
-              href="https://www.inflearn.com/users/14769/@weekendcode"
-              >MR KIM</a
-            >
+            <a class="mantine-Text-root mantine-3qdwx9">{{
+              qnaCard.nickname
+            }}</a>
             <div class="mantine-Badge-root mantine-11jjpd0">
-              <span class="mantine-1jlwn9k mantine-Badge-inner">질문자</span>
+              <span class="mantine-1jlwn9k mantine-Badge-inner">{{
+                qnaCard.grade
+              }}</span>
             </div>
           </div>
-          <p class="mantine-Text-root mantine-1q4x896">2024. 09. 04. 12:06</p>
+          <p class="mantine-Text-root mantine-1q4x896">
+            {{ qnaCard.createdAt }}
+          </p>
         </div>
       </div>
     </div>
     <div class="qna-title">
-      RestContorller와 view의 활용에 대해 질문드립니다?
+      {{ qnaCard.title }}
     </div>
     <div class="footer">
       <div class="test">
@@ -50,7 +50,7 @@
                 d="M16 10H16.01M12 10H12.01M8 10H8.01M3 10C3 4.64706 5.11765 3 12 3C18.8824 3 21 4.64706 21 10C21 15.3529 18.8824 17 12 17C11.6592 17 11.3301 16.996 11.0124 16.9876L7 21V16.4939C4.0328 15.6692 3 13.7383 3 10Z"
               ></path>
             </g></svg
-          >18
+          >{{ qnaCard.answerCnt }}
         </div>
         <div>
           <svg
@@ -73,13 +73,13 @@
                 d="M0 10.284l0.505 0.36c0.089 0.064 0.92 0.621 2.604 0.621 0.27 0 0.55-0.015 0.836-0.044 3.752 4.346 6.411 7.472 7.060 8.299-1.227 2.735-1.42 5.808-0.537 8.686l0.256 0.834 7.63-7.631 8.309 8.309 0.742-0.742-8.309-8.309 7.631-7.631-0.834-0.255c-2.829-0.868-5.986-0.672-8.686 0.537-0.825-0.648-3.942-3.3-8.28-7.044 0.11-0.669 0.23-2.183-0.575-3.441l-0.352-0.549-8.001 8.001zM1.729 10.039l6.032-6.033c0.385 1.122 0.090 2.319 0.086 2.334l-0.080 0.314 0.245 0.214c7.409 6.398 8.631 7.39 8.992 7.546l-0.002 0.006 0.195 0.058 0.185-0.087c2.257-1.079 4.903-1.378 7.343-0.836l-13.482 13.481c-0.55-2.47-0.262-5.045 0.837-7.342l0.104-0.218-0.098-0.221-0.031 0.013c-0.322-0.632-1.831-2.38-7.498-8.944l-0.185-0.215-0.282 0.038c-0.338 0.045-0.668 0.069-0.981 0.069-0.595 0-1.053-0.083-1.38-0.176z"
               ></path>
             </g></svg
-          >7
+          >{{ qnaCard.likeCnt }}
         </div>
       </div>
       <div class="qna-category-highlow">
-        <span>Spring</span>
+        <span>{{ qnaCard.superCategory }}</span>
         /
-        <span>MVC pattern</span>
+        <span>{{ qnaCard.subCategory }}</span>
       </div>
     </div>
   </div>
@@ -87,13 +87,13 @@
 
 <script>
 export default {
-  name: "QnaListCardComponent",
+  name: "QnaCardComponent",
   data() {
     return {};
   },
-  props: [],
-  created() {},
+  props: ["qnaCard"],
   methods: {},
+  components: {},
 };
 </script>
 
@@ -804,237 +804,6 @@ body {
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-@font-face {
-  font-family: Pretendard;
-  font-weight: 700;
-  src: url(https://cdn.inflearn.com/font/Pretendard-Bold.woff2) format("woff2"),
-    url(https://cdn.inflearn.com/font/Pretendard-Bold.woff) format("woff");
-}
-@font-face {
-  font-family: Pretendard;
-  font-weight: 600;
-  src: url(https://cdn.inflearn.com/font/Pretendard-SemiBold.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/Pretendard-SemiBold.woff) format("woff");
-}
-@font-face {
-  font-family: Pretendard;
-  font-weight: 500;
-  src: url(https://cdn.inflearn.com/font/Pretendard-Medium.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/Pretendard-Medium.woff) format("woff");
-}
-@font-face {
-  font-family: Pretendard;
-  font-weight: 400;
-  src: url(https://cdn.inflearn.com/font/Pretendard-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/Pretendard-Regular.woff) format("woff");
-}
-@font-face {
-  font-family: Pretendard;
-  font-weight: 300;
-  src: url(https://cdn.inflearn.com/font/Pretendard-Light.woff2) format("woff2"),
-    url(https://cdn.inflearn.com/font/Pretendard-Light.woff) format("woff");
-}
-@font-face {
-  font-family: KaTeX_AMS;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_AMS-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_AMS-Regular.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_AMS-Regular.ttf) format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Caligraphic;
-  font-weight: 700;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Bold.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Bold.woff)
-      format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Bold.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Caligraphic;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Regular.woff)
-      format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Regular.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Fraktur;
-  font-weight: 700;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Bold.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Bold.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Bold.ttf) format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Fraktur;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Regular.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Regular.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Main;
-  font-weight: 700;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Main-Bold.woff2) format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Main-Bold.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Main-Bold.ttf) format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Main;
-  font-weight: 700;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Main-BoldItalic.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Main-BoldItalic.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Main-BoldItalic.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Main;
-  font-weight: 400;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Main-Italic.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Main-Italic.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Main-Italic.ttf) format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Main;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Main-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Main-Regular.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Main-Regular.ttf) format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Math;
-  font-weight: 700;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Math-BoldItalic.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Math-BoldItalic.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Math-BoldItalic.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Math;
-  font-weight: 400;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Math-Italic.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Math-Italic.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Math-Italic.ttf) format("truetype");
-}
-@font-face {
-  font-family: KaTeX_SansSerif;
-  font-weight: 700;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Bold.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Bold.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Bold.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_SansSerif;
-  font-weight: 400;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Italic.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Italic.woff)
-      format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Italic.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_SansSerif;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Regular.woff)
-      format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Regular.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Script;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Script-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Script-Regular.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Script-Regular.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Size1;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Size1-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Size1-Regular.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Size1-Regular.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Size2;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Size2-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Size2-Regular.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Size2-Regular.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Size3;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Size3-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Size3-Regular.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Size3-Regular.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Size4;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Size4-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Size4-Regular.woff) format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Size4-Regular.ttf)
-      format("truetype");
-}
-@font-face {
-  font-family: KaTeX_Typewriter;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Typewriter-Regular.woff2)
-      format("woff2"),
-    url(https://cdn.inflearn.com/font/KaTeX_Typewriter-Regular.woff)
-      format("woff"),
-    url(https://cdn.inflearn.com/font/KaTeX_Typewriter-Regular.ttf)
-      format("truetype");
 }
 body,
 html {

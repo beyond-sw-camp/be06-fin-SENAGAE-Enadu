@@ -1,14 +1,31 @@
 <template>
-  <QnaListCardComponent />
+  <QnaCardComponent
+    v-for="qnaCard in qnaStore.qnaCards"
+    :key="qnaCard.id"
+    v-bind:qnaCard="qnaCard"
+  />
 </template>
 
 <script>
-import QnaListCardComponent from "../components/qna/QnaListCardComponent.vue";
+import { mapStores } from "pinia";
+import { useQnaStore } from "@/store/useQnaStore";
+import QnaCardComponent from "@/components/qna/QnaCardComponent.vue";
 
 export default {
   name: "QnaListPage",
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapStores(useQnaStore),
+  },
+  mounted() {
+    this.qnaStore.getQnaList();
+    console.log(this.qnaStore.qnaCards);
+  },
+  methods: {},
   components: {
-    QnaListCardComponent,
+    QnaCardComponent,
   },
 };
 </script>
