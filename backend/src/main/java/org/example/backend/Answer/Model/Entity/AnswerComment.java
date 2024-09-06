@@ -28,7 +28,7 @@ public class AnswerComment {
         @JoinColumn(name = "user_id", nullable = false)
         private User user;
 
-        @ManyToOne(fetch = FetchType.LAZY)
+        @OneToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "super_comment_id", nullable = false)
         private AnswerComment answerComment;
 

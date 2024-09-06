@@ -22,7 +22,7 @@ public class ErrorScrap {
     private User user;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "errorArchive_id", nullable = false)
+    @JoinColumn(name = "error_archive_id", nullable = false)
     private ErrorArchive errorArchive;
 
 
