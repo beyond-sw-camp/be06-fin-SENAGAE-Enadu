@@ -33,11 +33,11 @@ public class QnaBoard {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToOne(mappedBy = "errorArchive", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private ErrorArchive errorArchive;
 
-    @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
-    private List<Answer> answerList = new ArrayList<>();
+    @OneToMany(mappedBy = "qnaBoard", fetch = FetchType.LAZY)
+    private List<Answer> answerList;
 
 
     @Column(name = "title", length = 100, nullable = false)

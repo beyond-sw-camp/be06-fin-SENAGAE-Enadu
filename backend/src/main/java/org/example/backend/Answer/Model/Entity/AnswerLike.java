@@ -24,7 +24,7 @@ public class AnswerLike {
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "answer_id", nullable = false)
-        private Answer anser;
+        private Answer answer;
 
         @Column(name = "state", nullable = false)
         private boolean state;

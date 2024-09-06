@@ -5,18 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-<<<<<<< Updated upstream:backend/src/main/java/org/example/backend/Answer/Model/Entity/Answer.java
 import org.example.backend.User.Model.Entity.User;
-=======
-<<<<<<< Updated upstream:backend/src/main/java/org/example/backend/Answer/Entity/Answer.java
-import org.example.backend.Qna.Entity.QnaBorad;
-=======
 import org.example.backend.Qna.model.Entity.QnaBoard;
->>>>>>> Stashed changes:backend/src/main/java/org/example/backend/Answer/Model/Entity/Answer.java
->>>>>>> Stashed changes:backend/src/main/java/org/example/backend/Answer/Entity/Answer.java
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,15 +26,15 @@ public class Answer {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qna_board_id", nullable = false)
     private QnaBoard qnaBoard;
 
-    @OneToMany(mappedBy = "answer_commnet", fetch = FetchType.LAZY)
-    List<AnswerComment> answerCommentList = new ArrayList<>();
+    @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
+    private List<AnswerComment> answerCommentList;
 
-    @OneToMany(mappedBy = "answer_like", fetch = FetchType.LAZY)
-    List<AnswerLike> answerLikeList = new ArrayList<>();
+    @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
+    private List<AnswerLike> answerLikeList;
 
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
