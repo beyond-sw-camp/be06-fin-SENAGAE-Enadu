@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
   List<Category> findBySuperCategory_IdNull();
-
+  List<Category> findBySuperCategory_Id(Long id);
 }
