@@ -1,6 +1,7 @@
 package org.example.backend.Category.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.Category.Model.Res.SubCategoryRes;
 import org.example.backend.Category.Model.Res.SuperCategoryRes;
 import org.example.backend.Category.Repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,17 @@ public class CategoryService {
             superList.add(superCategoryRes);
         });
         return superList;
+    }
+
+    public List<SubCategoryRes> getSubList(Long superCategoryId) {
+        List<SubCategoryRes> subList = new ArrayList<>();
+        categoryRepository.findBySuperCategory_Id(superCategoryId).forEach(category -> {
+            SubCategoryRes subCategoryRes = SubCategoryRes.builder()
+                    .id(category.getId())
+                    .categoryName(category.getCategoryName())
+                    .build();
+            subList.add(subCategoryRes);
+        });
+        return subList;
     }
 }
