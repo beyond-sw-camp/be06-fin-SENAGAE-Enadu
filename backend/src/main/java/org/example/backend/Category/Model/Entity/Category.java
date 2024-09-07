@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,8 +22,10 @@ public class Category {
     @Column(nullable = false)
     private String categoryName;
 
-    @OneToOne
-    @JoinColumn(nullable = false, name = "super_category_id")
+    @ManyToOne
+    @JoinColumn(name = "super_category_id")
     private Category superCategory;
 
+    @OneToMany(mappedBy = "superCategory", cascade = CascadeType.ALL)
+    private List<Category> subCategories = new ArrayList<>();
 }
