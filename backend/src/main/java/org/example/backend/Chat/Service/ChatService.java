@@ -8,7 +8,6 @@ import org.example.backend.Chat.Repository.ChatRoomRepository;
 import org.example.backend.User.Model.Entity.User;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
