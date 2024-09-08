@@ -22,7 +22,7 @@ public enum BaseResponseStatus {
     // 채팅 기능 - 8000
 
     // 카테고리 기능 - 9000
-
+    NOT_FOUND_CATEGORY(false, 9011, "카테고리를 찾을 수 없습니다."),
     // 기타 기능 - 10000
     EMPTY_FILE(false, 10011, "빈 파일입니다."),
     INVALID_FILE_TYPE(false, 10012, "지원하지 않는 파일 형식입니다."),

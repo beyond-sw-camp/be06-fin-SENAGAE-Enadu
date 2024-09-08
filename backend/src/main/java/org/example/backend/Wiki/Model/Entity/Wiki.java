@@ -19,7 +19,7 @@ public class Wiki {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -29,4 +29,7 @@ public class Wiki {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "latest_wiki_id")
     private LatestWiki latestWiki;
+
+    @Column(nullable = false)
+    private String title;
 }
