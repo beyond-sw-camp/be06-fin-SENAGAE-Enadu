@@ -19,9 +19,9 @@
         <div class="auth-navigation">
           <div v-if="!isLoggedIn">
             <ul>
-                <li><a href="#">로그인</a></li>
+                <li><router-link :to="{ path: '/login', query: { mode: 'login' } }">로그인</router-link></li>
                 <li class="divider">|</li>
-                <li><a href="#">회원가입</a></li>
+                <li><router-link :to="{ path: '/login', query: { mode: 'signup' } }">회원가입</router-link></li>
             </ul>
           </div>
           <div v-else>

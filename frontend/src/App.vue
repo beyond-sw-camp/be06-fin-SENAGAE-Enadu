@@ -1,5 +1,5 @@
 <template>
-  <HeaderComponent />
+  <HeaderComponent v-if="$route.meta.showHeader !== false" />
   <router-view></router-view>
 </template>
 <script>
