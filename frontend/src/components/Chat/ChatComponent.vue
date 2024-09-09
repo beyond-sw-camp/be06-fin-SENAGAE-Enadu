@@ -63,12 +63,13 @@ export default {
   data() {
     return {
       isLoading: true,
-      prevMessageDate: "1900-01-01"
+      page: 0,
+      prevMessageDate: "1900-01-01",
     }
   },
   methods: {
     async getChatMessageList() {
-      await this.chatStore.getChatMessageList();
+      await this.chatStore.getChatMessageList(1, this.page);
       this.isLoading = false;
     },
     autoResize() {

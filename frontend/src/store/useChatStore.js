@@ -49,9 +49,18 @@ export const useChatStore = defineStore("chat", {
             const res = await axios.get(backend + "/chat/chatRoomList")
             this.chatRoomList = res.data.result;
         },
-        async getChatMessageList() {
-            // const res = await axios.get("");
-            // 브랜치
+        async getChatMessageList(chatRoomId, page) {
+            const res = await axios.get(backend + "/chat/messageList", {
+                params: {
+                    chatRoomId: chatRoomId,
+                    page: page,
+                    size: 20
+                },
+                withCredentials: true
+            });
+            this.chatMessageList = res.data.result;
+            console.log(this.chatMessageList);
+
         }
     }
 })
