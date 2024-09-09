@@ -10,8 +10,9 @@ import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.User.Model.Entity.User;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,10 +24,10 @@ import java.util.List;
 public class QnaBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // bigint
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -41,26 +42,36 @@ public class QnaBoard {
 
 
     @Column(name = "title", length = 100, nullable = false)
-    private String title; // varchar(100)
+    private String title;
 
     @Column(name = "content", columnDefinition = "text", nullable = false)
-    private String content; // text
+    private String content;
 
-    @Column(name = "answer_cnt", nullable = false)
-    private int answerCount; // int
+    @Column(name = "answer_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
+    private int answerCount;
 
     @Column(name = "enable", nullable = false)
-    private boolean enable; // boolean
+    private boolean enable;
 
     @Column(name = "modified_at")
-    private LocalDateTime modifiedAt; // datetime
+    private LocalDateTime modifiedAt;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt; // datetime
+    private LocalDateTime createdAt;
 
-    @Column(name = "like_cnt", nullable = false)
-    private int likeCount; // int
+    @Column(name = "like_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
+    private int likeCount;
 
-    @Column(name = "hate_cnt", nullable = false)
-    private int hateCount; // int
+    @Column(name = "hate_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
+    private int hateCount;
+
+    @PrePersist
+    public void createdAt() {
+        this.createdAt = Timestamp.from(Instant.now()).toLocalDateTime();
+    }
+
+    @PreUpdate
+    void verifiedAt() {
+        this.modifiedAt = Timestamp.from(Instant.now()).toLocalDateTime();
+    }
 }
