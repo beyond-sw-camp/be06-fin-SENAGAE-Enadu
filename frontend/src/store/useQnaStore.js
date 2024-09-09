@@ -21,19 +21,11 @@ export const useQnaStore = defineStore("qna", {
   actions: {
     async getQnaList() {
       let res = await axios.get(
-        "http://localhost:8080/qna/list"
+        "http://localhost:8080/qna/list", { withCredentials: true }
       );
-      if (typeof res.data === "string") {
-        this.qnaCards = JSON.parse(res.data).result;
-      } else {
         this.qnaCards = res.data.result;
-      }
-
-      if (res.status === 200) {
-        console.log(this.qnaCards);
-        this.qnaCards = res.data.result;
-      }
     },
+
     async registerQna(myTitle, myText) {
       const data = {
         title: myTitle,
@@ -42,11 +34,7 @@ export const useQnaStore = defineStore("qna", {
       };
 
       try {
-        let res = await axios.post("http://localhost:8080/qna", data);
-
-        if (res.status === 200) {
-          console.log("Q&A 등록 성공:", res.data);
-        }
+        await axios.post("http://localhost:8080/qna", data, { withCredentials: true });
       } catch (error) {
         console.error("Q&A 등록 실패:", error);
       }
