@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import axios from "axios";
 
-// const backend = "";
+const backend = "/api";
 
 export const useChatStore = defineStore("chat", {
     state: () => ({
@@ -17,9 +17,8 @@ export const useChatStore = defineStore("chat", {
     }),
     actions: {
         async getChatRoomList() {
-            const res = await axios.get("https://run.mocky.io/v3/526736d4-0733-4c7b-94f5-ecb09f1333a4");
+            const res = await axios.get(backend + "/chat/chatRoomList")
             this.chatRoomList = res.data.result;
-            console.log(res);
         },
     }
 });

@@ -3,13 +3,13 @@
     <div role="link" tabindex="0" class="div_button chat_list_link" aria-current="page">
       <div class="info_area">
         <div class="profile_wrap" aria-hidden="true">
-          <img class="profile" width="50" height="50" alt="" :src="chatRoom.recipientProfile">
+          <img class="profile" alt="" :src="chatRoom.recipientProfile">
         </div>
         <div class="text_wrap">
-          <div class="name_area"><strong class="name">{{ chatRoom.recipientName}}</strong>
-            <span class="date_area">{{chatRoom.lastMessageDay}}</span>
+          <div class="name_area"><strong class="name">{{ chatRoom.recipientName }}</strong>
+            <span class="date_area">{{ lastMessageDay }}</span>
           </div>
-          <div class="text_area">{{chatRoom.lastMessage}}</div>
+          <div class="text_area">{{ chatRoom.lastMessage }}</div>
         </div>
       </div>
     </div>
@@ -23,13 +23,36 @@ export default {
   data() {
     return {
       isSelected: false,
+      lastMessageDay: "",
     }
   },
   methods: {
     selected() {
       this.isSelected = true
       this.$emit("update-select-chatRoom", this.chatRoom.chatRoomId)
-    }
+    },
+    formatDateTime(dateTimeString) {
+      // 입력 문자열을 Date 객체로 변환
+      const inputDate = new Date(dateTimeString)
+
+      // 현재 날짜와 시간
+      const now = new Date()
+
+      // 현재 날짜의 시작 시간 (00:00:00)
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+      // 비교
+      if (inputDate >= startOfToday) {
+        // 오늘이면 시간만 표시
+        return inputDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+      } else {
+        // 오늘이 아니면 날짜만 표시
+        return inputDate.toLocaleDateString().replace(/\.$/, '')
+      }
+    },
+  },
+  mounted() {
+    this.lastMessageDay = this.formatDateTime(this.chatRoom.lastMessageDay.toString())
   }
 }
 </script>
@@ -79,6 +102,8 @@ export default {
 }
 
 .chat_list_area .profile_wrap .profile {
+  width: 50px;
+  height: 50px;
   display: block;
 }
 
