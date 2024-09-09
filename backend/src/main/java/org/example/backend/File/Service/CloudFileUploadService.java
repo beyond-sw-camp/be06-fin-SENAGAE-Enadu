@@ -2,6 +2,7 @@ package org.example.backend.File.Service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidFileException;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -82,4 +84,13 @@ public class CloudFileUploadService {
         }
         return amazonS3Client.getUrl(bucketName, fileName).toString();
     }
+
+    // 썸네일 기본이미지 반환
+    public List<String> basicThumbnailList = Arrays.asList("https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg3.png","https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg2.png","https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg1.png");
+
+    public String getBasicThumbnailUrl() {
+        int random = (int) (Math.random() * basicThumbnailList.size());
+        return basicThumbnailList.get(random);
+    }
 }
+

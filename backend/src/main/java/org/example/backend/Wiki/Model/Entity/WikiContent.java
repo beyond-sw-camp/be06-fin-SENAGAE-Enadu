@@ -1,10 +1,7 @@
 package org.example.backend.Wiki.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.backend.User.Model.Entity.User;
 
 import java.time.LocalDateTime;
@@ -20,6 +17,7 @@ public class WikiContent {
     private Long id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
+    @NonNull
     private String content;
 
     @Builder.Default

@@ -14,7 +14,10 @@ public enum BaseResponseStatus {
     // 포인트 기능 - 4000
 
     // 위키 기능 - 5000
-
+    WIKI_REGIST_FAIL(false, 5001,"위키 등록을 실패했습니다."),
+    WIKI_TITLE_REGIST_FAIL(false, 5002,"제목을 입력해주세요."),
+    WIKI_CATEGORY_REGIST_FAIL(false, 5002,"카테고리를 입력해주세요."),
+    WIKI_CONTENT_REGIST_FAIL(false, 5003,"내용을 입력해주세요."),
     // 에러 아카이브 기능 - 6000
 
     // 에러 QnA 기능 - 7000
