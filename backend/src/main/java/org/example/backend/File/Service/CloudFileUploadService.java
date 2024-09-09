@@ -86,7 +86,7 @@ public class CloudFileUploadService {
     }
 
     // 썸네일 기본이미지 반환
-    public List<String> basicThumbnailList = Arrays.asList("https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg3.png","https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg2.png","https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg1.png");
+    private final static List<String> basicThumbnailList = Arrays.asList("https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg3.png","https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg2.png","https://jimmny.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/08/BasicImg1.png");
 
     public String getBasicThumbnailUrl() {
         int random = (int) (Math.random() * basicThumbnailList.size());
