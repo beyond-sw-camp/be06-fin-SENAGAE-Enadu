@@ -21,19 +21,37 @@ export const useQnaStore = defineStore("qna", {
   actions: {
     async getQnaList() {
       let res = await axios.get(
-        "https://run.mocky.io/v3/42f06300-36da-49c0-9849-20e4b92fe320"
+        "http://localhost:8080/qna/list"
       );
       if (typeof res.data === "string") {
         this.qnaCards = JSON.parse(res.data).result;
       } else {
         this.qnaCards = res.data.result;
       }
-      console.log(res.data);
-      console.log(res.data.result);
+
       if (res.status === 200) {
         console.log(this.qnaCards);
         this.qnaCards = res.data.result;
       }
     },
+    async registerQna(myTitle, myText) {
+      const data = {
+        title: myTitle,
+        content: myText,
+        categoryId: 1
+      };
+
+      try {
+        let res = await axios.post("http://localhost:8080/qna", data);
+
+        if (res.status === 200) {
+          console.log("Q&A 등록 성공:", res.data);
+        }
+      } catch (error) {
+        console.error("Q&A 등록 실패:", error);
+      }
+    }
+
   },
+
 });
