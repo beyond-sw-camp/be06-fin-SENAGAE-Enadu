@@ -12,6 +12,8 @@ import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.Util.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -58,7 +60,21 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
-        return authenticationManager.authenticate(authToken);
+        try {
+            Authentication authentication = authenticationManager.authenticate(authToken);
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+            if (!userDetails.isVerified()) {
+                throw new InvalidUserException(BaseResponseStatus.USER_EMAIL_NOT_VERIFIED);
+            }
+
+            return authentication;
+
+        } catch (DisabledException e) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INACTIVE_ACCOUNT);
+        } catch (BadCredentialsException e) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_CREDENTIALS);
+        }
     }
 
     @Override

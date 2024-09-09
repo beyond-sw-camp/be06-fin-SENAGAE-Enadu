@@ -33,4 +33,12 @@ public class CustomUserDetails implements UserDetails {
     public Long getUserId() {
         return user.getId();
     }
+
+    public Boolean isVerified() {
+        return user.getVerify();
+    }
+
+    public boolean isEnabled() {
+        return user.getEnable();
+    }
 }
