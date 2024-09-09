@@ -10,6 +10,16 @@ public enum BaseResponseStatus {
     // 회원 기능 - 2000
     UNREGISTERED_USER(false, 9999, "등록되지 않은 사용자입니다."),
 
+    USER_FAIL(false, 2001, "요청이 실패하였습니다."),
+    USER_INVALID_REQUEST_BODY(false, 2002, "잘못된 요청 본문입니다."),
+    USER_JSON_PARSE_ERROR(false, 2003, "JSON 파싱 오류가 발생했습니다."),
+    USER_EMAIL_OR_PASSWORD_NULL(false, 2004, "이메일 또는 비밀번호가 비어있습니다."),
+    USER_NOT_FOUND(false, 2005, "등록되지 않은 사용자입니다."),
+    USER_INVALID_EMAIL_FORMAT(false, 2005, "잘못된 이메일 형식입니다."),
+    USER_INACTIVE_ACCOUNT(false, 2006, "비활성화된 계정입니다."),
+    USER_EMAIL_NOT_VERIFIED(false, 2007, "이메일 인증이 완료되지 않았습니다."),
+    USER_INVALID_CREDENTIALS(false, 2008, "잘못된 자격 증명입니다."),
+
     // 마이페이지 기능 - 3000
 
     // 포인트 기능 - 4000
