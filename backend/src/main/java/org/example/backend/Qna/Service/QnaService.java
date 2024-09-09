@@ -33,7 +33,7 @@ public class QnaService {
 
     public void saveQuestion(CreateQuestionReq createQuestionReq, CustomUserDetails customUserDetails) {
         Optional<Category> category = categoryRepository.findById(createQuestionReq.getCategoryId());
-        Optional<User> user = userRepository.findByEmail(customUserDetails.getUsername());
+        Optional<User> user = userRepository.findById(customUserDetails.getUserId());
 
         if (category.isPresent() && user.isPresent()) {
             QnaBoard qnaBoard = QnaBoard.builder()
