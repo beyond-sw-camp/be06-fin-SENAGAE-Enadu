@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.example.backend.Category.Model.Entity.Category;
-import org.example.backend.Qna.model.Entity.QnaBoard;
 import org.example.backend.User.Model.Entity.User;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ErrorArchive {
     private List<ErrorLike> errorLikeList; // bigint
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category; // bigint
 
@@ -48,13 +49,23 @@ public class ErrorArchive {
     private LocalDateTime modifiedAt; // datetime (NULL 가능)
 
     @Column(name = "enable", nullable = false)
-    private boolean enable; // boolean
+    @Builder.Default
+    private boolean enable = true; // boolean
 
     @Column(name = "like_cnt", nullable = false)
     private int likeCount; // int
 
     @Column(name = "hate_cnt", nullable = false)
     private int hateCount; // int
+    @PrePersist
+    public void createdAt() {
+        this.createdAt = Timestamp.from(Instant.now()).toLocalDateTime();
+    }
+
+    @PreUpdate
+    public void modifiedAt() {
+        this.modifiedAt = Timestamp.from(Instant.now()).toLocalDateTime();
+    }
 
 
 

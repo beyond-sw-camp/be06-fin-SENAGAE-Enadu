@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.Wiki.Model.Entity.Wiki;
 
 import java.util.ArrayList;
@@ -32,4 +33,7 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     private List<Wiki>  wikiList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    private List<ErrorArchive> errorArchiveList = new ArrayList<>();
 }
