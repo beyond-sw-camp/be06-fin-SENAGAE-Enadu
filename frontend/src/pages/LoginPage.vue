@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <div class="container">
+        <div class="qna-detail-top-title">
             <SignInComponent v-if="signIn" @login="handleLogin" />
             <SignUpComponent v-else />
             <OverlayComponent :signIn="signIn" @toggleSignIn="toggleSignIn" />
@@ -66,7 +66,7 @@
     height: 100vh;
     background: #f6f5f7;
 }
-.container {
+.qna-detail-top-title {
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08), 0 10px 10px rgba(0, 0, 0, 0.08);
