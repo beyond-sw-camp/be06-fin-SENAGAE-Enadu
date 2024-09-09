@@ -3,11 +3,12 @@ package org.example.backend.Config.Filter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.Util.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,8 +35,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         try {
             requestBody = request.getReader().lines().collect(Collectors.joining());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to read request body", e);
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_REQUEST_BODY);
         }
+
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> requestData;
@@ -44,14 +46,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             requestData = objectMapper.readValue(requestBody, new TypeReference<>() {
             });
         } catch (IOException e) {
-            throw new RuntimeException("Failed to parse JSON", e);
+            throw new InvalidUserException(BaseResponseStatus.USER_JSON_PARSE_ERROR);
         }
 
         String username = requestData.get("email");
         String password = requestData.get("password");
 
         if (username == null || password == null) {
-            throw new RuntimeException("email or password is null");
+            throw new InvalidUserException(BaseResponseStatus.USER_EMAIL_OR_PASSWORD_NULL);
         }
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
@@ -74,7 +76,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createToken(userId, username, role);
         Cookie jwtCookie = jwtUtil.createCookie(token);
         response.addCookie(jwtCookie);
-        response.addHeader("Authorization", "Bearer " + token);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
