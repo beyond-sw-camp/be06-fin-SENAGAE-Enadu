@@ -40,7 +40,9 @@ public class QnaService {
             qnaBoard.createdAt();
             questionRepository.save(qnaBoard);
         }
-
+        else {
+            throw new InvalidQnaException(BaseResponseStatus.INVALID_CATEGORY_DATA);
+        }
     }
 
     public List<GetQnaListRes> getQnaList(GetQnaListReq req) {

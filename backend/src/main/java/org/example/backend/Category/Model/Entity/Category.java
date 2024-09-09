@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.backend.Wiki.Model.Entity.Wiki;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,12 @@ public class Category {
     private String categoryName;
 
     @ManyToOne
-    @JoinColumn(name = "super_category_id")
+    @JoinColumn(name = "super_category_id", nullable = true)
     private Category superCategory;
 
     @OneToMany(mappedBy = "superCategory", cascade = CascadeType.ALL)
     private List<Category> subCategories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    private List<Wiki>  wikiList = new ArrayList<>();
 }
