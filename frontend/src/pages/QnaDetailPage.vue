@@ -1,5 +1,5 @@
 <template>
-  <QnaCardComponent
+  <QnaDetailComponent
     v-for="qnaDetail in qnaStore.qnaDetails"
     :key="qnaDetail.id"
     v-bind:qnaDetail="qnaDetail"
@@ -7,25 +7,30 @@
 </template>
 
 <script>
+import { useRoute } from 'vue-router';
 import { mapStores } from "pinia";
 import { useQnaStore } from "@/store/useQnaStore";
-import QuestionDetailComponent from "@/components/qna/QnaCardComponent.vue";
+import QnaDetailComponent from "@/components/qna/QnaDetailComponent.vue";
+
+const route = useRoute();
 
 export default {
-  name: "QnaListPage",
+  name: "QnaDetailPage",
   data() {
-    return {};
+    return {
+      id: 1
+    };
   },
   computed: {
     ...mapStores(useQnaStore),
   },
   mounted() {
-    this.qnaStore.getQnaList();
-    console.log(this.qnaStore.qnaCards);
+    const qnaDetailId = route.params.id;
+    this.qnaStore.getQnaDetail(qnaDetailId);
   },
   methods: {},
   components: {
-    QnaCardComponent,
+    QnaDetailComponent,
   },
 };
 </script>

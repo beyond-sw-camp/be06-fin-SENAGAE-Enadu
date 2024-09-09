@@ -1,5 +1,8 @@
+import { useRoute } from 'vue-router'
 import { defineStore } from "pinia";
 import axios from "axios";
+
+const route = useRoute();
 
 axios.interceptors.response.use(
   (response) => response,
@@ -17,15 +20,9 @@ axios.interceptors.response.use(
 export const useQnaStore = defineStore("qna", {
   state: () => ({
     qnaCards: [],
+    qnaDetail: []
   }),
   actions: {
-    async getQnaList() {
-      let res = await axios.get(
-        "http://localhost:8080/qna/list", { withCredentials: true }
-      );
-        this.qnaCards = res.data.result;
-    },
-
     async registerQna(myTitle, myText) {
       const data = {
         title: myTitle,
@@ -38,7 +35,21 @@ export const useQnaStore = defineStore("qna", {
       } catch (error) {
         console.error("Q&A 등록 실패:", error);
       }
-    }
+    },
+
+    async getQnaList() {
+      let res = await axios.get(
+          "http://localhost:8080/qna/list", { withCredentials: true }
+      );
+      this.qnaCards = res.data.result;
+    },
+
+    async getQnaDetail() {
+      let res = await axios.get(
+          "http://localhost:8080/qna/detail?qnaBoardId="+ route.params.id, { withCredentials: true }
+      );
+      this.qnaDetail = res.data.result;
+    },
 
   },
 
