@@ -67,26 +67,23 @@ public class QnaService {
         }
         // paging 처리 및 responseList 생성
         Page<QnaBoard> qnaBoardPage = questionRepository.findAll(pageable);
-        List<GetQnaListRes> responseList = qnaBoardPage.getContent().stream().map
+
+        return qnaBoardPage.getContent().stream().map
                         (qnaBoard -> GetQnaListRes.builder()
                         .id(qnaBoard.getId())
                         .title(qnaBoard.getTitle())
-                                // 이렇게 하면 top이 아니라 차상위로 지정됨 수정 필요
-                        .superCategory(qnaBoard.getCategory().getSuperCategory().getCategoryName())
+                        .superCategory(qnaBoard.getCategory() != null &&
+                                        qnaBoard.getCategory().getSuperCategory() != null ?
+                                        qnaBoard.getCategory().getSuperCategory().getCategoryName() : null)
                         .subCategory(qnaBoard.getCategory().getCategoryName())
-                        .nickname("ASHD89")
-                        .profileImage("example.img")
-                        .grade("god")
-//                        .nickname(qnaBoard.getUser().getNickname())
-//                        .profileImage(qnaBoard.getUser().getProfileImg())
-//                        .grade(qnaBoard.getUser().getGrade())
+                        .nickname(qnaBoard.getUser().getNickname())
+                        .profileImage(qnaBoard.getUser().getProfileImg())
+                        .grade(qnaBoard.getUser().getGrade())
                         .likeCnt(qnaBoard.getLikeCount())
                         .answerCnt(qnaBoard.getAnswerCount())
                         .createdAt(qnaBoard.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
-
-        return responseList;
     }
 
 
