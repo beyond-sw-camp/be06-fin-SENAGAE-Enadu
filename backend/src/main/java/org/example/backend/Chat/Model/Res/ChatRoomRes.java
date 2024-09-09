@@ -1,4 +1,4 @@
-package org.example.backend.Chat.Model;
+package org.example.backend.Chat.Model.Res;
 
 import lombok.Builder;
 import lombok.Getter;

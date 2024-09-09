@@ -48,6 +48,7 @@ public enum BaseResponseStatus {
 
 
     // 채팅 기능 - 8000
+    CHAT_INVALID_CHATROOM_ID(false, 8011, "채팅방을 조회할 수 없습니다."),
 
     // 카테고리 기능 - 9000
     DUPLICATE_CATEGORY(false, 9999, "이미 존재하는 카테고리입니다."),
