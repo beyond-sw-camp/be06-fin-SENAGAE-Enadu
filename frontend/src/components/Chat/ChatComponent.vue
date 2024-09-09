@@ -19,6 +19,11 @@
                                   :idx="idx" :chatMessage="chatMessage"
                                   :recipientId="chatStore.chatMessageList.recipientId"
             />
+            <li class="date_check">
+              <span>
+                <em><strong> {{ chatStore.chatMessageList.messageList.at(-1).sendTime.split("T")[0] }}</strong></em>
+              </span>
+            </li>
           </ul>
         </div>
       </section>
@@ -64,7 +69,6 @@ export default {
     return {
       isLoading: true,
       page: 0,
-      prevMessageDate: "1900-01-01",
     }
   },
   methods: {
@@ -218,6 +222,8 @@ export default {
   -ms-flex-positive: 1;
   flex-grow: 1;
   padding: 20px 14px;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 ul {

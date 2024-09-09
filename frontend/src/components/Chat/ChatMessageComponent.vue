@@ -1,7 +1,7 @@
 <template>
-  <li v-if="showDate" class="date_check">
+  <li v-if="showDate()" class="date_check">
     <span>
-      <em><strong> {{ chatMessageDate }}</strong></em>
+      <em><strong> {{ chatStore.chatMessageList.messageList[idx-1].sendTime.split("T")[0] }}</strong></em>
     </span>
   </li>
   <li class="new_message_balloon_area  _message _msgId2">
@@ -12,18 +12,19 @@
       </button>
     </div>
     <div v-if="recipientId===chatMessage.userId" class="chat_message_nickname _nickname">
-      <strong>{{chatMessage.nickname}}</strong>
+      <strong>{{ chatMessage.nickname }}</strong>
     </div>
-    <div v-if="recipientId===chatMessage.userId" class="message_balloon card_message type_text" role="heading" aria-level="5">
+    <div v-if="recipientId===chatMessage.userId" class="message_balloon card_message type_text" role="heading"
+         aria-level="5">
       <p class="_copy_area">{{ chatMessage.message }}</p>
       <div class="txt_confirm _status">
-        <span class="_time"><em>{{ day }}</em> <span>{{hour}}:{{minute}}</span></span>
+        <span class="_time"><em>{{ day }}</em> <span>{{ hour }}:{{ minute }}</span></span>
       </div>
     </div>
     <div v-else class="message_balloon card_message type_text rgt" role="heading" aria-level="5">
       <p class="_copy_area">{{ chatMessage.message }}</p>
       <div class="txt_confirm _status">
-        <span class="_time"><em>{{ day }}</em> <span>{{hour}}:{{minute}}</span></span>
+        <span class="_time"><em>{{ day }}</em> <span>{{ hour }}:{{ minute }}</span></span>
       </div>
     </div>
   </li>
@@ -50,13 +51,16 @@ export default {
   },
   methods: {
     showDate() {
-      return this.chatMessageDate === this.chatStore.chatMessageList.messageList[this.key].sendTime.split("T")[0]
+      if (this.idx === 0 ){
+        return false;
+      }
+      return this.chatMessageDate !== this.chatStore.chatMessageList.messageList[this.idx-1].sendTime.split("T")[0]
     },
     setTime() {
       let time = this.chatMessage.sendTime.split("T")[1].split(":");
-      if(Number(time[0]) >= 12) {
+      if (Number(time[0]) >= 12) {
         this.day = "오후"
-        this.hour = Number(time[0]) == 12 ? 12 : Number(Math.abs(time[0]-12))
+        this.hour = Number(time[0]) == 12 ? 12 : Number(Math.abs(time[0] - 12))
       } else {
         this.hour = Number(time[0])
       }
@@ -241,7 +245,7 @@ em {
   clear: both;
 }
 
-.group_message_balloon .new_message_balloon_area + li {
+.group_message_balloon .new_message_balloon_area {
   margin-top: 30px;
 }
 
