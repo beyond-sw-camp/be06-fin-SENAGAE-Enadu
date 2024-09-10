@@ -22,7 +22,7 @@ export const useCategoryStore = defineStore("category", {
                 this.loading = false;
             }
         },
-        async loadSubCategories() {
+        async loadSubCategories(superCategoryId) {
             this.loading = true;
             try {
                 if (!superCategoryId) {
