@@ -47,7 +47,6 @@ public class WikiController {
             thumbnailUrl = cloudFileUploadService.uploadImg(thumbnail);
         }
 
-        WikiRegisterRes wikiRegisterRes = wikiService.register(wikiRegisterReq, thumbnailUrl, customUserDetails);
-        return new BaseResponse<>(wikiRegisterRes);
+        return new BaseResponse<>(wikiService.register(wikiRegisterReq, thumbnailUrl, customUserDetails));
     }
 }

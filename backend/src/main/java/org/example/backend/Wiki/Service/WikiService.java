@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.Category.Repository.CategoryRepository;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidCategoryException;
+import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Exception.custom.InvalidWikiException;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.User.Model.Entity.User;
@@ -38,7 +39,7 @@ public class WikiService {
         // 유저 정보 확인 로직
         Optional<User> user = userRepository.findById(customUserDetails.getUserId());
         if (user.isEmpty()) {
-            throw new InvalidWikiException(BaseResponseStatus.UNREGISTERED_USER);
+            throw new InvalidUserException(BaseResponseStatus.UNREGISTERED_USER);
         }
         // Wiki 등록
         Wiki registerWiki = Wiki.builder()
