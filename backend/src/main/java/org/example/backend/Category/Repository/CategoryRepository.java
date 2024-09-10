@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-  List<Category> findBySuperCategory_IdNull();
-  List<Category> findBySuperCategory_Id(Long id);
+    List<Category> findBySuperCategory_IdNull();
+    List<Category> findBySuperCategory_Id(Long id);
+    Optional<Object> findByCategoryNameIgnoreCase(String categoryName);
 }
