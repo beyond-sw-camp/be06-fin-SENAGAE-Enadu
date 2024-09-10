@@ -1,7 +1,7 @@
 <template>
   <div class="qna-detail-top-title">
     <div class="circle">
-      <img id="user-profile-image" src="../../img/profile.png" alt="Profile Image"/>
+      <img id="user-profile-image" src="@/assets/logo.png" alt="Profile Image"/>
     </div>
     <span class="title-text">RestController와 view에 관한 질문</span>
   </div>
@@ -105,20 +105,6 @@
 </script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box
-}
-
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #fff
-}
-
 .qna-detail-top-title {
   display: flex;
   align-items: center;
@@ -502,11 +488,6 @@ img {
     transform: scale(1.1)
   }
 }
-
-body {
-  margin: 0
-}
-
 h1 {
   font-size: 2em
 }
@@ -581,195 +562,6 @@ html {
   -webkit-print-color-scheme: light;
   color-scheme: light
 }
-
-body {
-  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-  background-color: #fff;
-  color: #000;
-  line-height: 1.5;
-  font-size: 1rem;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale
-}
-
-@font-face {
-  font-family: Pretendard;
-  font-weight: 700;
-  src: url(https://cdn.inflearn.com/font/Pretendard-Bold.woff2) format("woff2"), url(https://cdn.inflearn.com/font/Pretendard-Bold.woff) format("woff")
-}
-
-@font-face {
-  font-family: Pretendard;
-  font-weight: 600;
-  src: url(https://cdn.inflearn.com/font/Pretendard-SemiBold.woff2) format("woff2"), url(https://cdn.inflearn.com/font/Pretendard-SemiBold.woff) format("woff")
-}
-
-@font-face {
-  font-family: Pretendard;
-  font-weight: 500;
-  src: url(https://cdn.inflearn.com/font/Pretendard-Medium.woff2) format("woff2"), url(https://cdn.inflearn.com/font/Pretendard-Medium.woff) format("woff")
-}
-
-@font-face {
-  font-family: Pretendard;
-  font-weight: 400;
-  src: url(https://cdn.inflearn.com/font/Pretendard-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/Pretendard-Regular.woff) format("woff")
-}
-
-@font-face {
-  font-family: Pretendard;
-  font-weight: 300;
-  src: url(https://cdn.inflearn.com/font/Pretendard-Light.woff2) format("woff2"), url(https://cdn.inflearn.com/font/Pretendard-Light.woff) format("woff")
-}
-
-@font-face {
-  font-family: KaTeX_AMS;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_AMS-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_AMS-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_AMS-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Caligraphic;
-  font-weight: 700;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Bold.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Bold.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Bold.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Caligraphic;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Caligraphic-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Fraktur;
-  font-weight: 700;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Bold.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Bold.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Bold.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Fraktur;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Fraktur-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Main;
-  font-weight: 700;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Main-Bold.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Main-Bold.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Main-Bold.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Main;
-  font-weight: 700;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Main-BoldItalic.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Main-BoldItalic.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Main-BoldItalic.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Main;
-  font-weight: 400;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Main-Italic.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Main-Italic.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Main-Italic.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Main;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Main-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Main-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Main-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Math;
-  font-weight: 700;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Math-BoldItalic.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Math-BoldItalic.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Math-BoldItalic.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Math;
-  font-weight: 400;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Math-Italic.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Math-Italic.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Math-Italic.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_SansSerif;
-  font-weight: 700;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Bold.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Bold.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Bold.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_SansSerif;
-  font-weight: 400;
-  font-style: italic;
-  src: url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Italic.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Italic.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Italic.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_SansSerif;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_SansSerif-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Script;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Script-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Script-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Script-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Size1;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Size1-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Size1-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Size1-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Size2;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Size2-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Size2-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Size2-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Size3;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Size3-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Size3-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Size3-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Size4;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Size4-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Size4-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Size4-Regular.ttf) format("truetype")
-}
-
-@font-face {
-  font-family: KaTeX_Typewriter;
-  font-weight: 400;
-  font-style: normal;
-  src: url(https://cdn.inflearn.com/font/KaTeX_Typewriter-Regular.woff2) format("woff2"), url(https://cdn.inflearn.com/font/KaTeX_Typewriter-Regular.woff) format("woff"), url(https://cdn.inflearn.com/font/KaTeX_Typewriter-Regular.ttf) format("truetype")
-}
-
-body, html {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  vertical-align: baseline
-}
-
 a, div, h1, h2, h3, h4, h5, h6, img, label, s, span {
   margin: 0;
   padding: 0;

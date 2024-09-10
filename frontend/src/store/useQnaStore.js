@@ -1,8 +1,5 @@
-import { useRoute } from 'vue-router'
 import { defineStore } from "pinia";
 import axios from "axios";
-
-const route = useRoute();
 
 axios.interceptors.response.use(
   (response) => response,
@@ -27,7 +24,7 @@ export const useQnaStore = defineStore("qna", {
       const data = {
         title: myTitle,
         content: myText,
-        categoryId: 1
+        categoryId: 10
       };
 
       try {
@@ -46,7 +43,7 @@ export const useQnaStore = defineStore("qna", {
 
     async getQnaDetail() {
       let res = await axios.get(
-          "http://localhost:8080/qna/detail?qnaBoardId="+ route.params.id, { withCredentials: true }
+          "http://localhost:8080/qna/detail?qnaBoardId="+ this.$route.params.id, { withCredentials: true }
       );
       this.qnaDetail = res.data.result;
     },
