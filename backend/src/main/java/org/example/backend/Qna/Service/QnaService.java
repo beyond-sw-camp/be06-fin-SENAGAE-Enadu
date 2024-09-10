@@ -33,7 +33,7 @@ public class QnaService {
 
     public void saveQuestion(CreateQuestionReq createQuestionReq, CustomUserDetails customUserDetails) {
         Optional<Category> category = categoryRepository.findById(createQuestionReq.getCategoryId());
-        Optional<User> user = userRepository.findByEmail(customUserDetails.getUsername());
+        Optional<User> user = userRepository.findById(customUserDetails.getUserId());
 
         if (category.isPresent() && user.isPresent()) {
             QnaBoard qnaBoard = QnaBoard.builder()
@@ -53,40 +53,37 @@ public class QnaService {
         }
     }
 
-    public List<GetQnaListRes> getQnaList(GetQnaListReq req) {
+    public List<GetQnaListRes> getQnaList(GetQnaListReq getQnaListReq) {
         Pageable pageable;
         // 최신순 or 좋아요가 많은 순으로 정렬 type 지정, 둘 다 아니면 에러
-        if (req.getSort().equals("latest")) {
-            pageable = PageRequest.of(req.getPage(), req.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        if (getQnaListReq.getSort().equals("latest")) {
+            pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
         }
-        else if(req.getSort().equals("like")) {
-            pageable = PageRequest.of(req.getPage(), req.getSize(), Sort.by(Sort.Direction.DESC, "likeCnt"));
+        else if(getQnaListReq.getSort().equals("like")) {
+            pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCnt"));
         }
         else {
             throw new InvalidQnaException(BaseResponseStatus.INVALID_SEARCH_TYPE);
         }
         // paging 처리 및 responseList 생성
         Page<QnaBoard> qnaBoardPage = questionRepository.findAll(pageable);
-        List<GetQnaListRes> responseList = qnaBoardPage.getContent().stream().map
+
+        return qnaBoardPage.getContent().stream().map
                         (qnaBoard -> GetQnaListRes.builder()
                         .id(qnaBoard.getId())
                         .title(qnaBoard.getTitle())
-                                // 이렇게 하면 top이 아니라 차상위로 지정됨 수정 필요
-                        .superCategory(qnaBoard.getCategory().getSuperCategory().getCategoryName())
-                        .subCategory(qnaBoard.getCategory().getCategoryName())
-                        .nickname("ASHD89")
-                        .profileImage("example.img")
-                        .grade("god")
-//                        .nickname(qnaBoard.getUser().getNickname())
-//                        .profileImage(qnaBoard.getUser().getProfileImg())
-//                        .grade(qnaBoard.getUser().getGrade())
+                        .superCategoryName(qnaBoard.getCategory().getSuperCategory().getCategoryName())
+                        .subCategoryName(qnaBoard.getCategory() != null ?
+                                        qnaBoard.getCategory().getCategoryName() : null)
+                        .subCategoryName(qnaBoard.getCategory().getCategoryName())
+                        .nickname(qnaBoard.getUser().getNickname())
+                        .profileImage(qnaBoard.getUser().getProfileImg())
+                        .grade(qnaBoard.getUser().getGrade())
                         .likeCnt(qnaBoard.getLikeCount())
                         .answerCnt(qnaBoard.getAnswerCount())
                         .createdAt(qnaBoard.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
-
-        return responseList;
     }
 
 

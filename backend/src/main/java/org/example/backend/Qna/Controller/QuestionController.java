@@ -28,7 +28,7 @@ public class QuestionController {
 
     //qna 목록 조회
     @GetMapping("list")
-    public BaseResponse<List<GetQnaListRes>> getQnaList(@RequestBody GetQnaListReq getQnaListReq) {
+    public BaseResponse<List<GetQnaListRes>> getQnaList(@RequestBody GetQnaListReq getQnaListReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<GetQnaListRes> qnaListRes = qnaService.getQnaList(getQnaListReq);
         return new BaseResponse<>(qnaListRes);
 
