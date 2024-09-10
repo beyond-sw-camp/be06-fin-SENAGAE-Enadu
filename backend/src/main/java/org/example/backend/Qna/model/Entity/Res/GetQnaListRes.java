@@ -12,8 +12,8 @@ import lombok.*;
 public class GetQnaListRes {
         private Long id;
         private String title;
-        private String superCategory;
-        private String subCategory;
+        private String superCategoryName;
+        private String subCategoryName;
         private String nickname;
         private String profileImage;
         private String grade;
