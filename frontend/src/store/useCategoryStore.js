@@ -22,9 +22,8 @@ export const useCategoryStore = defineStore("category", {
                 this.loading = false;
             }
         },
-        async loadSubCategories(superCategoryId) {
+        async loadSubCategories() {
             this.loading = true;
-            if (superCategoryId === null) superCategoryId = 1;
             try {
                 if (!superCategoryId) {
                     throw new Error("superCategoryId가 유효하지 않습니다.");
@@ -44,6 +43,26 @@ export const useCategoryStore = defineStore("category", {
                 console.error("전체 에러 객체:", error);
             } finally {
                 this.loading = false;
+            }
+        },
+        async addSubCategory(superCategoryId, categoryName) {
+            try {
+                const response = await axios.post(backend + "/category", {
+                    superCategoryId,
+                    categoryName
+                },{
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    } ,
+                    withCredentials: true
+                });
+                const mySubCategory = {
+                    id : response.data.result,
+                    categoryName : categoryName
+                };
+                return mySubCategory;
+            } catch (error) {
+                throw new Error("하위 카테고리 생성 실패");
             }
         },
         updateSearchKeyword(keyword) {

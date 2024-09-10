@@ -99,7 +99,18 @@ export default {
             this.$emit('closeSub');
         },
         createSubCategory() {
-            alert("등록 등록")
+            const newSubCategoryName = prompt("새로운 하위 카테고리 이름을 입력하세요:");
+            if (newSubCategoryName) {
+                const categoryStore = useCategoryStore();
+                categoryStore.addSubCategory(this.superCategory.id, newSubCategoryName)
+                    .then(() => {
+                        console.log("하위 카테고리 생성 성공");
+                        this.loadSubCategories(); // 하위 카테고리 목록 새로 로딩
+                    })
+                    .catch((error) => {
+                        console.log("하위 카테고리 생성 실패:", error);
+                    });
+            }
         }
     },
     watch: {
