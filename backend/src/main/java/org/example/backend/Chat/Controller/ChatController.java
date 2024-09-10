@@ -20,16 +20,14 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/chatRoomList")
-    public BaseResponse<List<ChatRoomRes>> chatRoomList() {
-        List<ChatRoomRes> myChatRoomResList = chatService.getMyChatRoomList(1L);
-        return new BaseResponse<>(myChatRoomResList);
+    public BaseResponse<List<ChatRoomRes>> chatRoomList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return new BaseResponse<>(chatService.getMyChatRoomList(customUserDetails.getUserId()));
     }
 
     @GetMapping("/messageList")
     public BaseResponse<ChatMessageListRes> getChatMessageList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                                      Long chatRoomId, Integer page, Integer size) {
-        ChatMessageListRes chatMessageListRes = chatService.getChatMessageList(customUserDetails.getUserId(), chatRoomId, page, size);
-        return new BaseResponse<>(chatMessageListRes);
+        return new BaseResponse<>(chatService.getChatMessageList(customUserDetails.getUserId(), chatRoomId, page, size));
 
     }
 

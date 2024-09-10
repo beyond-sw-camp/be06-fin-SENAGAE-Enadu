@@ -8,6 +8,7 @@ import org.example.backend.Chat.Model.Res.ChatMessageRes;
 import org.example.backend.Chat.Model.Res.ChatRoomRes;
 import org.example.backend.Chat.Repository.ChatRepository;
 import org.example.backend.Chat.Repository.ChatRoomRepository;
+import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidChatException;
 import org.example.backend.User.Model.Entity.User;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +18,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.example.backend.Common.BaseResponseStatus.CHAT_INVALID_CHATROOM_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -66,14 +65,14 @@ public class ChatService {
 
     public ChatMessageListRes getChatMessageList(Long userId, Long chatRoomId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new InvalidChatException(CHAT_INVALID_CHATROOM_ID));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID));
         User recipient;
         if (chatRoom.getUser1().getId().equals(userId)) {
             recipient = chatRoom.getUser2();
         } else if (chatRoom.getUser2().getId().equals(userId)) {
             recipient = chatRoom.getUser1();
         } else {
-            throw new InvalidChatException(CHAT_INVALID_CHATROOM_ID);
+            throw new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID);
         }
 
         List<Chat> chatList = chatRepository.findByChatRoomIdOrderBySendTimeDesc(pageable, chatRoomId).stream().toList();
