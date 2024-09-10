@@ -39,11 +39,11 @@ public class WikiService {
         // 유저 정보 확인 로직
         Optional<User> user = userRepository.findById(customUserDetails.getUserId());
         if (user.isEmpty()) {
-            throw new InvalidUserException(BaseResponseStatus.UNREGISTERED_USER);
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
         // Wiki 등록
         Wiki registerWiki = Wiki.builder()
-                .category(categoryRepository.findById(wikiRegisterReq.getCategoryId()).orElseThrow(() -> new InvalidCategoryException(BaseResponseStatus.NOT_FOUND_CATEGORY)))
+                .category(categoryRepository.findById(wikiRegisterReq.getCategoryId()).orElseThrow(() -> new InvalidCategoryException(BaseResponseStatus.CATEGORY_NOT_FOUND_CATEGORY)))
                 .title(wikiRegisterReq.getTitle())
                 .build();
         wikiRepository.save(registerWiki);
