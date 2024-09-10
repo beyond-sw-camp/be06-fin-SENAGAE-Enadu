@@ -54,6 +54,8 @@ public enum BaseResponseStatus {
     DUPLICATE_CATEGORY(false, 9999, "이미 존재하는 카테고리입니다."),
     INVALID_CATEGORY_DATA(false,  9999, "유효하지 않은 카테고리 데이터입니다."),
     NOT_FOUND_CATEGORY(false, 9011, "카테고리를 찾을 수 없습니다."),
+    CATEGORY_DUPLICATE_NAME(false, 9021, "이미 존재하는 카테고리입니다."),
+    CATEGORY_NOT_FOUND_SUPER_CATEGORY(false, 9022, "상위 카테고리를 찾을 수 없습니다."),
 
   // 기타 기능 - 10000
     EMPTY_FILE(false, 10011, "빈 파일입니다."),

@@ -6,6 +6,8 @@ import org.example.backend.Category.Model.Req.AddSubCategoryReq;
 import org.example.backend.Category.Model.Res.SubCategoryRes;
 import org.example.backend.Category.Model.Res.SuperCategoryRes;
 import org.example.backend.Category.Repository.CategoryRepository;
+import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Exception.custom.InvalidCategoryException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,6 +42,12 @@ public class CategoryService {
     }
 
     public Long createSubCategory(AddSubCategoryReq addSubCategoryReq) {
+        if (categoryRepository.findByCategoryNameIgnoreCase(addSubCategoryReq.getCategoryName()).isPresent()) {
+            throw new InvalidCategoryException(BaseResponseStatus.CATEGORY_DUPLICATE_NAME);
+        }
+        if (categoryRepository.findById(addSubCategoryReq.getSuperCategoryId()).isEmpty()){
+            throw new InvalidCategoryException(BaseResponseStatus.CATEGORY_NOT_FOUND_SUPER_CATEGORY);
+        }
         Category category = Category.builder()
                 .categoryName(addSubCategoryReq.getCategoryName())
                 .superCategory(Category.builder().id(addSubCategoryReq.getSuperCategoryId()).build())
