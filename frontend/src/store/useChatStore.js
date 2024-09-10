@@ -5,6 +5,7 @@ const backend = "/api";
 
 export const useChatStore = defineStore("chat", {
     state: () => ({
+        selectedChatRoomId: 0,
         chatRoomList: [
             {
                 recipientName: "",
@@ -15,30 +16,15 @@ export const useChatStore = defineStore("chat", {
             },
         ],
         chatMessageList: {
-            prevMessageDate: "1900-01-01",
-            recipientNickname: "길동홍",
-            recipientId: 1,
+            recipientNickname: "",
+            recipientId: 0,
             messageList: [
                 {
-                    nickname: "길동홍",
-                    userId: 1,
-                    message: "채팅 내용",
-                    sendTime: "2024-09-09T10:12:12",
-                    profileImg: "http://img.url"
-                },
-                {
-                    nickname: "길동홍",
-                    userId: 2,
-                    message: "채팅 내용",
-                    sendTime: "2024-09-10T12:13:13",
-                    profileImg: "http://img.url"
-                },
-                {
-                    nickname: "길동홍",
-                    userId: 2,
-                    message: "채팅 내용",
-                    sendTime: "2024-09-11T15:4:14",
-                    profileImg: "http://img.url"
+                    nickname: "",
+                    userId: 0,
+                    message: "",
+                    sendTime: "",
+                    profileImg: ""
                 }
             ]
         },
@@ -46,20 +32,20 @@ export const useChatStore = defineStore("chat", {
     }),
     actions: {
         async getChatRoomList() {
-            const res = await axios.get(backend + "/chat/chatRoomList")
+            const res = await axios.get(backend + "/chat/chatRoomList",{withCredentials: true})
             this.chatRoomList = res.data.result;
+            this.selectedChatRoomId = this.chatRoomList[0].chatRoomId;
         },
-        async getChatMessageList(chatRoomId, page) {
+        async getChatMessageList(page) {
             const res = await axios.get(backend + "/chat/messageList", {
                 params: {
-                    chatRoomId: chatRoomId,
+                    chatRoomId: this.selectedChatRoomId,
                     page: page,
                     size: 20
                 },
                 withCredentials: true
             });
             this.chatMessageList = res.data.result;
-            console.log(this.chatMessageList);
 
         }
     }

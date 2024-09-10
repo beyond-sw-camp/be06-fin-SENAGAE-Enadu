@@ -1,5 +1,5 @@
 <template>
-  <li :class="[ chatRoom.chatRoomId == selectedChatRoomId ? 'on': '' ]" @click="selected">
+  <li :class="[ chatRoom.chatRoomId == chatStore.selectedChatRoomId ? 'on': '' ]" @click="selected">
     <div role="link" tabindex="0" class="div_button chat_list_link" aria-current="page">
       <div class="info_area">
         <div class="profile_wrap" aria-hidden="true">
@@ -17,19 +17,27 @@
 </template>
 
 <script>
+import {mapStores} from "pinia";
+import {useChatStore} from "@/store/useChatStore";
+
 export default {
   name: "ChatRoomComponent",
-  props: ['chatRoom', 'selectedChatRoomId'],
+  computed: {
+    ...mapStores(useChatStore) // 어떤 저장소랑 연결시켜 주겠다.
+  },
+  props: ['chatRoom'],
   data() {
     return {
       isSelected: false,
       lastMessageDay: "",
     }
   },
+
   methods: {
-    selected() {
+    async selected() {
       this.isSelected = true
-      this.$emit("update-select-chatRoom", this.chatRoom.chatRoomId)
+      this.chatStore.selectedChatRoomId = this.chatRoom.chatRoomId
+      this.$emit("reload-chatRoom")
     },
     formatDateTime(dateTimeString) {
       // 입력 문자열을 Date 객체로 변환
@@ -53,6 +61,7 @@ export default {
   },
   mounted() {
     this.lastMessageDay = this.formatDateTime(this.chatRoom.lastMessageDay.toString())
+    this.selectedChatRoomId = this.chatStore.selectedChatRoomId
   }
 }
 </script>

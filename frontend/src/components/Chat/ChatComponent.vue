@@ -19,7 +19,7 @@
                                   :idx="idx" :chatMessage="chatMessage"
                                   :recipientId="chatStore.chatMessageList.recipientId"
             />
-            <li class="date_check">
+            <li v-if="chatStore.chatMessageList.messageList.length !== 0"  class="date_check">
               <span>
                 <em><strong> {{ chatStore.chatMessageList.messageList.at(-1).sendTime.split("T")[0] }}</strong></em>
               </span>
@@ -33,7 +33,8 @@
             <div class="chat_write_wrap">
               <div class="input_btn_wrap"></div>
               <div class="chat_input_area">
-                <textarea @input="autoResize" ref="textarea"  title="메시지 입력창" class="chat_input" maxlength="2000" placeholder="메시지를 입력하세요."></textarea>
+                <textarea @input="autoResize" ref="textarea" title="메시지 입력창" class="chat_input" maxlength="2000"
+                          placeholder="메시지를 입력하세요." v-model="content"></textarea>
               </div>
               <div class="submit_btn_wrap">
                 <button class="btn_submit " type="submit" aria-disabled="true"><img src="@/assets/img/send_icon.png"
@@ -69,17 +70,21 @@ export default {
     return {
       isLoading: true,
       page: 0,
+      content: "",
     }
   },
   methods: {
     async getChatMessageList() {
-      await this.chatStore.getChatMessageList(1, this.page);
+      await this.chatStore.getChatMessageList(this.page);
       this.isLoading = false;
     },
     autoResize() {
       const textarea = this.$refs.textarea;
       textarea.style.height = 'auto'; // 높이를 초기화하여 줄 수를 재계산
       textarea.style.height = textarea.scrollHeight + 'px'; // 내용에 맞게 높이 조절
+      if (this.content === "") {
+        textarea.style.height = 20+"px";
+      }
     },
   },
   mounted() {
@@ -89,6 +94,18 @@ export default {
 </script>
 
 <style scoped>
+
+.content {
+  position: relative;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  min-width: 445px;
+  margin-left: 10px;
+  border: 1px solid #e6e6ea;
+}
 
 /* class:chat_section 정확하게  채팅방 section */
 .chat_section {
@@ -100,7 +117,7 @@ export default {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  height: 100%;
+  height: 600px;
 }
 
 .chat_section {
