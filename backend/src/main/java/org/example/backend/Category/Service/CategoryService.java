@@ -1,6 +1,8 @@
 package org.example.backend.Category.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.Category.Model.Entity.Category;
+import org.example.backend.Category.Model.Req.AddSubCategoryReq;
 import org.example.backend.Category.Model.Res.SubCategoryRes;
 import org.example.backend.Category.Model.Res.SuperCategoryRes;
 import org.example.backend.Category.Repository.CategoryRepository;
@@ -35,5 +37,13 @@ public class CategoryService {
             subList.add(subCategoryRes);
         });
         return subList;
+    }
+
+    public Long createSubCategory(AddSubCategoryReq addSubCategoryReq) {
+        Category category = Category.builder()
+                .categoryName(addSubCategoryReq.getCategoryName())
+                .superCategory(Category.builder().id(addSubCategoryReq.getSuperCategoryId()).build())
+                .build();
+        return categoryRepository.save(category).getId();
     }
 }
