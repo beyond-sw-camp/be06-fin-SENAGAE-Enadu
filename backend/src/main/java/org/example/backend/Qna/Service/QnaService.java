@@ -39,7 +39,7 @@ public class QnaService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    public void saveQuestion(CreateQuestionReq createQuestionReq, CustomUserDetails customUserDetails) {
+    public Long saveQuestion(CreateQuestionReq createQuestionReq, CustomUserDetails customUserDetails) {
         Optional<Category> category = categoryRepository.findById(createQuestionReq.getCategoryId());
         Optional<User> user = userRepository.findById(customUserDetails.getUserId());
 
@@ -53,8 +53,9 @@ public class QnaService {
 
             qnaBoard.createdAt();
             questionRepository.save(qnaBoard);
+            return qnaBoard.getId();
         } else if (category.isEmpty()) {
-            throw new InvalidQnaException(BaseResponseStatus.INVALID_CATEGORY_DATA);
+            throw new InvalidQnaException(BaseResponseStatus.CATEGORY_INVALID_CATEGORY_DATA);
         } else {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
@@ -68,7 +69,7 @@ public class QnaService {
         } else if (getQnaListReq.getSort().equals("like")) {
             pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCnt"));
         } else {
-            throw new InvalidQnaException(BaseResponseStatus.INVALID_SEARCH_TYPE);
+            throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
         }
         // paging 처리 및 responseList 생성
         Page<QnaBoard> qnaBoardPage = questionRepository.findAll(pageable);
@@ -89,8 +90,6 @@ public class QnaService {
                                 .createdAt(qnaBoard.getCreatedAt())
                                 .build())
                 .collect(Collectors.toList());
-
-        return responseList;
     }
 
     public GetQuestionDetailRes getQuestionDetail(Long qnaBoardId) {
@@ -114,7 +113,7 @@ public class QnaService {
                     .answers(getAnswerDetails(qnaBoard.get().getAnswerList()))
                     .build();
         } else {
-            throw new InvalidQnaException(BaseResponseStatus.QUESTION_NOT_FOUND);
+            throw new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND);
         }
         return questionDetail;
     }
@@ -131,12 +130,12 @@ public class QnaService {
                         .grade(answer.getUser().getGrade())
                         .profileImage(answer.getUser().getProfileImg())
                         .createdAt(answer.getCreatedAt())
-                        .comments(getanswerCommentDetails(answer.getAnswerCommentList()))
+                        .comments(getAnswerCommentDetails(answer.getAnswerCommentList()))
                         .build())
                 .collect(Collectors.toList());
     }
 
-    public List<GetAnswerCommentDetailListRes> getanswerCommentDetails(List<AnswerComment> answerComments) {
+    public List<GetAnswerCommentDetailListRes> getAnswerCommentDetails(List<AnswerComment> answerComments) {
         return answerComments.stream()
                 .map(answerComment -> GetAnswerCommentDetailListRes.builder()
                         .superCommentId(answerComment.getAnswerComment().getId())

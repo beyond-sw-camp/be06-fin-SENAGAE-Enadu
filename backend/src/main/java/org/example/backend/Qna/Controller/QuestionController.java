@@ -22,9 +22,9 @@ public class QuestionController {
 
     //qna 등록
     @PostMapping()
-    public BaseResponse<Void> saveQuestion(@RequestBody CreateQuestionReq createQuestionReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        qnaService.saveQuestion(createQuestionReq, customUserDetails);
-        return new BaseResponse<>();
+    public BaseResponse<Long> saveQuestion(@RequestBody CreateQuestionReq createQuestionReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.saveQuestion(createQuestionReq, customUserDetails);
+        return new BaseResponse<>(id);
     }
 
     //qna 목록 조회
@@ -35,7 +35,7 @@ public class QuestionController {
 
     }
 
-    //qna 목록 조회
+    //qna 상세 조회
     @GetMapping("/detail")
     public BaseResponse<GetQuestionDetailRes> getQnaDetail(Long qnaBoardId) {
         GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId);
