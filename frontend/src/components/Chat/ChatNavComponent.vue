@@ -9,8 +9,7 @@
         <ul class="chat_list">
           <li v-if="isLoading"></li>
           <ChatRoomComponent v-else v-for="(chatRoom, idx) in chatRoomList" :key="idx"
-                             :chatRoom="chatRoom" :selectedChatRoomId="selectedChatRoomId"
-                             @update-select-chatRoom="handleSelectChatRoom"/>
+                             :chatRoom="chatRoom" @reload-chatRoom="reloadChatRoom"/>
         </ul>
       </div>
     </section>
@@ -31,7 +30,6 @@ export default {
   data() {
     return {
       isLoading: true,
-      selectedChatRoomId: 0,
       chatRoomList:[],
     }
   },
@@ -43,11 +41,12 @@ export default {
       await this.chatStore.getChatRoomList();
       this.isLoading=false;
       this.chatRoomList=this.chatStore.chatRoomList;
+      this.$emit("loading")
 
     },
-    handleSelectChatRoom(chatRoomId){
-      this.selectedChatRoomId = chatRoomId;
-    },
+    reloadChatRoom(){
+      this.$emit("reload-chatRoom")
+    }
   },
   mounted() {
     this.getChatRoomList();
