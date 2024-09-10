@@ -38,9 +38,23 @@ export const useUserStore = defineStore('user', {
                 return false;
             }
         },
-        logout() {
-            this.userId = null;
-            this.isLoggedIn = false;
+        async logout() {
+            try {
+                const response = await axios.post(backend + "/user/logout", {
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    } ,
+                    withCredentials: true
+                });
+                if (!response || !response.data) {
+                    throw new Error("Invalid response from server");
+                }        
+                this.userId = null;
+                this.isLoggedIn = false;
+                return true;
+            } catch (error) {
+                return false;
+            }
         }
     }
 });
