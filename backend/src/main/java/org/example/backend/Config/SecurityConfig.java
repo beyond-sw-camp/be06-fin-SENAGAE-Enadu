@@ -50,6 +50,11 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("http://localhost:8081");
+        config.addAllowedOrigin("http://localhost:8082");
+        config.addAllowedOrigin("http://localhost:8083");
+        config.addAllowedOrigin("http://localhost:8084");
+        config.addAllowedOrigin("http://localhost:8085");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
