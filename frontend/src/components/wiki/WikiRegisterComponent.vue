@@ -22,7 +22,6 @@
                                             class="text-sm font-medium text-gray-700 dark:text-gray-300">카테고리</label>
                                         <div class="space-y-1 flex w-full">
                                             <input type="text" id="category1" placeholder="상위 카테고리를 선택해주세요."
-                                                v-model="selectedSuperCategory?.categoryName"
                                                 class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"
                                                 name="category1" readonly />
                                             <div style="margin-left:10px; margin-right:10px">
@@ -100,8 +99,8 @@ export default {
             myText: '',
             mySuperCategory: '',
             selectedSuperCategory: null,
-      selectedThumbnail: null,
-      showSuperCategoryModal: false, 
+            selectedThumbnail: null,
+            showSuperCategoryModal: false,
         };
     },
     computed: {
