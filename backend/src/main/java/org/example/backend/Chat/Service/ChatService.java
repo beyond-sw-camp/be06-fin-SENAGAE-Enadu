@@ -9,9 +9,7 @@ import org.example.backend.Chat.Model.Res.ChatRoomRes;
 import org.example.backend.Chat.Repository.ChatRepository;
 import org.example.backend.Chat.Repository.ChatRoomRepository;
 import org.example.backend.Exception.custom.InvalidChatException;
-import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.User.Model.Entity.User;
-import org.example.backend.User.Repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,14 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.backend.Common.BaseResponseStatus.CHAT_INVALID_CHATROOM_ID;
-import static org.example.backend.Common.BaseResponseStatus.UNREGISTERED_USER;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
-    private final UserRepository userRepository;
 
     public List<ChatRoomRes> getMyChatRoomList(Long userId) {
         List<ChatRoom> myChatRoomList1 = chatRoomRepository.findAllByUser1Id(userId);
@@ -52,7 +48,7 @@ public class ChatService {
             List<Chat> chatList = chatRoom.getChatList();
             String lastMessage = "";
             LocalDateTime lastSendTime = LocalDateTime.now();
-            if (chatList != null) {
+            if (!chatList.isEmpty()) {
                 chatList.sort((chat1, chat2) -> chat2.getSendTime().compareTo(chat1.getSendTime()));
                 lastMessage = chatList.get(0).getMessage();
                 lastSendTime = chatList.get(0).getSendTime();
