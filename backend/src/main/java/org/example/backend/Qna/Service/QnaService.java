@@ -53,14 +53,14 @@ public class QnaService {
         }
     }
 
-    public List<GetQnaListRes> getQnaList(GetQnaListReq req) {
+    public List<GetQnaListRes> getQnaList(GetQnaListReq getQnaListReq) {
         Pageable pageable;
         // 최신순 or 좋아요가 많은 순으로 정렬 type 지정, 둘 다 아니면 에러
-        if (req.getSort().equals("latest")) {
-            pageable = PageRequest.of(req.getPage(), req.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        if (getQnaListReq.getSort().equals("latest")) {
+            pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
         }
-        else if(req.getSort().equals("like")) {
-            pageable = PageRequest.of(req.getPage(), req.getSize(), Sort.by(Sort.Direction.DESC, "likeCnt"));
+        else if(getQnaListReq.getSort().equals("like")) {
+            pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCnt"));
         }
         else {
             throw new InvalidQnaException(BaseResponseStatus.INVALID_SEARCH_TYPE);
@@ -72,10 +72,10 @@ public class QnaService {
                         (qnaBoard -> GetQnaListRes.builder()
                         .id(qnaBoard.getId())
                         .title(qnaBoard.getTitle())
-                        .superCategory(qnaBoard.getCategory() != null &&
-                                        qnaBoard.getCategory().getSuperCategory() != null ?
-                                        qnaBoard.getCategory().getSuperCategory().getCategoryName() : null)
-                        .subCategory(qnaBoard.getCategory().getCategoryName())
+                        .superCategoryName(qnaBoard.getCategory().getSuperCategory().getCategoryName())
+                        .subCategoryName(qnaBoard.getCategory() != null ?
+                                        qnaBoard.getCategory().getCategoryName() : null)
+                        .subCategoryName(qnaBoard.getCategory().getCategoryName())
                         .nickname(qnaBoard.getUser().getNickname())
                         .profileImage(qnaBoard.getUser().getProfileImg())
                         .grade(qnaBoard.getUser().getGrade())
