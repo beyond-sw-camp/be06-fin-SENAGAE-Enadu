@@ -1,11 +1,18 @@
 package org.example.backend.Chat.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Chat.Model.ChatRoomRes;
 import org.example.backend.Chat.Model.Entity.Chat;
 import org.example.backend.Chat.Model.Entity.ChatRoom;
+import org.example.backend.Chat.Model.Res.ChatMessageListRes;
+import org.example.backend.Chat.Model.Res.ChatMessageRes;
+import org.example.backend.Chat.Model.Res.ChatRoomRes;
+import org.example.backend.Chat.Repository.ChatRepository;
 import org.example.backend.Chat.Repository.ChatRoomRepository;
+import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Exception.custom.InvalidChatException;
 import org.example.backend.User.Model.Entity.User;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatRepository chatRepository;
 
     public List<ChatRoomRes> getMyChatRoomList(Long userId) {
         List<ChatRoom> myChatRoomList1 = chatRoomRepository.findAllByUser1Id(userId);
@@ -39,7 +47,7 @@ public class ChatService {
             List<Chat> chatList = chatRoom.getChatList();
             String lastMessage = "";
             LocalDateTime lastSendTime = LocalDateTime.now();
-            if (chatList != null) {
+            if (!chatList.isEmpty()) {
                 chatList.sort((chat1, chat2) -> chat2.getSendTime().compareTo(chat1.getSendTime()));
                 lastMessage = chatList.get(0).getMessage();
                 lastSendTime = chatList.get(0).getSendTime();
@@ -53,5 +61,38 @@ public class ChatService {
                     .build();
             myChatRoomResList.add(chatRoomRes);
         }
+    }
+
+    public ChatMessageListRes getChatMessageList(Long userId, Long chatRoomId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID));
+        User recipient;
+        if (chatRoom.getUser1().getId().equals(userId)) {
+            recipient = chatRoom.getUser2();
+        } else if (chatRoom.getUser2().getId().equals(userId)) {
+            recipient = chatRoom.getUser1();
+        } else {
+            throw new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID);
+        }
+
+        List<Chat> chatList = chatRepository.findByChatRoomIdOrderBySendTimeDesc(pageable, chatRoomId).stream().toList();
+        List<ChatMessageRes> chatMessageResList = new ArrayList<>();
+        for (Chat chat : chatList) {
+            User user = chat.getUser();
+            ChatMessageRes chatMessageRes = ChatMessageRes.builder()
+                    .userId(user.getId())
+                    .nickname(user.getNickname())
+                    .profileImg(user.getProfileImg())
+                    .message(chat.getMessage())
+                    .sendTime(chat.getSendTime())
+                    .build();
+            chatMessageResList.add(chatMessageRes);
+        }
+        return ChatMessageListRes.builder()
+                .recipientId(recipient.getId())
+                .recipientNickname(recipient.getNickname())
+                .messageList(chatMessageResList)
+                .build();
+
     }
 }
