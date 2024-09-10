@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.Answer.Model.Entity.Answer;
+import org.example.backend.Answer.Model.Entity.AnswerLike;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.User.Model.Entity.User;
@@ -39,6 +40,12 @@ public class QnaBoard {
 
     @OneToMany(mappedBy = "qnaBoard", fetch = FetchType.LAZY)
     private List<Answer> answerList;
+
+    @OneToMany(mappedBy = "qnaBoard", fetch = FetchType.LAZY)
+    private List<QnaLike> qnaLikeList;
+
+    @OneToMany(mappedBy = "qnaBoard", fetch = FetchType.LAZY)
+    private List<QnaScrap> qnaScrapList;
 
 
     @Column(name = "title", length = 100, nullable = false)

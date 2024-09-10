@@ -5,6 +5,7 @@ import org.example.backend.Category.Model.Res.SubCategoryRes;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Qna.Service.QnaService;
 import org.example.backend.Qna.model.Entity.Res.GetQnaListRes;
+import org.example.backend.Qna.model.Entity.Res.GetQuestionDetailRes;
 import org.example.backend.Qna.model.Entity.req.CreateQuestionReq;
 import org.example.backend.Qna.model.Entity.req.GetQnaListReq;
 import org.example.backend.Security.CustomUserDetails;
@@ -21,9 +22,9 @@ public class QuestionController {
 
     //qna 등록
     @PostMapping()
-    public BaseResponse<Void> saveQuestion(@RequestBody CreateQuestionReq createQuestionReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        qnaService.saveQuestion(createQuestionReq, customUserDetails);
-        return new BaseResponse<>();
+    public BaseResponse<Long> saveQuestion(@RequestBody CreateQuestionReq createQuestionReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.saveQuestion(createQuestionReq, customUserDetails);
+        return new BaseResponse<>(id);
     }
 
     //qna 목록 조회
@@ -31,6 +32,14 @@ public class QuestionController {
     public BaseResponse<List<GetQnaListRes>> getQnaList(@RequestBody GetQnaListReq getQnaListReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<GetQnaListRes> qnaListRes = qnaService.getQnaList(getQnaListReq);
         return new BaseResponse<>(qnaListRes);
+
+    }
+
+    //qna 상세 조회
+    @GetMapping("/detail")
+    public BaseResponse<GetQuestionDetailRes> getQnaDetail(Long qnaBoardId) {
+        GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId);
+        return new BaseResponse<>(questionDetailRes);
 
     }
 }

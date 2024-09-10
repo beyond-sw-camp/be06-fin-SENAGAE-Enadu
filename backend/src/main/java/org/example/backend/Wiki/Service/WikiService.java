@@ -31,7 +31,7 @@ public class WikiService {
         }
         // Wiki 등록
         Wiki registerWiki = Wiki.builder()
-                .category(categoryRepository.findById(wikiRegisterReq.getCategoryId()).orElseThrow(() -> new InvalidCategoryException(NOT_FOUND_CATEGORY)))
+                .category(categoryRepository.findById(wikiRegisterReq.getCategoryId()).orElseThrow(() -> new InvalidCategoryException(CATEGORY_NOT_FOUND_CATEGORY)))
                 .title(wikiRegisterReq.getTitle())
                 .build();
         wikiRepository.save(registerWiki);
