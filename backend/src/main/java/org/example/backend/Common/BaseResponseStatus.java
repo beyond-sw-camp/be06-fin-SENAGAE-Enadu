@@ -10,12 +10,25 @@ public enum BaseResponseStatus {
     // 회원 기능 - 2000
     UNREGISTERED_USER(false, 9999, "등록되지 않은 사용자입니다."),
 
+    USER_FAIL(false, 2001, "요청이 실패하였습니다."),
+    USER_INVALID_REQUEST_BODY(false, 2002, "잘못된 요청 본문입니다."),
+    USER_JSON_PARSE_ERROR(false, 2003, "JSON 파싱 오류가 발생했습니다."),
+    USER_EMAIL_OR_PASSWORD_NULL(false, 2004, "이메일 또는 비밀번호가 비어있습니다."),
+    USER_NOT_FOUND(false, 2005, "등록되지 않은 사용자입니다."),
+    USER_INVALID_EMAIL_FORMAT(false, 2005, "잘못된 이메일 형식입니다."),
+    USER_INACTIVE_ACCOUNT(false, 2006, "비활성화된 계정입니다."),
+    USER_EMAIL_NOT_VERIFIED(false, 2007, "이메일 인증이 완료되지 않았습니다."),
+    USER_INVALID_CREDENTIALS(false, 2008, "잘못된 자격 증명입니다."),
+
     // 마이페이지 기능 - 3000
 
     // 포인트 기능 - 4000
 
     // 위키 기능 - 5000
-
+    WIKI_REGIST_FAIL(false, 5001,"위키 등록을 실패했습니다."),
+    WIKI_TITLE_REGIST_FAIL(false, 5002,"제목을 입력해주세요."),
+    WIKI_CATEGORY_REGIST_FAIL(false, 5002,"카테고리를 입력해주세요."),
+    WIKI_CONTENT_REGIST_FAIL(false, 5003,"내용을 입력해주세요."),
     // 에러 아카이브 기능 - 6000
 
     // 에러 QnA 기능 - 7000
@@ -35,13 +48,14 @@ public enum BaseResponseStatus {
 
 
     // 채팅 기능 - 8000
+    CHAT_INVALID_CHATROOM_ID(false, 8011, "채팅방을 조회할 수 없습니다."),
 
     // 카테고리 기능 - 9000
     DUPLICATE_CATEGORY(false, 9999, "이미 존재하는 카테고리입니다."),
     INVALID_CATEGORY_DATA(false,  9999, "유효하지 않은 카테고리 데이터입니다."),
+    NOT_FOUND_CATEGORY(false, 9011, "카테고리를 찾을 수 없습니다."),
 
-
-    // 기타 기능 - 10000
+  // 기타 기능 - 10000
     EMPTY_FILE(false, 10011, "빈 파일입니다."),
     INVALID_FILE_TYPE(false, 10012, "지원하지 않는 파일 형식입니다."),
     EXCEED_MAX_SIZE(false, 10013, "파일의 크기가 허용된 최대 크기를 초과하였습니다."),

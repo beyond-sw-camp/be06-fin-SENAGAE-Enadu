@@ -1,10 +1,8 @@
 package org.example.backend.Wiki.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.example.backend.Category.Model.Entity.Category;
 
 import java.util.List;
@@ -14,13 +12,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class Wiki {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @NotNull
     private Category category;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "wiki")
@@ -29,4 +29,12 @@ public class Wiki {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "latest_wiki_id")
     private LatestWiki latestWiki;
+
+    @Column(nullable = false)
+    @NotNull
+    private String title;
+
+    public void updateLatestWiki(LatestWiki latestWiki) {
+        this.latestWiki = latestWiki;
+    }
 }
