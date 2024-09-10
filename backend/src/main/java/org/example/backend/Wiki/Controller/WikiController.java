@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Exception.custom.InvalidWikiException;
 import org.example.backend.File.Service.CloudFileUploadService;
+import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
 import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
 import org.example.backend.Wiki.Service.WikiService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,9 +26,9 @@ public class WikiController {
     // 위키 등록
     @PostMapping
     public BaseResponse<WikiRegisterRes> register(
-            //  ToDo : customUserDetails
             @RequestPart WikiRegisterReq wikiRegisterReq,
-            @RequestPart(required = false) MultipartFile thumbnail
+            @RequestPart(required = false) MultipartFile thumbnail,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         if (wikiRegisterReq.getTitle().isEmpty()) {
             throw new InvalidWikiException(WIKI_TITLE_REGIST_FAIL);
@@ -45,7 +47,6 @@ public class WikiController {
             thumbnailUrl = cloudFileUploadService.uploadImg(thumbnail);
         }
 
-        WikiRegisterRes wikiRegisterRes = wikiService.register(wikiRegisterReq, thumbnailUrl);
-        return new BaseResponse<>(wikiRegisterRes);
+        return new BaseResponse<>(wikiService.register(wikiRegisterReq, thumbnailUrl, customUserDetails));
     }
 }
