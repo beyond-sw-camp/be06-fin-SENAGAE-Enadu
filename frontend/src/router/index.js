@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from "vue-router";
-import { createRouter, createWebHistory } from "vue-router";
 import LoginPage from "@/pages/LoginPage.vue";
 import QnaListPage from "@/pages/QnaListPage.vue";
 import WikiRegisterPage from "@/pages/wiki/WikiRegisterPage.vue";
