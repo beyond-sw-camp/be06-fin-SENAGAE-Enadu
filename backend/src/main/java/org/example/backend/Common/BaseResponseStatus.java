@@ -18,6 +18,8 @@ public enum BaseResponseStatus {
     USER_EMAIL_NOT_VERIFIED(false, 2007, "이메일 인증이 완료되지 않았습니다."),
     USER_INVALID_CREDENTIALS(false, 2008, "잘못된 자격 증명입니다."),
     USER_NOT_LOGIN(false, 2011, "로그인 하지 않은 사용자입니다."),
+    USER_EMAIL_NOT_FOUND_IN_GITHUB(false, 2021, "GitHub 이메일 정보를 가져올 수 없습니다."),
+    USER_INVALID_TYPE(false,2022,"소셜로 가입한 유저가 아닙니다."),
 
     // 마이페이지 기능 - 3000
 

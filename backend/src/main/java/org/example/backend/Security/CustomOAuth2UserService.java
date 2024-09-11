@@ -43,7 +43,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (email == null) {
             email = fetchEmailFromGitHub(userRequest.getAccessToken().getTokenValue());
             if (email == null) {
-                throw new OAuth2AuthenticationException("GitHub 이메일 정보를 가져올 수 없습니다.");
+                throw new OAuth2AuthenticationException("No Email in GitHub");
             }
         }
         Optional<User> existingUser = userRepository.findByEmail(email);
@@ -52,6 +52,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
+            if (user.getType().equals("InApp")) {
+                throw new OAuth2AuthenticationException("Type Error");
+            }
             userId = user.getId();
         } else { // 회원가입 안 된 유저
             String nickname = (String) attributes.get("login");

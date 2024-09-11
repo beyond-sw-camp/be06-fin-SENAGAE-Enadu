@@ -3,6 +3,7 @@ package org.example.backend.Config;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Config.Filter.JwtFilter;
 import org.example.backend.Config.Filter.LoginFilter;
+import org.example.backend.Exception.CustomAuthenticationFailureHandler;
 import org.example.backend.Security.OAuth2LoginSuccessHandler;
 import org.example.backend.Util.JwtUtil;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +44,7 @@ public class SecurityConfig {
                 oauth2
                         .loginPage("/login")
                         .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(new CustomAuthenticationFailureHandler())
                         .permitAll()
         );
 
