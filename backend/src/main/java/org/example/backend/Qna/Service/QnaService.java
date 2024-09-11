@@ -67,7 +67,7 @@ public class QnaService {
         if (getQnaListReq.getSort().equals("latest")) {
             pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
         } else if (getQnaListReq.getSort().equals("like")) {
-            pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCnt"));
+            pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCount"));
         } else {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
         }
