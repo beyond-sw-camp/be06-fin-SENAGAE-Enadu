@@ -27,7 +27,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         Cookie jwtCookie = jwtUtil.createCookie(jwtToken);
         response.addCookie(jwtCookie);
 
-        String redirectUrl = "http://localhost:8081/";
+        String redirectUrl = "http://localhost:8081/oauth?userId=" + oAuth2User.getUserId();
         response.sendRedirect(redirectUrl);
     }
 }
