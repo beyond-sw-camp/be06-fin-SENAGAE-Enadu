@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
-@Builder
 @Getter
 @Setter
 public class WikiRegisterReq {

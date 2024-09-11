@@ -12,14 +12,20 @@ import org.example.backend.User.Repository.UserRepository;
 import org.example.backend.Wiki.Model.Entity.LatestWiki;
 import org.example.backend.Wiki.Model.Entity.Wiki;
 import org.example.backend.Wiki.Model.Entity.WikiContent;
+import org.example.backend.Wiki.Model.Req.WikiListReq;
 import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
+import org.example.backend.Wiki.Model.Res.WikiListRes;
 import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
 import org.example.backend.Wiki.Repository.LatestWikiRepository;
 import org.example.backend.Wiki.Repository.WikiContentRepository;
 import org.example.backend.Wiki.Repository.WikiRepository;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +37,7 @@ public class WikiService {
     private final UserRepository userRepository;
 
     public WikiRegisterRes register(WikiRegisterReq wikiRegisterReq, String thumbnail, CustomUserDetails customUserDetails
-                                     ) {
+    ) {
         // 위키 등록시 중복 확인 로직
         if (wikiRepository.findByTitle(wikiRegisterReq.getTitle()).isPresent()) {
             throw new InvalidWikiException(BaseResponseStatus.WIKI_CONTENT_DUPLICATION_FAIL);
@@ -70,5 +76,22 @@ public class WikiService {
         wikiRepository.save(registerWiki);
 
         return WikiRegisterRes.builder().wikiId(registerWiki.getId()).build();
+    }
+
+    // 위키 목록 조회
+    public List<WikiListRes> wikiList(WikiListReq wikiListReq) {
+        Pageable pageable = PageRequest.of(wikiListReq.getPage(), 20, Sort.by(Sort.Direction.DESC, "latestWiki.createdAt"));
+        Page<Wiki> wikiPage = wikiRepository.findAll(pageable);
+
+        return wikiPage.getContent().stream().map
+                        (wiki -> WikiListRes.builder()
+                                .id(wiki.getId())
+                                .title(wiki.getTitle())
+                                .category(wiki.getCategory().getCategoryName())
+                                .content(wiki.getLatestWiki().getContent())
+                                .thumbnail(wiki.getLatestWiki().getThumbnailImgUrl())
+                                .createdAt(wiki.getLatestWiki().getCreatedAt())
+                                .build())
+                .collect(Collectors.toList());
     }
 }
