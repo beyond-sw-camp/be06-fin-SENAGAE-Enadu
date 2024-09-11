@@ -37,7 +37,7 @@
                           placeholder="메시지를 입력하세요." v-model="content"></textarea>
               </div>
               <div class="submit_btn_wrap">
-                <button class="btn_submit " type="submit" aria-disabled="true"><img src="@/assets/img/send_icon.png"
+                <button class="btn_submit " type="submit" @click="clickSendMessageButton" aria-disabled="true"><img src="@/assets/img/send_icon.png"
                                                                                     style="width: 20px; height: 20px;"
                                                                                     alt=""></button>
               </div>
@@ -86,6 +86,9 @@ export default {
         textarea.style.height = 20+"px";
       }
     },
+    clickSendMessageButton(){
+      this.chatStore.sendMessage(this.content)
+    }
   },
   mounted() {
     this.getChatMessageList();
