@@ -5,7 +5,6 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
-
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
@@ -21,6 +20,23 @@ spring:
 
   jwt:
     secret: ${JWT_SECRET}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_SECRET}
+            scope: read:user, user:email
+            redirect-uri: http://localhost:8080/login/oauth2/code/{registrationId}
+            client-name: Enadu
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: id
 
 logging:
   level:

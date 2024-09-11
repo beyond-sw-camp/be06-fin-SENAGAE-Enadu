@@ -1,10 +1,7 @@
 package org.example.backend.User.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.backend.Answer.Model.Entity.Answer;
 import org.example.backend.Answer.Model.Entity.AnswerComment;
 import org.example.backend.Answer.Model.Entity.AnswerLike;
@@ -35,25 +32,29 @@ public class User {
     private String email;
     private String password;
     @Column(nullable = false, length = 50)
-    private String name;
-    @Column(nullable = false, length = 50)
     private String nickname;
+    @Builder.Default
     @Column(nullable = false)
-    private String profileImg;
+    private String profileImg = "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6";
+    @Builder.Default
     @Column(nullable = false, length = 50)
-    private String grade;
+    private String grade = "뉴비";
+    @Builder.Default
     @Column(nullable = false)
-    private Integer point;
+    private Integer point = 10;
+    @Builder.Default
     @Column(nullable = false)
-    private Boolean verify;
+    private Boolean verify = false;
     @Column(nullable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
+    @Builder.Default
     @Column(nullable = false)
-    private Boolean enable;
+    private Boolean enable = true;
+    @Builder.Default
     @Column(nullable = false, length = 20)
-    private String type;
+    private String type = "InApp";
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<PointDetail> pointDetails;
@@ -72,18 +73,25 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Answer> answerList;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<AnswerLike> answerLikeList;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<AnswerComment> answerCommentList;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<WikiContent> wikiContentList;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<WikiScrap> wikiScrapList;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<ErrorArchive> errorArchiveList;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<ErrorLike> errorLikeList;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<ErrorScrap> ErrorScrapList;
 }
