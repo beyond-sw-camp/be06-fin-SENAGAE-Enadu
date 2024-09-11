@@ -1,6 +1,7 @@
 package org.example.backend.ErrorArchive.Service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.Category.Repository.CategoryRepository;
 import org.example.backend.Common.BaseResponseStatus;
@@ -20,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.example.backend.Common.BaseResponseStatus.NOT_FOUND_CATEGORY;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ErrorArchiveService {
 
     private final ErrorArchiveReository errorArchiveReository;
