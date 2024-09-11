@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.example.backend.Common.BaseResponseStatus.NOT_FOUND_CATEGORY;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +33,7 @@ public class ErrorArchiveService {
                 .content(registerErrorArchiveReq.getContent())
                 .user(userRepository.findById(customUserDetails.getUserId())
                         .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND)))
-                .category(categoryRepository.findById(registerErrorArchiveReq.getCategoryId()).orElseThrow(() -> new InvalidCategoryException(NOT_FOUND_CATEGORY)))
+                .category(categoryRepository.findById(registerErrorArchiveReq.getCategoryId()).orElseThrow(() -> new InvalidCategoryException(BaseResponseStatus.CATEGORY_NOT_FOUND_CATEGORY)))
                 .build();
 
         errorArchive.createdAt();

@@ -39,9 +39,9 @@ public class QnaService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    public Long saveQuestion(CreateQuestionReq createQuestionReq, CustomUserDetails customUserDetails) {
+    public Long saveQuestion(CreateQuestionReq createQuestionReq, Long userId) {
         Optional<Category> category = categoryRepository.findById(createQuestionReq.getCategoryId());
-        Optional<User> user = userRepository.findById(customUserDetails.getUserId());
+        Optional<User> user = userRepository.findById(userId);
 
         if (category.isPresent() && user.isPresent()) {
             QnaBoard qnaBoard = QnaBoard.builder()
@@ -78,7 +78,8 @@ public class QnaService {
                         (qnaBoard -> GetQnaListRes.builder()
                                 .id(qnaBoard.getId())
                                 .title(qnaBoard.getTitle())
-                                .superCategoryName(qnaBoard.getCategory().getSuperCategory().getCategoryName())
+                                .superCategoryName(qnaBoard.getCategory().getSuperCategory() != null ?
+                                        qnaBoard.getCategory().getSuperCategory().getCategoryName() : null)
                                 .subCategoryName(qnaBoard.getCategory() != null ?
                                         qnaBoard.getCategory().getCategoryName() : null)
                                 .subCategoryName(qnaBoard.getCategory().getCategoryName())
