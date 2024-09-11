@@ -16,6 +16,9 @@
       </div>
     </div>
   </div>
+  <div class="qna-bottom">
+    <PaginationComponent @updatePage="handlePageUpdate"/>
+  </div>
 </template>
 
 <script>
@@ -23,6 +26,7 @@ import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
 import SortTypeComponent from "@/components/Common/SortTypeComponent.vue";
+import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 
 export default {
   name: "QnaListPage",
@@ -37,23 +41,31 @@ export default {
   },
   mounted() {
     this.selectedSort = "latest";
+    this.selectedPage = 1;
   },
   watch: {
     selectedSort() {
-      this.qnaStore.getQnaList(this.selectedSort, this.selectedPage);
+      this.qnaStore.getQnaList(this.selectedSort, this.selectedPage-1);
+    },
+    selectedPage() {
+      this.qnaStore.getQnaList(this.selectedSort, this.selectedPage-1);
     },
   },
   methods: {
     handleCheckLatest() {
-      this.selectedSort="latest"
+      this.selectedSort = "latest"
     },
     handleCheckLike() {
-      this.selectedSort="like"
+      this.selectedSort = "like"
+    },
+    handlePageUpdate(newPage) {
+      this.selectedPage = newPage
     },
   },
   components: {
     QnaCardComponent,
     SortTypeComponent,
+    PaginationComponent,
   },
 };
 </script>
@@ -66,6 +78,13 @@ export default {
   align-content: center;
   align-items: center;
   background-color: #e1e8e8;
+}
+.qna-bottom {
+  height: 70px;
+  display: grid;
+  background-color: #ffffff;
+  justify-content: center;
+  align-content: space-around;
 }
 
 #main-title {
