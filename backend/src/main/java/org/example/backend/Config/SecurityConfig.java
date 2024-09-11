@@ -3,6 +3,8 @@ package org.example.backend.Config;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Config.Filter.JwtFilter;
 import org.example.backend.Config.Filter.LoginFilter;
+import org.example.backend.Exception.CustomAuthenticationFailureHandler;
+import org.example.backend.Security.OAuth2LoginSuccessHandler;
 import org.example.backend.Util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
@@ -31,13 +34,23 @@ public class SecurityConfig {
         http.formLogin((formLogin) ->
                 formLogin
                         .loginPage("/login")
-                        .usernameParameter("email")  // 기본 username을 email로 변경
+                        .usernameParameter("email") // 기본 username을 email로 변경
                         .passwordParameter("password")
                         .permitAll()
         );
+
+        // GitHub 로그인 추가
+        http.oauth2Login(oauth2 ->
+                oauth2
+                        .loginPage("/login")
+                        .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(new CustomAuthenticationFailureHandler())
+                        .permitAll()
+        );
+
         http.authorizeHttpRequests((auth) ->
                 auth
-                        .requestMatchers( "/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
         );
         http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
