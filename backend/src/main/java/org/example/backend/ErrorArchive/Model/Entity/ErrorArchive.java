@@ -3,6 +3,7 @@ package org.example.backend.ErrorArchive.Model.Entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.User.Model.Entity.User;
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
 public class ErrorArchive {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +47,7 @@ public class ErrorArchive {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // datetime
 
-    @Column(name = "modified_at", nullable = false)
+    @Column(name = "modified_at")
     private LocalDateTime modifiedAt; // datetime (NULL 가능)
 
     @Column(name = "enable", nullable = false)

@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class RegisterErrorArchiveReq {
