@@ -37,7 +37,7 @@ public class QuestionController {
 
     //qna 상세 조회
     @GetMapping("/detail")
-    public BaseResponse<GetQuestionDetailRes> getQnaDetail(Long qnaBoardId) {
+    public BaseResponse<GetQuestionDetailRes> getQnaDetail(Integer qnaBoardId) {
         GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId);
         return new BaseResponse<>(questionDetailRes);
 

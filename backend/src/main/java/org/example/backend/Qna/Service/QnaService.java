@@ -93,15 +93,17 @@ public class QnaService {
                 .collect(Collectors.toList());
     }
 
-    public GetQuestionDetailRes getQuestionDetail(Long qnaBoardId) {
-        Optional<QnaBoard> qnaBoard = questionRepository.findById(qnaBoardId);
+    public GetQuestionDetailRes getQuestionDetail(Integer qnaBoardId) {
+        Optional<QnaBoard> qnaBoard = questionRepository.findById(qnaBoardId.longValue());
         GetQuestionDetailRes questionDetail;
         if (qnaBoard.isPresent()) {
             questionDetail = GetQuestionDetailRes.builder()
                     .title(qnaBoard.get().getTitle())
                     .content(qnaBoard.get().getContent())
-                    .superCategory(qnaBoard.get().getCategory().getSuperCategory().getCategoryName())
-                    .subCategory(qnaBoard.get().getCategory().getCategoryName())
+                    .superCategoryName(qnaBoard.get().getCategory().getSuperCategory() != null ?
+                            qnaBoard.get().getCategory().getSuperCategory().getCategoryName() : null)
+                    .subCategoryName(qnaBoard.get().getCategory() != null ?
+                            qnaBoard.get().getCategory().getCategoryName() : null)
                     .likeCnt(qnaBoard.get().getLikeCount())
                     .hateCnt(qnaBoard.get().getHateCount())
                     .checkLike(isQuestionLikeORHate(qnaBoard.get().getQnaLikeList()))
