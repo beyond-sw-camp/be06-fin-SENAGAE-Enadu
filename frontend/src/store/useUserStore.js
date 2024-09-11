@@ -55,6 +55,10 @@ export const useUserStore = defineStore('user', {
             } catch (error) {
                 return false;
             }
-        }
+        },
+        setUserLoggedIn(userId) {
+            this.isLoggedIn = true;
+            this.userId = userId;
+        },
     }
 });
