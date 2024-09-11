@@ -1,8 +1,10 @@
 package org.example.backend.Chat.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Chat.Model.Entity.Chat;
 import org.example.backend.Chat.Model.Entity.ChatRoom;
+import org.example.backend.Chat.Model.Req.MessageReq;
 import org.example.backend.Chat.Model.Res.ChatMessageListRes;
 import org.example.backend.Chat.Model.Res.ChatMessageRes;
 import org.example.backend.Chat.Model.Res.ChatRoomRes;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +96,25 @@ public class ChatService {
                 .recipientNickname(recipient.getNickname())
                 .messageList(chatMessageResList)
                 .build();
+    }
 
+    @Transactional
+    public void saveChat(MessageReq messageReq, Long senderId){
+        ChatRoom chatRoom = chatRoomRepository.findById(messageReq.getChatRoomId()).orElseThrow(() -> new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID));
+        User sender;
+        if (chatRoom.getUser1().getId().equals(senderId)) {
+            sender = chatRoom.getUser1();
+        } else if (chatRoom.getUser2().getId().equals(senderId)) {
+            sender = chatRoom.getUser2();
+        } else {
+            throw new InvalidChatException(BaseResponseStatus.CHAT_INVALID_USER_ID);
+        }
+        Chat chat = Chat.builder()
+                .chatRoom(chatRoom)
+                .message(messageReq.getMessage())
+                .user(sender)
+                .sendTime(LocalDateTime.parse(messageReq.getSendTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                .build();
+        chatRepository.save(chat);
     }
 }
