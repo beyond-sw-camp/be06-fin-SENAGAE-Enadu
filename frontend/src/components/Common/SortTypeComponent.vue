@@ -1,11 +1,13 @@
 <template>
   <div class="radio-input">
     <label>
-      <input value="value-1" name="value-radio" id="value-1" type="radio" />
+      <input value="value-1" name="value-radio" id="value-1" type="radio" v-model="selectedSort"
+             @change="emitSortChange('checkLatest')"/>
       <span>최신 순</span>
     </label>
     <label>
-      <input value="value-2" name="value-radio" id="value-2" type="radio" />
+      <input value="value-2" name="value-radio" id="value-2" type="radio" v-model="selectedSort"
+             @change="emitSortChange('checkLike')"/>
       <span>좋아요 순</span>
     </label>
     <span class="selection"></span>
@@ -13,6 +15,30 @@
 </template>
 
 <script>
+import {mapStores} from "pinia";
+import {useQnaStore} from "@/store/useQnaStore";
+
+export default {
+  name: "QnaListPage",
+  data() {
+    return {
+      selectedSort: null
+    };
+  },
+  computed: {
+    ...mapStores(useQnaStore),
+  },
+  mounted() {
+    this.selectedSort="latest"
+  },
+  methods: {
+    emitSortChange(sortType) {
+      this.$emit(sortType);
+    },
+  },
+  components: {
+  },
+};
 
 </script>
 
@@ -22,7 +48,7 @@
 }
 
 .radio-input {
-  --container_width: 300px;
+  --container_width: 160px;
   position: relative;
   display: flex;
   align-items: center;
@@ -31,7 +57,8 @@
   color: #000000;
   width: var(--container_width);
   overflow: hidden;
-  border: 1px solid rgba(53, 52, 52, 0.226);
+  border: 2px solid rgba(53, 52, 52, 0.226);
+  margin-bottom: 20px;
 }
 
 .radio-input label {
@@ -42,7 +69,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1;
-  font-weight: 600;
+  font-weight: 800;
   letter-spacing: -1px;
   font-size: 14px;
 }

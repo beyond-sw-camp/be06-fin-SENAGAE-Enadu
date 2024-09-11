@@ -38,11 +38,11 @@ export const useQnaStore = defineStore("qna", {
       }
     },
 
-    async getQnaList() {
+    async getQnaList(sort, page) {
       const params = {
-        sort: "latest",
-        page: 0,
-        size: 10
+        sort: sort,
+        page: page,
+        size: 15
       };
 
       try {
