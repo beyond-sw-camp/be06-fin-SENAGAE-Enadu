@@ -20,7 +20,7 @@
             </div>
           </div>
           <p class="mantine-Text-root mantine-1q4x896">
-            {{ qnaCard.createdAt }}
+            {{ formatDateTime(qnaCard.createdAt) }}
           </p>
         </div>
       </div>
@@ -86,14 +86,20 @@
 </template>
 
 <script>
+
+import {formatDateTime} from "@/utils/FormatDate";
+
 export default {
   name: "QnaCardComponent",
   data() {
     return {};
   },
   props: ["qnaCard"],
-  methods: {},
-  components: {},
+  methods: {
+    formatDateTime
+  },
+  components: {
+  },
 };
 </script>
 
@@ -106,8 +112,8 @@ export default {
   z-index: 5;
   box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
-  width: 400px;
-  height: 220px;
+  width: 350px;
+  height: 200px;
   display: flex;
   flex-direction: column;
   transition: 200ms ease-in-out;
