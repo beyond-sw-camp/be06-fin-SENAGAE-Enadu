@@ -3,7 +3,7 @@
   <router-view></router-view>
 </template>
 <script>
-  import HeaderComponent from "./components/header/HeaderComponent.vue";
+  import HeaderComponent from "@/components/Header/HeaderComponent.vue";
 
   export default {
 
