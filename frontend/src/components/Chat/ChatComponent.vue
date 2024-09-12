@@ -15,8 +15,9 @@
         <div class="chat_reverse">
           <ul class="group_message_balloon" style="visibility: visible;">
             <li v-if="isLoading"></li>
-            <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList" :key=idx
-                                  :idx="idx" :chatMessage="chatMessage"/>
+            <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList" :key="`${idx}-${Date.now()}`"
+                                  :idx="idx" :chatMessage="chatMessage" />
+
             <li v-if="chatStore.chatMessageList.length !== 0"  class="date_check">
               <span>
                 <em><strong> {{ chatStore.chatMessageList.at(-1).sendTime.split("T")[0] }}</strong></em>
@@ -32,7 +33,7 @@
               <div class="input_btn_wrap"></div>
               <div class="chat_input_area">
                 <textarea @input="autoResize" ref="textarea" title="메시지 입력창" class="chat_input" maxlength="2000"
-                          placeholder="메시지를 입력하세요." v-model="content"></textarea>
+                          placeholder="메시지를 입력하세요." @keydown="handleKeydown" v-model="content"></textarea>
               </div>
               <div class="submit_btn_wrap">
                 <button class="btn_submit " type="submit" @click="clickSendMessageButton" aria-disabled="true"><img src="@/assets/img/send_icon.png"
@@ -87,7 +88,16 @@ export default {
     clickSendMessageButton(){
       this.chatStore.sendMessage(this.content);
       this.content=""
-    }
+      this.autoResize()
+    },
+    handleKeydown(event) {
+      if (event.key === 'Enter') {
+        if (!event.shiftKey) {
+          event.preventDefault();
+          this.clickSendMessageButton();
+        }
+      }
+    },
   },
   mounted() {
     this.getChatMessageList();

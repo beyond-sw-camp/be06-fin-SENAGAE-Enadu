@@ -3,6 +3,7 @@ import axios from "axios";
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 import {useUserStore} from "@/store/useUserStore";
+
 const backend = "/api";
 
 export const useChatStore = defineStore("chat", {
@@ -34,9 +35,9 @@ export const useChatStore = defineStore("chat", {
     }),
     actions: {
         async getChatRoomList() {
-            const res = await axios.get(backend + "/chat/chatRoomList",{withCredentials: true})
+            const res = await axios.get(backend + "/chat/chatRoomList", {withCredentials: true})
             this.chatRoomList = res.data.result;
-            this.selectedChatRoom =  {
+            this.selectedChatRoom = {
                 chatRoomId: this.chatRoomList[0].chatRoomId,
                 recipientNickname: this.chatRoomList[0].recipientNickname,
                 recipientProfile: this.chatRoomList[0].recipientProfile,
@@ -56,8 +57,12 @@ export const useChatStore = defineStore("chat", {
             this.chatMessageList = res.data.result;
             console.log(this.chatMessageList);
 
+            this.connect();
+
+        },
+        connect() {
             const serverUrl = "http://localhost:8080/ws/chat";
-            let  socket = new SockJS(serverUrl, null, {withCredentials: true});
+            let socket = new SockJS(serverUrl, null, {withCredentials: true});
             this.stompClient = Stomp.over(socket);
             console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverUrl}`)
             this.stompClient.connect(
@@ -66,13 +71,17 @@ export const useChatStore = defineStore("chat", {
                     // this.connected = true;
                     console.log("소켓 연결 성공", frame);
 
-                    this.stompClient.subscribe("/sub/chatroom/"+this.selectedChatRoom.chatRoomId, res => {
+                    this.stompClient.subscribe("/sub/chatroom/" + this.selectedChatRoom.chatRoomId, res => {
                         console.log("구독으로 받은 메시지 입니다.", res.body);
-                        this.chatMessageList.unshift((JSON).parse(res.body));
+                        const message = (JSON).parse(res.body);
+                        if (message.senderId !== useUserStore().$state.userId) {
+                            console.log(message);
+                            this.chatMessageList.unshift(message);
+                            this.updateChatRoomData(this.selectedChatRoom.chatRoomId, message.message, message.sendTime);
+                        }
                     })
                 }
             )
-
         },
         send(message) {
             console.log("Send Message:" + message);
@@ -84,11 +93,11 @@ export const useChatStore = defineStore("chat", {
                     chatRoomId: this.selectedChatRoom.chatRoomId,
                     senderId: useUserStore().$state.userId
                 };
-                this.stompClient.send("/pub/message/"+this.selectedChatRoom.chatRoomId, JSON.stringify(msg), {});
+                this.stompClient.send("/pub/message/" + this.selectedChatRoom.chatRoomId, JSON.stringify(msg), {});
             }
         },
-        sendMessage(message){
-            if(message !== ''){
+        sendMessage(message) {
+            if (message !== '') {
                 this.send(message);
             }
             const msg = {
@@ -96,10 +105,13 @@ export const useChatStore = defineStore("chat", {
                 sendTime: this.formatDateTime(),
                 senderId: useUserStore().$state.userId
             };
+
+            console.log(msg);
             this.chatMessageList.unshift(msg);
+            this.updateChatRoomData(this.selectedChatRoom.chatRoomId, msg.message, msg.sendTime);
         },
 
-        formatDateTime () {
+        formatDateTime() {
             const date = new Date();
 
             const year = date.getFullYear();
@@ -110,6 +122,14 @@ export const useChatStore = defineStore("chat", {
             const seconds = String(date.getSeconds()).padStart(2, "0");
 
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        },
+        updateChatRoomData(chatRoomId, message, sendTime){
+            for(const chatRoom of this.chatRoomList){
+                if (chatRoom.chatRoomId == chatRoomId){
+                    chatRoom.lastMessage = message;
+                    chatRoom.lastMessageDay = sendTime
+                }
+            }
         }
 
 

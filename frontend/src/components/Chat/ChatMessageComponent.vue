@@ -44,6 +44,7 @@ export default {
   data() {
     return {
       chatMessageDate: this.chatMessage.sendTime.split("T")[0],
+      time: "",
       day: "오전",
       hour: "",
       minute: "",
@@ -64,11 +65,12 @@ export default {
       } else {
         this.hour = Number(time[0])
       }
-      this.minute = Number(time[1])
-    }
+      this.minute = String(time[1].padStart(2,"0"))
+    },
   },
   mounted() {
-    this.setTime()
+    console.log(this.chatMessage);
+    this.setTime();
   }
 
 
