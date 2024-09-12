@@ -6,10 +6,8 @@
   </li>
   <li class="new_message_balloon_area  _message _msgId2">
     <div v-if="chatStore.selectedChatRoom.recipientId == chatMessage.senderId" class="thumbnail_profile _thmbnail">
-      <button role="link" class="thumbnail_link ">
-        <img :src="chatStore.selectedChatRoom.recipientProfile"
-             alt="유저 프로필" width="31">
-      </button>
+        <img :src="chatStore.selectedChatRoom.recipientProfile"  style="border-radius:50%; width:31px; height:31px"
+             alt="유저 프로필">
     </div>
     <div v-if="chatStore.selectedChatRoom.recipientId == chatMessage.senderId" class="chat_message_nickname _nickname">
       <strong>{{ chatStore.selectedChatRoom.recipientNickname }}</strong>
@@ -69,7 +67,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.chatMessage);
     this.setTime();
   }
 

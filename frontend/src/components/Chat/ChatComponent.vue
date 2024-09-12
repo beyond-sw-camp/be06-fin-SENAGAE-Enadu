@@ -15,7 +15,7 @@
         <div class="chat_reverse">
           <ul class="group_message_balloon" style="visibility: visible;">
             <li v-if="isLoading"></li>
-            <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList" :key="`${idx}-${Date.now()}`"
+            <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList" :key="`${idx}-${chatMessage.sendTime}`"
                                   :idx="idx" :chatMessage="chatMessage" />
 
             <li v-if="chatStore.chatMessageList.length !== 0"  class="date_check">
