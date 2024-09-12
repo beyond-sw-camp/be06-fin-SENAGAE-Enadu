@@ -1,5 +1,5 @@
 <template>
-    <div class="custom_container">
+    <div class="custom-container">
         <div id="root">
             <div class="css-ey8mg8" style="">
                 <WikiRegisterComponent />

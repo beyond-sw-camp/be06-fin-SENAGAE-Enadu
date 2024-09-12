@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import LoginPage from "@/pages/LoginPage.vue";
 import QnaListPage from "@/pages/QnaListPage.vue";
-import WikiRegisterPage from "@/pages/wiki/WikiRegisterPage.vue";
+import WikiRegisterPage from "@/pages/WikiRegisterPage.vue";
 import ChatPgae from "@/pages/ChatPgae.vue";
 import QnaRegisterComponent from "@/components/qna/QnaRegisterComponent.vue";
 import OAuthLoginPage from "@/pages/OAuthLoginPage.vue";
