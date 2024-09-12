@@ -1,7 +1,7 @@
 package org.example.backend.Chat.Controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Chat.Model.Res.ChatMessageListRes;
+import org.example.backend.Chat.Model.Res.ChatMessageRes;
 import org.example.backend.Chat.Model.Res.ChatRoomRes;
 import org.example.backend.Chat.Service.ChatService;
 import org.example.backend.Common.BaseResponse;
@@ -25,8 +25,8 @@ public class ChatController {
     }
 
     @GetMapping("/messageList")
-    public BaseResponse<ChatMessageListRes> getChatMessageList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                                     Long chatRoomId, Integer page, Integer size) {
+    public BaseResponse<List<ChatMessageRes>> getChatMessageList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                 Long chatRoomId, Integer page, Integer size) {
         return new BaseResponse<>(chatService.getChatMessageList(customUserDetails.getUserId(), chatRoomId, page, size));
 
     }

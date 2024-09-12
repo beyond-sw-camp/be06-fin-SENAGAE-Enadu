@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 @Builder
 public class ChatRoomRes {
     private Long chatRoomId;
-    private String recipientName;
+    private String recipientNickname;
     private String recipientProfile;
+    private Long recipientId;
     private String lastMessage;
     private LocalDateTime lastMessageDay;
 }

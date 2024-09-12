@@ -8,9 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class ChatMessageRes {
-    private String nickname;
-    private Long userId;
     private String message;
     private LocalDateTime sendTime;
-    private String profileImg;
+    private Long senderId;
 }
