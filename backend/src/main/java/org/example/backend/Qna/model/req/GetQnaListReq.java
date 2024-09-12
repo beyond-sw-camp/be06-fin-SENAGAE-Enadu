@@ -1,4 +1,4 @@
-package org.example.backend.Qna.model.Entity.req;
+package org.example.backend.Qna.model.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

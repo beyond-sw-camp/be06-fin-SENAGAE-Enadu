@@ -1,13 +1,12 @@
 package org.example.backend.Qna.Controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Category.Model.Res.SubCategoryRes;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Qna.Service.QnaService;
-import org.example.backend.Qna.model.Entity.Res.GetQnaListRes;
-import org.example.backend.Qna.model.Entity.Res.GetQuestionDetailRes;
-import org.example.backend.Qna.model.Entity.req.CreateQuestionReq;
-import org.example.backend.Qna.model.Entity.req.GetQnaListReq;
+import org.example.backend.Qna.model.Res.GetQnaListRes;
+import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.req.CreateQuestionReq;
+import org.example.backend.Qna.model.req.GetQnaListReq;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
