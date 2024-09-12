@@ -50,7 +50,6 @@ public class QnaService {
                     .category(category.get())
                     .build();
 
-            qnaBoard.createdAt();
             questionRepository.save(qnaBoard);
             return qnaBoard.getId();
         } else if (category.isEmpty()) {
