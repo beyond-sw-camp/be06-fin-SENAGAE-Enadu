@@ -2,9 +2,11 @@ package org.example.backend.Wiki.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.backend.Qna.model.Entity.QnaScrap;
 import org.example.backend.User.Model.Entity.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -36,4 +38,7 @@ public class WikiContent {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "wikiContent", fetch = FetchType.LAZY)
+    private List<WikiScrap> wikiScrapList;
 }
