@@ -26,7 +26,6 @@ public class ErrorArchiveService {
     private final ErrorArchiveReository errorArchiveReository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-
     public RegisterErrorArchiveRes register(RegisterErrorArchiveReq registerErrorArchiveReq, CustomUserDetails customUserDetails) {
         ErrorArchive errorArchive = ErrorArchive.builder()
                 .title(registerErrorArchiveReq.getTitle())
@@ -35,10 +34,6 @@ public class ErrorArchiveService {
                         .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND)))
                 .category(categoryRepository.findById(registerErrorArchiveReq.getCategoryId()).orElseThrow(() -> new InvalidCategoryException(BaseResponseStatus.CATEGORY_NOT_FOUND_CATEGORY)))
                 .build();
-
-        errorArchive.createdAt();
-        errorArchive.modifiedAt();
-
         errorArchiveReository.save(errorArchive);
         return RegisterErrorArchiveRes.builder().errorArchiveId(errorArchive.getId()).build();
     }

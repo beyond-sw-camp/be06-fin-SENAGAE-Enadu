@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.User.Model.Entity.User;
-
-import java.sql.Timestamp;
-import java.time.Instant;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,9 +45,11 @@ public class ErrorArchive {
     private String content; // text
 
     @Column(name = "created_at", nullable = false)
+    @CreatedDate
     private LocalDateTime createdAt; // datetime
 
     @Column(name = "modified_at")
+    @LastModifiedDate
     private LocalDateTime modifiedAt; // datetime (NULL 가능)
 
     @Column(name = "enable", nullable = false)
@@ -59,15 +61,7 @@ public class ErrorArchive {
 
     @Column(name = "hate_cnt", nullable = false)
     private int hateCount; // int
-    @PrePersist
-    public void createdAt() {
-        this.createdAt = Timestamp.from(Instant.now()).toLocalDateTime();
-    }
 
-    @PreUpdate
-    public void modifiedAt() {
-        this.modifiedAt = Timestamp.from(Instant.now()).toLocalDateTime();
-    }
 
 
 
