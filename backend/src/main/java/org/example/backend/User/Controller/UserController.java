@@ -22,10 +22,10 @@ public class UserController {
     }
     @GetMapping("/duplicate/email")
     public BaseResponse<Boolean> duplicateEmail(@RequestParam String email) {
-        return new BaseResponse<>(userService.searchEmail(email));
+        return new BaseResponse<>(userService.checkDuplicateEmail(email));
     }
     @GetMapping("/duplicate/nickname")
     public BaseResponse<Boolean> duplicateName(@RequestParam String nickname) {
-        return new BaseResponse<>(userService.searchNickname(nickname));
+        return new BaseResponse<>(userService.checkDuplicateNickname(nickname));
     }
 }

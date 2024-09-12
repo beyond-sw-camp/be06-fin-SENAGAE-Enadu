@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    public Boolean searchEmail(String email) {
+    public Boolean checkDuplicateEmail(String email) {
         return userRepository.findByEmail(email).isEmpty();
     }
 
-    public Boolean searchNickname(String nickname) {
+    public Boolean checkDuplicateNickname(String nickname) {
         return userRepository.findByNickname(nickname).isEmpty();
     }
 }
