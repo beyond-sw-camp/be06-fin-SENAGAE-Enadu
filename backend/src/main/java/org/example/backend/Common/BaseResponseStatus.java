@@ -20,6 +20,10 @@ public enum BaseResponseStatus {
     USER_NOT_LOGIN(false, 2011, "로그인 하지 않은 사용자입니다."),
     USER_EMAIL_NOT_FOUND_IN_GITHUB(false, 2021, "GitHub 이메일 정보를 가져올 수 없습니다."),
     USER_INVALID_TYPE(false,2022,"소셜로 가입한 유저가 아닙니다."),
+    USER_INVALID_NICKNAME(false, 2023,"닉네임이 비어있습니다."),
+
+    // 이메일 인증 실패
+    EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다"),
 
     // 마이페이지 기능 - 3000
 
