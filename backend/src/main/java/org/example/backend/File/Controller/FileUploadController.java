@@ -15,7 +15,7 @@ public class FileUploadController {
     private final CloudFileUploadService cloudFileUploadService;
 
     @PostMapping("/img/upload")
-    public BaseResponse<String> uploadImage(@RequestParam("imgFile") MultipartFile imgFile) {
+    public BaseResponse<String> uploadImage(MultipartFile imgFile) {
         String imgUrl = cloudFileUploadService.uploadImg(imgFile);
         return new BaseResponse<>(imgUrl);
     }

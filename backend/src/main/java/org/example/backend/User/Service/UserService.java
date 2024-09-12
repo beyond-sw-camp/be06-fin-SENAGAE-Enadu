@@ -1,6 +1,8 @@
 package org.example.backend.User.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.User.Model.Req.UserSignupReq;
 import org.example.backend.User.Repository.UserRepository;
@@ -34,5 +36,29 @@ public class UserService {
 
     public Boolean checkDuplicateNickname(String nickname) {
         return userRepository.findByNickname(nickname).isEmpty();
+    }
+
+    public void updateNickname(Long userId, String nickname) {
+        if (userRepository.findByNickname(nickname).isEmpty()) {
+            User user = userRepository.findById(userId).orElse(null);
+            if (user != null) {
+                user.updateNickname(nickname);
+                userRepository.save(user);
+            } else {
+                throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+            }
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
+        }
+    }
+
+    public void updateImg(Long userId, String imgUrl) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            user.updateProfileImg(imgUrl);
+            userRepository.save(user);
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
     }
 }
