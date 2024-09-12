@@ -2,7 +2,7 @@ package org.example.backend.Chat.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Chat.Model.Req.MessageReq;
+import org.example.backend.Chat.Model.Req.GetMessageReq;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +16,9 @@ public class KafkaProducerService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void send(MessageReq messageReq){
+    public void send(GetMessageReq getMessageReq){
         try {
-            String toJson = objectMapper.writeValueAsString(messageReq);
+            String toJson = objectMapper.writeValueAsString(getMessageReq);
             kafkaTemplate.send(TOPIC_NAME, toJson);
         } catch (Exception e) {
             throw new RuntimeException("예외 발생 : " + e.getMessage());

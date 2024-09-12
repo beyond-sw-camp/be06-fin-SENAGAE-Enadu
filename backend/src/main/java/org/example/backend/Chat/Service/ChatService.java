@@ -4,9 +4,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Chat.Model.Entity.Chat;
 import org.example.backend.Chat.Model.Entity.ChatRoom;
-import org.example.backend.Chat.Model.Req.MessageReq;
-import org.example.backend.Chat.Model.Res.ChatMessageRes;
-import org.example.backend.Chat.Model.Res.ChatRoomRes;
+import org.example.backend.Chat.Model.Req.GetMessageReq;
+import org.example.backend.Chat.Model.Res.GetChatMessageRes;
+import org.example.backend.Chat.Model.Res.GetChatRoomRes;
 import org.example.backend.Chat.Repository.ChatRepository;
 import org.example.backend.Chat.Repository.ChatRoomRepository;
 import org.example.backend.Common.BaseResponseStatus;
@@ -27,18 +27,18 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
 
-    public List<ChatRoomRes> getMyChatRoomList(Long userId) {
+    public List<GetChatRoomRes> getMyChatRoomList(Long userId) {
         List<ChatRoom> myChatRoomList1 = chatRoomRepository.findAllByUser1Id(userId);
         List<ChatRoom> myChatRoomList2 = chatRoomRepository.findAllByUser2Id(userId);
 
-        List<ChatRoomRes> myChatRoomResList = new ArrayList<>();
+        List<GetChatRoomRes> myChatRoomResList = new ArrayList<>();
         makeChatRoomResList(1, myChatRoomList1, myChatRoomResList);
         makeChatRoomResList(2, myChatRoomList2, myChatRoomResList);
         myChatRoomResList.sort((chatRoomRes1, chatRoomRes2) -> chatRoomRes2.getLastMessageDay().compareTo(chatRoomRes1.getLastMessageDay()));
         return myChatRoomResList;
     }
 
-    private static void makeChatRoomResList(Integer userSequence, List<ChatRoom> myChatRoomList1, List<ChatRoomRes> myChatRoomResList) {
+    private static void makeChatRoomResList(Integer userSequence, List<ChatRoom> myChatRoomList1, List<GetChatRoomRes> myChatRoomResList) {
         for (ChatRoom chatRoom : myChatRoomList1) {
             User user;
             if (userSequence == 1) {
@@ -54,7 +54,7 @@ public class ChatService {
                 lastMessage = chatList.get(0).getMessage();
                 lastSendTime = chatList.get(0).getSendTime();
             }
-            ChatRoomRes chatRoomRes = ChatRoomRes.builder()
+            GetChatRoomRes chatRoomRes = GetChatRoomRes.builder()
                     .chatRoomId(chatRoom.getId())
                     .recipientNickname(user.getNickname())
                     .recipientProfile(user.getProfileImg())
@@ -66,7 +66,7 @@ public class ChatService {
         }
     }
 
-    public List<ChatMessageRes> getChatMessageList(Long userId, Long chatRoomId, Integer page, Integer size) {
+    public List<GetChatMessageRes> getChatMessageList(Long userId, Long chatRoomId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID));
         if (!chatRoom.getUser1().getId().equals(userId) && !chatRoom.getUser2().getId().equals(userId)) {
@@ -74,34 +74,34 @@ public class ChatService {
         }
 
         List<Chat> chatList = chatRepository.findByChatRoomIdOrderBySendTimeDesc(pageable, chatRoomId).stream().toList();
-        List<ChatMessageRes> chatMessageResList = new ArrayList<>();
+        List<GetChatMessageRes> getChatMessageResList = new ArrayList<>();
         for (Chat chat : chatList) {
-            ChatMessageRes chatMessageRes = ChatMessageRes.builder()
+            GetChatMessageRes getChatMessageRes = GetChatMessageRes.builder()
                     .message(chat.getMessage())
                     .sendTime(chat.getSendTime())
                     .senderId(chat.getUser().getId())
                     .build();
-            chatMessageResList.add(chatMessageRes);
+            getChatMessageResList.add(getChatMessageRes);
         }
-        return chatMessageResList;
+        return getChatMessageResList;
     }
 
     @Transactional
-    public void saveChat(MessageReq messageReq, Long chatRoomId){
+    public void saveChat(GetMessageReq getMessageReq, Long chatRoomId){
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID));
         User sender;
-        if (chatRoom.getUser1().getId().equals(messageReq.getSenderId())) {
+        if (chatRoom.getUser1().getId().equals(getMessageReq.getSenderId())) {
             sender = chatRoom.getUser1();
-        } else if (chatRoom.getUser2().getId().equals(messageReq.getSenderId())) {
+        } else if (chatRoom.getUser2().getId().equals(getMessageReq.getSenderId())) {
             sender = chatRoom.getUser2();
         } else {
             throw new InvalidChatException(BaseResponseStatus.CHAT_INVALID_USER_ID);
         }
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)
-                .message(messageReq.getMessage())
+                .message(getMessageReq.getMessage())
                 .user(sender)
-                .sendTime(LocalDateTime.parse(messageReq.getSendTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                .sendTime(LocalDateTime.parse(getMessageReq.getSendTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .build();
         chatRepository.save(chat);
     }

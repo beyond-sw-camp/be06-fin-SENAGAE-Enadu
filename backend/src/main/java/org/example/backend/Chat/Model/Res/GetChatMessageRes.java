@@ -3,10 +3,12 @@ package org.example.backend.Chat.Model.Res;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
+import java.time.LocalDateTime;
+
 @Getter
-public class MessageRes {
+@Builder
+public class GetChatMessageRes {
     private String message;
-    private String sendTime;
+    private LocalDateTime sendTime;
     private Long senderId;
 }

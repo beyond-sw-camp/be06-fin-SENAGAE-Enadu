@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Setter
-public class MessageReq {
+public class GetMessageReq {
     private Long chatRoomId;
     private String message;
     private String sendTime;

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class ChatRoomRes {
+public class GetChatRoomRes {
     private Long chatRoomId;
     private String recipientNickname;
     private String recipientProfile;
