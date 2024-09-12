@@ -94,4 +94,12 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<ErrorScrap> ErrorScrapList;
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImg(String imgUrl) {
+        this.profileImg = imgUrl;
+    }
 }

@@ -3,8 +3,10 @@ package org.example.backend.User.Controller;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.File.Service.CloudFileUploadService;
+import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.User.Model.Req.UserSignupReq;
 import org.example.backend.User.Service.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.Cookie;
@@ -40,11 +42,21 @@ public class UserController {
         return new BaseResponse<>("로그아웃");
     }
     @GetMapping("/duplicate/email")
-    public BaseResponse<Boolean> duplicateEmail(@RequestParam String email) {
+    public BaseResponse<Boolean> duplicateEmail(String email) {
         return new BaseResponse<>(userService.checkDuplicateEmail(email));
     }
     @GetMapping("/duplicate/nickname")
-    public BaseResponse<Boolean> duplicateName(@RequestParam String nickname) {
+    public BaseResponse<Boolean> duplicateName(String nickname) {
         return new BaseResponse<>(userService.checkDuplicateNickname(nickname));
+    }
+    @PatchMapping("/nickname")
+    public BaseResponse<String> updateNickname(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody String nickname) {
+        userService.updateNickname(customUserDetails.getUserId(), nickname);
+        return new BaseResponse<>();
+    }
+    @PatchMapping("/img")
+    public BaseResponse<String> updateImg(@AuthenticationPrincipal CustomUserDetails customUserDetails, MultipartFile imgFile) {
+        userService.updateImg(customUserDetails.getUserId(), cloudFileUploadService.uploadImg(imgFile));
+        return new BaseResponse<>();
     }
 }
