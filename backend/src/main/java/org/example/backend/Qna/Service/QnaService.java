@@ -122,6 +122,7 @@ public class QnaService {
     public List<GetAnswerDetailListRes> getAnswerDetails(List<Answer> answers) {
         return answers.stream()
                 .map(answer -> GetAnswerDetailListRes.builder()
+                        .id(answer.getId())
                         .answer(answer.getContent())
                         .likeCnt(answer.getLikeCnt())
                         .hateCnt(answer.getHateCnt())
@@ -139,7 +140,9 @@ public class QnaService {
     public List<GetAnswerCommentDetailListRes> getAnswerCommentDetails(List<AnswerComment> answerComments) {
         return answerComments.stream()
                 .map(answerComment -> GetAnswerCommentDetailListRes.builder()
-                        .superCommentId(answerComment.getAnswerComment().getId())
+                        .id(answerComment.getId())
+                        .superCommentId(answerComment.getAnswerComment() != null ?
+                        answerComment.getId() : null)
                         .answerComment(answerComment.getContent())
                         .nickname(answerComment.getUser().getNickname())
                         .grade(answerComment.getUser().getGrade())

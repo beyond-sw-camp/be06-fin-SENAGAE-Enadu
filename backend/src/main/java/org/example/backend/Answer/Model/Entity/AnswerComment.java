@@ -29,7 +29,7 @@ public class AnswerComment {
         private User user;
 
         @OneToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "super_comment_id", nullable = false)
+        @JoinColumn(name = "super_comment_id")
         private AnswerComment answerComment;
 
         @Column(name = "content", columnDefinition = "TEXT", nullable = false)

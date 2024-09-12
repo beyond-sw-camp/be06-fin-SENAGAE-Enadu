@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class GetAnswerCommentDetailListRes {
+    private Long id;
     private Long superCommentId;
     private String answerComment;
     private String nickname;

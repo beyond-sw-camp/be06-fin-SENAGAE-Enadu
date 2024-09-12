@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class GetAnswerDetailListRes {
+    private Long id;
     private String answer;
     private Integer likeCnt;
     private Integer hateCnt;
