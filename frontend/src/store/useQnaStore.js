@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useRoute } from 'vue-router';
 import axios from "axios";
 
 axios.interceptors.response.use(
@@ -17,8 +18,12 @@ axios.interceptors.response.use(
 export const useQnaStore = defineStore("qna", {
   state: () => ({
     qnaCards: [],
-    qnaDetail: []
+    qnaDetail: [],
+    qnaAnswers: []
   }),
+
+
+
   actions: {
     async registerQna(myTitle, myText) {
       const data = {
@@ -55,6 +60,17 @@ export const useQnaStore = defineStore("qna", {
       } catch (error) {
         console.error("Error fetching Q&A list:", error);
       }
+    },
+    async getQnaDetail() {
+      const route = useRoute();
+      console.log(route);
+      console.log(route.params.id)
+      let res = await axios.get(
+          "/api/qna/detail?qnaBoardId="+ route.params.id, { withCredentials: true }
+      );
+      console.log(this.res);
+      this.qnaDetail = res.data.result;
+      console.log(this.getQnaDetail);
     },
   },
 });
