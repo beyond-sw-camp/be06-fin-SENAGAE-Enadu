@@ -99,30 +99,30 @@ public class WikiService {
     }
 
     // 위키 상세 조회
-    public GetWikiDetailRes detail(GetWikiDetailReq getWikiDetailReq, CustomUserDetails customUserDetails) {
+    public GetWikiDetailRes detail(GetWikiDetailReq getWikiDetailReq, Long userId) {
 
         Wiki wiki = wikiRepository.findById(getWikiDetailReq.getId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
-        WikiContent wikiContent = wikiContentRepository.findById(wiki.getId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        LatestWiki latestWikiId = wiki.getLatestWiki();
 
         GetWikiDetailRes wikiDetailRes = GetWikiDetailRes.builder()
                 .id(wiki.getId())
                 .title(wiki.getTitle())
                 .content(wiki.getLatestWiki().getContent())
                 .category(wiki.getCategory().getCategoryName())
-                .version(wikiContent.getVersion())
-                .checkScrap(ischeckScrap(wikiContent, customUserDetails))
+                .version(latestWikiId.getVersion())
+                .checkScrap(ischeckScrap(latestWikiId, userId))
                 .build();
         return wikiDetailRes;
 
     }
 
-    // 스크랩 여부 조회 메서드 //해당 컨텐츠의 스크랩 레포를 봐야함
-    private Boolean ischeckScrap(WikiContent wikiContent, CustomUserDetails customUserDetails) {
+    // 스크랩 여부 조회 메서드
+    private Boolean ischeckScrap(LatestWiki latestWiki, Long userId) {
 
-        if (customUserDetails == null) {
+        if (userId == null) {
             return false;
         }
-        return wikiScrapRepository.findByUserIdAndWikiContentId(customUserDetails.getUserId(), wikiContent.getId()).isPresent();
+        return wikiScrapRepository.findByUserIdAndWikiContentId(userId, latestWiki.getId()).isPresent();
 
     }
 }

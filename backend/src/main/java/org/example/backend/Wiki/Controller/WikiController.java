@@ -75,9 +75,9 @@ public class WikiController {
     @GetMapping("/detail")
     public BaseResponse<GetWikiDetailRes> detail(GetWikiDetailReq getWikiDetailReq,
                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        System.out.println(customUserDetails);
-//        if(customUserDetails ==null){
-//        }
-        return new BaseResponse<>(wikiService.detail(getWikiDetailReq,customUserDetails));
+
+        Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
+
+        return new BaseResponse<>(wikiService.detail(getWikiDetailReq,userId));
     }
 }
