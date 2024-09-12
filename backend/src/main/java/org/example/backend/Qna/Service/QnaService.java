@@ -39,9 +39,9 @@ public class QnaService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    public Long saveQuestion(CreateQuestionReq createQuestionReq, CustomUserDetails customUserDetails) {
+    public Long saveQuestion(CreateQuestionReq createQuestionReq, Long userId) {
         Optional<Category> category = categoryRepository.findById(createQuestionReq.getCategoryId());
-        Optional<User> user = userRepository.findById(customUserDetails.getUserId());
+        Optional<User> user = userRepository.findById(userId);
 
         if (category.isPresent() && user.isPresent()) {
             QnaBoard qnaBoard = QnaBoard.builder()
@@ -67,7 +67,7 @@ public class QnaService {
         if (getQnaListReq.getSort().equals("latest")) {
             pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
         } else if (getQnaListReq.getSort().equals("like")) {
-            pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCnt"));
+            pageable = PageRequest.of(getQnaListReq.getPage(), getQnaListReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCount"));
         } else {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
         }
@@ -78,7 +78,8 @@ public class QnaService {
                         (qnaBoard -> GetQnaListRes.builder()
                                 .id(qnaBoard.getId())
                                 .title(qnaBoard.getTitle())
-                                .superCategoryName(qnaBoard.getCategory().getSuperCategory().getCategoryName())
+                                .superCategoryName(qnaBoard.getCategory().getSuperCategory() != null ?
+                                        qnaBoard.getCategory().getSuperCategory().getCategoryName() : null)
                                 .subCategoryName(qnaBoard.getCategory() != null ?
                                         qnaBoard.getCategory().getCategoryName() : null)
                                 .subCategoryName(qnaBoard.getCategory().getCategoryName())
@@ -92,15 +93,17 @@ public class QnaService {
                 .collect(Collectors.toList());
     }
 
-    public GetQuestionDetailRes getQuestionDetail(Long qnaBoardId) {
-        Optional<QnaBoard> qnaBoard = questionRepository.findById(qnaBoardId);
+    public GetQuestionDetailRes getQuestionDetail(Integer qnaBoardId) {
+        Optional<QnaBoard> qnaBoard = questionRepository.findById(qnaBoardId.longValue());
         GetQuestionDetailRes questionDetail;
         if (qnaBoard.isPresent()) {
             questionDetail = GetQuestionDetailRes.builder()
                     .title(qnaBoard.get().getTitle())
                     .content(qnaBoard.get().getContent())
-                    .superCategory(qnaBoard.get().getCategory().getSuperCategory().getCategoryName())
-                    .subCategory(qnaBoard.get().getCategory().getCategoryName())
+                    .superCategoryName(qnaBoard.get().getCategory().getSuperCategory() != null ?
+                            qnaBoard.get().getCategory().getSuperCategory().getCategoryName() : null)
+                    .subCategoryName(qnaBoard.get().getCategory() != null ?
+                            qnaBoard.get().getCategory().getCategoryName() : null)
                     .likeCnt(qnaBoard.get().getLikeCount())
                     .hateCnt(qnaBoard.get().getHateCount())
                     .checkLike(isQuestionLikeORHate(qnaBoard.get().getQnaLikeList()))

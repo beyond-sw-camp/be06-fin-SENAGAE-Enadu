@@ -13,8 +13,8 @@ import java.util.List;
 public class GetQuestionDetailRes {
     private String title;
     private String content;
-    private String superCategory;
-    private String subCategory;
+    private String superCategoryName;
+    private String subCategoryName;
     private Integer likeCnt;
     private Integer hateCnt;
     private boolean checkLike;
