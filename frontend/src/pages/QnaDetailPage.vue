@@ -1,39 +1,53 @@
-
- <template>
-    <div class="inner">
-      <QnaDetailHeader/>
-      <QnaDetailComponent />
-    </div>
+<template>
+  <div class="inner">
+    <QnaDetailHeader v-bind:qnaDetail=qnaStore.qnaDetail />
+    <QnaDetailComponent v-bind:qnaDetail=qnaStore.qnaDetail />
+    <div v-if="isLoading"></div>
+    <QnaAnswerDetailComponent v-else
+        v-for="qnaAnswer in qnaStore.qnaAnswers"
+        :key="qnaAnswer.id"
+        :qnaAnswer="qnaAnswer"
+    />
+  </div>
 
 </template>
 
 <script>
 import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
-import { useRoute } from 'vue-router';
+import {useRoute} from 'vue-router';
 import QnaDetailComponent from "@/components/qna/QnaDetailComponent.vue";
-import QnaDetailHeader from "@/components/qna/QnaDetailHeader.vue";
+import QnaDetailHeader from "@/components/qna/QnaDetailHeaderComponent.vue";
+import QnaAnswerDetailComponent from "@/components/qna/QnaAnswerDetailComponent.vue";
 
 export default {
   name: "QnaDetailPage",
 
   data() {
     return {
-      id: 1
+      id: 1,
+      isLoading: true
     };
+  },
+  methods: {
+    async getQnaDetail(){
+      const route = useRoute();
+      const qnaDetailId = route.params.id;
+      await this.qnaStore.getQnaDetail(qnaDetailId);
+      this.isLoading=false
+    }
   },
   computed: {
     ...mapStores(useQnaStore),
 
   },
   mounted() {
-    const route = useRoute();
-    console.log(route);
-    const qnaDetailId = this.$route.params.id;
-    this.qnaStore.getQnaDetail(qnaDetailId);
+    this.getQnaDetail()
+
+
   },
-  methods: {},
   components: {
+    QnaAnswerDetailComponent,
     QnaDetailComponent,
     QnaDetailHeader,
   },
@@ -42,10 +56,11 @@ export default {
 
 <style>
 .inner {
-  width: 1200px;
-  height: max-content;
-  margin: auto;
-  padding: 10px;
-  background-color: #fff;
+  width: auto;
+  display: grid;
+  align-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  margin: 50px 500px;
 }
 </style>

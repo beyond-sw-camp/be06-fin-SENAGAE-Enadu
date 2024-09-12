@@ -63,14 +63,11 @@ export const useQnaStore = defineStore("qna", {
     },
     async getQnaDetail() {
       const route = useRoute();
-      console.log(route);
-      console.log(route.params.id)
       let res = await axios.get(
           "/api/qna/detail?qnaBoardId="+ route.params.id, { withCredentials: true }
       );
-      console.log(this.res);
       this.qnaDetail = res.data.result;
-      console.log(this.getQnaDetail);
+      this.qnaAnswers = res.data.result.answers;
     },
   },
 });
