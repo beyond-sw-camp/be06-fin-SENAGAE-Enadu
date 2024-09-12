@@ -18,7 +18,8 @@ public class UserController {
     private final UserService userService;
     private final CloudFileUploadService cloudFileUploadService;
     private final JwtUtil jwtUtil;
-    @RequestMapping(method= RequestMethod.POST, value="/signup")
+
+    @PostMapping("/signup")
     public BaseResponse<String> signup(
             @RequestPart UserSignupReq userSignupReq,
             @RequestPart MultipartFile profileImg) {
