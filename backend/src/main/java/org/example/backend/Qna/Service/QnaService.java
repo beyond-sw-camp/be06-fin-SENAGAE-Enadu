@@ -13,13 +13,12 @@ import org.example.backend.Qna.Repository.QuestionRepository;
 import org.example.backend.Qna.model.Entity.QnaBoard;
 import org.example.backend.Qna.model.Entity.QnaLike;
 import org.example.backend.Qna.model.Entity.QnaScrap;
-import org.example.backend.Qna.model.Entity.Res.GetAnswerCommentDetailListRes;
-import org.example.backend.Qna.model.Entity.Res.GetAnswerDetailListRes;
-import org.example.backend.Qna.model.Entity.Res.GetQnaListRes;
-import org.example.backend.Qna.model.Entity.Res.GetQuestionDetailRes;
-import org.example.backend.Qna.model.Entity.req.CreateQuestionReq;
-import org.example.backend.Qna.model.Entity.req.GetQnaListReq;
-import org.example.backend.Security.CustomUserDetails;
+import org.example.backend.Qna.model.Res.GetAnswerCommentDetailListRes;
+import org.example.backend.Qna.model.Res.GetAnswerDetailListRes;
+import org.example.backend.Qna.model.Res.GetQnaListRes;
+import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.req.CreateQuestionReq;
+import org.example.backend.Qna.model.req.GetQnaListReq;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.User.Repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -51,7 +50,6 @@ public class QnaService {
                     .category(category.get())
                     .build();
 
-            qnaBoard.createdAt();
             questionRepository.save(qnaBoard);
             return qnaBoard.getId();
         } else if (category.isEmpty()) {

@@ -1,4 +1,4 @@
-package org.example.backend.Qna.model.Entity.req;
+package org.example.backend.Qna.model.req;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.Qna.model.Entity.QnaBoard;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,9 +44,6 @@ public class Answer {
     @Column(name = "adopted", nullable = false)
     private boolean adopted;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
     @Column(name = "enable", nullable = false)
     private boolean enable;
 
@@ -54,5 +52,9 @@ public class Answer {
 
     @Column(name = "hate_cnt", nullable = false)
     private int hateCnt;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
 }

@@ -6,13 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.Answer.Model.Entity.Answer;
-import org.example.backend.Answer.Model.Entity.AnswerLike;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.User.Model.Entity.User;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -60,25 +59,17 @@ public class QnaBoard {
     @Column(name = "enable", nullable = false)
     private boolean enable;
 
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @Column(name = "like_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int likeCount;
 
     @Column(name = "hate_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int hateCount;
 
-    @PrePersist
-    public void createdAt() {
-        this.createdAt = Timestamp.from(Instant.now()).toLocalDateTime();
-    }
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    @PreUpdate
-    void verifiedAt() {
-        this.modifiedAt = Timestamp.from(Instant.now()).toLocalDateTime();
-    }
+    @LastModifiedDate
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
 }

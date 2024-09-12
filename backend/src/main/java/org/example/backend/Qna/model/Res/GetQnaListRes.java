@@ -1,4 +1,4 @@
-package org.example.backend.Qna.model.Entity.Res;
+package org.example.backend.Qna.model.Res;
 
 import java.time.LocalDateTime;
 
