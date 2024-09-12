@@ -8,6 +8,9 @@ export const useUserStore = defineStore('user', {
         userId: null,
         isLoggedIn: false,
     }),
+    persist: {
+        storage: sessionStorage,
+    },
     actions: {
         async login(user) {
             try {
