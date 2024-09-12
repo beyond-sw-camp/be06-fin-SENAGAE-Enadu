@@ -2,55 +2,62 @@ import {defineStore} from "pinia";
 import axios from "axios";
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
+import {useUserStore} from "@/store/useUserStore";
 const backend = "/api";
 
 export const useChatStore = defineStore("chat", {
     state: () => ({
-        selectedChatRoomId: 0,
+        selectedChatRoom: {
+            chatRoomId: 0,
+            recipientNickname: "",
+            recipientProfile: "",
+            recipientId: 0
+        },
         chatRoomList: [
             {
-                recipientName: "",
+                recipientNickname: "",
                 chatRoomId: 0,
                 recipientProfile: "",
+                recipientId: 0,
                 lastMessage: "",
                 lastMessageDay: ""
-            },
+            }
         ],
-        chatMessageList: {
-            recipientNickname: "",
-            recipientId: 0,
-            messageList: [
-                {
-                    nickname: "",
-                    userId: 0,
-                    message: "",
-                    sendTime: "",
-                    profileImg: ""
-                }
-            ]
-        },
+        chatMessageList: [
+            {
+                message: "",
+                sendTime: "",
+                senderId: 0
+            }
+        ],
         stompClient: null,
-
     }),
     actions: {
         async getChatRoomList() {
             const res = await axios.get(backend + "/chat/chatRoomList",{withCredentials: true})
             this.chatRoomList = res.data.result;
-            this.selectedChatRoomId = this.chatRoomList[0].chatRoomId;
+            this.selectedChatRoom =  {
+                chatRoomId: this.chatRoomList[0].chatRoomId,
+                recipientNickname: this.chatRoomList[0].recipientNickname,
+                recipientProfile: this.chatRoomList[0].recipientProfile,
+                recipientId: this.chatRoomList[0].recipientId
+            }
         },
         async getChatMessageList(page) {
             const res = await axios.get(backend + "/chat/messageList", {
                 params: {
-                    chatRoomId: this.selectedChatRoomId,
+                    chatRoomId: this.selectedChatRoom.chatRoomId,
                     page: page,
                     size: 20
                 },
                 withCredentials: true
             });
+            console.log(res.data);
             this.chatMessageList = res.data.result;
+            console.log(this.chatMessageList);
 
             const serverUrl = "http://localhost:8080/ws/chat";
-            let  socket = new SockJS(serverUrl);
+            let  socket = new SockJS(serverUrl, null, {withCredentials: true});
             this.stompClient = Stomp.over(socket);
             console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverUrl}`)
             this.stompClient.connect(
@@ -59,9 +66,9 @@ export const useChatStore = defineStore("chat", {
                     // this.connected = true;
                     console.log("소켓 연결 성공", frame);
 
-                    this.stompClient.subscribe("/sub/chatroom/"+this.selectedChatRoomId, res => {
+                    this.stompClient.subscribe("/sub/chatroom/"+this.selectedChatRoom.chatRoomId, res => {
                         console.log("구독으로 받은 메시지 입니다.", res.body);
-
+                        this.chatMessageList.unshift((JSON).parse(res.body));
                     })
                 }
             )
@@ -74,17 +81,24 @@ export const useChatStore = defineStore("chat", {
                 const msg = {
                     message: message,
                     sendTime: this.formatDateTime(),
-                    chatRoomId: this.selectedChatRoomId,
-                    senderId: 1
+                    chatRoomId: this.selectedChatRoom.chatRoomId,
+                    senderId: useUserStore().$state.userId
                 };
-                this.stompClient.send("/pub/message/"+this.selectedChatRoomId, JSON.stringify(msg), {});
+                this.stompClient.send("/pub/message/"+this.selectedChatRoom.chatRoomId, JSON.stringify(msg), {});
             }
         },
         sendMessage(message){
             if(message !== ''){
                 this.send(message);
             }
+            const msg = {
+                message: message,
+                sendTime: this.formatDateTime(),
+                senderId: useUserStore().$state.userId
+            };
+            this.chatMessageList.unshift(msg);
         },
+
         formatDateTime () {
             const date = new Date();
 

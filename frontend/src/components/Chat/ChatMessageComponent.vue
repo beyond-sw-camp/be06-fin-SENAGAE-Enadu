@@ -1,20 +1,20 @@
 <template>
   <li v-if="showDate()" class="date_check">
     <span>
-      <em><strong> {{ chatStore.chatMessageList.messageList[idx-1].sendTime.split("T")[0] }}</strong></em>
+      <em><strong> {{ chatStore.chatMessageList[idx-1].sendTime.split("T")[0] }}</strong></em>
     </span>
   </li>
   <li class="new_message_balloon_area  _message _msgId2">
-    <div v-if="recipientId===chatMessage.userId" class="thumbnail_profile _thmbnail">
+    <div v-if="chatStore.selectedChatRoom.recipientId == chatMessage.senderId" class="thumbnail_profile _thmbnail">
       <button role="link" class="thumbnail_link ">
-        <img :src="chatMessage.profileImg"
+        <img :src="chatStore.selectedChatRoom.recipientProfile"
              alt="유저 프로필" width="31">
       </button>
     </div>
-    <div v-if="recipientId===chatMessage.userId" class="chat_message_nickname _nickname">
-      <strong>{{ chatMessage.nickname }}</strong>
+    <div v-if="chatStore.selectedChatRoom.recipientId == chatMessage.senderId" class="chat_message_nickname _nickname">
+      <strong>{{ chatStore.selectedChatRoom.recipientNickname }}</strong>
     </div>
-    <div v-if="recipientId===chatMessage.userId" class="message_balloon card_message type_text" role="heading"
+    <div v-if="chatStore.selectedChatRoom.recipientId == chatMessage.senderId" class="message_balloon card_message type_text" role="heading"
          aria-level="5">
       <p class="_copy_area">{{ chatMessage.message }}</p>
       <div class="txt_confirm _status">
@@ -37,7 +37,7 @@ import {useChatStore} from "@/store/useChatStore";
 
 export default {
   name: "ChatMessageComponent",
-  props: ['chatMessage', "recipientId", "idx"],
+  props: ['chatMessage', "idx"],
   computed: {
     ...mapStores(useChatStore) // 어떤 저장소랑 연결시켜 주겠다.
   },
@@ -54,7 +54,7 @@ export default {
       if (this.idx === 0 ){
         return false;
       }
-      return this.chatMessageDate !== this.chatStore.chatMessageList.messageList[this.idx-1].sendTime.split("T")[0]
+      return this.chatMessageDate !== this.chatStore.chatMessageList[this.idx-1].sendTime.split("T")[0]
     },
     setTime() {
       let time = this.chatMessage.sendTime.split("T")[1].split(":");

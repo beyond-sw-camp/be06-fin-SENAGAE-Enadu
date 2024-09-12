@@ -5,7 +5,7 @@
         <div class="chat_header_top">
           <div class="info_area">
             <div class="text_wrap">
-              <div class="name_area"><strong class="name">{{ chatStore.chatMessageList.recipientNickname }}</strong>
+              <div class="name_area"><strong class="name">{{ chatStore.selectedChatRoom.recipientNickname }}</strong>
               </div>
             </div>
           </div>
@@ -15,13 +15,11 @@
         <div class="chat_reverse">
           <ul class="group_message_balloon" style="visibility: visible;">
             <li v-if="isLoading"></li>
-            <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList.messageList" :key=idx
-                                  :idx="idx" :chatMessage="chatMessage"
-                                  :recipientId="chatStore.chatMessageList.recipientId"
-            />
-            <li v-if="chatStore.chatMessageList.messageList.length !== 0"  class="date_check">
+            <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList" :key=idx
+                                  :idx="idx" :chatMessage="chatMessage"/>
+            <li v-if="chatStore.chatMessageList.length !== 0"  class="date_check">
               <span>
-                <em><strong> {{ chatStore.chatMessageList.messageList.at(-1).sendTime.split("T")[0] }}</strong></em>
+                <em><strong> {{ chatStore.chatMessageList.at(-1).sendTime.split("T")[0] }}</strong></em>
               </span>
             </li>
           </ul>
@@ -87,7 +85,8 @@ export default {
       }
     },
     clickSendMessageButton(){
-      this.chatStore.sendMessage(this.content)
+      this.chatStore.sendMessage(this.content);
+      this.content=""
     }
   },
   mounted() {
