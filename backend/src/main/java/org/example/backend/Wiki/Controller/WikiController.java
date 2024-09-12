@@ -2,10 +2,11 @@ package org.example.backend.Wiki.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
+import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidWikiException;
 import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
-import org.example.backend.Wiki.Model.Req.WikiListReq;
+import org.example.backend.Wiki.Model.Req.GetWikiListReq;
 import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
 import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
@@ -18,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static org.example.backend.Common.BaseResponseStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,13 +35,13 @@ public class WikiController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         if (wikiRegisterReq.getTitle().isEmpty()) {
-            throw new InvalidWikiException(WIKI_TITLE_REGIST_FAIL);
+            throw new InvalidWikiException(BaseResponseStatus.WIKI_TITLE_REGIST_FAIL);
         }
         if (wikiRegisterReq.getCategoryId() == null) {
-            throw new InvalidWikiException(WIKI_CATEGORY_REGIST_FAIL);
+            throw new InvalidWikiException(BaseResponseStatus.CATEGORY_NOT_FOUND_CATEGORY);
         }
         if (wikiRegisterReq.getContent().isEmpty()) {
-            throw new InvalidWikiException(WIKI_CONTENT_REGIST_FAIL);
+            throw new InvalidWikiException(BaseResponseStatus.WIKI_CONTENT_REGIST_FAIL);
         }
         // 썸네일 등록 확인 로직
         String thumbnailUrl;
@@ -56,15 +56,15 @@ public class WikiController {
 
     // 위키 목록 조회
     @GetMapping("/list")
-    public BaseResponse<List<WikiListRes>> list(WikiListReq wikiListReq) {
-        if (wikiListReq.getPage() == null) {
-            wikiListReq.setPage(0);
+    public BaseResponse<List<WikiListRes>> list(GetWikiListReq getWikiListReq) {
+        if (getWikiListReq.getPage() == null) {
+            getWikiListReq.setPage(0);
         }
-        if (wikiListReq.getSize() == null || wikiListReq.getSize() == 0) {
-            wikiListReq.setSize(20);
+        if (getWikiListReq.getSize() == null || getWikiListReq.getSize() == 0) {
+            getWikiListReq.setSize(20);
 
         }
-        List<WikiListRes> wikiList = wikiService.wikiList(wikiListReq);
+        List<WikiListRes> wikiList = wikiService.wikiList(getWikiListReq);
         return new BaseResponse<>(wikiList);
     }
 }

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class WikiListReq {
+public class GetWikiListReq {
 
     private Integer page;
     private Integer size;

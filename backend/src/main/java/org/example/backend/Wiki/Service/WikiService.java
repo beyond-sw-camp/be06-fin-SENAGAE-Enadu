@@ -12,7 +12,7 @@ import org.example.backend.User.Repository.UserRepository;
 import org.example.backend.Wiki.Model.Entity.LatestWiki;
 import org.example.backend.Wiki.Model.Entity.Wiki;
 import org.example.backend.Wiki.Model.Entity.WikiContent;
-import org.example.backend.Wiki.Model.Req.WikiListReq;
+import org.example.backend.Wiki.Model.Req.GetWikiListReq;
 import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
 import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
@@ -22,7 +22,6 @@ import org.example.backend.Wiki.Repository.WikiRepository;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -79,8 +78,8 @@ public class WikiService {
     }
 
     // 위키 목록 조회
-    public List<WikiListRes> wikiList(WikiListReq wikiListReq) {
-        Pageable pageable = PageRequest.of(wikiListReq.getPage(), 20, Sort.by(Sort.Direction.DESC, "latestWiki.createdAt"));
+    public List<WikiListRes> wikiList(GetWikiListReq getWikiListReq) {
+        Pageable pageable = PageRequest.of(getWikiListReq.getPage(), getWikiListReq.getSize(), Sort.by(Sort.Direction.DESC, "latestWiki.createdAt"));
         Page<Wiki> wikiPage = wikiRepository.findAll(pageable);
 
         return wikiPage.getContent().stream().map
