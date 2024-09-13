@@ -7,16 +7,18 @@ import org.example.backend.Point.Service.PointService;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/point")
 public class PointController {
     private final PointService pointService;
 
-    @GetMapping("/point")
+    @GetMapping
     public BaseResponse<List<GetPointHistoryRes>> getPointHistory(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size){
         return new BaseResponse<>(pointService.getPointHistory(customUserDetails.getUserId(), page, size));
     }
