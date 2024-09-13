@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.User.Model.Entity.User;
+import org.springframework.data.annotation.CreatedDate;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +26,7 @@ public class PointDetail {
     @Column(nullable = false)
     private Integer point;
     @Column(nullable = false)
-    @Builder.Default
+    @CreatedDate
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
