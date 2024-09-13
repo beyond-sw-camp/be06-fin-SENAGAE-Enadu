@@ -54,6 +54,7 @@ public class SecurityConfig {
                 auth
                         .requestMatchers("/chat/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/qna").authenticated()
+                        .requestMatchers("/point").authenticated()
                         .anyRequest().permitAll()
         );
 
