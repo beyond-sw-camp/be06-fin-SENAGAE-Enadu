@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="custom-container">
     <div class="qna-top">
       <p id="main-title">QnA</p>
       <p id="sub-title">당신의 에러를 해결해보세요</p>
@@ -73,11 +73,12 @@ export default {
 
 <style>
 .qna-top {
-  height: 320px;
-  display: grid;
+  //height: 320px;
+  //display: grid;
+  padding-bottom: 50px;
   align-content: center;
   align-items: center;
-  background-color: #e1e8e8;
+  //background-color: #e1e8e8;
 }
 .qna-bottom {
   height: 70px;
@@ -98,18 +99,20 @@ export default {
 }
 
 .qna-list-flex {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  grid-template-rows: repeat(2, auto);
-  gap: 26px 36px;
-  justify-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-auto-rows: auto;
+    gap: 26px 36px;
+    justify-items: stretch;
+    max-width: 100%;
+    margin: 0 auto
 }
 
 .qna-inner {
   width: auto;
   height: max-content;
-  margin: 20px 100px;
-  padding: 10px;
+  //margin: 20px 100px;
+  //padding: 10px;
   background-color: #fff;
 }
 
