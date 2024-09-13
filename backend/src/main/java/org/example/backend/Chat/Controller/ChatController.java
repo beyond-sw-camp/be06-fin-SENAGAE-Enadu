@@ -1,8 +1,8 @@
 package org.example.backend.Chat.Controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Chat.Model.Res.ChatMessageListRes;
-import org.example.backend.Chat.Model.Res.ChatRoomRes;
+import org.example.backend.Chat.Model.Res.GetChatMessageRes;
+import org.example.backend.Chat.Model.Res.GetChatRoomRes;
 import org.example.backend.Chat.Service.ChatService;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Security.CustomUserDetails;
@@ -20,13 +20,13 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/chatRoomList")
-    public BaseResponse<List<ChatRoomRes>> chatRoomList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public BaseResponse<List<GetChatRoomRes>> chatRoomList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return new BaseResponse<>(chatService.getMyChatRoomList(customUserDetails.getUserId()));
     }
 
     @GetMapping("/messageList")
-    public BaseResponse<ChatMessageListRes> getChatMessageList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                                     Long chatRoomId, Integer page, Integer size) {
+    public BaseResponse<List<GetChatMessageRes>> getChatMessageList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                    Long chatRoomId, Integer page, Integer size) {
         return new BaseResponse<>(chatService.getChatMessageList(customUserDetails.getUserId(), chatRoomId, page, size));
 
     }
