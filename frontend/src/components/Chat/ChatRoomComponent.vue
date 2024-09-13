@@ -1,12 +1,12 @@
 <template>
-  <li :class="[ chatRoom.chatRoomId == chatStore.selectedChatRoomId ? 'on': '' ]" @click="selected">
+  <li :class="[ chatRoom.chatRoomId == chatStore.selectedChatRoom.chatRoomId ? 'on': '' ]" @click="selected">
     <div role="link" tabindex="0" class="div_button chat_list_link" aria-current="page">
       <div class="info_area">
         <div class="profile_wrap" aria-hidden="true">
           <img class="profile" alt="" :src="chatRoom.recipientProfile">
         </div>
         <div class="text_wrap">
-          <div class="name_area"><strong class="name">{{ chatRoom.recipientName }}</strong>
+          <div class="name_area"><strong class="name">{{ chatRoom.recipientNickname }}</strong>
             <span class="date_area">{{ lastMessageDay }}</span>
           </div>
           <div class="text_area">{{ chatRoom.lastMessage }}</div>
@@ -36,7 +36,12 @@ export default {
   methods: {
     async selected() {
       this.isSelected = true
-      this.chatStore.selectedChatRoomId = this.chatRoom.chatRoomId
+      this.chatStore.selectedChatRoom = {
+        chatRoomId: this.chatRoom.chatRoomId,
+        recipientNickname: this.chatRoom.recipientNickname,
+        recipientProfile: this.chatRoom.recipientProfile,
+        recipientId: this.chatRoom.recipientId
+      }
       this.$emit("reload-chatRoom")
     },
     formatDateTime(dateTimeString) {

@@ -13,7 +13,7 @@ const router = createRouter({
     { path: "/qna/list", component: QnaListPage },
     { path: "/qna/register", component: QnaRegisterComponent },
     { path: "/wiki", component: WikiRegisterPage },
-    { path: "/chat", component: ChatPgae },
+    { path: "/chat", component: ChatPage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } }
   ]
 });
