@@ -10,7 +10,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/login", component: LoginPage, meta: { showHeader: false }},
-    { path: "/qna-list", component: QnaListPage },
+    { path: "/qna/list", component: QnaListPage },
     { path: "/qna/register", component: QnaRegisterComponent },
     { path: "/wiki", component: WikiRegisterPage },
     { path: "/chat", component: ChatPgae },

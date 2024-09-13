@@ -17,41 +17,44 @@ axios.interceptors.response.use(
 export const useQnaStore = defineStore("qna", {
   state: () => ({
     qnaCards: [],
+    qnaDetail: []
   }),
   actions: {
-    async getQnaList() {
-      let res = await axios.get(
-        "http://localhost:8080/qna/list"
-      );
-      if (typeof res.data === "string") {
-        this.qnaCards = JSON.parse(res.data).result;
-      } else {
-        this.qnaCards = res.data.result;
-      }
-
-      if (res.status === 200) {
-        console.log(this.qnaCards);
-        this.qnaCards = res.data.result;
-      }
-    },
     async registerQna(myTitle, myText) {
       const data = {
         title: myTitle,
         content: myText,
-        categoryId: 1
+        categoryId: 5
       };
 
       try {
-        let res = await axios.post("http://localhost:8080/qna", data);
-
-        if (res.status === 200) {
-          console.log("Q&A 등록 성공:", res.data);
-        }
+        await axios.post("http://localhost:8080/qna", data, {
+          headers: {
+            'Content-Type': 'application/json'
+          }, withCredentials: true
+        });
       } catch (error) {
-        console.error("Q&A 등록 실패:", error);
+        console.log("err")
       }
-    }
+    },
 
+    async getQnaList() {
+      const params = {
+        sort: "latest",
+        page: 0,
+        size: 10
+      };
+
+      try {
+        const res = await axios.get("http://localhost:8080/qna/list", {
+          params: params,
+          withCredentials: true
+        });
+        this.qnaCards = res.data.result;
+        console.log(this.qnaCards);
+      } catch (error) {
+        console.error("Error fetching Q&A list:", error);
+      }
+    },
   },
-
 });
