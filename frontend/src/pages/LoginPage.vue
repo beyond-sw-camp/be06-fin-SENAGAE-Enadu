@@ -2,7 +2,7 @@
     <div class="body">
         <div class="container">
             <SignInComponent v-if="signIn" @login="handleLogin" />
-            <SignUpComponent v-else />
+            <SignUpComponent v-else @signup="handleSignup" />
             <OverlayComponent :signIn="signIn" @toggleSignIn="toggleSignIn" />
             
         </div>
@@ -44,7 +44,18 @@
                 } else {
                     alert('로그인 실패');
                 }
+            },
+            async handleSignup(userInfo, selectedProfileFile){
+                const userStore = useUserStore();
+                const signupSuccess = await userStore.signup(userInfo, selectedProfileFile);
+                if(signupSuccess){
+                 this.$router.push('/login');
+                 alert('회원가입 성공');
+                } else {
+                    alert('회원가입 실패');
+                }
             }
+
         },
         created() {
             this.checkRoute();
