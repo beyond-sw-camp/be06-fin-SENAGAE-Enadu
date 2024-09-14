@@ -2,10 +2,12 @@ package org.example.backend.Point.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Common.UserGradeIconManager;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Point.Model.Entity.PointDetail;
 import org.example.backend.Point.Model.Res.GetMyRankRes;
 import org.example.backend.Point.Model.Res.GetPointHistoryRes;
+import org.example.backend.Point.Model.Res.GetPointRankRes;
 import org.example.backend.Point.Repository.PointRepository;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.User.Repository.UserRepository;
@@ -45,5 +47,25 @@ public class PointService {
         return GetMyRankRes.builder()
                 .point(user.getPoint())
                 .rank(userRepository.countByPointGreaterThan(user.getPoint()) + 1).build();
+    }
+
+    public List<GetPointRankRes> getPointRankList(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "point"));
+        Page<User> userOrderByPointDescPage = userRepository.findAll(pageable);
+        List<GetPointRankRes> getPointRankResList = new ArrayList<>();
+        int rank = page * size + 1;
+        for (User user : userOrderByPointDescPage) {
+            getPointRankResList.add(GetPointRankRes.builder()
+                    .point(user.getPoint())
+                    .rank(rank++)
+                    .grade(user.getGrade())
+                    .profileImg(user.getProfileImg())
+                    .totalPage(userOrderByPointDescPage.getTotalPages())
+                    .nickname(user.getNickname())
+                    .gradeImg(UserGradeIconManager.getGradeIcon(user.getGrade()))
+                    .build());
+
+        }
+        return getPointRankResList;
     }
 }
