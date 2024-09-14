@@ -5,7 +5,7 @@
         <div class="chat_header_top">
           <div class="info_area">
             <div class="text_wrap">
-              <div class="name_area"><strong class="name">{{ chatStore.chatMessageList.recipientNickname }}</strong>
+              <div class="name_area"><strong class="name">{{ chatStore.selectedChatRoom.recipientNickname }}</strong>
               </div>
             </div>
           </div>
@@ -15,13 +15,12 @@
         <div class="chat_reverse">
           <ul class="group_message_balloon" style="visibility: visible;">
             <li v-if="isLoading"></li>
-            <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList.messageList" :key=idx
-                                  :idx="idx" :chatMessage="chatMessage"
-                                  :recipientId="chatStore.chatMessageList.recipientId"
-            />
-            <li v-if="chatStore.chatMessageList.messageList.length !== 0"  class="date_check">
+            <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList" :key="`${idx}-${chatMessage.sendTime}`"
+                                  :idx="idx" :chatMessage="chatMessage" />
+
+            <li v-if="chatStore.chatMessageList.length !== 0"  class="date_check">
               <span>
-                <em><strong> {{ chatStore.chatMessageList.messageList.at(-1).sendTime.split("T")[0] }}</strong></em>
+                <em><strong> {{ chatStore.chatMessageList.at(-1).sendTime.split("T")[0] }}</strong></em>
               </span>
             </li>
           </ul>
@@ -34,10 +33,10 @@
               <div class="input_btn_wrap"></div>
               <div class="chat_input_area">
                 <textarea @input="autoResize" ref="textarea" title="메시지 입력창" class="chat_input" maxlength="2000"
-                          placeholder="메시지를 입력하세요." v-model="content"></textarea>
+                          placeholder="메시지를 입력하세요." @keydown="handleKeydown" v-model="content"></textarea>
               </div>
               <div class="submit_btn_wrap">
-                <button class="btn_submit " type="submit" aria-disabled="true"><img src="@/assets/img/send_icon.png"
+                <button class="btn_submit " type="submit" @click="clickSendMessageButton" aria-disabled="true"><img src="@/assets/img/send_icon.png"
                                                                                     style="width: 20px; height: 20px;"
                                                                                     alt=""></button>
               </div>
@@ -84,6 +83,19 @@ export default {
       textarea.style.height = textarea.scrollHeight + 'px'; // 내용에 맞게 높이 조절
       if (this.content === "") {
         textarea.style.height = 20+"px";
+      }
+    },
+    clickSendMessageButton(){
+      this.chatStore.sendMessage(this.content);
+      this.content=""
+      this.autoResize()
+    },
+    handleKeydown(event) {
+      if (event.key === 'Enter') {
+        if (!event.shiftKey) {
+          event.preventDefault();
+          this.clickSendMessageButton();
+        }
       }
     },
   },

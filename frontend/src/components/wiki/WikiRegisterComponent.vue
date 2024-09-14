@@ -12,18 +12,21 @@
                                 <div class="grid grid-cols-1 gap-y-7">
                                     <div class="space-y-1">
                                         <label for="title" class="text-sm font-medium text-gray-700">제목</label>
-                                        <input type="text" id="title" placeholder="제목을 입력해주세요." v-model="myTitle"
+                                        <input type="text" id="title" placeholder="제목을 입력해주세요."
+                                            v-model="wikiRegisterReq.title"
                                             class="block w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-3 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"
                                             name="title">
                                     </div>
 
+                                    <!-- 카테고리 선택 -->
                                     <div id="rowGapZero">
                                         <label for="tags"
                                             class="text-sm font-medium text-gray-700 dark:text-gray-300">카테고리</label>
                                         <div class="space-y-1 flex w-full">
-                                            <input type="text" id="category1" placeholder="상위 카테고리를 선택해주세요."
+                                            <input type="text" id="category1"
+                                                :value="wikiRegisterReq.mySuperCategoryName || '상위 카테고리를 선택해주세요.'"
                                                 class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"
-                                                name="category1" readonly />
+                                                name="category1" readonly @click="openSuperCategoryModal" />
                                             <div style="margin-left:10px; margin-right:10px">
                                                 <button type="button"
                                                     class="w-20 items-center space-x-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600"
@@ -39,9 +42,9 @@
                                         <label for="thumbnail"
                                             class="text-sm font-medium text-gray-700 dark:text-gray-300">썸네일 등록</label>
                                         <div class="flex w-full">
-                                            <input type="file" id="thumbnail" name="thumbnail"
+                                            <input type="file" id="thumbnail" name="thumbnail" ref="thumbnailInput"
                                                 class="block w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-3 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"
-                                                accept="image/*" @change="handleFileUpload">
+                                                accept="image/*" @change="setImages" />
                                             <button type="button" id="clearThumbnail"
                                                 class="ml-3 w-20 items-center space-x-2 rounded-md bg-red-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600"
                                                 @click="clearThumbnail">
@@ -54,11 +57,9 @@
                                     <div class="space-y-1">
                                         <label for="text"
                                             class="text-sm font-medium text-gray-700 dark:text-gray-300">본문</label>
-                                        <v-md-editor v-model="myText" height="400px"></v-md-editor>
+                                        <v-md-editor v-model="wikiRegisterReq.myText" height="400px"></v-md-editor>
                                     </div>
                                 </div>
-
-
 
                                 <!-- 본문 버튼 -->
                                 <div class="mt-5 flex justify-between gap-x-3 mb-10">
@@ -87,65 +88,89 @@
     </div>
 </template>
 
-
 <script>
-import { mapStores } from "pinia";
 import { useWikiStore } from "@/store/useWikiStore";
+import { mapStores } from "pinia";
+import SuperCategoryModal from '../../components/Category/SuperCategoryModal.vue';
+
 export default {
     name: "WikiRegisterComponent",
     data() {
         return {
-            myTitle: '',
-            myText: '',
-            mySuperCategory: '',
-            selectedSuperCategory: null,
-            selectedThumbnail: null,
-            showSuperCategoryModal: false,
-        };
+            wikiRegisterReq: {
+                title: '',
+                myText: '',
+                mySuperCategory: '',
+                mySuperCategoryName: '' // 카테고리 이름을 위한 변수 추가
+            },
+            thumbnail: null,
+            showSuperCategoryModal: false, // 모달 열림 상태
+        }
+        
     },
     computed: {
         ...mapStores(useWikiStore),
         isNullOrEmpty() {
-            return (this.myTitle === '' || this.myText === '' || this.mySuperCategory === '')
+            return (this.wikiRegisterReq.title === '' || this.wikiRegisterReq.myText === '' || this.wikiRegisterReq.mySuperCategory === '')
         },
     },
     methods: {
-        handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                this.selectedThumbnail = file;
+        openSuperCategoryModal() {
+            this.showSuperCategoryModal = true;
+        },
+        setSuperCategory(selectedSuperCategory) {
+            if (!selectedSuperCategory || !selectedSuperCategory.id) {
+                alert("상위 카테고리를 선택하세요.");
+                return;
             }
+            this.wikiRegisterReq.mySuperCategory = selectedSuperCategory.id;
+            this.wikiRegisterReq.mySuperCategoryName = selectedSuperCategory.categoryName; // 수정된 부분
+            this.showSuperCategoryModal = false; 
+        },
+        closeSuperCategoryModal() {
+            this.showSuperCategoryModal = false;
+        },
+        setImages(event) {
+            const file = event.target.files[0]; 
+            this.thumbnail = file;
         },
         clearThumbnail() {
-            this.selectedThumbnail = null;
+            this.thumbnail = null;
             this.$refs.thumbnailInput.value = ''; // 파일 입력 필드 초기화
         },
         async submitForm() {
-            // 파일이 선택된 경우에는 FormData를 사용하여 파일을 포함하여 전송
-            const formData = new FormData();
-            formData.append('title', this.myTitle);
-            formData.append('content', this.myText);
-            formData.append('categoryId', this.mySuperCategory);
-
-            if (this.selectedThumbnail) {
-                formData.append('thumbnail', this.selectedThumbnail);
+            console.log(this.wikiRegisterReq.title);
+     
+            if (this.wikiRegisterReq.myText.trim() === '') {
+                alert('본문을 입력해주세요.');
+                return;
             }
+            if (!this.wikiRegisterReq.mySuperCategory) {
+                alert('상위 카테고리를 선택해주세요.');
+                return;
+            }
+            console.log("mySuperCategory 값:", this.wikiRegisterReq.mySuperCategory);
+            console.log("mySuperCategory 값:", this.wikiRegisterReq.myText);
 
-            try {
-                await this.useWikiStore.registerWiki(formData); // pinia 스토어 호출
-                // 성공 후 동작 처리
-            } catch (error) {
-                console.error("위키 등록 실패:", error);
-                // 에러 처리
+
+            this.wikiStore.wikiRegisterReq.title=this.wikiRegisterReq.title;
+            this.wikiStore.wikiRegisterReq.content=this.wikiRegisterReq.myText;
+            this.wikiStore.wikiRegisterReq.categoryId=this.wikiRegisterReq.mySuperCategory;
+            const result = await this.wikiStore.registerWiki(this.thumbnail);
+            if (result) {
+                alert("정상적으로 등록되었습니다.");
+                this.$router.push("/wiki");
+            } else {
+                alert("등록에 실패하였습니다. 다시 시도해주세요.");
+                this.$router.go();
             }
         },
         cancel() {
-            this.myTitle = '';
-            this.myText = '';
-            this.mySuperCategory = '';
-            this.selectedThumbnail = null;
-        },
+        }
     },
+    components: {
+        SuperCategoryModal
+    }
 };
 </script>
 

@@ -8,7 +8,7 @@
       <div class="chat_list_wrap ">
         <ul class="chat_list">
           <li v-if="isLoading"></li>
-          <ChatRoomComponent v-else v-for="(chatRoom, idx) in chatRoomList" :key="idx"
+          <ChatRoomComponent v-else v-for="(chatRoom, idx) in chatRoomList" :key="`${idx}-${chatRoom.lastMessageDay}`"
                              :chatRoom="chatRoom" @reload-chatRoom="reloadChatRoom"/>
         </ul>
       </div>

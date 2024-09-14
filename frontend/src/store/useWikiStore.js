@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
+const backend = "/api";
+
+// Axios Interceptor 설정
 axios.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -10,38 +13,76 @@ axios.interceptors.response.use(
             console.log("405 에러 처리");
         } else if (error.response && error.response.status === 304) {
             console.log("304 에러 처리");
+        } else {
+            console.log("다른 에러 처리:", error.response ? error.response.status : "응답 없음");
         }
+        return Promise.reject(error);
     }
 );
 
 export const useWikiStore = defineStore("wiki", {
     state: () => ({
-        wikiCards: [],
-    }),
-    actions: {
-        async getWikiList() {
-            let res = await axios.get("http://localhost:8080/wiki/list");
-            if (typeof res.data === "string") {
-                this.wikiCards = JSON.parse(res.data).result;
-            } else {
-                this.wikiCards = res.data.result;
-            }
+        wikiCards: [], // 위키 목록
+        wikiRegisterReq: {
+            title: '',
+            categoryId: '',
+            content: '',
         },
-        async registerWiki(formData) {
+        wikiDetail: null, // 위키 상세 정보
+    }),
+
+    actions: {
+        // 위키 등록 기능
+        async registerWiki(thumbnail) {
             try {
-                let res = await axios.post("http://localhost:8080/wiki", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                console.log("위키 등록 요청 데이터:", this.wikiRegisterReq);
+
+                const formData = new FormData();
+                const jsonBlob = new Blob([JSON.stringify(this.wikiRegisterReq)], { type: "application/json" });
+                formData.append("wikiRegisterReq", jsonBlob);
+
+                // 썸네일 파일 추가
+                if (thumbnail) {
+                    formData.append("thumbnail", thumbnail);
+                }
+
+                const response = await axios.post(backend + "/wiki", formData, {
+                    withCredentials: true,
+                    headers: { "Content-Type": "multipart/form-data" }
                 });
 
-                if (res.status === 200) {
-                    console.log("Wiki 등록 성공:", res.data);
+                // 응답 데이터 처리
+                if (response && response.data) {
+                    if (response.data.isSuccess) {
+                        return true; // 성공 시 true 반환
+                    } else {
+                        throw new Error(response.data.message || "서버 응답 오류");
+                    }
+                } else {
+                    throw new Error("응답 데이터가 없습니다.");
                 }
             } catch (error) {
-                console.error("Wiki 등록 실패:", error);
-                throw error; 
+                console.error("위키 등록 중 오류 발생:", error);
+                throw error;
             }
-        }
+        },
+
+        // 위키 상세 조회 기능
+        async fetchWikiDetail(id) {
+            try {
+                const response = await axios.get(backend + "/wiki/detail", {
+                    withCredentials: true,
+                    params: { id: id }, 
+                });
+
+                if (response && response.data) {
+                    this.wikiDetail = response.data.result;
+                } else {
+                    throw new Error("위키 상세 조회 실패");
+                }
+            } catch (error) {
+                console.error("위키 상세 조회 중 오류 발생:", error);
+            }
+        },
     },
 });

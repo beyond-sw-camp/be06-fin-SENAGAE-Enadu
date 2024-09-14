@@ -6,7 +6,8 @@
       <input type="password" placeholder="비밀번호" v-model="user.password" />
       <button type="button" @click="submit">로그인</button>
       <img class="github"
-        src="https://user-images.githubusercontent.com/9599/61177475-2ddce800-a58b-11e9-9bf6-aa4794a99f2a.png">
+        src="https://user-images.githubusercontent.com/9599/61177475-2ddce800-a58b-11e9-9bf6-aa4794a99f2a.png"
+        @click="githubLogin">
     </form>
   </div>
 </template>
@@ -39,6 +40,9 @@
           return;
         }
         this.$emit('login', this.user);
+      },
+      githubLogin() {
+        window.location.href = "http://localhost:8080/oauth2/authorization/github"
       }
     }
   };

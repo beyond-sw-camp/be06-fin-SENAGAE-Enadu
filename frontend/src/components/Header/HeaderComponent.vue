@@ -26,7 +26,7 @@
           </div>
           <div v-else>
             <ul>
-                <li><a href="#">로그아웃</a></li>
+                <li><a href="#" @click.prevent="logout">로그아웃</a></li>
                 <li class="divider">|</li>
                 <li><a href="#">포인트</a></li>
                 <li class="divider">|</li>
@@ -51,6 +51,11 @@
     methods: {
       showAlert() {
         alert("통합 검색은 추후 추가 예정입니다.")
+      },
+      logout() {
+        if (window.confirm("로그아웃 하시겠습니까?")) {
+          this.userStore.logout();
+        }
       }
     }
   }
@@ -168,14 +173,4 @@ header {
       margin-top: 10px;
     }
   }
-
-  .custom-container {
-    width: 75%;
-    max-width: 1400px;
-    margin: 50px auto;
-    /* background-color: #fff; */
-    padding: 30px;
-    border-radius: 10px;
-    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
-}
 </style>
