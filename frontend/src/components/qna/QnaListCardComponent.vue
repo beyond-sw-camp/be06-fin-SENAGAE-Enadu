@@ -102,7 +102,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* QnA card */
 .card {
   position: relative;
