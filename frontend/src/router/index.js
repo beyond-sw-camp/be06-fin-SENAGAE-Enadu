@@ -5,6 +5,7 @@ import WikiRegisterPage from "@/pages/WikiRegisterPage.vue";
 import ChatPage from "@/pages/ChatPage.vue";
 import QnaRegisterComponent from "@/components/qna/QnaRegisterComponent.vue";
 import OAuthLoginPage from "@/pages/OAuthLoginPage.vue";
+import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
 
 
@@ -17,7 +18,8 @@ const router = createRouter({
     { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki", component: WikiRegisterPage },
     { path: "/chat", component: ChatPage },
-    { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } }
+    { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
+    { path: "/wiki/detail", component: WikiDetailPage }
   ]
 });
 
