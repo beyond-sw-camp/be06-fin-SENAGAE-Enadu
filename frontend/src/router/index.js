@@ -20,8 +20,8 @@ const router = createRouter({
     { path: "/qna/register", component: QnaRegisterComponent },
     { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki", component: WikiRegisterPage },
-    { path: "/chat", component: ChatPgae },
-    { path: "/errorarchive", component: ErrorArchiveRegisterPage }
+    { path: "/chat", component: ChatPage },
+    { path: "/errorarchive", component: ErrorArchiveRegisterPage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
     { path: "/point", component: PointPage, children: [
         { path: "info", component: PointInfoComponent },
