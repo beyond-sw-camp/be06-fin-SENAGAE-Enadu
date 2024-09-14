@@ -3,11 +3,13 @@ package org.example.backend.Config;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Config.Filter.JwtFilter;
 import org.example.backend.Config.Filter.LoginFilter;
+import org.example.backend.Exception.CustomAuthenticationEntryPoint;
 import org.example.backend.Exception.CustomAuthenticationFailureHandler;
 import org.example.backend.Security.OAuth2LoginSuccessHandler;
 import org.example.backend.Util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +28,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http.csrf(csrf -> csrf.disable());
@@ -50,9 +52,14 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((auth) ->
                 auth
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/chat/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/qna").authenticated()
+                        .requestMatchers("/point/**").authenticated()
+                        .anyRequest().permitAll()
         );
+
+        http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)); // 인가되지 않은 사용자가 요청을 보냈을 때 처리하는 handler
+
         http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(new LoginFilter(jwtUtil, authenticationManager), UsernamePasswordAuthenticationFilter.class);
 

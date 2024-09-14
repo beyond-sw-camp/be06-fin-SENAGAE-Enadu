@@ -6,8 +6,10 @@ import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidWikiException;
 import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
+import org.example.backend.Wiki.Model.Req.GetWikiDetailReq;
 import org.example.backend.Wiki.Model.Req.GetWikiListReq;
 import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
+import org.example.backend.Wiki.Model.Res.GetWikiDetailRes;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
 import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
 import org.example.backend.Wiki.Service.WikiService;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 
 
 @RestController
@@ -66,5 +69,15 @@ public class WikiController {
         }
         List<WikiListRes> wikiList = wikiService.wikiList(getWikiListReq);
         return new BaseResponse<>(wikiList);
+    }
+
+    // 위키 상세 조회
+    @GetMapping("/detail")
+    public BaseResponse<GetWikiDetailRes> detail(GetWikiDetailReq getWikiDetailReq,
+                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
+
+        return new BaseResponse<>(wikiService.detail(getWikiDetailReq,userId));
     }
 }

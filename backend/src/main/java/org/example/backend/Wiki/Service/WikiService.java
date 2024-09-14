@@ -12,13 +12,16 @@ import org.example.backend.User.Repository.UserRepository;
 import org.example.backend.Wiki.Model.Entity.LatestWiki;
 import org.example.backend.Wiki.Model.Entity.Wiki;
 import org.example.backend.Wiki.Model.Entity.WikiContent;
+import org.example.backend.Wiki.Model.Req.GetWikiDetailReq;
 import org.example.backend.Wiki.Model.Req.GetWikiListReq;
 import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
+import org.example.backend.Wiki.Model.Res.GetWikiDetailRes;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
 import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
 import org.example.backend.Wiki.Repository.LatestWikiRepository;
 import org.example.backend.Wiki.Repository.WikiContentRepository;
 import org.example.backend.Wiki.Repository.WikiRepository;
+import org.example.backend.Wiki.Repository.WikiScrapRepository;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,7 @@ public class WikiService {
     private final WikiContentRepository wikiContentRepository;
     private final LatestWikiRepository latestWikiRepository;
     private final UserRepository userRepository;
+    private final WikiScrapRepository wikiScrapRepository;
 
     public WikiRegisterRes register(WikiRegisterReq wikiRegisterReq, String thumbnail, CustomUserDetails customUserDetails
     ) {
@@ -93,4 +97,38 @@ public class WikiService {
                                 .build())
                 .collect(Collectors.toList());
     }
+
+    // 위키 상세 조회
+    public GetWikiDetailRes detail(GetWikiDetailReq getWikiDetailReq, Long userId) {
+
+        Wiki wiki = wikiRepository.findById(getWikiDetailReq.getId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        LatestWiki latestWiki = wiki.getLatestWiki(); //최신 위키
+
+        GetWikiDetailRes wikiDetailRes = GetWikiDetailRes.builder()
+                .id(wiki.getId())
+                .title(wiki.getTitle())
+                .content(wiki.getLatestWiki().getContent())
+                .category(wiki.getCategory().getCategoryName())
+                .version(latestWiki.getVersion())
+                .checkScrap(ischeckScrap(wiki.getId(), latestWiki.getVersion(), userId))
+                .build();
+        return wikiDetailRes;
+
+    }
+
+    // 스크랩 여부 조회 메서드
+    private Boolean ischeckScrap(Long wikiId, Integer version, Long userId) {
+
+        if (userId == null) {
+            return false;
+        }
+        WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(wikiId, version).orElseThrow(() ->
+                new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        return wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId()).isPresent();
+
+    }
 }
+
+
+
+

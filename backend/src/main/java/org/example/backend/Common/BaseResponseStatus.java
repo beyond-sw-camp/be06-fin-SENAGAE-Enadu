@@ -34,9 +34,9 @@ public enum BaseResponseStatus {
     // 위키 기능 - 5000
     WIKI_REGIST_FAIL(false, 5001,"위키 등록을 실패했습니다."),
     WIKI_TITLE_REGIST_FAIL(false, 5002,"제목을 입력해주세요."),
-    WIKI_CATEGORY_REGIST_FAIL(false, 5002,"카테고리를 입력해주세요."),
     WIKI_CONTENT_REGIST_FAIL(false, 5003,"내용을 입력해주세요."),
     WIKI_CONTENT_DUPLICATION_FAIL(false, 5004,"중복되는 위키입니다."),
+    WIKI_NOT_FOUND_DETAIL(false,5005,"위키 조회를 실패했습니다."),
     // 에러 아카이브 기능 - 6000
 
     // 에러 QnA 기능 - 7000
@@ -58,6 +58,7 @@ public enum BaseResponseStatus {
 
     // 채팅 기능 - 8000
     CHAT_INVALID_CHATROOM_ID(false, 8011, "채팅방을 조회할 수 없습니다."),
+    CHAT_INVALID_USER_ID(false, 8012, "채팅방에 참여하지 않는 사용자 입니다."),
 
     // 카테고리 기능 - 9000
     CATEGORY_FAIL(false, 9001, "요청이 실패하였습니다."),

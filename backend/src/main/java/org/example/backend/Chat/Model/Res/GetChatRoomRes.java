@@ -7,10 +7,11 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class ChatRoomRes {
+public class GetChatRoomRes {
     private Long chatRoomId;
-    private String recipientName;
+    private String recipientNickname;
     private String recipientProfile;
+    private Long recipientId;
     private String lastMessage;
     private LocalDateTime lastMessageDay;
 }
