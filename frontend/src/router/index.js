@@ -8,6 +8,8 @@ import OAuthLoginPage from "@/pages/OAuthLoginPage.vue";
 import PointPage from "@/pages/PointPage.vue";
 import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
 import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
+import WikiDetailPage from "@/pages/WikiDetailPage.vue";
+import QnaDetailPage from "@/pages/QnaDetailPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,6 +17,7 @@ const router = createRouter({
     { path: "/login", component: LoginPage, meta: { showHeader: false }},
     { path: "/qna/list", component: QnaListPage },
     { path: "/qna/register", component: QnaRegisterComponent },
+    { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki", component: WikiRegisterPage },
     { path: "/chat", component: ChatPage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
@@ -22,6 +25,7 @@ const router = createRouter({
         { path: "info", component: PointInfoComponent },
         { path: "rank", component: PointRankingComponent },
       ]},
+    { path: "/wiki/detail", component: WikiDetailPage }
   ]
 });
 

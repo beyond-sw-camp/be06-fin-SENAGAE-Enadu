@@ -77,16 +77,15 @@
         </div>
       </div>
       <div class="qna-category-highlow">
-        <span>{{ qnaCard.superCategory }}</span>
+        <span>{{ qnaCard.superCategoryName }}</span>
         /
-        <span>{{ qnaCard.subCategory }}</span>
+        <span>{{ qnaCard.subCategoryName }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
 import {formatDateTime} from "@/utils/FormatDate";
 
 export default {
