@@ -4,7 +4,13 @@ import QnaListPage from "@/pages/QnaListPage.vue";
 import WikiRegisterPage from "@/pages/WikiRegisterPage.vue";
 import ChatPage from "@/pages/ChatPage.vue";
 import QnaRegisterComponent from "@/components/qna/QnaRegisterComponent.vue";
+import ErrorArchiveRegisterPage from "@/pages/ErrorArchiveRegisterPage.vue";
 import OAuthLoginPage from "@/pages/OAuthLoginPage.vue";
+import PointPage from "@/pages/PointPage.vue";
+import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
+import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
+import WikiDetailPage from "@/pages/WikiDetailPage.vue";
+import QnaDetailPage from "@/pages/QnaDetailPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,10 +18,18 @@ const router = createRouter({
     { path: "/login", component: LoginPage, meta: { showHeader: false }},
     { path: "/qna/list", component: QnaListPage },
     { path: "/qna/register", component: QnaRegisterComponent },
+    { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki", component: WikiRegisterPage },
     { path: "/chat", component: ChatPage },
-    { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } }
+    { path: "/errorarchive", component: ErrorArchiveRegisterPage },
+    { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
+    { path: "/point", component: PointPage, children: [
+        { path: "info", component: PointInfoComponent },
+        { path: "rank", component: PointRankingComponent },
+      ]},
+    { path: "/wiki/detail", component: WikiDetailPage }
   ]
+  
 });
 
 export default router;

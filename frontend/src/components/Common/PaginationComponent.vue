@@ -1,5 +1,6 @@
 <template>
-  <div class="ui pagination menu">
+  <div v-show="isLoading" class="ui pagination menu">
+    <a class="item" @click="setPrevPage">&lt;&lt;</a>
     <a
         v-for="number in pageNumbers"
         :key="number"
@@ -8,24 +9,65 @@
     >
       {{ number }}
     </a>
+    <a class="item" @click="setNextPage">&gt;&gt;</a>
   </div>
 </template>
 
 <script>
 export default {
   name: "PaginationComponent",
+  props: ["totalPage"],
   data() {
     return {
       currentPage: 1,
-      pageNumbers: [1, 2, 3, 4, 5],
+      pageNumbers: [],
+      isLoading: false,
     };
   },
   methods: {
     setActivePage(number) {
       this.currentPage = number
-      this.$emit('updatePage',this.currentPage);
+      this.$emit('updatePage', this.currentPage);
+    },
+    setPrevPage() {
+      if (this.currentPage === 1) {
+        return;
+      }
+      this.currentPage--;
+      if (this.currentPage % 5 === 0) {
+        this.pageNumbers = [];
+        for (let page = this.currentPage - 4; page < this.currentPage + 1; page++) {
+          this.pageNumbers.push(page);
+        }
+      }
+      this.$emit('updatePage', this.currentPage);
+    },
+    setNextPage() {
+      if (this.currentPage === this.totalPage) {
+        return;
+      }
+      this.currentPage++;
+      if (this.currentPage % 5 === 1) {
+        this.pageNumbers = [];
+        for (let page = this.currentPage; page < this.currentPage + 5 ; page++) {
+          if (page > this.totalPage) {
+            break;
+          }
+          this.pageNumbers.push(page);
+        }
+      }
+      this.$emit('updatePage', this.currentPage);
     },
   },
+  created() {
+    for (let page = 1; page < this.totalPage + 1; page++) {
+      if (page > 5){
+        break;
+      }
+      this.pageNumbers.push(page);
+    }
+    this.isLoading = true;
+  }
 };
 </script>
 
@@ -41,6 +83,7 @@ export default {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
+
 .ui.menu {
   display: -webkit-box;
   display: -ms-flexbox;
