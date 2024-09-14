@@ -6,6 +6,8 @@ import ChatPage from "@/pages/ChatPage.vue";
 import QnaRegisterComponent from "@/components/qna/QnaRegisterComponent.vue";
 import OAuthLoginPage from "@/pages/OAuthLoginPage.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
+import QnaDetailPage from "@/pages/QnaDetailPage.vue";
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,6 +15,7 @@ const router = createRouter({
     { path: "/login", component: LoginPage, meta: { showHeader: false }},
     { path: "/qna/list", component: QnaListPage },
     { path: "/qna/register", component: QnaRegisterComponent },
+    { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki", component: WikiRegisterPage },
     { path: "/chat", component: ChatPage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
