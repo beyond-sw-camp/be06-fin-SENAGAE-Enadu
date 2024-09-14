@@ -4,6 +4,7 @@ import QnaListPage from "@/pages/QnaListPage.vue";
 import WikiRegisterPage from "@/pages/WikiRegisterPage.vue";
 import ChatPage from "@/pages/ChatPage.vue";
 import QnaRegisterComponent from "@/components/qna/QnaRegisterComponent.vue";
+import ErrorArchiveRegisterPage from "@/pages/ErrorArchiveRegisterPage.vue";
 import OAuthLoginPage from "@/pages/OAuthLoginPage.vue";
 import PointPage from "@/pages/PointPage.vue";
 import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
@@ -19,7 +20,8 @@ const router = createRouter({
     { path: "/qna/register", component: QnaRegisterComponent },
     { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki", component: WikiRegisterPage },
-    { path: "/chat", component: ChatPage },
+    { path: "/chat", component: ChatPgae },
+    { path: "/errorarchive", component: ErrorArchiveRegisterPage }
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
     { path: "/point", component: PointPage, children: [
         { path: "info", component: PointInfoComponent },
@@ -27,6 +29,7 @@ const router = createRouter({
       ]},
     { path: "/wiki/detail", component: WikiDetailPage }
   ]
+  
 });
 
 export default router;
