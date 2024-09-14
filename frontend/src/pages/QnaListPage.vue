@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="custom-container">
     <div class="qna-top">
       <p id="main-title">QnA</p>
       <p id="sub-title">당신의 에러를 해결해보세요</p>
