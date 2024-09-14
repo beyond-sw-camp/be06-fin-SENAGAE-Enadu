@@ -2,6 +2,7 @@ package org.example.backend.User.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
+import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.User.Model.Req.UserSignupReq;
@@ -31,6 +32,16 @@ public class UserController {
         } else {
             profileImgUrl = cloudFileUploadService.uploadImg(profileImg);
         }
+
+        // 이메일 중복 확인
+        if (userService.checkDuplicateEmail(userSignupReq.getEmail())){
+            return new BaseResponse<>(BaseResponseStatus.USER_DUPLICATE_EMAIL);
+        }
+        // 닉네임 중복 확인
+        if(userService.checkDuplicateNickname(userSignupReq.getNickname())){
+            return new BaseResponse<>(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
+        }
+
         userService.signup(userSignupReq, profileImgUrl);
         return new BaseResponse<>();
     }
