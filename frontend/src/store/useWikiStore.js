@@ -54,7 +54,6 @@ export const useWikiStore = defineStore("wiki", {
                 // 응답 데이터 처리
                 if (response && response.data) {
                     if (response.data.isSuccess) {
-                        console.log("위키 등록 성공:", response.data.result);
                         return true; // 성공 시 true 반환
                     } else {
                         throw new Error(response.data.message || "서버 응답 오류");
@@ -75,10 +74,8 @@ export const useWikiStore = defineStore("wiki", {
                     withCredentials: true,
                     params: { id: id }, 
                 });
-                console.log('전체 백엔드 응답:', response);
 
                 if (response && response.data) {
-                    console.log('Backend response:', response.data);
                     this.wikiDetail = response.data.result;
                 } else {
                     throw new Error("위키 상세 조회 실패");
