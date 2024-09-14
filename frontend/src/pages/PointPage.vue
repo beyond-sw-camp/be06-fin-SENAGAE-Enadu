@@ -1,8 +1,8 @@
 <template>
   <div class="custom-container" style="text-align:center;">
-    <router-view v-show="isLoading"/>
+    <router-view v-show="isLoading" />
     <div v-if="!isLoading"></div>
-    <pagination-component v-else style="margin-top: 20px;" @updatePage="updatePage" :totalPage="pointStore.pointHistoryList[0].totalPage"/>
+    <pagination-component v-else style="margin-top: 20px;" @updatePage="updatePage" :totalPage="totalPage"/>
   </div>
 
 </template>
@@ -23,6 +23,7 @@ export default {
     return {
       isLoading: false,
       page: 0,
+      totalPage: 1
     }
   },
   methods: {
@@ -35,13 +36,27 @@ export default {
     },
     async getPointHistory() {
       await this.pointStore.getPointHistory(this.page);
+      if (this.pointStore.pointHistoryList.length !== 0){
+        this.totalPage = this.pointStore.pointHistoryList[0].totalPage;
+      }
       this.isLoading = true;
     },
+    async getPointRankList(){
+      await this.pointStore.getPointRankList(this.page);
+      if (this.pointStore.pointRankingList.length !== 0){
+        this.totalPage = this.pointStore.pointRankingList[0].totalPage;
+      }
+      this.isLoading = true;
+    }
 
   },
   mounted() {
     this.getMyRank();
-    this.getPointHistory(this.page);
+    if(this.$route.path.endsWith("info")){
+      this.getPointHistory(this.page);
+    } else if (this.$route.path.endsWith("rank")){
+      this.getPointRankList(this.page);
+    }
 
   },
 }

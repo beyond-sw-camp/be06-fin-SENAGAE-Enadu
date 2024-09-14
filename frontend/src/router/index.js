@@ -7,6 +7,7 @@ import QnaRegisterComponent from "@/components/qna/QnaRegisterComponent.vue";
 import OAuthLoginPage from "@/pages/OAuthLoginPage.vue";
 import PointPage from "@/pages/PointPage.vue";
 import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
+import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,6 +20,7 @@ const router = createRouter({
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
     { path: "/point", component: PointPage, children: [
         { path: "info", component: PointInfoComponent },
+        { path: "rank", component: PointRankingComponent },
       ]},
   ]
 });

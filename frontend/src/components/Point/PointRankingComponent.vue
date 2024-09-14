@@ -6,7 +6,7 @@
       <a href="/point/info" class="points">포인트 내역</a>
     </div>
 
-    <div class="point-container">
+    <div class="rank-container">
       <div class="my-ranking">
         <h2>내 랭킹</h2>
         <div class="ranking-info">
@@ -14,25 +14,37 @@
           <p>포인트: <strong>{{ pointStore.myPointRank.point }}P</strong></p>
         </div>
       </div>
-      <PointHistoryComponent v-for="(pointHistory, idx) in pointStore.pointHistoryList" :key="idx"
-                             :pointHistory="pointHistory"/>
+      <table class="ranking-table">
+        <thead>
+        <tr>
+          <th>순위</th>
+          <th>유저</th>
+          <th>포인트</th>
+        </tr>
+        </thead>
+        <tbody>
+          <PointRankingUserComponent v-for="(pointRanking, idx) in pointStore.pointRankingList" :key="idx" :pointRanking="pointRanking"/>
+        </tbody>
+      </table>
     </div>
   </div>
-
-
 </template>
 
+
+
 <script>
-import PointHistoryComponent from "@/components/Point/PointHistoryComponent.vue";
+
+import PointRankingUserComponent from "@/components/Point/PointRankingUserComponent.vue";
 import {mapStores} from "pinia";
 import {usePointStore} from "@/store/usePointStore";
 
 export default {
-  name: "MyPointInfoComponent",
-  components: {PointHistoryComponent},
+  name: "PointRankingComponent" ,
+  components: { PointRankingUserComponent},
   computed: {
-    ...mapStores(usePointStore),
+    ...mapStores(usePointStore)
   }
+
 }
 </script>
 
@@ -43,8 +55,8 @@ export default {
   margin: 0 auto;
   background-color: #fff;
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .point {
@@ -70,11 +82,11 @@ export default {
 }
 
 .point .ranking {
-  color: #aaa;
+  color: #333;
 }
 
 .point .points {
-  color: #333;
+  color: #aaa;
 }
 
 .divider {
@@ -82,14 +94,6 @@ export default {
   color: #ccc;
   margin: 0 10px;
 }
-
-.point-container {
-  margin-top: 10px;
-  padding-top: 20px;
-  border-radius: 8px;
-  padding: 15px;
-}
-
 .my-ranking {
   text-align: center;
   margin-bottom: 30px;
@@ -109,5 +113,34 @@ export default {
 .my-ranking .ranking-info p {
   margin: 5px 0;
 }
+.rank-container {
+  margin-top: 10px;
+  padding-top: 20px;
+  border-radius: 8px;
+  padding: 15px;
+}
 
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ranking-table th, .ranking-table td {
+  padding: 15px;
+  text-align: left;
+}
+
+.ranking-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.ranking-table td  {
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+  background-color: #f5f7f7;
+}
 </style>
