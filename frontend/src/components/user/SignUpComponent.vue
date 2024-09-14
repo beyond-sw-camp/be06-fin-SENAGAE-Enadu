@@ -5,44 +5,43 @@
       <p class="explanation">아이디(E-mail)</p>
 
       <div class="half-form">
-        <input type="email" placeholder="sample@gmail.com" v-model="email" />
+        <input type="email" placeholder="sample@gmail.com" v-model="userInfo.email" />
         <button type="button" class="check-button" @click="checkEmail">중복 확인</button>
       </div>
       
       <p class="explanation">비밀번호</p>
-      <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="password" />
+      <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="userInfo.password" />
 
       <p class="explanation">
         비밀번호 확인
-        <span v-if="password && confirmPassword">
-          {{ password === confirmPassword ? ' (일치)' : ' (불일치)' }}
+        <span v-if="userInfo.password && userInfo.confirmPassword">
+          {{ userInfo.password === userInfo.confirmPassword ? ' (일치)' : ' (불일치)' }}
         </span>
       </p>
-      <input type="password" placeholder="비밀번호를 한 번 더 입력해주세요" v-model="confirmPassword" />
+      <input type="password" placeholder="비밀번호를 한 번 더 입력해주세요" v-model="userInfo.confirmPassword" />
 
-      <p class="explanation">이름</p>
-      <input type="text" placeholder="홍길동" v-model="name" />
 
       <p class="explanation">닉네임</p>
       <div class="half-form">
-        <input type="text" placeholder="닉네임" v-model="nickname" />
+        <input type="text" placeholder="닉네임" v-model="userInfo.nickname" />
         <button type="button" class="check-button" @click="checkNickname">중복 확인</button>
       </div>
 
       <p class="explanation">프로필 이미지</p>
       <div class="half-form">
         <div class="profile-preview">
-          <img :src="profileImage" alt="" class="profile-image" />
+          <img :src="imgUrl" alt="" class="profile-image" />
         </div>
         <input type="file" @change="handleProfileImageUpload" accept="image/*" />
       </div>
 
-      <button type="button" @click="handleSignup">회원가입</button>
+      <button type="button" @click="signup">회원가입</button>
     </form>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
   export default {
     name: "SignUpComponent",
     props: {
@@ -50,37 +49,70 @@
     },
     data() {
       return {
-        email: "",
-        password: "",
-        confirmPassword: "",
-        name: "",
-        nickname: "",
-        profileImage: "http://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Download-Image.png",
+        userInfo: {
+          email: "",
+          password: "",
+          nickname: "",
+          confirmPassword: "",
+        },
+        imgUrl: "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6",
+        selectedProfileFile: null,
       };
     },
     methods: {
-      handleSignup() {
-        if (this.password !== this.confirmPassword) {
+      signup() {
+        if (this.userInfo.password !== this.userInfo.confirmPassword) {
           alert("비밀번호가 일치하지 않습니다.");
           return;
         }
-        alert("회원가입 완료");
-        this.$emit("toggleSignIn", true);
-      },
-      checkEmail() {
-        alert("이메일 중복 확인을 실행합니다.");
-      },
-      checkNickname() {
-        alert("닉네임 중복 확인을 실행합니다.");
+        console.log("success");
+        this.$emit('signup', this.userInfo, this.selectedProfileFile);
       },
       handleProfileImageUpload(event) {
         const file = event.target.files[0];
         if (file) {
-          this.profileImage = URL.createObjectURL(file);
+          this.imgUrl = URL.createObjectURL(file);
+          this.selectedProfileFile=file;
         }
       },
+      async checkEmail() {
+    try {
+        const response = await axios.get("http://localhost:8080/user/duplicate/email", {
+            params: {
+                email: this.userInfo.email,
+            },
+        });
+        // BaseResponse에서 data를 꺼내서 처리합니다.
+        if (response.data.result === false) {
+            alert("중복된 이메일입니다.");
+        } else {
+            alert("사용 가능한 이메일입니다.");
+        }
+    } catch (error) {
+        alert("이메일 중복 확인 실패");
+        console.error("이메일 중복 확인 에러:", error.response ? error.response.data : error.message);
+    }
+},
+      async checkNickname() {
+      try {
+        const response = await axios.get("http://localhost:8080/user/duplicate/nickname", {
+          params: {
+            nickname: this.userInfo.nickname,
+          },
+        });
+
+        if (response.data.result === false) {
+          alert("중복된 닉네임입니다.");
+        } else {
+          alert("사용 가능한 닉네임입니다.");
+        }
+      } catch (error) {
+        alert("닉네임 중복 확인 실패");
+        console.error("닉네임 중복 확인 에러:", error);
+      }
     },
-  };
+    }
+};
 </script>
 
 <style scoped>
