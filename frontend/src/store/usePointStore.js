@@ -28,26 +28,6 @@ export const usePointStore = defineStore("point", {
                 gradeImg: "url",
                 rank: "1",
                 totalPage: 10,
-            },
-            {
-                point: 2000,
-                userId: 0,
-                nickname: "nickname",
-                profileImg: "url",
-                grade: "뉴비",
-                gradeImg: "url",
-                rank: "2",
-                totalPage: 10,
-            },
-            {
-                point: 1000,
-                userId: 0,
-                nickname: "nickname",
-                profileImg: "url",
-                grade: "뉴비",
-                gradeImg: "url",
-                rank: "3",
-                totalPage: 10,
             }
         ],
 
@@ -62,10 +42,10 @@ export const usePointStore = defineStore("point", {
             const res = await axios.get(`${backend}/point/myrank`, {withCredentials: true})
             this.myPointRank = res.data.result;
         },
-        async getPointRankList() {
-            // const res = await axios.get(`${backend}/point/rank`, {withCredentials: true})
-            // this.myPointRank = res.data.result;
-            console.log(1);
+        async getPointRankList(page) {
+            const size = 10;
+            const res = await axios.get(`${backend}/point/rank?page=${page}&size=${size}`, {withCredentials: true})
+            this.pointRankingList = res.data.result;
         }
     }
 })

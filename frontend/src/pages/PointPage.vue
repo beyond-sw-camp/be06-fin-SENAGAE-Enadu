@@ -32,7 +32,11 @@ export default {
     },
     updatePage(page){
       this.page = page-1
-      this.getPointHistory();
+      if(this.$route.path.endsWith("info")){
+        this.getPointHistory();
+      } else if (this.$route.path.endsWith("rank")){
+        this.getPointRankList();
+      }
     },
     async getPointHistory() {
       await this.pointStore.getPointHistory(this.page);
@@ -53,9 +57,9 @@ export default {
   mounted() {
     this.getMyRank();
     if(this.$route.path.endsWith("info")){
-      this.getPointHistory(this.page);
+      this.getPointHistory();
     } else if (this.$route.path.endsWith("rank")){
-      this.getPointRankList(this.page);
+      this.getPointRankList();
     }
 
   },

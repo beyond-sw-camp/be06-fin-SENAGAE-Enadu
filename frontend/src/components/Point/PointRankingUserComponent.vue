@@ -2,11 +2,11 @@
   <tr>
     <td><strong>{{ pointRanking.rank }}</strong></td>
     <td>
-      <i class="fas fa-trophy"></i>
+      <img :src="pointRanking.gradeImg" alt="user2" class="user-icon">
       <img :src="pointRanking.profileImg" alt="user2" class="user-icon">
       <span class="username">{{ pointRanking.nickname }}</span>
     </td>
-    <td class="rating">{{ pointRanking.point }}</td>
+    <td class="rating" :class="pointRanking.point < 0 ? 'negative' : ''">{{ pointRanking.point }}</td>
   </tr>
 </template>
 
@@ -47,6 +47,8 @@ export default {
 .ranking-table .user-icon {
   border-radius: 50%;
   margin-right: 20px;
+  width: 30px;
+  height: 30px;
 }
 
 .username {
@@ -57,6 +59,10 @@ export default {
   text-align: right;
   font-weight: bold;
   color: #1e88e5;
+}
+
+.rating.negative {
+  color: #e53935;
 }
 
 </style>
