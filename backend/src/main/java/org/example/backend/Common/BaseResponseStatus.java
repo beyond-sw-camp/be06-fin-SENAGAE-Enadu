@@ -26,6 +26,9 @@ public enum BaseResponseStatus {
     // 이메일 인증 실패
     USER_EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다"),
 
+    // 이메일 인증 실패
+    EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다"),
+
     // 마이페이지 기능 - 3000
 
     // 포인트 기능 - 4000
