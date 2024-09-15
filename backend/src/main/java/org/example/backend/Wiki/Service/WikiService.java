@@ -14,8 +14,10 @@ import org.example.backend.Wiki.Model.Entity.Wiki;
 import org.example.backend.Wiki.Model.Entity.WikiContent;
 import org.example.backend.Wiki.Model.Req.GetWikiDetailReq;
 import org.example.backend.Wiki.Model.Req.GetWikiListReq;
+import org.example.backend.Wiki.Model.Req.GetWikiUpdateReq;
 import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
 import org.example.backend.Wiki.Model.Res.GetWikiDetailRes;
+import org.example.backend.Wiki.Model.Res.GetWikiUpdateRes;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
 import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
 import org.example.backend.Wiki.Repository.LatestWikiRepository;
@@ -125,6 +127,43 @@ public class WikiService {
         WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(wikiId, version).orElseThrow(() ->
                 new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         return wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId()).isPresent();
+
+    }
+
+    // 위키 수정
+    public GetWikiUpdateRes update(GetWikiUpdateReq getWikiUpdateReq, String thumbnailUrl, Long userId) {
+
+        User user = userRepository.findById(userId).get();
+
+        if (user.getGrade().equals("뉴비")) {
+            throw new InvalidWikiException(BaseResponseStatus.WIKI_PERMISSION_DENIED);
+        }
+
+        Wiki wiki = wikiRepository.findById(getWikiUpdateReq.getId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        LatestWiki latestWiki = wiki.getLatestWiki();
+
+        // 썸네일 처리 로직
+        String updateThumbnail = thumbnailUrl;
+        if (updateThumbnail == null) {
+            updateThumbnail = latestWiki.getThumbnailImgUrl();
+            }
+        // WikiContent 등록
+        WikiContent updateWikiContent = WikiContent.builder()
+                .wiki(wiki)
+                .content(getWikiUpdateReq.getContent())
+                .version(latestWiki.getVersion()+1)
+                .user(user)
+                .thumbnail(updateThumbnail)
+                .build();
+        wikiContentRepository.save(updateWikiContent);
+
+        // LatestWiki 업데이트
+        latestWiki.setContent(updateWikiContent.getContent());
+        latestWiki.setVersion(updateWikiContent.getVersion());
+        latestWiki.setThumbnailImgUrl(updateThumbnail);
+        latestWikiRepository.save(latestWiki);
+
+        return GetWikiUpdateRes.builder().wikiId(wiki.getId()).build();
 
     }
 }

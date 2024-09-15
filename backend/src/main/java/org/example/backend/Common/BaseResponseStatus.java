@@ -37,6 +37,8 @@ public enum BaseResponseStatus {
     WIKI_CONTENT_REGIST_FAIL(false, 5003,"내용을 입력해주세요."),
     WIKI_CONTENT_DUPLICATION_FAIL(false, 5004,"중복되는 위키입니다."),
     WIKI_NOT_FOUND_DETAIL(false,5005,"위키 조회를 실패했습니다."),
+    WIKI_PERMISSION_DENIED(false, 5006,"수정 권한이 없습니다."),
+
     // 에러 아카이브 기능 - 6000
 
     // 에러 QnA 기능 - 7000
