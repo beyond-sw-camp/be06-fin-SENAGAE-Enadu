@@ -1,5 +1,6 @@
 package org.example.backend.Qna.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Answer.Model.Entity.Answer;
 import org.example.backend.Answer.Model.Entity.AnswerComment;
@@ -38,6 +39,7 @@ public class QnaService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public Long saveQuestion(CreateQuestionReq createQuestionReq, Long userId) {
         Optional<Category> category = categoryRepository.findById(createQuestionReq.getCategoryId());
         Optional<User> user = userRepository.findById(userId);

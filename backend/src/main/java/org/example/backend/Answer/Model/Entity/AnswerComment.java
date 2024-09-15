@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.User.Model.Entity.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -28,9 +31,12 @@ public class AnswerComment {
         @JoinColumn(name = "user_id", nullable = false)
         private User user;
 
-        @OneToOne(fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "super_comment_id")
         private AnswerComment answerComment;
+
+        @OneToMany(mappedBy = "answerComment", cascade = CascadeType.ALL)
+        private List<AnswerComment> subCommentList = new ArrayList<>();
 
         @Column(name = "content", columnDefinition = "TEXT", nullable = false)
         private String content;
