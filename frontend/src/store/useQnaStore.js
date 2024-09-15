@@ -25,11 +25,11 @@ export const useQnaStore = defineStore("qna", {
 
 
   actions: {
-    async registerQna(myTitle, myText) {
+    async registerQna(myTitle, myText, myCategory) {
       const data = {
         title: myTitle,
         content: myText,
-        categoryId: 5
+        categoryId: myCategory
       };
 
       try {
@@ -39,7 +39,7 @@ export const useQnaStore = defineStore("qna", {
           }, withCredentials: true
         });
       } catch (error) {
-        console.log("err")
+        alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
       }
     },
 
@@ -56,18 +56,21 @@ export const useQnaStore = defineStore("qna", {
           withCredentials: true
         });
         this.qnaCards = res.data.result;
-        console.log(this.qnaCards);
       } catch (error) {
-        console.error("Error fetching Q&A list:", error);
+        alert("질문 목록 데이터 요청 중 에러가 발생했습니다.");
       }
     },
     async getQnaDetail() {
+      try{
       const route = useRoute();
       let res = await axios.get(
           "/api/qna/detail?qnaBoardId="+ route.params.id, { withCredentials: true }
       );
       this.qnaDetail = res.data.result;
       this.qnaAnswers = res.data.result.answers;
+      } catch (error) {
+      alert("질문 상세 데이터 요청 중 에러가 발생했습니다.");
+    }
     },
   },
 });
