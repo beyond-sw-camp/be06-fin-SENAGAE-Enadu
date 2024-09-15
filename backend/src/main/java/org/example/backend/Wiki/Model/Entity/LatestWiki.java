@@ -23,7 +23,6 @@ public class LatestWiki {
     private String content;
 
     @CreatedDate
-    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
