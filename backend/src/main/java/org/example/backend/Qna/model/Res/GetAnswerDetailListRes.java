@@ -6,11 +6,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class GetAnswerDetailListRes {
+    private Long id;
     private String answer;
     private Integer likeCnt;
     private Integer hateCnt;

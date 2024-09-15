@@ -1,5 +1,6 @@
 package org.example.backend.Qna.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Answer.Model.Entity.Answer;
 import org.example.backend.Answer.Model.Entity.AnswerComment;
@@ -38,6 +39,7 @@ public class QnaService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public Long saveQuestion(CreateQuestionReq createQuestionReq, Long userId) {
         Optional<Category> category = categoryRepository.findById(createQuestionReq.getCategoryId());
         Optional<User> user = userRepository.findById(userId);
@@ -122,6 +124,7 @@ public class QnaService {
     public List<GetAnswerDetailListRes> getAnswerDetails(List<Answer> answers) {
         return answers.stream()
                 .map(answer -> GetAnswerDetailListRes.builder()
+                        .id(answer.getId())
                         .answer(answer.getContent())
                         .likeCnt(answer.getLikeCnt())
                         .hateCnt(answer.getHateCnt())
@@ -139,7 +142,9 @@ public class QnaService {
     public List<GetAnswerCommentDetailListRes> getAnswerCommentDetails(List<AnswerComment> answerComments) {
         return answerComments.stream()
                 .map(answerComment -> GetAnswerCommentDetailListRes.builder()
-                        .superCommentId(answerComment.getAnswerComment().getId())
+                        .id(answerComment.getId())
+                        .superCommentId(answerComment.getAnswerComment() != null ?
+                        answerComment.getId() : null)
                         .answerComment(answerComment.getContent())
                         .nickname(answerComment.getUser().getNickname())
                         .grade(answerComment.getUser().getGrade())
