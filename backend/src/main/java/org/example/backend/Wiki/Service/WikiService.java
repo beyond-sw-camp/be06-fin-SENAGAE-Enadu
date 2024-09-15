@@ -26,6 +26,7 @@ import org.example.backend.Wiki.Repository.WikiRepository;
 import org.example.backend.Wiki.Repository.WikiScrapRepository;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,7 @@ public class WikiService {
     private final UserRepository userRepository;
     private final WikiScrapRepository wikiScrapRepository;
 
+    @Transactional
     public WikiRegisterRes register(WikiRegisterReq wikiRegisterReq, String thumbnail, CustomUserDetails customUserDetails
     ) {
         // 위키 등록시 중복 확인 로직
@@ -131,6 +133,7 @@ public class WikiService {
     }
 
     // 위키 수정
+    @Transactional
     public GetWikiUpdateRes update(GetWikiUpdateReq getWikiUpdateReq, String thumbnailUrl, Long userId) {
 
         User user = userRepository.findById(userId).get();
