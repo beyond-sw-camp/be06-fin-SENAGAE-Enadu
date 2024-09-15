@@ -86,6 +86,14 @@ export default {
       }
     },
     clickSendMessageButton(){
+      if (this.chatStore.selectedChatRoom.chatRoomId === 0){
+        alert("채팅방이 선택되지 않았습니다.");
+        this.content=""
+        return;
+      } else if (this.content === ""){
+        alert("채팅 메세지를 입력해주세요.");
+        return;
+      }
       this.chatStore.sendMessage(this.content);
       this.content=""
       this.autoResize()

@@ -37,14 +37,23 @@ export const useChatStore = defineStore("chat", {
         async getChatRoomList() {
             const res = await axios.get(backend + "/chat/chatRoomList", {withCredentials: true})
             this.chatRoomList = res.data.result;
+            console.log("채팅룽리스트: "+this.chatRoomList);
+            if (this.chatRoomList.length === 0) {
+                return;
+            }
             this.selectedChatRoom = {
                 chatRoomId: this.chatRoomList[0].chatRoomId,
                 recipientNickname: this.chatRoomList[0].recipientNickname,
                 recipientProfile: this.chatRoomList[0].recipientProfile,
                 recipientId: this.chatRoomList[0].recipientId
             }
+            console.log(this.selectedChatRoom);
         },
         async getChatMessageList(page) {
+            if (this.chatRoomList.length === 0) {
+                this.chatMessageList = [];
+                return;
+            }
             const res = await axios.get(backend + "/chat/messageList", {
                 params: {
                     chatRoomId: this.selectedChatRoom.chatRoomId,
@@ -53,9 +62,7 @@ export const useChatStore = defineStore("chat", {
                 },
                 withCredentials: true
             });
-            console.log(res.data);
             this.chatMessageList = res.data.result;
-            console.log(this.chatMessageList);
 
             this.connect();
 
@@ -82,6 +89,9 @@ export const useChatStore = defineStore("chat", {
                     })
                 }
             )
+        },
+        disconnect(){
+            this.stompClient.disconnect();
         },
         send(message) {
             console.log("Send Message:" + message);
