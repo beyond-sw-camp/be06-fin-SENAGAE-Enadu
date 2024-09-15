@@ -175,5 +175,12 @@ export default {
   #rowGapZero {
     row-gap: 0;
   }
+  @media (prefers-color-scheme: dark) {
+    .dark\:bg-gray-700 {
+      --tw-bg-opacity: 1;
+      background-color: #db282873;
+    }
+  }
+
 </style>
 
