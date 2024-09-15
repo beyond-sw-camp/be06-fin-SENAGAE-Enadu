@@ -117,4 +117,12 @@ public class User {
     public void updateProfileImg(String imgUrl) {
         this.profileImg = imgUrl;
     }
+
+    public void updatePoint(Integer point) {
+        this.point += point;
+    }
+
+    public void updateGrade(String grade) {
+        this.grade = grade;
+    }
 }
