@@ -11,6 +11,8 @@
           <ChatRoomComponent v-else v-for="(chatRoom, idx) in chatRoomList" :key="`${idx}-${chatRoom.lastMessageDay}`"
                              :chatRoom="chatRoom" @reload-chatRoom="reloadChatRoom"/>
         </ul>
+        <div class="chat_list_empty"  v-if="chatRoomList.length === 0"><span class="chat_list_empty_span">현재 대화중인 채팅 내역이 없습니다.</span></div>
+
       </div>
     </section>
     <section class="chat_list_footer">
@@ -149,4 +151,15 @@ em{
   padding: 0 15px;
 }
 
+.chat_list_empty {
+  margin-top:200px;
+  display: flex;
+
+}
+
+.chat_list_empty_span {
+  margin: 0 auto;
+  font-weight: bold
+
+}
 </style>

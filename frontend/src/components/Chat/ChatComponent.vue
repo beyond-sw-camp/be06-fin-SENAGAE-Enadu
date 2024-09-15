@@ -25,6 +25,7 @@
             </li>
           </ul>
         </div>
+        <div class="chat_empty"  v-if="chatStore.chatMessageList.length === 0"><span class="chat_empty_span">대화 내역이 없습니다.</span></div>
       </section>
       <footer class="chat_write" aria-hidden="false">
         <div>
@@ -612,5 +613,14 @@ img {
   max-width: 100%;
   border: 0;
   vertical-align: top;
+}
+.chat_empty {
+  margin-bottom:280px;
+  display: flex;
+}
+
+.chat_empty_span {
+  margin: auto auto;
+  font-weight: bold
 }
 </style>

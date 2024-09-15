@@ -37,7 +37,6 @@ export const useChatStore = defineStore("chat", {
         async getChatRoomList() {
             const res = await axios.get(backend + "/chat/chatRoomList", {withCredentials: true})
             this.chatRoomList = res.data.result;
-            console.log("채팅룽리스트: "+this.chatRoomList);
             if (this.chatRoomList.length === 0) {
                 return;
             }
