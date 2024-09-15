@@ -22,6 +22,7 @@ public enum BaseResponseStatus {
     USER_INVALID_TYPE(false,2022,"소셜로 가입한 유저가 아닙니다."),
     USER_INVALID_NICKNAME(false, 2023,"닉네임이 비어있습니다."),
     USER_DUPLICATE_NICKNAME(false, 2031, "이미 있는 닉네임입니다."),
+    USER_DUPLICATE_EMAIL(false,2032,"이미 있는 이메일입니다"),
 
     // 이메일 인증 실패
     USER_EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다"),
