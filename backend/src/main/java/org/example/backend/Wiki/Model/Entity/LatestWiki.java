@@ -2,7 +2,7 @@ package org.example.backend.Wiki.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class LatestWiki {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @CreatedDate
+    @LastModifiedDate
     private LocalDateTime createdAt;
 
     @Column(nullable = false)

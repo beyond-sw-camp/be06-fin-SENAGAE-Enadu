@@ -2,9 +2,9 @@ package org.example.backend.Wiki.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.backend.Qna.model.Entity.QnaScrap;
 import org.example.backend.User.Model.Entity.User;
-
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 public class WikiContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +23,8 @@ public class WikiContent {
     @NonNull
     private String content;
 
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @LastModifiedDate
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private Integer version;
