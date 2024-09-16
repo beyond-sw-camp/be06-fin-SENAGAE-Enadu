@@ -34,10 +34,17 @@ export const useChatStore = defineStore("chat", {
         stompClient: null,
     }),
     actions: {
+        async startChat(nickname) {
+            const startChatReq = {
+                nickname: nickname,
+            }
+            const res = await axios.post(`${backend}/chat/start`, startChatReq, {withCredentials: true});
+            this.selectedChatRoom = res.data.result;
+        },
         async getChatRoomList() {
             const res = await axios.get(backend + "/chat/chatRoomList", {withCredentials: true})
             this.chatRoomList = res.data.result;
-            if (this.chatRoomList.length === 0) {
+            if (this.chatRoomList.length === 0 || this.selectedChatRoom.chatRoomId !== 0) {
                 return;
             }
             this.selectedChatRoom = {
@@ -46,7 +53,6 @@ export const useChatStore = defineStore("chat", {
                 recipientProfile: this.chatRoomList[0].recipientProfile,
                 recipientId: this.chatRoomList[0].recipientId
             }
-            console.log(this.selectedChatRoom);
         },
         async getChatMessageList(page) {
             if (this.chatRoomList.length === 0) {
@@ -62,7 +68,12 @@ export const useChatStore = defineStore("chat", {
                 withCredentials: true
             });
             this.chatMessageList = res.data.result;
-
+            for (let idx=0; idx < this.chatRoomList.length; idx++){
+                if (this.chatRoomList[idx].chatRoomId === this.selectedChatRoom.chatRoomId) {
+                    this.chatRoomList[idx].lastMessage = this.chatMessageList[0].message;
+                    this.chatRoomList[idx].lastMessageDay = this.chatMessageList[0].sendTime;
+                }
+            }
             this.connect();
 
         },
@@ -89,8 +100,9 @@ export const useChatStore = defineStore("chat", {
                 }
             )
         },
-        disconnect(){
+        disconnect() {
             this.stompClient.disconnect();
+            // console.log("소켓 연결 해제");
         },
         send(message) {
             console.log("Send Message:" + message);
@@ -132,9 +144,9 @@ export const useChatStore = defineStore("chat", {
 
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         },
-        updateChatRoomData(chatRoomId, message, sendTime){
-            for(const chatRoom of this.chatRoomList){
-                if (chatRoom.chatRoomId == chatRoomId){
+        updateChatRoomData(chatRoomId, message, sendTime) {
+            for (const chatRoom of this.chatRoomList) {
+                if (chatRoom.chatRoomId == chatRoomId) {
                     chatRoom.lastMessage = message;
                     chatRoom.lastMessageDay = sendTime
                 }
