@@ -60,7 +60,7 @@ public class CloudFileUploadService {
         if (dotIndex == -1) {
             throw new InvalidFileException(BaseResponseStatus.INVALID_FILE_TYPE);
         }
-        String fileExtension = fileName.substring(dotIndex + 1);
+        String fileExtension = fileName.substring(dotIndex + 1).toLowerCase();
         if (!IMAGE_EXTENSIONS.contains(fileExtension)) {
             throw new InvalidFileException(BaseResponseStatus.INVALID_FILE_TYPE);
         }
