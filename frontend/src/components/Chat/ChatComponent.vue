@@ -150,7 +150,7 @@ export default {
 /* class: chat_header 채팅방 헤더 */
 .chat_header {
   position: relative;
-  z-index: 1000;
+  z-index: 200;
   -webkit-box-flex: 0;
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;

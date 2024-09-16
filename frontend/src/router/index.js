@@ -11,6 +11,7 @@ import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
 import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
+import {useChatStore} from "@/store/useChatStore";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -30,6 +31,14 @@ const router = createRouter({
     { path: "/wiki/detail", component: WikiDetailPage }
   ]
   
+});
+
+router.beforeEach((to, from, next) => {
+    if (from.path === "/chat") { // /chat 페이지를 벋어날 때 소켓 연결 해재
+        const chatStore = useChatStore();
+        chatStore.disconnect();
+    }
+    next();
 });
 
 export default router;
