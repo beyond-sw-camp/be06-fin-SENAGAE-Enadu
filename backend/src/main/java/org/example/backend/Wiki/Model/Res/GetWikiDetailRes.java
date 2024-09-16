@@ -13,5 +13,6 @@ public class GetWikiDetailRes {
     private String category;
     private Integer version;
     private Boolean checkScrap;
+    private String userGrade;
 
 }

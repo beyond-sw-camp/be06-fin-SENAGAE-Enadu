@@ -41,4 +41,8 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return user.getEnable();
     }
+
+    public String getGrade() {
+        return user.getGrade();
+    }
 }
