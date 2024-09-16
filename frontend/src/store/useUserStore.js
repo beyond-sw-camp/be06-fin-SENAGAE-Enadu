@@ -102,7 +102,7 @@ export const useUserStore = defineStore('user', {
               // 서버에 닉네임 중복 여부 확인 요청
               const response = await axios.post("http://localhost:8080"+"/user/duplicate/nickname", {nickname: this.userInfo.nickname });
               // 서버로부터 받은 응답에 따라 처리
-              if(response.data.code === 2024){
+              if(response.data.result === true){
                 alert("중복되는 닉네임입니다.")
               } else {
                 alert("중복되지 않는 닉네임입니다.");

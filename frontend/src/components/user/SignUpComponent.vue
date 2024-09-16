@@ -66,6 +66,7 @@
         }
         console.log("success");
         this.$emit('signup', this.userInfo, this.selectedProfileFile);
+        alert("가입 하시겠습니까?")
       },
       handleProfileImageUpload(event) {
         const file = event.target.files[0];
