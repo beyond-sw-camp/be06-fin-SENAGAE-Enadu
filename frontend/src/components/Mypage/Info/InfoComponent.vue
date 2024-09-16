@@ -11,7 +11,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="block mt-4 text-xl">
+                <div v-show="!userStore.userInfo.isSocialUser" class="block mt-4 text-xl">
                     비밀번호
                     <div class="mt-2 flex">
                         <button
@@ -171,6 +171,11 @@ export default {
             } catch (error) {
                 alert("이미지 업로드 중 오류가 발생했습니다.");
             }
+        }
+    },
+    watch: {
+        'userStore.userInfo.nickname'(newNickname) {
+            this.nickname = newNickname;
         }
     }
 }
