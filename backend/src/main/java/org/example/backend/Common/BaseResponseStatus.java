@@ -31,6 +31,7 @@ public enum BaseResponseStatus {
 
 
     // 마이페이지 기능 - 3000
+    MYPAGE_NO_USER_ID(false, 3001, "유저 정보가 없습니다."),
 
     // 포인트 기능 - 4000
 
