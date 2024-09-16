@@ -5,13 +5,17 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.Chat.Model.Entity.Chat;
 import org.example.backend.Chat.Model.Entity.ChatRoom;
 import org.example.backend.Chat.Model.Req.GetMessageReq;
+import org.example.backend.Chat.Model.Req.StartChatReq;
 import org.example.backend.Chat.Model.Res.GetChatMessageRes;
 import org.example.backend.Chat.Model.Res.GetChatRoomRes;
+import org.example.backend.Chat.Model.Res.StartChatRes;
 import org.example.backend.Chat.Repository.ChatRepository;
 import org.example.backend.Chat.Repository.ChatRoomRepository;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidChatException;
+import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.User.Model.Entity.User;
+import org.example.backend.User.Repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,12 +24,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
 
     public List<GetChatRoomRes> getMyChatRoomList(Long userId) {
         List<ChatRoom> myChatRoomList1 = chatRoomRepository.findAllByUser1Id(userId);
@@ -104,5 +110,29 @@ public class ChatService {
                 .sendTime(LocalDateTime.parse(getMessageReq.getSendTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .build();
         chatRepository.save(chat);
+    }
+
+    @Transactional
+    public StartChatRes startChat(Long userId, StartChatReq startChatReq){
+        User recipient = userRepository.findByNickname(startChatReq.getNickname()).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        User user1 = userId < recipient.getId() ? user : recipient;  // 작은 userId가 user1에 들어간다.
+        User user2 = userId > recipient.getId() ? user : recipient;
+        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByUser1IdAndUser2Id(user1.getId(), user2.getId());
+        ChatRoom chatRoom;
+        if (chatRoomOptional.isEmpty()) {
+            chatRoom = ChatRoom.builder().user1(user1).user2(user2).build();
+            chatRoomRepository.save(chatRoom);
+        } else {
+            chatRoom = chatRoomOptional.get();
+        }
+        System.out.println("에러");
+        return StartChatRes.builder()
+                .chatRoomId(chatRoom.getId())
+                .recipientId(recipient.getId())
+                .recipientProfile(recipient.getProfileImg())
+                .recipientNickname(recipient.getNickname())
+                .build();
+
     }
 }
