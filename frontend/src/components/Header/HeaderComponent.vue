@@ -70,6 +70,7 @@ export default {
             if (window.confirm("로그아웃 하시겠습니까?")) {
                 this.userStore.logout();
                 alert("로그아웃 되었습니다.")
+                this.$router.push("/");
             }
         }
     }

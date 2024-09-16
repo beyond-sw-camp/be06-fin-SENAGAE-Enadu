@@ -26,8 +26,6 @@
                 </router-link>
             </div>
         </div>
-
-        <!-- /info 경로가 아닐 때만 이 div를 보여줍니다. -->
         <div class="relative flex gap-x-6 border-t border-gray-500/30 px-6 sm:gap-x-8 dark:border-gray-500/70" v-show="!isInfoRoute">
             <a
                 aria-current="page"
@@ -99,11 +97,6 @@ export default {
 </script>
 
 <style scoped>
-.top {
-    padding-bottom: 15px;
-    align-content: center;
-    align-items: center;
-}
 
 #main-title {
     text-align: center;
