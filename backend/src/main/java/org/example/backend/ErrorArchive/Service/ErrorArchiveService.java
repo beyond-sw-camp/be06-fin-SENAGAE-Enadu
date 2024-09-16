@@ -80,8 +80,8 @@ public class ErrorArchiveService {
 
         Optional<Boolean> likeStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId, true);
         boolean checkLike = likeStatus.orElse(false);
-        Optional<Boolean> hateStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId, true);
-        boolean checkHate = hateStatus.orElse(false);
+        Optional<Boolean> hateStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId, false);
+        boolean checkHate = hateStatus.orElse(true);
 
         GetErrorArchiveDetailRes ErrorArchiveDetailRes = GetErrorArchiveDetailRes.builder()
                 .id(errorArchive.getId())
