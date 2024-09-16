@@ -2,15 +2,21 @@
   <div class="dropdown"  @click.stop="showDropdown">{{ nickname }}
     <ul class="dropdown-menu" v-if="isDropdownVisible">
       <router-link :to="{ path: '/' }"><li><i class="fas fa-user"></i> 회원 정보</li></router-link>
-      <router-link :to="{ path: '/chat' }"><li><i class="fas fa-comments"></i> 1:1 채팅</li></router-link>
+      <li  @click="startChat"><i class="fas fa-comments"></i> 1:1 채팅</li>
     </ul>
   </div>
 </template>
 
 <script>
+import {mapStores} from "pinia";
+import {useChatStore} from "@/store/useChatStore";
+
 export default {
   name: "NicknameComponent",
   props: ['nickname'],
+  computed: {
+    ...mapStores(useChatStore)
+  },
   data() {
     return {
       isDropdownVisible: false,
@@ -25,7 +31,11 @@ export default {
       if (dropdownMenu && !dropdownMenu.contains(event.target)) {
         this.isDropdownVisible = false; // 외부를 클릭하면 드롭다운을 숨김
       }
-    }
+    },
+    async startChat(){
+      await this.chatStore.startChat(this.nickname);
+      this.$router.push('/chat');
+    },
   },
   mounted(){
     document.addEventListener('click', this.handleClickOutside);
@@ -68,13 +78,7 @@ export default {
   background-color: #f8f8f8;
 }
 
-.dropdown .dropdown-menu li a{
-  color: #333;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-menu li a:hover {
+.dropdown-menu li:hover {
   color: var(--main-color);
 }
 
