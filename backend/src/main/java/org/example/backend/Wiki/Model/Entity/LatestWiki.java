@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,7 +11,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @EntityListeners(AuditingEntityListener.class)
 public class LatestWiki {
     @Id
@@ -32,4 +30,12 @@ public class LatestWiki {
     private String thumbnailImgUrl;
 
 
+    public void updateContentAndVersion(String content, int newVersion) {
+        this.content = content;
+        this.version = newVersion;
+    }
+
+    public void updateThumbnail(String thumbnailImgUrl) {
+        this.thumbnailImgUrl = thumbnailImgUrl;
+    }
 }

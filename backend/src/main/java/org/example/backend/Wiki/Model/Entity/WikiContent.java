@@ -3,7 +3,7 @@ package org.example.backend.Wiki.Model.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.backend.User.Model.Entity.User;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +23,7 @@ public class WikiContent {
     @NonNull
     private String content;
 
-    @LastModifiedDate
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(nullable = false)

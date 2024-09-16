@@ -104,6 +104,15 @@ public class WikiService {
     // 위키 상세 조회
     public GetWikiDetailRes detail(GetWikiDetailReq getWikiDetailReq, Long userId) {
 
+        String userGrade = "GUEST";
+
+        if (userId != null) {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                userGrade = userOptional.get().getGrade();  // 유저 등급 설정
+            }
+        }
+
         Wiki wiki = wikiRepository.findById(getWikiDetailReq.getId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         LatestWiki latestWiki = wiki.getLatestWiki(); //최신 위키
 
@@ -114,6 +123,7 @@ public class WikiService {
                 .category(wiki.getCategory().getCategoryName())
                 .version(latestWiki.getVersion())
                 .checkScrap(ischeckScrap(wiki.getId(), latestWiki.getVersion(), userId))
+                .userGrade(userGrade)
                 .build();
         return wikiDetailRes;
 
@@ -160,9 +170,8 @@ public class WikiService {
         wikiContentRepository.save(updateWikiContent);
 
         // LatestWiki 업데이트
-        latestWiki.setContent(updateWikiContent.getContent());
-        latestWiki.setVersion(updateWikiContent.getVersion());
-        latestWiki.setThumbnailImgUrl(updateThumbnail);
+        latestWiki.updateContentAndVersion(updateWikiContent.getContent(), updateWikiContent.getVersion());
+        latestWiki.updateThumbnail(updateThumbnail);
         latestWikiRepository.save(latestWiki);
 
         return GetWikiUpdateRes.builder().wikiId(wiki.getId()).build();

@@ -76,14 +76,20 @@ public class WikiController {
     public BaseResponse<GetWikiDetailRes> detail(GetWikiDetailReq getWikiDetailReq,
                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
+        Long userId = null;
+        String userGrade = "GUEST";
+
+        if (customUserDetails != null) {
+            userId = customUserDetails.getUserId();
+            userGrade = customUserDetails.getGrade();
+        }
 
         return new BaseResponse<>(wikiService.detail(getWikiDetailReq, userId));
     }
 
     // 위키 수정
     @PatchMapping
-    public BaseResponse<GetWikiUpdateRes> update(GetWikiUpdateReq getWikiUpdateReq,
+    public BaseResponse<GetWikiUpdateRes> update(@RequestPart GetWikiUpdateReq getWikiUpdateReq,
                                                  @RequestPart(required = false) MultipartFile thumbnail,
                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
