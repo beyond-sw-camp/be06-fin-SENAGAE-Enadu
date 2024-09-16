@@ -11,6 +11,10 @@ import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
 import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
+import MypagePage from "@/pages/MypagePage.vue";
+import InfoComponent from "@/components/Mypage/Info/InfoComponent.vue";
+import UserLogComponent from "@/components/Mypage/UserLogComponent.vue";
+import ScrapListComponent from "@/components/Mypage/ScrapListComponent.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,9 +31,13 @@ const router = createRouter({
         { path: "info", component: PointInfoComponent },
         { path: "rank", component: PointRankingComponent },
       ]},
-    { path: "/wiki/detail", component: WikiDetailPage }
+    { path: "/wiki/detail", component: WikiDetailPage },
+    { path: "/mypage", component: MypagePage, children: [
+        { path: "info", component: InfoComponent },
+        { path: "history", component: UserLogComponent },
+        { path: "scrap", component: ScrapListComponent }
+      ] }
   ]
-  
 });
 
 export default router;
