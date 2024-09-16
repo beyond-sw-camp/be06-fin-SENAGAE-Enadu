@@ -35,12 +35,12 @@
                     <li><a href="#" @click.prevent="logout">로그아웃</a></li>
                     <li class="divider">|</li>
                     <li class="dropdown">
-                        <router-link :to="{ path: '/' }"><i class="fas fa-caret-down"></i> 마이페이지</router-link>
+                        <router-link :to="{ path: '/mypage/info' }"><i class="fas fa-caret-down"></i> 마이페이지</router-link>
                         <ul class="dropdown-menu">
-                            <li><router-link :to="{ path: '/' }"><i class="fas fa-user"></i> 회원 정보</router-link></li>
-                            <li><router-link :to="{ path: '/' }"><i class="fas fa-file-alt"></i> 작성 내역</router-link></li>
-                            <li><router-link :to="{ path: '/' }"><i class="fas fa-bookmark"></i> 스크랩 내역</router-link></li>
-                            <li><router-link :to="{ path: '/' }"><i class="fas fa-coins"></i> 포인트 및 랭킹</router-link></li>
+                            <li><router-link :to="{ path: '/mypage/info' }"><i class="fas fa-user"></i> 회원 정보</router-link></li>
+                            <li><router-link :to="{ path: '/mypage/history' }"><i class="fas fa-file-alt"></i> 작성 내역</router-link></li>
+                            <li><router-link :to="{ path: '/mypage/scrap' }"><i class="fas fa-bookmark"></i> 스크랩 내역</router-link></li>
+                            <li><router-link :to="{ path: '/point/info' }"><i class="fas fa-coins"></i> 포인트 및 랭킹</router-link></li>
                             <li><router-link :to="{ path: '/chat' }"><i class="fas fa-comments"></i> 채팅</router-link></li>
                         </ul>
                     </li>
@@ -70,6 +70,7 @@ export default {
             if (window.confirm("로그아웃 하시겠습니까?")) {
                 this.userStore.logout();
                 alert("로그아웃 되었습니다.")
+                this.$router.push("/");
             }
         }
     }
