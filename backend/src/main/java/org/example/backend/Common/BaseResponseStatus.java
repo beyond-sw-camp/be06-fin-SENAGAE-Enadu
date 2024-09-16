@@ -38,6 +38,7 @@ public enum BaseResponseStatus {
     WIKI_CONTENT_DUPLICATION_FAIL(false, 5004,"중복되는 위키입니다."),
     WIKI_NOT_FOUND_DETAIL(false,5005,"위키 조회를 실패했습니다."),
     // 에러 아카이브 기능 - 6000
+    ERRORARCHIVE_NOT_FOUND(false,6022, "삭제된 게시글입니다."),
 
     // 에러 QnA 기능 - 7000
     // - QnA 공통 에러

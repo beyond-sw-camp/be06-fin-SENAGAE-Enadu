@@ -3,6 +3,7 @@ package org.example.backend.ErrorArchive.Model.Entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.User.Model.Entity.User;
 
@@ -11,6 +12,7 @@ import org.example.backend.User.Model.Entity.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
 public class ErrorLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
