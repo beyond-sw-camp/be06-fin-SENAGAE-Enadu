@@ -14,15 +14,11 @@
                             </span>
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
-                            <div data-testid="follow-btn" class="sc-avest iIZjji">
-                                <button data-testid="scrap-btn" class="sc-avest iIZjji"
-                                    style="border: none; background-color: transparent;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none"
-                                        stroke="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
-                                        <path d="M2 2v13.5l6-3.5 6 3.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
-                                    </svg>
-                                </button>
-                            </div>
+                            <!-- 수정 버튼 (로그인 상태 확인 후 뉴비, Guest가 아닌 경우에만 표시) -->
+                            <button v-if="canEditWiki" @click="goToEditPage"
+                                class="ml-3 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                                수정
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -33,9 +29,7 @@
 
                 <div class="sc-jlRLRk iGRQXB">
                     <div class="sc-dUbtfd kOYWDF">
-                        <div class="sc-jHkVzv dyVEVs sc-htJRVC jfYEFP">
-
-                        </div>
+                        <div class="sc-jHkVzv dyVEVs sc-htJRVC jfYEFP"></div>
                     </div>
                 </div>
             </div>
@@ -44,8 +38,6 @@
         <div class="sc-dFtzxp bfzjcP" style="margin-top: 1px;">
             <div class="sc-bXTejn FTZwa">
                 <div class="sc-eGRUor gdnhbG atom-one">
-
-                    <!-- 마크다운 내용 -->
                     <v-md-preview :text="wikiDetail.content" />
                 </div>
             </div>
@@ -69,7 +61,7 @@ export default {
     name: "WikiDetailComponent",
     data() {
         return {
-            id: '',
+            id: '', 
         };
     },
     computed: {
@@ -77,25 +69,27 @@ export default {
         wikiDetail() {
             return this.wikiStore.wikiDetail || {};
         },
+        canEditWiki() {
+            return this.wikiStore.isLoggedIn && this.wikiStore.userDetails && this.wikiStore.userDetails.grade !== '뉴비' && this.wikiStore.userDetails.grade !== 'GUEST';
+        },
     },
     created() {
         this.id = this.$route.query.id || this.$route.params.id;
+
         if (this.id) {
-            this.fetchWikiDetail();
+            this.fetchWikiDetail().then(() => {
+                console.log('User Details:', this.wikiStore.userDetails); 
+            }).catch(error => {
+                console.error('Wiki Detail Fetch Error:', error);
+            });
         }
     },
     methods: {
         async fetchWikiDetail() {
-            try {
-                await this.wikiStore.fetchWikiDetail(this.id);
-            } catch (error) {
-                console.error("위키 상세 조회 중 오류:", error);
-            }
+            await this.wikiStore.fetchWikiDetail(this.id);
         },
-        async toggleScrap() {
-            if (this.id) {
-                await this.wikiStore.toggleScrap(this.id);
-            }
+        goToEditPage() {
+            this.$router.push({ name: 'WikiUpdate', query: { id: this.id } });
         },
     },
     components: {
@@ -103,7 +97,8 @@ export default {
     },
 };
 </script>
-  
+
+    
 <style scoped>
 v-md-preview {
     font-size: 1.125rem;
@@ -123,7 +118,6 @@ v-md-preview h3 {
 v-md-preview p {
     margin-bottom: 1.5rem;
 }
-
 
 .dXONqK {
     width: 768px;

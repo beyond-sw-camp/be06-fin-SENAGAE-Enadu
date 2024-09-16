@@ -11,6 +11,7 @@ import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
 import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
+import WikiUpdatePage from "@/pages/WikiUpdatePage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,7 +28,8 @@ const router = createRouter({
         { path: "info", component: PointInfoComponent },
         { path: "rank", component: PointRankingComponent },
       ]},
-    { path: "/wiki/detail", component: WikiDetailPage }
+    { path: "/wiki/detail", name: "WikiDetail", component: WikiDetailPage },
+    { path: "/wiki/update", name: "WikiUpdate", component: WikiUpdatePage },
   ]
   
 });

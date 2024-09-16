@@ -101,10 +101,10 @@ export default {
                 title: '',
                 myText: '',
                 mySuperCategory: '',
-                mySuperCategoryName: '' // 카테고리 이름을 위한 변수 추가
+                mySuperCategoryName: '' 
             },
             thumbnail: null,
-            showSuperCategoryModal: false, // 모달 열림 상태
+            showSuperCategoryModal: false, 
         }
         
     },
@@ -136,7 +136,7 @@ export default {
         },
         clearThumbnail() {
             this.thumbnail = null;
-            this.$refs.thumbnailInput.value = ''; // 파일 입력 필드 초기화
+            this.$refs.thumbnailInput.value = ''; 
         },
         async submitForm() {
             console.log(this.wikiRegisterReq.title);

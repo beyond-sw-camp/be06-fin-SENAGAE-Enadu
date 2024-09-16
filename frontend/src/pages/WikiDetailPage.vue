@@ -20,13 +20,6 @@
   </script>
   
   <style scoped>
-  .custom-container {
-    padding: 20px;
-  }
-  .content-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+
   </style>
   
