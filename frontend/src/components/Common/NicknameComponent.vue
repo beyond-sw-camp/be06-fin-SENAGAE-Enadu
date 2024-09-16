@@ -43,7 +43,6 @@ export default {
   position: relative;
   display: inline-block;
   cursor: pointer;
-  left: 50px;
 }
 .dropdown:hover {
   text-decoration: underline;
