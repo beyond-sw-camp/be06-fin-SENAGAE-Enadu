@@ -7,13 +7,7 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         userId: null,
         isLoggedIn: false,
-        userInfo: {
-            email: '',
-            nickname: '',
-            isSocialUser: false,
-            profileImg: '',
-            grade: '',
-        },
+        userInfo: {},
     }),
     persist: {
         storage: sessionStorage,
@@ -63,14 +57,7 @@ export const useUserStore = defineStore('user', {
                 }
                 this.userId = null;
                 this.isLoggedIn = false;
-                const defaultUserInfo = {
-                    email: '',
-                    nickname: '',
-                    isSocialUser: false,
-                    profileImg: '',
-                    grade: '',
-                };
-                this.userInfo = { ...defaultUserInfo };
+                this.userInfo = {};
                 return true;
             } catch (error) {
                 return false;
@@ -154,17 +141,13 @@ export const useUserStore = defineStore('user', {
 
         async fetchUserInfo() {
             try {
-                const response = await axios.post(backend + "/user/info", {
+                const response = await axios.get(backend + "/user/info", {
                     withCredentials: true
                 });
                 if (!response || !response.data) {
                     throw new Error("Invalid response from server");
                 }
-                this.userInfo.email = response.data.result.email;
-                this.userInfo.nickname = response.data.result.nickname;
-                this.userInfo.isSocialUser = response.data.result.isSocialUser;
-                this.userInfo.profileImg = response.data.result.profileImg;
-                this.userInfo.grade = response.data.result.grade;
+                this.userInfo = response.data.result;
             } catch (error) {
                 console.error("유저 정보 가져오기 에러:", error);
             }
@@ -221,15 +204,19 @@ export const useUserStore = defineStore('user', {
         async updatePassword(passwordData) {
             try {
                 const response = await axios.patch(backend + '/user/password', passwordData,
-                    { withCredentials: true });
+                    {withCredentials: true});
                 if (response.data.code === 1000) {
                     return true;
+                } else if (response.data.code === 2041) {
+                    window.alert(response.data.message);
+                } else if (response.data.code === 2042) {
+                    window.alert(response.data.message);
                 } else {
                     throw new Error('비밀번호 변경 실패');
                 }
             } catch (error) {
                 console.error("비밀번호 변경 중 오류 발생:", error);
-                throw error;
+                alert("비밀번호 변경에 실패하였습니다.");
             }
         }
     },

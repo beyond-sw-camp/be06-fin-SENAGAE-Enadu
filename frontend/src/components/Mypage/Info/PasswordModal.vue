@@ -41,22 +41,23 @@ export default {
     },
     methods: {
         closeModal() {
+            this.passwordData.oldPassword = "";
+            this.passwordData.newPassword = "";
+            this.passwordData.confirmPassword = "";
             this.$emit("close");
         },
-        submitPasswordChange() {
+        async submitPasswordChange() {
             if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
                 alert("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
                 return;
             }
-            this.userStore.updatePassword(this.passwordData)
-                .then(() => {
+            if (window.confirm("비밀번호를 변경하시겠습니까?")) {
+                const success = await this.userStore.updatePassword(this.passwordData);
+                if (success) {
                     alert("비밀번호가 성공적으로 변경되었습니다.");
                     this.closeModal();
-                })
-                .catch(error => {
-                    alert("비밀번호 변경 중 오류가 발생했습니다.");
-                    console.error(error);
-                });
+                }
+            }
         }
     }
 }
@@ -70,7 +71,6 @@ export default {
     background-color: #f0f0f0;
 }
 
-/* 흐린 배경 */
 .modal-background {
     position: fixed;
     top: 0;
@@ -83,7 +83,6 @@ export default {
     align-items: center;
 }
 
-/* 모달창 스타일 */
 .modal {
     background-color: white;
     padding: 30px;
@@ -97,7 +96,6 @@ export default {
     overflow: hidden;
 }
 
-/* 모달 헤더 */
 .modal-header {
     font-size: 24px;
     margin-bottom: 20px;
@@ -105,7 +103,6 @@ export default {
     font-weight: bold;
 }
 
-/* 비밀번호 입력창 */
 .password-box {
     width: 100%;
     padding: 12px 16px;
@@ -124,7 +121,6 @@ export default {
     font-size: 10px;
 }
 
-/* 버튼 스타일 */
 .button-group {
     display: flex;
     justify-content: flex-end;
