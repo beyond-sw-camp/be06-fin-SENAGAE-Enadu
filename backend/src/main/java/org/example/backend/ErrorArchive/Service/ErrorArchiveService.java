@@ -77,11 +77,12 @@ public class ErrorArchiveService {
     public GetErrorArchiveDetailRes detail(GetErrorArchiveDetailReq getErrorArchiveDetailReq, CustomUserDetails customUserDetails){
         ErrorArchive errorArchive = errorArchiveReository.findById(getErrorArchiveDetailReq.getId()).orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
         Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
-
+        // 좋아요 상태 조회
         Optional<Boolean> likeStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId, true);
         boolean checkLike = likeStatus.orElse(false);
+        // 싫어요 상태 조회
         Optional<Boolean> hateStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId, false);
-        boolean checkHate = hateStatus.orElse(true);
+        boolean checkHate = hateStatus.orElse(false);
 
         GetErrorArchiveDetailRes ErrorArchiveDetailRes = GetErrorArchiveDetailRes.builder()
                 .id(errorArchive.getId())
@@ -115,7 +116,8 @@ public class ErrorArchiveService {
                 .orElseThrow(()-> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         // 사용자와 에러아카이브로 좋아요 조회
         Optional<ErrorLike> errorLike = errorLikeRepository.findByUserAndErrorArchive(user,errorArchive);
-        return errorLike.map(like -> like.isState() == isLike);
+        // 엔티티가 존재하면 상태를 반환하고, 존재하지 않으면 Optional.empty()를 반환
+        return errorLike.map(ErrorLike::isState);
     }
 
 
@@ -131,10 +133,8 @@ public class ErrorArchiveService {
         // 사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        // 스크랩 여부 조회
         Optional<ErrorScrap> errorScrap = errorScrapRepository.findByUserAndErrorArchive(user, errorArchive);
-            if(errorScrap.isPresent()){
-                return errorScrap.get().isState(); // true(스크랩 함), false(스크랩 안함)
-            }
             return false; // 조회결과가 없을 경우, 기본값으로 false 반환
 
     }

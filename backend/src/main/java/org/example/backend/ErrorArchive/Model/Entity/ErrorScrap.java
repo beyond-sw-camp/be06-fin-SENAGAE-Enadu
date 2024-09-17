@@ -27,6 +27,4 @@ public class ErrorScrap {
     @JoinColumn(name = "error_archive_id", nullable = false)
     private ErrorArchive errorArchive;
 
-    @Column(nullable = false)
-    private boolean state;
 }
