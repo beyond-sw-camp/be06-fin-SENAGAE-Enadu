@@ -12,7 +12,7 @@
       </div>
       
       <p class="explanation">비밀번호</p>
-      <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="userInfo.password" @input="trimNickname"/>
+      <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="userInfo.password" @input="validatePassword" />
 
       <p class="explanation">
         비밀번호 확인
@@ -126,6 +126,12 @@ import { useUserStore } from '@/store/useUserStore';
       if (this.userInfo.nickname.includes(" ")) {
         alert("공백이 포함되었습니다.");
         this.userInfo.nickname = this.userInfo.nickname.trim();
+      }
+    },
+    validatePassword() {
+      if (this.userInfo.password.includes(" ")) {
+        alert("공백이 포함되었습니다.");
+        this.userInfo.password = this.userInfo.password.trim();
       }
     },
   }
