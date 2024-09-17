@@ -97,17 +97,13 @@ export const useUserStore = defineStore('user', {
                 return false;
             }
         },
-        async checkNickname() {
+        async checkNickname(nickname) {
             try {
-              // 닉네임이 입력되지 않았을 때의 처리
-              if(!this.userInfo.nickname){
-                alert("닉네임을 입력해주세요.");
-                return;
-              }
               // 서버에 닉네임 중복 여부 확인 요청
-              const response = await axios.post("http://localhost:8080"+"/user/duplicate/nickname", {nickname: this.userInfo.nickname });
+              const response = await axios.get("http://localhost:8080"+"/user/duplicate/nickname", { params : {nickname: nickname }
+              });
               // 서버로부터 받은 응답에 따라 처리
-              if(response.data.code === 2024){
+              if(response.data.result === false){
                 alert("중복되는 닉네임입니다.")
               } else {
                 alert("중복되지 않는 닉네임입니다.");
@@ -117,26 +113,23 @@ export const useUserStore = defineStore('user', {
               alert("닉네임 확인 중 문제가 발생했습니다. 다시 시도해주세요");
             }
         },
-        async checkEmail() {
+        async checkEmail(email) {
                 try {
-                  // 이메일이 입력되지 않을때의 처리
-                  if(!this.userInfo.email){
-                    alert("이메일을 입력해주세요.");
-                    return
-                  }
                   // 서버에 이메일 중복 여부 확인 요청
-                  const response = await axios.post("http://localhost:8080"+"/user/duplicate/email", {email: this.userInfo.email});
+                  const response = await axios.get("http://localhost:8080/user/duplicate/email", { params : {email: email} }
+                  );
+                  console.log(response);  // 응답 데이터 확인
         
                  // 서버로부터 받은 응답에 따라 처리
-                 if(response.data.isDuplicate) {
-                  alert("중복되는 이메일입니다.");
+                 if(response.data.result == true) {
+                  alert("사용 가능한 이메일입니다.");
                  } else {
-                  alert("중복되지 않는 이메일입니다.");
+                  alert("중복되는 이메일입니다.");
                  }
                 } catch(error){
-                  console.error("이메일 중복 확인 중 오류 발생:", error);
-                  this.alert("이메일 확인 중 문제가 발생했습니다. 다시 시도해주세요");
-                }
+                    console.error("이메일 중복 확인 중 오류 발생:", error);
+                    alert("이메일 확인 중 문제가 발생했습니다.");
+                }            
             },
 
         async fetchUserInfo() {

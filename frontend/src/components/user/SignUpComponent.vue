@@ -5,12 +5,14 @@
       <p class="explanation">아이디(E-mail)</p>
 
       <div class="half-form">
-        <input type="email" placeholder="sample@gmail.com" v-model="userInfo.email" />
+        <input type="email" placeholder="sample@gmail.com" v-model="userInfo.email" @input="validateEmail" />
         <button type="button" class="check-button" @click="checkEmail">중복 확인</button>
+        <span v-if="emailAvailable">✔️ 사용 가능합니다</span>
+        <span v-else></span>
       </div>
       
       <p class="explanation">비밀번호</p>
-      <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="userInfo.password" />
+      <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="userInfo.password" @input="trimNickname"/>
 
       <p class="explanation">
         비밀번호 확인
@@ -24,7 +26,9 @@
       <p class="explanation">닉네임</p>
       <div class="half-form">
         <input type="text" placeholder="닉네임" v-model="userInfo.nickname" />
-        <button type="button" class="check-button" @click="checkNickname">중복 확인</button>
+        <button type="button" class="check-button" @click="validateNickname">중복 확인</button>
+        <span v-if="nicknameAvailable">✔️ 사용 가능합니다</span>
+        <span v-else></span>
       </div>
 
       <p class="explanation">프로필 이미지</p>
@@ -41,7 +45,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { useUserStore } from '@/store/useUserStore';
+
   export default {
     name: "SignUpComponent",
     props: {
@@ -57,6 +62,8 @@ import axios from 'axios';
         },
         imgUrl: "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6",
         selectedProfileFile: null,
+        emailAvailable: false, // 이메일 중복 확인 상태
+        nicknameAvailable: false, // 닉네임 중복 확인 상태
       };
     },
     methods: {
@@ -65,6 +72,14 @@ import axios from 'axios';
           alert("비밀번호가 일치하지 않습니다.");
           return;
         }
+        if (!this.emailAvailable) {
+        alert("이메일 중복 확인이 필요합니다.");
+        return;
+      }
+      if (!this.nicknameAvailable) {
+        alert("닉네임 중복 확인이 필요합니다.");
+        return;
+      }
         console.log("success");
         this.$emit('signup', this.userInfo, this.selectedProfileFile);
       },
@@ -76,42 +91,44 @@ import axios from 'axios';
         }
       },
       async checkEmail() {
-    try {
-        const response = await axios.get("http://localhost:8080/user/duplicate/email", {
-            params: {
-                email: this.userInfo.email,
-            },
-        });
-        // BaseResponse에서 data를 꺼내서 처리합니다.
-        if (response.data.result === false) {
-            alert("중복된 이메일입니다.");
-        } else {
-            alert("사용 가능한 이메일입니다.");
-        }
-    } catch (error) {
-        alert("이메일 중복 확인 실패");
-        console.error("이메일 중복 확인 에러:", error.response ? error.response.data : error.message);
-    }
-},
+        const userStore = useUserStore();
+        const isAvailable = await userStore.checkEmail(this.userInfo.email);
+        this.emailAvailable = isAvailable; // 서버 응답에 따라 상태 업데이트
+      },
       async checkNickname() {
-      try {
-        const response = await axios.get("http://localhost:8080/user/duplicate/nickname", {
-          params: {
-            nickname: this.userInfo.nickname,
-          },
-        });
-
-        if (response.data.result === false) {
-          alert("중복된 닉네임입니다.");
-        } else {
-          alert("사용 가능한 닉네임입니다.");
+        const userStore = useUserStore();
+        const isAvailable = await userStore.checkNickname(this.userInfo.nickname);
+        this.nicknameAvailable = isAvailable; // 서버 응답에 따라 상태 업데이트
+    },
+      resetAvailability() {
+      this.emailAvailable = false;
+      this.nicknameAvailable = false;
+    },
+    watch: {
+      'userInfo.email'(newValue) {
+        if (newValue) {
+          this.resetAvailability();
         }
-      } catch (error) {
-        alert("닉네임 중복 확인 실패");
-        console.error("닉네임 중복 확인 에러:", error);
+      },
+      'userInfo.nickname'(newValue) {
+        if (newValue) {
+          this.resetAvailability();
+        }
+    },
+   },
+   validateEmail() {
+      if (this.userInfo.email.includes(" ")) {
+        alert("공백이 포함되었습니다.");
+        this.userInfo.email = this.userInfo.email.trim();
       }
     },
-    }
+    validateNickname() {
+      if (this.userInfo.nickname.includes(" ")) {
+        alert("공백이 포함되었습니다.");
+        this.userInfo.nickname = this.userInfo.nickname.trim();
+      }
+    },
+  }
 };
 </script>
 
