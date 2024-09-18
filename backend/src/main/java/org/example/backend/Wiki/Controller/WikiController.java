@@ -8,8 +8,10 @@ import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.Wiki.Model.Req.GetWikiDetailReq;
 import org.example.backend.Wiki.Model.Req.GetWikiListReq;
+import org.example.backend.Wiki.Model.Req.GetWikiUpdateReq;
 import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
 import org.example.backend.Wiki.Model.Res.GetWikiDetailRes;
+import org.example.backend.Wiki.Model.Res.GetWikiUpdateRes;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
 import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
 import org.example.backend.Wiki.Service.WikiService;
@@ -18,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
-
 
 
 @RestController
@@ -76,8 +76,33 @@ public class WikiController {
     public BaseResponse<GetWikiDetailRes> detail(GetWikiDetailReq getWikiDetailReq,
                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
+        Long userId = null;
+        String userGrade = "GUEST";
 
-        return new BaseResponse<>(wikiService.detail(getWikiDetailReq,userId));
+        if (customUserDetails != null) {
+            userId = customUserDetails.getUserId();
+            userGrade = customUserDetails.getGrade();
+        }
+
+        return new BaseResponse<>(wikiService.detail(getWikiDetailReq, userId));
+    }
+
+    // 위키 수정
+    @PatchMapping
+    public BaseResponse<GetWikiUpdateRes> update(@RequestPart GetWikiUpdateReq getWikiUpdateReq,
+                                                 @RequestPart(required = false) MultipartFile thumbnail,
+                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        // 썸네일 등록 확인 로직
+        String thumbnailUrl;
+        if (thumbnail == null || thumbnail.isEmpty()) {
+            thumbnailUrl = null;
+        } else {
+            thumbnailUrl = cloudFileUploadService.uploadImg(thumbnail);
+        }
+
+        return new BaseResponse<>(wikiService.update(getWikiUpdateReq, thumbnailUrl, customUserDetails.getUserId()));
+
     }
 }
+

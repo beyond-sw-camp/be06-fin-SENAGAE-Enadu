@@ -22,6 +22,9 @@ public enum BaseResponseStatus {
     USER_INVALID_TYPE(false,2022,"소셜로 가입한 유저가 아닙니다."),
     USER_INVALID_NICKNAME(false, 2023,"닉네임이 비어있습니다."),
     USER_DUPLICATE_NICKNAME(false, 2031, "이미 있는 닉네임입니다."),
+    USER_DUPLICATE_EMAIL(false,2032,"이미 있는 이메일입니다"),
+    USER_PASSWORDS_DO_NOT_MATCH(false,2041, "비밀번호가 일치하지 않습니다."),
+    USER_NEW_PASSWORDS_DO_NOT_MATCH(false, 2042, "새로운 비밀번호와 비밀번호 확인이 일치하지 않습니다"),
 
     // 이메일 인증 실패
     USER_EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다"),
@@ -37,6 +40,8 @@ public enum BaseResponseStatus {
     WIKI_CONTENT_REGIST_FAIL(false, 5003,"내용을 입력해주세요."),
     WIKI_CONTENT_DUPLICATION_FAIL(false, 5004,"중복되는 위키입니다."),
     WIKI_NOT_FOUND_DETAIL(false,5005,"위키 조회를 실패했습니다."),
+    WIKI_PERMISSION_DENIED(false, 5006,"수정 권한이 없습니다."),
+
     // 에러 아카이브 기능 - 6000
 
     // 에러 QnA 기능 - 7000

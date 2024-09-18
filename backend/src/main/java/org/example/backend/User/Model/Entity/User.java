@@ -17,6 +17,7 @@ import org.example.backend.Wiki.Model.Entity.WikiContent;
 import org.example.backend.Wiki.Model.Entity.WikiScrap;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -116,5 +118,21 @@ public class User {
 
     public void updateProfileImg(String imgUrl) {
         this.profileImg = imgUrl;
+    }
+
+    public void updatePoint(Integer point) {
+        this.point += point;
+    }
+
+    public void updateGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateEnable(Boolean enable) {
+        this.enable = enable;
     }
 }

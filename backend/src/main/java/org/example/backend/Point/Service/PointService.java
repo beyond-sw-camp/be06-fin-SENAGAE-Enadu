@@ -1,10 +1,12 @@
 package org.example.backend.Point.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Common.UserGradeIconManager;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Point.Model.Entity.PointDetail;
+import org.example.backend.Point.Model.Enum.PointDescriptionEnum;
 import org.example.backend.Point.Model.Res.GetMyRankRes;
 import org.example.backend.Point.Model.Res.GetPointHistoryRes;
 import org.example.backend.Point.Model.Res.GetPointRankRes;
@@ -67,5 +69,36 @@ public class PointService {
 
         }
         return getPointRankResList;
+    }
+
+    @Transactional
+    public void givePoint(Long userId, PointDescriptionEnum pointDescriptionEnum) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        user.updatePoint(pointDescriptionEnum.getValue());
+        user.updateGrade(getGradeByPoint(user.getPoint()));
+
+        PointDetail pointDetail = PointDetail.builder()
+                .point(Math.abs(pointDescriptionEnum.getValue()))
+                .description(pointDescriptionEnum.getDescription())
+                .user(user)
+                .state(pointDescriptionEnum.getValue() > 0)
+                .build();
+
+        userRepository.save(user);
+        pointRepository.save(pointDetail);
+    }
+
+    private String getGradeByPoint(Integer point) {
+        if (point >= 3000) {
+            return "신";
+        } else if (point >= 1000) {
+            return "마스터";
+        } else if (point >= 500) {
+            return "프로";
+        } else if (point >= 100) {
+            return "견습";
+        } else {
+            return "뉴비";
+        }
     }
 }

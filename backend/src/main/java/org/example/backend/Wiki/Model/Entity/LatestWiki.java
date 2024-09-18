@@ -1,12 +1,9 @@
 package org.example.backend.Wiki.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-
+import lombok.*;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 public class LatestWiki {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +20,7 @@ public class LatestWiki {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @CreatedDate
+    @LastModifiedDate
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
@@ -32,4 +30,12 @@ public class LatestWiki {
     private String thumbnailImgUrl;
 
 
+    public void updateContentAndVersion(String content, int newVersion) {
+        this.content = content;
+        this.version = newVersion;
+    }
+
+    public void updateThumbnail(String thumbnailImgUrl) {
+        this.thumbnailImgUrl = thumbnailImgUrl;
+    }
 }

@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.User.Model.Entity.User;
+import org.example.backend.User.Model.Req.UpdateUserPasswordReq;
 import org.example.backend.User.Model.Req.UserSignupReq;
+import org.example.backend.User.Model.Res.GetUserInfoRes;
 import org.example.backend.User.Repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -62,5 +64,56 @@ public class UserService {
         } else {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
+    }
+
+    public void updatePassword(Long userId, UpdateUserPasswordReq updateUserPasswordReq) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            if (passwordEncoder.matches(updateUserPasswordReq.getOldPassword(), user.getPassword())) {
+                String encodedNewPassword = passwordEncoder.encode(updateUserPasswordReq.getNewPassword());
+                user.updatePassword(encodedNewPassword);
+                userRepository.save(user);
+            } else {
+                throw new InvalidUserException(BaseResponseStatus.USER_PASSWORDS_DO_NOT_MATCH);
+            }
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
+    }
+
+    public Boolean checkPassword(Long userId, String password) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return passwordEncoder.matches(password, user.getPassword());
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
+    }
+
+    public void disableUser(Long userId, String password) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                user.updateEnable(false);
+            } else {
+                throw new InvalidUserException(BaseResponseStatus.USER_PASSWORDS_DO_NOT_MATCH);
+            }
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
+    }
+
+    public GetUserInfoRes getUserInfo(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return GetUserInfoRes.builder()
+                    .email(user.getEmail())
+                    .nickname(user.getNickname())
+                    .isSocialUser(!"InApp".equals(user.getType()))
+                    .profileImg(user.getProfileImg())
+                    .grade(user.getGrade())
+                    .build();
+        }
+        throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
     }
 }
