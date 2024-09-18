@@ -6,14 +6,8 @@ import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidWikiException;
 import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
-import org.example.backend.Wiki.Model.Req.GetWikiDetailReq;
-import org.example.backend.Wiki.Model.Req.GetWikiListReq;
-import org.example.backend.Wiki.Model.Req.GetWikiUpdateReq;
-import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
-import org.example.backend.Wiki.Model.Res.GetWikiDetailRes;
-import org.example.backend.Wiki.Model.Res.GetWikiUpdateRes;
-import org.example.backend.Wiki.Model.Res.WikiListRes;
-import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
+import org.example.backend.Wiki.Model.Req.*;
+import org.example.backend.Wiki.Model.Res.*;
 import org.example.backend.Wiki.Service.WikiService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -103,6 +97,16 @@ public class WikiController {
 
         return new BaseResponse<>(wikiService.update(getWikiUpdateReq, thumbnailUrl, customUserDetails.getUserId()));
 
+    }
+
+    // 위키 이전버전 상세 조회
+    @GetMapping("/version/detail")
+    public BaseResponse<GetWikiVersionDetailRes> versionDetail(GetWikiVersionDetailReq getWikiVersionDetailReq,
+                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
+
+        return new BaseResponse<>(wikiService.versionDetail(getWikiVersionDetailReq, userId));
     }
 }
 

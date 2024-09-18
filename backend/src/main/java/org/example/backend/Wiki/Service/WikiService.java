@@ -12,14 +12,8 @@ import org.example.backend.User.Repository.UserRepository;
 import org.example.backend.Wiki.Model.Entity.LatestWiki;
 import org.example.backend.Wiki.Model.Entity.Wiki;
 import org.example.backend.Wiki.Model.Entity.WikiContent;
-import org.example.backend.Wiki.Model.Req.GetWikiDetailReq;
-import org.example.backend.Wiki.Model.Req.GetWikiListReq;
-import org.example.backend.Wiki.Model.Req.GetWikiUpdateReq;
-import org.example.backend.Wiki.Model.Req.WikiRegisterReq;
-import org.example.backend.Wiki.Model.Res.GetWikiDetailRes;
-import org.example.backend.Wiki.Model.Res.GetWikiUpdateRes;
-import org.example.backend.Wiki.Model.Res.WikiListRes;
-import org.example.backend.Wiki.Model.Res.WikiRegisterRes;
+import org.example.backend.Wiki.Model.Req.*;
+import org.example.backend.Wiki.Model.Res.*;
 import org.example.backend.Wiki.Repository.LatestWikiRepository;
 import org.example.backend.Wiki.Repository.WikiContentRepository;
 import org.example.backend.Wiki.Repository.WikiRepository;
@@ -129,18 +123,6 @@ public class WikiService {
 
     }
 
-    // 스크랩 여부 조회 메서드
-    private Boolean ischeckScrap(Long wikiId, Integer version, Long userId) {
-
-        if (userId == null) {
-            return false;
-        }
-        WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(wikiId, version).orElseThrow(() ->
-                new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
-        return wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId()).isPresent();
-
-    }
-
     // 위키 수정
     @Transactional
     public GetWikiUpdateRes update(GetWikiUpdateReq getWikiUpdateReq, String thumbnailUrl, Long userId) {
@@ -175,6 +157,34 @@ public class WikiService {
         latestWikiRepository.save(latestWiki);
 
         return GetWikiUpdateRes.builder().wikiId(wiki.getId()).build();
+
+    }
+
+    // 위키 이전버전 상세 조회
+    public GetWikiVersionDetailRes versionDetail(GetWikiVersionDetailReq getWikiVersionDetailReq, Long userId){
+
+        WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(getWikiVersionDetailReq.getId(), getWikiVersionDetailReq.getVersion()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        Wiki wiki = wikiRepository.findById(wikiContent.getWiki().getId()).get();
+        GetWikiVersionDetailRes wikiDetailRes = GetWikiVersionDetailRes.builder()
+                .id(wikiContent.getId())
+                .title(wiki.getTitle())
+                .content(wikiContent.getContent())
+                .category(wiki.getCategory().getCategoryName())
+                .version(wikiContent.getVersion())
+                .checkScrap(ischeckScrap(wiki.getId(), wikiContent.getVersion(), userId))
+                .build();
+        return wikiDetailRes;
+    }
+
+    // 스크랩 여부 조회 메서드
+    private Boolean ischeckScrap(Long wikiId, Integer version, Long userId) {
+
+        if (userId == null) {
+            return false;
+        }
+        WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(wikiId, version).orElseThrow(() ->
+                new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        return wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId()).isPresent();
 
     }
 }
