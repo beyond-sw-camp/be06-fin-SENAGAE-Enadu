@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ErrorLikeRepository extends JpaRepository<ErrorLike, Long> {
-    Optional<ErrorLike> findByUserAndErrorArchive(User user, ErrorArchive errorArchive);
+    Optional<ErrorLike> findByUserAndErrorArchiveAndState(User user, ErrorArchive errorArchive,Boolean isLike );
 }

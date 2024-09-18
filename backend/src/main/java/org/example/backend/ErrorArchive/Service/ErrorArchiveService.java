@@ -29,6 +29,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,11 +79,12 @@ public class ErrorArchiveService {
         ErrorArchive errorArchive = errorArchiveReository.findById(getErrorArchiveDetailReq.getId()).orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
         Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
         // 좋아요 상태 조회
-        Optional<Boolean> likeStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId, true);
-        boolean checkLike = likeStatus.orElse(false);
+        Optional<Boolean> likeStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId);
+        boolean checkLike = likeStatus.isPresent() && likeStatus.get();
         // 싫어요 상태 조회
-        Optional<Boolean> hateStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId, false);
-        boolean checkHate = hateStatus.orElse(false);
+        boolean checkHate = likeStatus.isPresent() && !likeStatus.get();
+        // 스크랩 여부 조회
+        boolean checkScrap = ErrorArchiveScrap(errorArchive.getId(), customUserDetails);
 
         GetErrorArchiveDetailRes ErrorArchiveDetailRes = GetErrorArchiveDetailRes.builder()
                 .id(errorArchive.getId())
@@ -97,7 +99,7 @@ public class ErrorArchiveService {
                 .hateCnt(errorArchive.getHateCount())
                 .checkLike(checkLike)
                 .checkHate(checkHate)
-                .checkScrap(ErrorArchiveScrap(errorArchive.getId(),customUserDetails))
+                .checkScrap(checkScrap)
                 .profileImg(errorArchive.getUser().getProfileImg())
                 .grade(errorArchive.getUser().getGrade())
                 .gradeImg(errorArchive.getUser().getProfileImg())
@@ -105,19 +107,24 @@ public class ErrorArchiveService {
         return ErrorArchiveDetailRes;
     }
     // 로그인한 사용자의 에러 아카이브 좋아요/싫어요 여부 조회 메소드
-    public Optional<Boolean> ErrorArchiveLikeOrHate(Long errorArchiveId,Long userId, boolean isLike){
-        // 로그인한 사용자 ID를 가져오기
-        if(userId == null){
+    public Optional<Boolean> ErrorArchiveLikeOrHate(Long errorArchiveId,Long userId) {
+        if (userId == null) {
             return Optional.empty();
         }
         ErrorArchive errorArchive = errorArchiveReository.findById(errorArchiveId)
-                .orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
+                .orElseThrow(() -> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        // 사용자와 에러아카이브로 좋아요 조회
-        Optional<ErrorLike> errorLike = errorLikeRepository.findByUserAndErrorArchive(user,errorArchive);
-        // 엔티티가 존재하면 상태를 반환하고, 존재하지 않으면 Optional.empty()를 반환
-        return errorLike.map(ErrorLike::isState);
+                .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        // 좋아요 또는 싫어요 상태를 확인
+        Optional<ErrorLike> repositoryResponseLike = errorLikeRepository.findByUserAndErrorArchiveAndState(user, errorArchive, true);
+        Optional<ErrorLike> repositoryResponseHate = errorLikeRepository.findByUserAndErrorArchiveAndState(user, errorArchive, false);
+        if (repositoryResponseLike.isPresent()){
+            return Optional.of(true);
+        }
+        if(repositoryResponseHate.isPresent()){
+            return Optional.of(false);
+        }
+        return Optional.empty();
     }
 
 
@@ -127,18 +134,16 @@ public class ErrorArchiveService {
       if (userId == null) {
           return false;
       }
-        // 에러 아카이브 조회
-        ErrorArchive errorArchive = errorArchiveReository.findById(errorArchiveId)
-                .orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
-        // 사용자 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        // 스크랩 여부 조회
-        Optional<ErrorScrap> errorScrap = errorScrapRepository.findByUserAndErrorArchive(user, errorArchive);
-            return false; // 조회결과가 없을 경우, 기본값으로 false 반환
-
-    }
-
+    // 에러 아카이브 조회
+    ErrorArchive errorArchive = errorArchiveReository.findById(errorArchiveId)
+            .orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
+    // 사용자 조회
+    User user = userRepository.findById(userId)
+            .orElseThrow(()-> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+    // 스크랩 여부 조회
+    Optional<ErrorScrap> errorScrap = errorScrapRepository.findByUserAndErrorArchive(user, errorArchive);
+    return errorScrap.isPresent(); //존재하면 스크랩 함, 없으면 스크랩하지 않음
+  }
 }
 
 
