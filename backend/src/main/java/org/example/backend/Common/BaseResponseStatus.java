@@ -56,7 +56,7 @@ public enum BaseResponseStatus {
     QNA_QUESTION_NOT_FOUND(false, 7101, "해당 질문이 존재하지 않습니다."),
     QNA_INVALID_QUESTION_FORMAT(false, 7102, "잘못된 형식의 질문입니다."),
     // - QnA 답변 에러
-    QNA_NOT_FOUND_ANSWER(false, 7201, "해당 답변이 존재하지 않습니다."),
+    QNA_ANSWER_NOT_FOUND(false, 7201, "해당 답변이 존재하지 않습니다."),
     QNA_INVALID_ANSWER_FORMAT(false, 7202, "잘못된 형식의 답변입니다."),
 
 

@@ -127,8 +127,8 @@ public class QnaService {
                 .map(answer -> GetAnswerDetailListRes.builder()
                         .id(answer.getId())
                         .answer(answer.getContent())
-                        .likeCnt(answer.getLikeCnt())
-                        .hateCnt(answer.getHateCnt())
+                        .likeCnt(answer.getLikeCount())
+                        .hateCnt(answer.getHateCount())
                         .checkLikeOrHate(isAnswerLikeORHate(answer, user))
                         .nickname(answer.getUser().getNickname())
                         .grade(answer.getUser().getGrade())
@@ -231,6 +231,93 @@ public class QnaService {
         }
     }
 
+    @Transactional
+    public Long checkAnswerLike(Long qnaBoardId, Long answerId, Long userId) {
+        Optional<QnaBoard> qnaBoard = questionRepository.findById(qnaBoardId);
+        Optional<User> user = userRepository.findById(userId);
+
+        if (qnaBoard.isPresent() && user.isPresent()) {
+            Answer answer = qnaBoard.get().getAnswerList().stream()
+                    .filter(ans -> ans.getId().equals(answerId))
+                    .findFirst()
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
+
+            AnswerLike answerLike = AnswerLike.builder()
+                    .answer(answer)
+                    .user(user.get())
+                    .state(true)
+                    .build();
+
+            Optional<AnswerLike> beforeLike = answerLikeRepository.findLikeByQnaAnswerIdAndUserIdAndState(answer.getId(), userId, true);
+            Optional<AnswerLike> beforeHate = answerLikeRepository.findLikeByQnaAnswerIdAndUserIdAndState(answer.getId(), userId, false);
+
+            //이전에 좋아요만 했을 경우
+            if (beforeLike.isPresent() && beforeHate.isEmpty()) {
+                answerLikeRepository.delete(beforeLike.get());
+                answer.decreaseLikeCount();
+                return 0L;
+            }
+            //이전에 싫어요만 했을 경우
+            else if (beforeLike.isEmpty() && beforeHate.isPresent()) {
+                throw new InvalidQnaException(BaseResponseStatus.QNA_CONFLICT_LIKE_DISLIKE);
+            }
+            // 둘다 체크하는 거는 이전 검사로 불가능하므로, 둘다 없는 경우
+            else {
+                answerLikeRepository.save(answerLike);
+                answer.increaseLikeCount();
+                return answerLike.getId();
+            }
+
+        } else if (qnaBoard.isEmpty()) {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND);
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
+    }
+
+    @Transactional
+    public Long checkAnswerHate(Long qnaBoardId, Long answerId, Long userId) {
+        Optional<QnaBoard> qnaBoard = questionRepository.findById(qnaBoardId);
+        Optional<User> user = userRepository.findById(userId);
+
+        if (qnaBoard.isPresent() && user.isPresent()) {
+            Answer answer = qnaBoard.get().getAnswerList().stream()
+                    .filter(ans -> ans.getId().equals(answerId))
+                    .findFirst()
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
+
+            AnswerLike answerLike = AnswerLike.builder()
+                    .answer(answer)
+                    .user(user.get())
+                    .state(false)
+                    .build();
+
+            Optional<AnswerLike> beforeLike = answerLikeRepository.findLikeByQnaAnswerIdAndUserIdAndState(answer.getId(), userId, true);
+            Optional<AnswerLike> beforeHate = answerLikeRepository.findLikeByQnaAnswerIdAndUserIdAndState(answer.getId(), userId, false);
+
+            //이전에 싫어요만 했을 경우
+            if (beforeHate.isPresent() && beforeLike.isEmpty()) {
+                answerLikeRepository.delete(beforeHate.get());
+                answer.decreaseHateCount();
+                return 0L;
+            }
+            //이전에 좋아요만 했을 경우
+            else if (beforeHate.isEmpty() && beforeLike.isPresent()) {
+                throw new InvalidQnaException(BaseResponseStatus.QNA_CONFLICT_LIKE_DISLIKE);
+            }
+            // 둘다 체크하는 거는 이전 검사로 불가능하므로, 둘다 없는 경우
+            else {
+                answerLikeRepository.save(answerLike);
+                answer.increaseHateCount();
+                return answerLike.getId();
+            }
+
+        } else if (qnaBoard.isEmpty()) {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND);
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
+    }
 
     @Transactional
     public Long checkQnaScrap(Long qnaBoardId, Long userId) {

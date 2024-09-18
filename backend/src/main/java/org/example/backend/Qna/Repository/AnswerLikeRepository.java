@@ -13,6 +13,6 @@ public interface AnswerLikeRepository extends JpaRepository<AnswerLike, Long> {
     @Query("SELECT al.state FROM AnswerLike al WHERE al.answer.id = :answerId AND al.user.id = :userId")
     Optional<Boolean> findStateByAnswerIdAndUserId(@Param("answerId") Long answerId, @Param("userId") Long userId);
 
-    @Query("SELECT al FROM AnswerLike al WHERE al.answer.id = :answerId AND al.user.id = :userId")
-    Optional<AnswerLike> findLikeByQnaAnswerIdAndUserId(@Param("answerId") Long answerId, @Param("userId") Long userId);
+    @Query("SELECT al FROM AnswerLike al WHERE al.answer.id = :answerId AND al.user.id = :userId AND al.state = :state")
+    Optional<AnswerLike> findLikeByQnaAnswerIdAndUserIdAndState(@Param("answerId") Long answerId, @Param("userId") Long userId, @Param("state") Boolean state);
 }

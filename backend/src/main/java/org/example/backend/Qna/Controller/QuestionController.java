@@ -43,16 +43,30 @@ public class QuestionController {
     }
 
     //qna 질문 좋아요
-    @GetMapping("/like")
-    public BaseResponse<Long> checkLike(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @GetMapping("/qna-like")
+    public BaseResponse<Long> checkQnaLike(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaLike(qnaBoardId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 
     //qna 질문 싫어요
-    @GetMapping("/hate")
-    public BaseResponse<Long> checkHate(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @GetMapping("/qna-hate")
+    public BaseResponse<Long> checkQnaHate(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaHate(qnaBoardId, customUserDetails.getUserId());
+        return new BaseResponse<>(id);
+    }
+
+    //qna 답변 좋아요
+    @GetMapping("/ans-like")
+    public BaseResponse<Long> checkAnsLike(Long qnaBoardId, Long answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.checkAnswerLike(qnaBoardId, answerId, customUserDetails.getUserId());
+        return new BaseResponse<>(id);
+    }
+
+    //qna 답변 싫어요
+    @GetMapping("/ans-hate")
+    public BaseResponse<Long> checkAnsHate(Long qnaBoardId, Long answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.checkAnswerHate(qnaBoardId, answerId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 
