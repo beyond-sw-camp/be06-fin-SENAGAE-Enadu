@@ -14,9 +14,8 @@ public class GetQuestionDetailRes {
     private String subCategoryName;
     private Integer likeCnt;
     private Integer hateCnt;
-    private boolean checkLike;
-    private boolean checkHate;
-    private boolean checkScrap;
+    private Boolean checkLikeOrHate;
+    private Boolean checkScrap;
     private String nickname;
     private String grade;
     private String profileImage;

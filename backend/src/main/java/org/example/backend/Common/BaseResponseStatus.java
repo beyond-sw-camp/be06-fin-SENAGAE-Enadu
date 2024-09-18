@@ -40,6 +40,7 @@ public enum BaseResponseStatus {
     // 에러 아카이브 기능 - 6000
 
     // 에러 QnA 기능 - 7000
+
     // - QnA 공통 에러
     QNA_FAIL(false, 7001, "요청이 실패하였습니다."),
     QNA_INVALID_OR_EMPTY_DATA(false, 7002, "데이터 값이 비어있거나, 유효하지 않은 데이터입니다."),

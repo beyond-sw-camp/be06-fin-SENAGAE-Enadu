@@ -1,11 +1,10 @@
-package org.example.backend.Answer.Model.Entity;
+package org.example.backend.Qna.model.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.User.Model.Entity.User;
 
 import java.time.LocalDateTime;

@@ -2,9 +2,9 @@ package org.example.backend.User.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.backend.Answer.Model.Entity.Answer;
-import org.example.backend.Answer.Model.Entity.AnswerComment;
-import org.example.backend.Answer.Model.Entity.AnswerLike;
+import org.example.backend.Qna.model.Entity.Answer;
+import org.example.backend.Qna.model.Entity.AnswerComment;
+import org.example.backend.Qna.model.Entity.AnswerLike;
 import org.example.backend.Chat.Model.Entity.Chat;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorLike;
