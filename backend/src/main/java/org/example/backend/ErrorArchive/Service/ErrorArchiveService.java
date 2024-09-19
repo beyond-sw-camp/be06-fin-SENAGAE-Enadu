@@ -10,6 +10,7 @@ import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
 import org.example.backend.ErrorArchive.Model.Res.RegisterErrorArchiveRes;
 import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
 import org.example.backend.Exception.custom.InvalidCategoryException;
+import org.example.backend.Exception.custom.InvalidErrorBoardException;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.User.Repository.UserRepository;
@@ -46,17 +47,31 @@ public class ErrorArchiveService {
 
     // 아카이브 목록 조회
     public List<ListErrorArchiveRes> errorArchiveList(ListErrorArchiveReq listErrorArchiveReq) {
-        Pageable pageable = PageRequest.of(listErrorArchiveReq.getPage(), listErrorArchiveReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable;
+        if(listErrorArchiveReq.getSort() == null){
+            listErrorArchiveReq.setSort("latest");
+        }
+        if(listErrorArchiveReq.getSort().equals("latest")) {
+            pageable = PageRequest.of(listErrorArchiveReq.getPage(), listErrorArchiveReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        } else if(listErrorArchiveReq.getSort().equals("like")) {
+            pageable = PageRequest.of(listErrorArchiveReq.getPage(),listErrorArchiveReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCount"));
+        } else {
+            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_INVALID_SEARCH_TYPE);
+        }
         Page<ErrorArchive> errorArchivePage = errorArchiveReository.findAll(pageable);
-
         return errorArchivePage.getContent().stream().map
                         (errorArchive -> ListErrorArchiveRes.builder()
                                 .id(errorArchive.getId())
                                 .title(errorArchive.getTitle())
                                 .content(errorArchive.getContent())
-                                .superCategory(errorArchive.getCategory().getSubCategories().toString())
-                                .subCategory(errorArchive.getCategory().getSubCategories().toString())
+                                .superCategory(errorArchive.getCategory().getCategoryName())
+                                .subCategory(errorArchive.getCategory().getCategoryName())
                                 .likeCnt(errorArchive.getLikeCount())
+                                .createAt(String.valueOf(errorArchive.getCreatedAt()))
+                                .grade(errorArchive.getUser().getGrade())
+                                .nickname(errorArchive.getUser().getNickname())
+                                .profileImg(errorArchive.getUser().getProfileImg())
+                                .totalPage(errorArchivePage.getTotalPages())
                                 .build())
                 .collect(Collectors.toList());
     }

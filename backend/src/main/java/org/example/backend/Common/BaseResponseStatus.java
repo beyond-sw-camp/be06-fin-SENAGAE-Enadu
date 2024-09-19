@@ -43,6 +43,7 @@ public enum BaseResponseStatus {
     WIKI_PERMISSION_DENIED(false, 5006,"수정 권한이 없습니다."),
 
     // 에러 아카이브 기능 - 6000
+    ERRORARCHIVE_INVALID_SEARCH_TYPE(false, 6060, "존재하지 않은 타입의 검색 방식 입니다."),
 
     // 에러 QnA 기능 - 7000
     // - QnA 공통 에러

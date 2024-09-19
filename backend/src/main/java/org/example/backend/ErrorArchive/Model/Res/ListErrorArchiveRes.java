@@ -14,4 +14,7 @@ public class ListErrorArchiveRes {
     private int likeCnt;
     private String grade;
     private String createAt;
+    private String nickname;
+    private String profileImg;
+    private Integer totalPage;
 }
