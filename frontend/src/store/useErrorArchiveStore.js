@@ -4,7 +4,6 @@ const backend = "/api";
 
 export const useErrorArchiveStore = defineStore('errorarchive', {
   state: () => ({
-    errorArchiveId: 1,
     errorarchiveCards: [],
   }),
   actions: {
@@ -40,15 +39,14 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         size: 15
       };
       try {
-        const response = await axios.get("http://localhost:8080/errorarchive/list", { params });
-        if (response && response.data) {
-          this.errorarchiveCards = response.data.result;
-          console.log(this.errorarchiveCards);
-        } else {
-          console.error("Unexpected response structure:", response);
-        }
-      } catch (error) {
-        console.error("Error fetching errorarchive list:", error);
+        const response = await axios.get(backend+"/errorarchive/list", { 
+          params: params,
+          withCredentials: true });
+
+        this.errorarchiveCards  = response.data.result;
+        console.log(this.errorarchiveCards);
+      } catch(error) {
+        console.error("error fetching errorarchive list:",  error);
       }
   },
 }
