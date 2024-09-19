@@ -123,18 +123,6 @@ public class WikiService {
 
     }
 
-    // 스크랩 여부 조회 메서드
-    private Boolean ischeckScrap(Long wikiId, Integer version, Long userId) {
-
-        if (userId == null) {
-            return false;
-        }
-        WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(wikiId, version).orElseThrow(() ->
-                new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
-        return wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId()).isPresent();
-
-    }
-
     // 위키 수정
     @Transactional
     public GetWikiUpdateRes update(GetWikiUpdateReq getWikiUpdateReq, String thumbnailUrl, Long userId) {
@@ -172,6 +160,34 @@ public class WikiService {
 
     }
 
+
+    // 위키 이전버전 상세 조회
+    public GetWikiVersionDetailRes versionDetail(GetWikiVersionDetailReq getWikiVersionDetailReq, Long userId){
+
+        WikiContent wikiContent = wikiContentRepository.findById(getWikiVersionDetailReq.getWikiContentId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        Wiki wiki = wikiContent.getWiki();
+        GetWikiVersionDetailRes wikiDetailRes = GetWikiVersionDetailRes.builder()
+                .wikiContentId(wikiContent.getId())
+                .title(wiki.getTitle())
+                .content(wikiContent.getContent())
+                .category(wiki.getCategory().getCategoryName())
+                .version(wikiContent.getVersion())
+                .checkScrap(ischeckScrap(wiki.getId(), wikiContent.getVersion(), userId))
+                .build();
+        return wikiDetailRes;
+    }
+
+    // 스크랩 여부 조회 메서드
+    private Boolean ischeckScrap(Long wikiId, Integer version, Long userId) {
+
+        if (userId == null) {
+            return false;
+        }
+        WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(wikiId, version).orElseThrow(() ->
+                new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        return wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId()).isPresent();
+
+      
     // 위키 (이전버전) 목록 조회
     public List<GetWikiVersionListRes> versionList(GetWikiVersionListReq getWikiVersionListReq) {
         Pageable pageable = PageRequest.of(getWikiVersionListReq.getPage(), getWikiVersionListReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));

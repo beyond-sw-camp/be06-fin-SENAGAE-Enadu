@@ -99,6 +99,15 @@ public class WikiController {
 
     }
 
+    // 위키 이전버전 상세 조회
+    @GetMapping("/version/detail")
+    public BaseResponse<GetWikiVersionDetailRes> versionDetail(GetWikiVersionDetailReq getWikiVersionDetailReq,
+                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
+
+        return new BaseResponse<>(wikiService.versionDetail(getWikiVersionDetailReq, userId));
+
     // 위키 (이번버전) 목록 조회
     @GetMapping("/version/list")
     public BaseResponse<List<GetWikiVersionListRes>> versionList(GetWikiVersionListReq getWikiVersionListReq) {
