@@ -63,24 +63,11 @@ export default {
     },
   },
   methods: {
-    async handleCheckLatest() {
-      this.selectedSort = "latest";
-      await this.errorarchiveStore.getErrorArchiveList(this.selectedSort, this.selectedPage - 1);
-      if (this.errorarchiveStore.errorarchiveCards.length !== 0){
-        this.totalPage = this.errorarchiveStore.errorarchiveCards[0].totalPage;
-        console.log("total"+this.totalPage);
-
-      }
-      this.isLoading=true;
+    handleCheckLatest() {
+      this.selectedSort = "latest";    
     },
-    async handleCheckLike() {
+    handleCheckLike() {
       this.selectedSort = "like";
-      await this.errorarchiveStore.getErrorArchiveList(this.selectedSort, this.selectedPage - 1);
-      if (this.errorarchiveStore.errorarchiveCards.length !== 0){
-        this.totalPage = this.errorarchiveStore.errorarchiveCards[0].totalPage;
-        console.log("total"+this.totalPage);
-      }
-      this.isLoading=true;
     },
     handlePageUpdate(newPage) {
       this.selectedPage = newPage;
