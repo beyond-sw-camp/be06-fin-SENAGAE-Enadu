@@ -7,6 +7,5 @@ import lombok.Setter;
 @Setter
 public class GetWikiVersionDetailReq {
 
-    private Long id;
-    private Integer version;
+    private Long wikiContentId;
 }

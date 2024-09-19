@@ -163,10 +163,10 @@ public class WikiService {
     // 위키 이전버전 상세 조회
     public GetWikiVersionDetailRes versionDetail(GetWikiVersionDetailReq getWikiVersionDetailReq, Long userId){
 
-        WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(getWikiVersionDetailReq.getId(), getWikiVersionDetailReq.getVersion()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
-        Wiki wiki = wikiRepository.findById(wikiContent.getWiki().getId()).get();
+        WikiContent wikiContent = wikiContentRepository.findById(getWikiVersionDetailReq.getWikiContentId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        Wiki wiki = wikiContent.getWiki();
         GetWikiVersionDetailRes wikiDetailRes = GetWikiVersionDetailRes.builder()
-                .id(wikiContent.getId())
+                .wikiContentId(wikiContent.getId())
                 .title(wiki.getTitle())
                 .content(wikiContent.getContent())
                 .category(wiki.getCategory().getCategoryName())

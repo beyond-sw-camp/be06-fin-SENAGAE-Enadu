@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class GetWikiVersionDetailRes {
 
-    private Long id;
+    private Long wikiContentId;
     private String title;
     private String content;
     private String category;
