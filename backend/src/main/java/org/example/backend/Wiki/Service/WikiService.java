@@ -140,12 +140,12 @@ public class WikiService {
         String updateThumbnail = thumbnailUrl;
         if (updateThumbnail == null) {
             updateThumbnail = latestWiki.getThumbnailImgUrl();
-            }
+        }
         // WikiContent 등록
         WikiContent updateWikiContent = WikiContent.builder()
                 .wiki(wiki)
                 .content(getWikiUpdateReq.getContent())
-                .version(latestWiki.getVersion()+1)
+                .version(latestWiki.getVersion() + 1)
                 .user(user)
                 .thumbnail(updateThumbnail)
                 .build();
@@ -159,6 +159,7 @@ public class WikiService {
         return GetWikiUpdateRes.builder().wikiId(wiki.getId()).build();
 
     }
+
 
     // 위키 이전버전 상세 조회
     public GetWikiVersionDetailRes versionDetail(GetWikiVersionDetailReq getWikiVersionDetailReq, Long userId){
@@ -186,6 +187,22 @@ public class WikiService {
                 new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         return wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId()).isPresent();
 
+      
+    // 위키 (이전버전) 목록 조회
+    public List<GetWikiVersionListRes> versionList(GetWikiVersionListReq getWikiVersionListReq) {
+        Pageable pageable = PageRequest.of(getWikiVersionListReq.getPage(), getWikiVersionListReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<WikiContent> wikiVersionPage = wikiContentRepository.findAllByWikiId(getWikiVersionListReq.getId(), pageable);
+
+
+        return wikiVersionPage.getContent().stream().map
+                        (wikiContent -> GetWikiVersionListRes.builder()
+                                .wikiContentId(wikiContent.getId())
+                                .version(wikiContent.getVersion())
+                                .createdAt(wikiContent.getCreatedAt())
+                                .nickname(wikiContent.getUser().getNickname())
+                                .totalPages(wikiVersionPage.getTotalPages())
+                                .build())
+                .collect(Collectors.toList());
     }
 }
 

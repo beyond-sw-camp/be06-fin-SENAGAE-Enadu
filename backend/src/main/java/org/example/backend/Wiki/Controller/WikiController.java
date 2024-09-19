@@ -107,6 +107,18 @@ public class WikiController {
         Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
 
         return new BaseResponse<>(wikiService.versionDetail(getWikiVersionDetailReq, userId));
+
+    // 위키 (이번버전) 목록 조회
+    @GetMapping("/version/list")
+    public BaseResponse<List<GetWikiVersionListRes>> versionList(GetWikiVersionListReq getWikiVersionListReq) {
+        if (getWikiVersionListReq.getPage() == null) {
+            getWikiVersionListReq.setPage(0);
+        }
+        if (getWikiVersionListReq.getSize() == null || getWikiVersionListReq.getSize() == 0) {
+            getWikiVersionListReq.setSize(20);
+        }
+        List<GetWikiVersionListRes> wikiVersionList = wikiService.versionList(getWikiVersionListReq);
+        return new BaseResponse<>(wikiVersionList);
     }
 }
 

@@ -43,6 +43,7 @@ public enum BaseResponseStatus {
     WIKI_PERMISSION_DENIED(false, 5006,"수정 권한이 없습니다."),
 
     // 에러 아카이브 기능 - 6000
+    ERRORARCHIVE_NOT_FOUND(false,6022, "삭제된 게시글입니다."),
 
     // 에러 QnA 기능 - 7000
     // - QnA 공통 에러
