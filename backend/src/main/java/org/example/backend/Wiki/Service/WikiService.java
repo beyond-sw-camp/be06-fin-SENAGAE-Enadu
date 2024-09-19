@@ -186,7 +186,7 @@ public class WikiService {
         WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(wikiId, version).orElseThrow(() ->
                 new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         return wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId()).isPresent();
-
+    }
       
     // 위키 (이전버전) 목록 조회
     public List<GetWikiVersionListRes> versionList(GetWikiVersionListReq getWikiVersionListReq) {
