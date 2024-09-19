@@ -13,4 +13,5 @@ public class GetWikiVersionListRes {
     private Integer version;
     private LocalDateTime createdAt;
     private String nickname;
+    private Integer totalPages;
 }

@@ -177,12 +177,14 @@ public class WikiService {
         Pageable pageable = PageRequest.of(getWikiVersionListReq.getPage(), getWikiVersionListReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<WikiContent> wikiVersionPage = wikiContentRepository.findAllByWikiId(getWikiVersionListReq.getId(), pageable);
 
+
         return wikiVersionPage.getContent().stream().map
                         (wikiContent -> GetWikiVersionListRes.builder()
                                 .wikiContentId(wikiContent.getId())
                                 .version(wikiContent.getVersion())
                                 .createdAt(wikiContent.getCreatedAt())
                                 .nickname(wikiContent.getUser().getNickname())
+                                .totalPages(wikiVersionPage.getTotalPages())
                                 .build())
                 .collect(Collectors.toList());
     }
