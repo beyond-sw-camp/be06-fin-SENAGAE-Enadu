@@ -5,6 +5,24 @@ const backend = "/api";
 export const useErrorArchiveStore = defineStore('errorarchive', {
   state: () => ({
     errorArchiveId: 1,
+    errorArchiveDetail: {
+      id: 1,
+      nickname: "",
+      title: "",
+      content: "",
+      superCategory: "",
+      subCategory: "",
+      createAt: "",
+      modifiedAt: "",
+      likeCnt: 0,
+      hateCnt: 0,
+      checkLike: false,
+      checkHate: false,
+      checkScrap: false,
+      profileImg: "",
+      grade: "",
+      gradeImg: ""
+    }
   }),
   actions: {
     async registerErrorArchive(errorarchive) {
@@ -30,6 +48,21 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       } catch (error) {
         console.error('등록 중 오류 발생:', error);
         throw error;
+      }
+    },
+    async getErrorArchiveDetail(id) {
+      try {
+        const response = await axios.get(backend + "/errorarchive/detail", {
+          params: { id: id },
+          withCredentials: true,
+        });
+        if (response && response.data) {
+          this.errorArchiveDetail = response.data.result;
+        } else {
+          throw new Error("에러아카이브 상세 조회 실패");
+        }
+      } catch (error) {
+        console.error("에러아카이브 상세 조회 중 오류 발생:", error);
       }
     },
   },

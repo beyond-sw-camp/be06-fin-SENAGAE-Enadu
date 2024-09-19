@@ -118,7 +118,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .qna-detail-top-title {
   display: flex;
   align-items: center;
