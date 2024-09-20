@@ -60,17 +60,33 @@ public class ErrorArchiveService {
 
     // 아카이브 목록 조회
     public List<ListErrorArchiveRes> errorArchiveList(ListErrorArchiveReq listErrorArchiveReq) {
-        Pageable pageable = PageRequest.of(listErrorArchiveReq.getPage(), listErrorArchiveReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable;
+        if(listErrorArchiveReq.getSort() == null){
+            listErrorArchiveReq.setSort("latest");
+        }
+        if(listErrorArchiveReq.getSort().equals("latest")) {
+            pageable = PageRequest.of(listErrorArchiveReq.getPage(), listErrorArchiveReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        } else if(listErrorArchiveReq.getSort().equals("like")) {
+            pageable = PageRequest.of(listErrorArchiveReq.getPage(),listErrorArchiveReq.getSize(), Sort.by(Sort.Direction.DESC, "likeCount"));
+        } else {
+            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_INVALID_SEARCH_TYPE);
+        }
         Page<ErrorArchive> errorArchivePage = errorArchiveReository.findAll(pageable);
-
         return errorArchivePage.getContent().stream().map
                         (errorArchive -> ListErrorArchiveRes.builder()
                                 .id(errorArchive.getId())
                                 .title(errorArchive.getTitle())
                                 .content(errorArchive.getContent())
-                                .superCategory(errorArchive.getCategory().getSubCategories().toString())
-                                .subCategory(errorArchive.getCategory().getSubCategories().toString())
+                                .superCategory(errorArchive.getCategory().getSuperCategory() == null ?
+                                        errorArchive.getCategory().getCategoryName() :
+                                        errorArchive.getCategory().getSuperCategory().getCategoryName())
+                                .subCategory(errorArchive.getCategory().getSuperCategory() == null ? null: errorArchive.getCategory().getCategoryName())
                                 .likeCnt(errorArchive.getLikeCount())
+                                .createdAt(String.valueOf(errorArchive.getCreatedAt()))
+                                .grade(errorArchive.getUser().getGrade())
+                                .nickname(errorArchive.getUser().getNickname())
+                                .profileImg(errorArchive.getUser().getProfileImg())
+                                .totalPage(errorArchivePage.getTotalPages())
                                 .build())
                 .collect(Collectors.toList());
     }

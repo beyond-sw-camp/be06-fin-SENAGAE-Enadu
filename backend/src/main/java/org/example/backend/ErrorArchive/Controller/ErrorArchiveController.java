@@ -41,8 +41,13 @@ public class ErrorArchiveController {
         if (listErrorArchiveReq.getPage() == null) {
             listErrorArchiveReq.setPage(0);
         }
+
+        if(listErrorArchiveReq.getSize() == null || listErrorArchiveReq.getSize() == 0){
+            listErrorArchiveReq.setSize(16);
+
         if (listErrorArchiveReq.getSize() == null || listErrorArchiveReq.getSize() == 0) {
             listErrorArchiveReq.setSize(20);
+
         }
         List<ListErrorArchiveRes> errorArchiveList = errorArchiveService.errorArchiveList(listErrorArchiveReq);
         return new BaseResponse<>(errorArchiveList);
