@@ -58,7 +58,6 @@ export default {
     },
     components: {},
     mounted() { 
-    console.log(this.errorarchiveCard);
   },
 };
 </script>

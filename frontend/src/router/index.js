@@ -22,7 +22,7 @@ const router = createRouter({
     { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki", component: WikiRegisterPage },
     { path: "/chat", component: ChatPage },
-    { path: "/errorarchive", component: ErrorArchiveRegisterPage },
+    { path: "/errorarchive/register", component: ErrorArchiveRegisterPage },
     { path: "/errorarchive/list", component: ErrorArchiveListPage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
     { path: "/point", component: PointPage, children: [
@@ -30,6 +30,7 @@ const router = createRouter({
         { path: "rank", component: PointRankingComponent },
       ]},
     { path: "/wiki/detail", component: WikiDetailPage },
+
     
   ]
   
