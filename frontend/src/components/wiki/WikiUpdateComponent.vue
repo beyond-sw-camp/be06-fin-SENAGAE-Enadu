@@ -11,25 +11,21 @@
               <div class="space-y-12 sm:space-y-14">
                 <div class="grid grid-cols-1 gap-y-7">
                   
-                  <!-- 제목 (수정 불가) -->
                   <div class="space-y-1">
                     <label for="title" class="text-sm font-medium text-gray-700">제목</label>
                     <input type="text" v-model="updatedTitle" class="form-control" readonly />
                   </div>
 
-                  <!-- 카테고리 (수정 불가) -->
                   <div class="space-y-1">
                     <label for="category" class="text-sm font-medium text-gray-700">카테고리</label>
                     <input type="text" v-model="updatedCategory" class="form-control" readonly />
                   </div>
 
-                  <!-- 내용 수정 -->
                   <div class="space-y-1">
                     <label for="content" class="text-sm font-medium text-gray-700">내용</label>
                     <v-md-editor v-model="updatedContent" height="400px"></v-md-editor>
                   </div>
 
-                  <!-- 썸네일 수정 -->
                   <div class="space-y-1">
                     <label for="thumbnail" class="text-sm font-medium text-gray-700">썸네일 수정</label>
                     <div class="flex w-full">
@@ -49,7 +45,6 @@
                   </div>
                 </div>
 
-                <!-- 버튼 -->
                 <div class="mt-5 flex justify-between gap-x-3 mb-10">
                   <button type="button"
                           class="w-20 rounded-md bg-white px-4 py-2 text-sm font-medium shadow-sm ring-1 ring-gray-500/30 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:ring-gray-500/70 dark:hover:bg-gray-600"

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useUserStore } from './useUserStore';
 
 const backend = "/api";
 
@@ -18,42 +19,47 @@ axios.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
 export const useWikiStore = defineStore("wiki", {
     state: () => ({
-        wikiCards: [], 
+        wikiCards: [],
         wikiRegisterReq: {
             title: '',
             categoryId: '',
             content: '',
         },
-        userDetails: null, 
-        wikiDetail: null, 
-        isLoggedIn: false, 
+        wikiDetail: null,
     }),
 
     actions: {
 
         // 위키 등록 기능
         async registerWiki(thumbnail) {
+            const userStore = useUserStore(); // 유저 스토어 사용
+            if (!userStore.isLoggedIn) {
+                console.log("로그인이 필요합니다.");
+                return false;
+            }
             try {
-                console.log("위키 등록 요청 데이터:", this.wikiRegisterReq);
-
                 const formData = new FormData();
                 const jsonBlob = new Blob([JSON.stringify(this.wikiRegisterReq)], { type: "application/json" });
                 formData.append("wikiRegisterReq", jsonBlob);
-
+        
                 if (thumbnail) {
                     formData.append("thumbnail", thumbnail);
                 }
-
+        
                 const response = await axios.post(backend + "/wiki", formData, {
                     withCredentials: true,
                     headers: { "Content-Type": "multipart/form-data" }
                 });
-
+        
                 if (response && response.data) {
+                    console.log("응답 데이터:", response.data);
+                    
                     if (response.data.isSuccess) {
-                        return true;
+                        const newWikiId = response.data.result.wikiId; // 서버에서 반환된 ID 사용
+                        return newWikiId; // 성공적으로 위키 등록되었을 때 ID 반환
                     } else {
                         throw new Error(response.data.message || "서버 응답 오류");
                     }
@@ -62,31 +68,37 @@ export const useWikiStore = defineStore("wiki", {
                 }
             } catch (error) {
                 console.error("위키 등록 중 오류 발생:", error);
-                throw error;
+                return false; // 오류 발생 시 false 반환
             }
         },
 
         // 위키 수정 기능
         async updateWiki(id, updatedContent, updatedThumbnail) {
+            const userStore = useUserStore(); // 유저 스토어 사용
+            if (!userStore.isLoggedIn) {
+                console.log("로그인이 필요합니다.");
+                return false;
+            }
+
             try {
                 const formData = new FormData();
                 const updateReq = {
                     id: id,
-                    content: updatedContent 
+                    content: updatedContent
                 };
-        
+
                 const jsonBlob = new Blob([JSON.stringify(updateReq)], { type: "application/json" });
                 formData.append("getWikiUpdateReq", jsonBlob);
-    
+
                 if (updatedThumbnail) {
                     formData.append("thumbnail", updatedThumbnail);
                 }
-        
+
                 const response = await axios.patch(backend + "/wiki", formData, {
                     withCredentials: true,
                     headers: { "Content-Type": "multipart/form-data" }
                 });
-        
+
                 if (response && response.data.isSuccess) {
                     console.log("위키 수정 성공:", response.data);
                     return true;
@@ -108,18 +120,10 @@ export const useWikiStore = defineStore("wiki", {
                 });
 
                 if (response && response.data) {
-                    console.log('Wiki Detail Response:', response.data); 
-                    this.wikiDetail = response.data.result; 
+                    console.log('Wiki Detail Response:', response.data);
+                    this.wikiDetail = response.data.result;
 
-                    if (response.data.result.userGrade) {
-                        console.log("사용자 정보 확인:", response.data.result.userGrade);
-                        this.userDetails = { grade: response.data.result.userGrade };
-                        this.isLoggedIn = true;  // 로그인 상태 true
-                    } else {
-                        this.userDetails = null; // 로그인이 안된 경우 사용자 정보 초기화
-                        this.isLoggedIn = false; // 로그인 상태 false
-                    }
-
+                    
                 } else {
                     throw new Error("위키 상세 조회 실패");
                 }
@@ -127,5 +131,6 @@ export const useWikiStore = defineStore("wiki", {
                 console.error("위키 상세 조회 중 오류 발생:", error);
             }
         },
+        
     }
 });
