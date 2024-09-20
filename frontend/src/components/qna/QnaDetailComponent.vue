@@ -105,7 +105,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .rounded-box {
   border-radius: 20px;
 }

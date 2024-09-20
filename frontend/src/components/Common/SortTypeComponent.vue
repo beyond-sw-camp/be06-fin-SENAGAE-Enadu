@@ -19,7 +19,7 @@ import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
 
 export default {
-  name: "QnaListPage",
+  name: "SortTypeComponent",
   data() {
     return {
       selectedSort: null
