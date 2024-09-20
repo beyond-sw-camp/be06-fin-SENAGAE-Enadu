@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useUserStore } from './useUserStore';
 
 const backend = "/api";
 
-// Axios Interceptor 설정
 axios.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -22,39 +22,44 @@ axios.interceptors.response.use(
 
 export const useWikiStore = defineStore("wiki", {
     state: () => ({
-        wikiCards: [], // 위키 목록
+        wikiCards: [],
         wikiRegisterReq: {
             title: '',
             categoryId: '',
             content: '',
         },
-        wikiDetail: null, // 위키 상세 정보
+        wikiDetail: null,
     }),
 
     actions: {
+
         // 위키 등록 기능
         async registerWiki(thumbnail) {
+            const userStore = useUserStore(); // 유저 스토어 사용
+            if (!userStore.isLoggedIn) {
+                console.log("로그인이 필요합니다.");
+                return false;
+            }
             try {
-                console.log("위키 등록 요청 데이터:", this.wikiRegisterReq);
-
                 const formData = new FormData();
                 const jsonBlob = new Blob([JSON.stringify(this.wikiRegisterReq)], { type: "application/json" });
                 formData.append("wikiRegisterReq", jsonBlob);
-
-                // 썸네일 파일 추가
+        
                 if (thumbnail) {
                     formData.append("thumbnail", thumbnail);
                 }
-
+        
                 const response = await axios.post(backend + "/wiki", formData, {
                     withCredentials: true,
                     headers: { "Content-Type": "multipart/form-data" }
                 });
-
-                // 응답 데이터 처리
+        
                 if (response && response.data) {
+                    console.log("응답 데이터:", response.data);
+                    
                     if (response.data.isSuccess) {
-                        return true; // 성공 시 true 반환
+                        const newWikiId = response.data.result.wikiId; // 서버에서 반환된 ID 사용
+                        return newWikiId; // 성공적으로 위키 등록되었을 때 ID 반환
                     } else {
                         throw new Error(response.data.message || "서버 응답 오류");
                     }
@@ -63,20 +68,62 @@ export const useWikiStore = defineStore("wiki", {
                 }
             } catch (error) {
                 console.error("위키 등록 중 오류 발생:", error);
+                return false; // 오류 발생 시 false 반환
+            }
+        },
+
+        // 위키 수정 기능
+        async updateWiki(id, updatedContent, updatedThumbnail) {
+            const userStore = useUserStore(); // 유저 스토어 사용
+            if (!userStore.isLoggedIn) {
+                console.log("로그인이 필요합니다.");
+                return false;
+            }
+
+            try {
+                const formData = new FormData();
+                const updateReq = {
+                    id: id,
+                    content: updatedContent
+                };
+
+                const jsonBlob = new Blob([JSON.stringify(updateReq)], { type: "application/json" });
+                formData.append("getWikiUpdateReq", jsonBlob);
+
+                if (updatedThumbnail) {
+                    formData.append("thumbnail", updatedThumbnail);
+                }
+
+                const response = await axios.patch(backend + "/wiki", formData, {
+                    withCredentials: true,
+                    headers: { "Content-Type": "multipart/form-data" }
+                });
+
+                if (response && response.data.isSuccess) {
+                    console.log("위키 수정 성공:", response.data);
+                    return true;
+                } else {
+                    throw new Error("수정 실패");
+                }
+            } catch (error) {
+                console.error("위키 수정 중 오류 발생:", error);
                 throw error;
             }
         },
 
-        // 위키 상세 조회 기능
+        // 위키 상세 조회
         async fetchWikiDetail(id) {
             try {
-                const response = await axios.get(backend + "/wiki/detail", {
+                const response = await axios.get(`${backend}/wiki/detail`, {
+                    params: { id },
                     withCredentials: true,
-                    params: { id: id }, 
                 });
 
                 if (response && response.data) {
+                    console.log('Wiki Detail Response:', response.data);
                     this.wikiDetail = response.data.result;
+
+                    
                 } else {
                     throw new Error("위키 상세 조회 실패");
                 }
@@ -84,5 +131,6 @@ export const useWikiStore = defineStore("wiki", {
                 console.error("위키 상세 조회 중 오류 발생:", error);
             }
         },
-    },
+        
+    }
 });

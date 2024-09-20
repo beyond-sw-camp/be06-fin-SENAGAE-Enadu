@@ -11,6 +11,7 @@ import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
 import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
+import WikiUpdatePage from "@/pages/WikiUpdatePage.vue";
 import ErrorArchiveListPage from "@/pages/ErrorArchiveListPage.vue";
 import {useChatStore} from "@/store/useChatStore";
 import MypagePage from "@/pages/MypagePage.vue";
@@ -36,7 +37,8 @@ const router = createRouter({
         { path: "info", component: PointInfoComponent },
         { path: "rank", component: PointRankingComponent },
       ]},
-    { path: "/wiki/detail", component: WikiDetailPage },
+    { path: "/wiki/detail", name: "WikiDetail", component: WikiDetailPage },
+    { path: "/wiki/update", name: "WikiUpdate", component: WikiUpdatePage },
     { path: "/mypage", component: MypagePage, children: [
         { path: "info", component: InfoComponent },
         { path: "history", component: UserLogComponent },

@@ -7,22 +7,17 @@
                     <div class="sc-fvxzrP jGdQwA" style="display: flex; justify-content: space-between;">
                         <div class="information" style="margin-left: 15px;">
                             <span class="version">
-                                <a href="이전 버전 리스트 링크 달기" class="sc-egiyK cyyZlI">이전 버전</a>
+                                <a href="#" class="sc-egiyK cyyZlI">이전 버전</a>
                             </span>
                             <span class="version" style="margin-left: 15px;">
                                 <span class="sc-egiyK cyyZlI">현재 버전 : {{ wikiDetail.version }}</span>
                             </span>
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
-                            <div data-testid="follow-btn" class="sc-avest iIZjji">
-                                <button data-testid="scrap-btn" class="sc-avest iIZjji"
-                                    style="border: none; background-color: transparent;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none"
-                                        stroke="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
-                                        <path d="M2 2v13.5l6-3.5 6 3.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
-                                    </svg>
-                                </button>
-                            </div>
+                            <button v-if="canEditWiki && wikiDetail.title" @click="goToEditPage"
+                                class="ml-3 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                                수정
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -33,9 +28,7 @@
 
                 <div class="sc-jlRLRk iGRQXB">
                     <div class="sc-dUbtfd kOYWDF">
-                        <div class="sc-jHkVzv dyVEVs sc-htJRVC jfYEFP">
-
-                        </div>
+                        <div class="sc-jHkVzv dyVEVs sc-htJRVC jfYEFP"></div>
                     </div>
                 </div>
             </div>
@@ -44,18 +37,17 @@
         <div class="sc-dFtzxp bfzjcP" style="margin-top: 1px;">
             <div class="sc-bXTejn FTZwa">
                 <div class="sc-eGRUor gdnhbG atom-one">
-
-                    <!-- 마크다운 내용 -->
                     <v-md-preview :text="wikiDetail.content" />
                 </div>
             </div>
         </div>
     </div>
 </template>
-  
+
 <script>
 import { mapStores } from "pinia";
 import { useWikiStore } from "@/store/useWikiStore";
+import { useUserStore } from "@/store/useUserStore";
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/style/preview.css';
@@ -70,32 +62,45 @@ export default {
     data() {
         return {
             id: '',
+            userGrade: 'GUEST', // 기본값 설정
         };
     },
     computed: {
         ...mapStores(useWikiStore),
+        ...mapStores(useUserStore),
         wikiDetail() {
             return this.wikiStore.wikiDetail || {};
         },
+        canEditWiki() {
+            // 유저 등급과 로그인 상태에 따른 수정 권한 체크
+            return this.userGrade !== '뉴비' && this.userGrade !== 'GUEST' && this.userStore.isLoggedIn;
+        },
+    },
+    watch: {
+        // 로그인 상태가 변경될 때 버튼 상태를 갱신
+        'userStore.isLoggedIn'(newValue) {
+            if (!newValue) {
+                this.userGrade = 'GUEST'; // 로그아웃 상태로 변경
+            }
+        }
     },
     created() {
         this.id = this.$route.query.id || this.$route.params.id;
         if (this.id) {
-            this.fetchWikiDetail();
+            this.fetchWikiDetail(); // 위키 상세 조회
         }
     },
     methods: {
         async fetchWikiDetail() {
             try {
                 await this.wikiStore.fetchWikiDetail(this.id);
+                this.userGrade = this.wikiStore.wikiDetail.userGrade || 'GUEST';
             } catch (error) {
-                console.error("위키 상세 조회 중 오류:", error);
+                console.error('Wiki Detail Fetch Error:', error);
             }
         },
-        async toggleScrap() {
-            if (this.id) {
-                await this.wikiStore.toggleScrap(this.id);
-            }
+        goToEditPage() {
+            this.$router.push({ name: 'WikiUpdate', query: { id: this.id } });
         },
     },
     components: {
@@ -103,7 +108,9 @@ export default {
     },
 };
 </script>
-  
+
+
+
 <style scoped>
 v-md-preview {
     font-size: 1.125rem;
@@ -124,6 +131,47 @@ v-md-preview p {
     margin-bottom: 1.5rem;
 }
 
+.dXONqK {
+    width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.head-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.sc-egiyK {
+    color: #007bff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sc-egiyK:hover {
+    text-decoration: underline;
+}
+
+v-md-preview {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    color: var(--text1);
+}
+
+v-md-preview h1,
+v-md-preview h2,
+v-md-preview h3 {
+    margin-bottom: 1rem;
+    color: var(--text1);
+}
+
+v-md-preview p {
+    margin-bottom: 1.5rem;
+}
 
 .dXONqK {
     width: 768px;
