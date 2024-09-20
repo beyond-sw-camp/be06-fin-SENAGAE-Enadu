@@ -11,11 +11,13 @@ import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
 import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
+import ErrorArchiveListPage from "@/pages/ErrorArchiveListPage.vue";
 import {useChatStore} from "@/store/useChatStore";
 import MypagePage from "@/pages/MypagePage.vue";
 import InfoComponent from "@/components/Mypage/Info/InfoComponent.vue";
 import UserLogComponent from "@/components/Mypage/UserLogComponent.vue";
 import ScrapListComponent from "@/components/Mypage/ScrapListComponent.vue";
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -26,7 +28,8 @@ const router = createRouter({
     { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki", component: WikiRegisterPage },
     { path: "/chat", component: ChatPage },
-    { path: "/errorarchive", component: ErrorArchiveRegisterPage },
+    { path: "/errorarchive/register", component: ErrorArchiveRegisterPage },
+    { path: "/errorarchive/list", component: ErrorArchiveListPage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
     { path: "/point", component: PointPage, children: [
         { path: "info", component: PointInfoComponent },

@@ -4,7 +4,7 @@ const backend = "/api";
 
 export const useErrorArchiveStore = defineStore('errorarchive', {
   state: () => ({
-    errorArchiveId: 1,
+    errorarchiveCards: [],
   }),
   actions: {
     async registerErrorArchive(errorarchive) {
@@ -32,7 +32,22 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         throw error;
       }
     },
+    async getErrorArchiveList(sort, page) {
+      const params = {
+        sort: sort,
+        page: page,
+        size: 15
+      };
+      try {
+        const response = await axios.get(backend+"/errorarchive/list", { 
+          params: params,
+          withCredentials: true });
+
+        this.errorarchiveCards  = response.data.result;
+        console.log(this.errorarchiveCards);
+      } catch(error) {
+        console.error("error fetching errorarchive list:",  error);
+      }
   },
+}
 });
-
-

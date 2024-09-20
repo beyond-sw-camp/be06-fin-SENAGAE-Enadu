@@ -142,7 +142,7 @@ export default {
       this.showSuperModal = true;
     },
     closeSuperCategoryModal() {
-      this.showSupeModal = false;
+      this.showSuperModal = false;
     },
     handleSuperCategorySelection(category){
       this.selectedSuperCategory = category;
