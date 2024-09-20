@@ -17,6 +17,7 @@ import MypagePage from "@/pages/MypagePage.vue";
 import InfoComponent from "@/components/Mypage/Info/InfoComponent.vue";
 import UserLogComponent from "@/components/Mypage/UserLogComponent.vue";
 import ScrapListComponent from "@/components/Mypage/ScrapListComponent.vue";
+import ErrorArchiveDetailPage from "@/pages/ErrorArchiveDetailPage.vue";
 
 
 const router = createRouter({
@@ -40,7 +41,8 @@ const router = createRouter({
         { path: "info", component: InfoComponent },
         { path: "history", component: UserLogComponent },
         { path: "scrap", component: ScrapListComponent }
-      ] }
+      ] },
+    { path:"/errorarchive/detail", component: ErrorArchiveDetailPage},
   ]
 });
 
