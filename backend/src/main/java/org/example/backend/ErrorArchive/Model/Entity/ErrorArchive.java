@@ -64,6 +64,32 @@ public class ErrorArchive {
     @Column(name = "hate_cnt", nullable = false)
     private int hateCount; // int
 
+    private int scrapCount; // 스크랩 수를 저장할 필드
+
+    // 스크랩 카운트 증가
+    public void increaseScrapCount() {
+        this.scrapCount++;
+    }
+
+    // 스크랩 카운트 감소
+    public void decreaseScrapCount() {
+        if (this.scrapCount > 0) {
+            this.scrapCount--;
+        }
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+    public void decreaseLikeCount() {
+        this.likeCount--;
+    }
+    public void increaseHateCount() {
+        this.hateCount++;
+    }
+    public void decreaseHateCount() {
+        this.hateCount--;
+    }
 
 
 

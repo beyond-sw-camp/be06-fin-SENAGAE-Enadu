@@ -13,6 +13,7 @@ import org.example.backend.ErrorArchive.Service.ErrorArchiveService;
 import org.example.backend.Exception.custom.InvalidErrorBoardException;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Security.CustomUserDetails;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,6 +60,33 @@ public class ErrorArchiveController {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
         return new BaseResponse<>(errorArchiveService.detail(getErrorArchiveDetailReq, customUserDetails));
+    }
+
+    // 좋아요 체크 및 토글
+    @GetMapping("/like")
+    public BaseResponse<Long> checkLike(Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (customUserDetails == null) {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
+        Long id = errorArchiveService.toggleErrorArchiveLikeOrHate(errorarchiveId, customUserDetails.getUserId(), true);
+        return new BaseResponse<>(id);
+    }
+
+    // 싫어요 체크 및 토글
+    @GetMapping("/hate")
+    public BaseResponse<Long> checkHate(Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (customUserDetails == null) {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
+        Long id = errorArchiveService.toggleErrorArchiveLikeOrHate(errorarchiveId, customUserDetails.getUserId(), false);
+        return new BaseResponse<>(id);
+    }
+
+    // 아카이브 스크랩
+    @GetMapping("/scrap")
+    public BaseResponse<Boolean> checkScrap(Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Boolean isScrapped = errorArchiveService.checkErrorArchiveScrap(errorarchiveId, customUserDetails.getUserId());
+        return new BaseResponse<>(isScrapped);
     }
 }
 
