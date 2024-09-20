@@ -22,7 +22,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       profileImg: "",
       grade: "",
       gradeImg: ""
-    }
+    },
     errorarchiveCards: [],
   }),
   actions: {
