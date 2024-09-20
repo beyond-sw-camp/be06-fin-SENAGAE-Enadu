@@ -101,7 +101,9 @@ export const useChatStore = defineStore("chat", {
             )
         },
         disconnect() {
-            this.stompClient.disconnect();
+            if (this.stompClient !== null){
+                this.stompClient.disconnect();
+            }
             // console.log("소켓 연결 해제");
         },
         send(message) {
