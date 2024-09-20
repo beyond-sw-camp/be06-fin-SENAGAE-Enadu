@@ -36,6 +36,7 @@ export default {
   methods: {
     async selected() {
       this.isSelected = true
+      this.chatStore.disconnect();
       this.chatStore.selectedChatRoom = {
         chatRoomId: this.chatRoom.chatRoomId,
         recipientNickname: this.chatRoom.recipientNickname,

@@ -34,9 +34,19 @@ export const useChatStore = defineStore("chat", {
         stompClient: null,
     }),
     actions: {
+        async startChat(nickname) {
+            const startChatReq = {
+                nickname: nickname,
+            }
+            const res = await axios.post(`${backend}/chat/start`, startChatReq, {withCredentials: true});
+            this.selectedChatRoom = res.data.result;
+        },
         async getChatRoomList() {
             const res = await axios.get(backend + "/chat/chatRoomList", {withCredentials: true})
             this.chatRoomList = res.data.result;
+            if (this.chatRoomList.length === 0 || this.selectedChatRoom.chatRoomId !== 0) {
+                return;
+            }
             this.selectedChatRoom = {
                 chatRoomId: this.chatRoomList[0].chatRoomId,
                 recipientNickname: this.chatRoomList[0].recipientNickname,
@@ -45,6 +55,10 @@ export const useChatStore = defineStore("chat", {
             }
         },
         async getChatMessageList(page) {
+            if (this.chatRoomList.length === 0) {
+                this.chatMessageList = [];
+                return;
+            }
             const res = await axios.get(backend + "/chat/messageList", {
                 params: {
                     chatRoomId: this.selectedChatRoom.chatRoomId,
@@ -53,10 +67,13 @@ export const useChatStore = defineStore("chat", {
                 },
                 withCredentials: true
             });
-            console.log(res.data);
             this.chatMessageList = res.data.result;
-            console.log(this.chatMessageList);
-
+            for (let idx=0; idx < this.chatRoomList.length; idx++){
+                if (this.chatRoomList[idx].chatRoomId === this.selectedChatRoom.chatRoomId) {
+                    this.chatRoomList[idx].lastMessage = this.chatMessageList[0].message;
+                    this.chatRoomList[idx].lastMessageDay = this.chatMessageList[0].sendTime;
+                }
+            }
             this.connect();
 
         },
@@ -82,6 +99,10 @@ export const useChatStore = defineStore("chat", {
                     })
                 }
             )
+        },
+        disconnect() {
+            this.stompClient.disconnect();
+            // console.log("소켓 연결 해제");
         },
         send(message) {
             console.log("Send Message:" + message);
@@ -123,9 +144,9 @@ export const useChatStore = defineStore("chat", {
 
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         },
-        updateChatRoomData(chatRoomId, message, sendTime){
-            for(const chatRoom of this.chatRoomList){
-                if (chatRoom.chatRoomId == chatRoomId){
+        updateChatRoomData(chatRoomId, message, sendTime) {
+            for (const chatRoom of this.chatRoomList) {
+                if (chatRoom.chatRoomId == chatRoomId) {
                     chatRoom.lastMessage = message;
                     chatRoom.lastMessageDay = sendTime
                 }

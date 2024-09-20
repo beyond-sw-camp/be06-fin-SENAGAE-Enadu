@@ -12,6 +12,12 @@ import PointRankingComponent from "@/components/Point/PointRankingComponent.vue"
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
 import ErrorArchiveListPage from "@/pages/ErrorArchiveListPage.vue";
+import {useChatStore} from "@/store/useChatStore";
+import MypagePage from "@/pages/MypagePage.vue";
+import InfoComponent from "@/components/Mypage/Info/InfoComponent.vue";
+import UserLogComponent from "@/components/Mypage/UserLogComponent.vue";
+import ScrapListComponent from "@/components/Mypage/ScrapListComponent.vue";
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -30,10 +36,20 @@ const router = createRouter({
         { path: "rank", component: PointRankingComponent },
       ]},
     { path: "/wiki/detail", component: WikiDetailPage },
-
-    
+    { path: "/mypage", component: MypagePage, children: [
+        { path: "info", component: InfoComponent },
+        { path: "history", component: UserLogComponent },
+        { path: "scrap", component: ScrapListComponent }
+      ] }
   ]
-  
+});
+
+router.beforeEach((to, from, next) => {
+    if (from.path === "/chat") { // /chat 페이지를 벋어날 때 소켓 연결 해재
+        const chatStore = useChatStore();
+        chatStore.disconnect();
+    }
+    next();
 });
 
 export default router;
