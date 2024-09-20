@@ -28,7 +28,7 @@ const router = createRouter({
     { path: "/qna/list", component: QnaListPage },
     { path: "/qna/register", component: QnaRegisterComponent },
     { path: '/qna/detail/:id', component: QnaDetailPage },
-    { path: "/wiki", component: WikiRegisterPage },
+    { path: "/wiki/register", component: WikiRegisterPage },
     { path: "/chat", component: ChatPage },
     { path: "/errorarchive/register", component: ErrorArchiveRegisterPage },
     { path: "/errorarchive/list", component: ErrorArchiveListPage },
