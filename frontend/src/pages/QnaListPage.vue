@@ -5,8 +5,8 @@
       <p id="sub-title">당신의 에러를 해결해보세요</p>
     </div>
     <div class="qna-inner">
-      <SortTypeComponent @checkLatest="handleCheckLatest"
-                         @checkLike="handleCheckLike"/>
+      <SearchComponent  @checkLatest="handleCheckLatest"
+                        @checkLike="handleCheckLike"/>
       <div class="qna-list-flex">
         <QnaCardComponent
             v-for="qnaCard in qnaStore.qnaCards"
@@ -25,8 +25,8 @@
 import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
-import SortTypeComponent from "@/components/Common/SortTypeComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
+import SearchComponent from "@/components/Common/SearchComponent.vue";
 
 export default {
   name: "QnaListPage",
@@ -64,8 +64,8 @@ export default {
   },
   components: {
     QnaCardComponent,
-    SortTypeComponent,
     PaginationComponent,
+    SearchComponent,
   },
 };
 </script>
