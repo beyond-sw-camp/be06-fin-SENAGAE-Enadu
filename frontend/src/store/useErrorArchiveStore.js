@@ -23,6 +23,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       grade: "",
       gradeImg: ""
     }
+    errorarchiveCards: [],
   }),
   actions: {
     async registerErrorArchive(errorarchive) {
@@ -65,7 +66,21 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         console.error("에러아카이브 상세 조회 중 오류 발생:", error);
       }
     },
-  },
+    async getErrorArchiveList(sort, page) {
+      const params = {
+        sort: sort,
+        page: page,
+        size: 15
+      };
+      try {
+        const response = await axios.get(backend+"/errorarchive/list", { 
+          params: params,
+          withCredentials: true });
+        this.errorarchiveCards  = response.data.result;
+        console.log(this.errorarchiveCards);
+      } catch(error) {
+        console.error("error fetching errorarchive list:",  error);
+      }
+    },
+  }
 });
-
-
