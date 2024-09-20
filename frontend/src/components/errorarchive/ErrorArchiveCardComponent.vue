@@ -16,7 +16,7 @@
         <div class="details">
           <a class="nickname">{{ errorarchiveCard.nickname }}</a>
           <div class="PostCard_subInfo__KqVkC">
-            <span>{{ formatDateTime(errorarchiveCard.createAt) }}</span>
+            <span>{{ formatDateTime(errorarchiveCard.createdAt) }}</span>
           </div>
         </div>
       </div>
