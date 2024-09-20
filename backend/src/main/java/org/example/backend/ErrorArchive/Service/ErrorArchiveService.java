@@ -64,10 +64,12 @@ public class ErrorArchiveService {
                                 .id(errorArchive.getId())
                                 .title(errorArchive.getTitle())
                                 .content(errorArchive.getContent())
-                                .superCategory(errorArchive.getCategory().getCategoryName())
-                                .subCategory(errorArchive.getCategory().getCategoryName())
+                                .superCategory(errorArchive.getCategory().getSuperCategory() == null ?
+                                        errorArchive.getCategory().getCategoryName() :
+                                        errorArchive.getCategory().getSuperCategory().getCategoryName())
+                                .subCategory(errorArchive.getCategory().getSuperCategory() == null ? null: errorArchive.getCategory().getCategoryName())
                                 .likeCnt(errorArchive.getLikeCount())
-                                .createAt(String.valueOf(errorArchive.getCreatedAt()))
+                                .createdAt(String.valueOf(errorArchive.getCreatedAt()))
                                 .grade(errorArchive.getUser().getGrade())
                                 .nickname(errorArchive.getUser().getNickname())
                                 .profileImg(errorArchive.getUser().getProfileImg())

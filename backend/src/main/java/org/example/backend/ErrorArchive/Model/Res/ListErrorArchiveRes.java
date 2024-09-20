@@ -13,7 +13,7 @@ public class ListErrorArchiveRes {
     private String subCategory;
     private int likeCnt;
     private String grade;
-    private String createAt;
+    private String createdAt;
     private String nickname;
     private String profileImg;
     private Integer totalPage;
