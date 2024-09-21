@@ -54,7 +54,7 @@ public class ErrorArchiveController {
     public BaseResponse<GetErrorArchiveDetailRes> detail(GetErrorArchiveDetailReq getErrorArchiveDetailReq,
                                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if(getErrorArchiveDetailReq.getId() == null){
-            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND);
+            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND_DETAIL);
         }
         if(customUserDetails.getUserId() == null){
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
@@ -62,28 +62,24 @@ public class ErrorArchiveController {
         return new BaseResponse<>(errorArchiveService.detail(getErrorArchiveDetailReq, customUserDetails));
     }
 
-    // 좋아요 체크 및 토글
-    @GetMapping("/like")
-    public BaseResponse<Long> checkLike(Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (customUserDetails == null) {
-            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+    // 좋아요 싫어요 토글
+    @PostMapping("/like")
+    public BaseResponse<Boolean> toggleLikeOrHate(@RequestParam Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam boolean isLike) {
+        if(errorarchiveId == null){
+            return new BaseResponse<>(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND_DETAIL);
         }
-        Long id = errorArchiveService.toggleErrorArchiveLikeOrHate(errorarchiveId, customUserDetails.getUserId(), true);
-        return new BaseResponse<>(id);
-    }
-
-    // 싫어요 체크 및 토글
-    @GetMapping("/hate")
-    public BaseResponse<Long> checkHate(Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (customUserDetails == null) {
-            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        if(customUserDetails == null || customUserDetails.getUserId() == null) {
+            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND);
         }
-        Long id = errorArchiveService.toggleErrorArchiveLikeOrHate(errorarchiveId, customUserDetails.getUserId(), false);
-        return new BaseResponse<>(id);
+        BaseResponse<Boolean> result = errorArchiveService.toggleErrorArchiveLikeOrHate(errorarchiveId, customUserDetails.getUserId(), isLike);
+        if(result == null){
+            return new BaseResponse<>(true,"요청이 성공하였습니다.",1000, null);
+        }
+        return result;
     }
 
     // 아카이브 스크랩
-    @GetMapping("/scrap")
+    @PostMapping("/scrap")
     public BaseResponse<Boolean> checkScrap(Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Boolean isScrapped = errorArchiveService.checkErrorArchiveScrap(errorarchiveId, customUserDetails.getUserId());
         return new BaseResponse<>(isScrapped);

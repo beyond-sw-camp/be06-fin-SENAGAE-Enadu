@@ -16,7 +16,7 @@ public class BaseResponse<T> {
     private final Boolean isSuccess;
     private final String message;
     private final int code;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     private T result;
 
     // 요청에 성공한 경우 - 결과 값이 있을 때
@@ -31,27 +31,39 @@ public class BaseResponse<T> {
         this.isSuccess = SUCCESS.isSuccess();
         this.message = SUCCESS.getMessage();
         this.code = SUCCESS.getCode();
+        this.result =  null;
+
     }
 
 
     // 요청에 실패한 경우
     public BaseResponse(BaseResponseStatus status) {
-        this.isSuccess = status.isSuccess();
-        this.message = status.getMessage();
-        this.code = status.getCode();
+        if (status!=null) {
+            this.isSuccess = status.isSuccess();
+            this.message = status.getMessage();
+            this.code = status.getCode();
+            this.result = null;
+        } else {
+            this.isSuccess = true;
+            this.message = "요청이 성공하였습니다.";
+            this.code = 1000;
+            this.result = null;
+        }
     }
+
 
     @Override
     public String toString() { // 필요할 수도 있음
-        String result = "{\n" +
-                "  \"isSuccess\": "+this.isSuccess + ",\n"+
-                "  \"code\": "+this.code +",\n"+
-                "  \"message\": \""+this.message+"\"";
-        if (this.result != null) {
-            result += ",\n" + "\"result\": \""+this.result.toString()+"\"";
-        }
-        result += "\n}";
-        return result;
+        StringBuilder result = new StringBuilder("{\n" +
+                "  \"isSuccess\": " + this.isSuccess + ",\n" +
+                "  \"code\": " + this.code + ",\n" +
+                "  \"message\": \"" + this.message + "\"");
+
+        // result가 null인 경우에도 명시적으로 null 출력
+        result.append(",\n  \"result\": ").append(this.result != null ? this.result.toString() : "null");
+
+        result.append("\n}");
+        return result.toString();
     }
 
 }

@@ -12,11 +12,7 @@ import java.util.Optional;
 public interface ErrorLikeRepository extends JpaRepository<ErrorLike, Long> {
     Optional<ErrorLike> findByUserAndErrorArchiveAndState(User user, ErrorArchive errorArchive,Boolean isLike );
 
-    @Query("SELECT ql FROM ErrorLike  ql WHERE ql.errorArchive.id = :errorarchiveId AND ql.user.id = :userId AND ql.state = :state")
-    Optional<ErrorLike> findLikeByErrorArchiveIdAndUserIdAndState(@Param("errorarchiveId")Long errorarchiveId, @Param("userId") Long userId, @Param("state")Boolean state);
-
-
-
+    Optional<ErrorLike> findByErrorArchiveAndUser(ErrorArchive errorArchive, User user);
 
 
 

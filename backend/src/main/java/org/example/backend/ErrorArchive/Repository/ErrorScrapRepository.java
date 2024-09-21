@@ -13,8 +13,7 @@ import java.util.Optional;
 public interface ErrorScrapRepository extends JpaRepository<ErrorScrap, Long> {
     Optional<ErrorScrap> findByUserAndErrorArchive(User user, ErrorArchive errorArchive);
 
-    @Query("SELECT qs FROM ErrorScrap qs WHERE qs.errorArchive.id = :errorarchiveId AND qs.user.id = :userId")
-    Optional<ErrorScrap> findScrapByErrorArchiveIdAndUserId(@Param("errorarchiveId") Long errorarchiveId, @Param("userId") Long userId);
+
 
 
 }

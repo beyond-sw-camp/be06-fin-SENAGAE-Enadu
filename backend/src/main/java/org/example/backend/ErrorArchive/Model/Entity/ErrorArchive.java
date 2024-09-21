@@ -1,10 +1,7 @@
 package org.example.backend.ErrorArchive.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.User.Model.Entity.User;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 public class ErrorArchive {
     @Id
@@ -66,31 +64,31 @@ public class ErrorArchive {
 
     private int scrapCount; // 스크랩 수를 저장할 필드
 
-    // 스크랩 카운트 증가
-    public void increaseScrapCount() {
-        this.scrapCount++;
+    // Getter, Setter for likeCount
+    public int getLikeCnt() {
+        return likeCount;
     }
 
-    // 스크랩 카운트 감소
-    public void decreaseScrapCount() {
-        if (this.scrapCount > 0) {
-            this.scrapCount--;
-        }
+    public void setLikeCnt(int likeCount) {
+        this.likeCount = likeCount;
+    }
+ // Getter, Setter for hateCount
+    public int getHateCnt() {
+        return hateCount;
     }
 
-    public void increaseLikeCount() {
-        this.likeCount++;
-    }
-    public void decreaseLikeCount() {
-        this.likeCount--;
-    }
-    public void increaseHateCount() {
-        this.hateCount++;
-    }
-    public void decreaseHateCount() {
-        this.hateCount--;
+    public void setHateCnt(int hateCount) {
+        this.hateCount = hateCount;
     }
 
+    public int getScrapCount() {
+        return scrapCount;
+    }
+
+    public void setScrapCount(int scrapCount) {
+        this.scrapCount = scrapCount;
+    }
 
 
 }
+
