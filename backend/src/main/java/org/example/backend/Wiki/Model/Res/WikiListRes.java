@@ -14,4 +14,5 @@ public class WikiListRes {
     private String category;
     private String thumbnail;
     private LocalDateTime createdAt;
+    private Integer totalPages;
 }

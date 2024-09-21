@@ -91,6 +91,7 @@ public class WikiService {
                                 .content(wiki.getLatestWiki().getContent())
                                 .thumbnail(wiki.getLatestWiki().getThumbnailImgUrl())
                                 .createdAt(wiki.getLatestWiki().getCreatedAt())
+                                .totalPages(wikiPage.getTotalPages())
                                 .build())
                 .collect(Collectors.toList());
     }
