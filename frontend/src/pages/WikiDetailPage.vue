@@ -1,10 +1,6 @@
 <template>
     <div class="custom-container">
-      <div id="root">
-        <div class="content-wrapper">
-          <WikiDetailComponent />
-        </div>
-      </div>
+      <WikiDetailComponent />
     </div>
   </template>
   
