@@ -1,10 +1,7 @@
 package org.example.backend.ErrorArchive.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.User.Model.Entity.User;
 import org.springframework.data.annotation.CreatedDate;
@@ -64,7 +61,21 @@ public class ErrorArchive {
     @Column(name = "hate_cnt", nullable = false)
     private int hateCount; // int
 
+    private int scrapCount; // 스크랩 수를 저장할 필드
 
+    // Getter, Setter for likeCount
+
+
+    public void setLikeCnt(int likeCount) {
+        this.likeCount = likeCount;
+    }
+    public void setHateCnt(int hateCount) {
+        this.hateCount = hateCount;
+    }
+    public void setScrapCount(int scrapCount) {
+        this.scrapCount = scrapCount;
+    }
 
 
 }
+

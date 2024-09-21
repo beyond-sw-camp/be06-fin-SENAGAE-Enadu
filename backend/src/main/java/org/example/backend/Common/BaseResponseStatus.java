@@ -46,6 +46,12 @@ public enum BaseResponseStatus {
 
     ERRORARCHIVE_INVALID_SEARCH_TYPE(false, 6060, "존재하지 않은 타입의 검색 방식 입니다."),
     ERRORARCHIVE_NOT_FOUND(false,6022, "삭제된 게시글입니다."),
+    ERRORARCHIVE_NOT_FOUND_DETAIL(false,6023,"해당 게시글이 존재하지 않습니다"),
+    ERRORARCHIVE_BEFORE_LIKE(false,6024,"이전에 좋아요를 눌렀던 게시글입니다"),
+    ERRORARCHIVE_BEFORE_Hate(false,6025,"이전에 싫어요를 눌렀던 게시글입니다"),
+    ERRORARCHIVE_BEFORE_SCRAP(false,6026,"이전에 스크랩 했던 게시글입니다"),
+    ERROR_ALREADY_LIKED(false,6027, "이미 좋아요를 눌렀던 게시글입니다."),
+    ERROR_ALREADY_HATED(false, 6028, "이미 싫어요를 눌렀던 게시글입니다"),
 
 
     // 에러 QnA 기능 - 7000
