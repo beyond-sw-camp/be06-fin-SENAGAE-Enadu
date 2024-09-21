@@ -57,7 +57,7 @@
                                     <div class="space-y-1">
                                         <label for="text"
                                             class="text-sm font-medium text-gray-700 dark:text-gray-300">본문</label>
-                                        <v-md-editor v-model="wikiRegisterReq.myText" height="400px"></v-md-editor>
+                                        <v-md-editor v-model="wikiRegisterReq.myText" :disabled-menus="[]" height="400px" @upload-image="commonStore.imageUpload"></v-md-editor>
                                     </div>
                                 </div>
 
@@ -92,6 +92,7 @@
 import { useWikiStore } from "@/store/useWikiStore";
 import { mapStores } from "pinia";
 import SuperCategoryModal from '../../components/Category/SuperCategoryModal.vue';
+import {useCommonStore} from "@/store/useCommonStore";
 
 export default {
     name: "WikiRegisterComponent",
@@ -110,6 +111,7 @@ export default {
     },
     computed: {
         ...mapStores(useWikiStore),
+        ...mapStores(useCommonStore),
         isNullOrEmpty() {
             return (this.wikiRegisterReq.title === '' || this.wikiRegisterReq.myText === '' || this.wikiRegisterReq.mySuperCategory === '')
         },

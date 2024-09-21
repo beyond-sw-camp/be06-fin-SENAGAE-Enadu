@@ -44,7 +44,7 @@
                                     <!-- 본문 -->
                                     <div class="space-y-1">
                                         <label for="text" class="text-sm font-medium text-gray-700 dark:text-gray-300" >본문</label>
-                                        <v-md-editor v-model="myText" height="400px"></v-md-editor>
+                                        <v-md-editor v-model="myText" :disabled-menus="[]" @upload-image="commonStore.imageUpload" height="400px"></v-md-editor>
                                     </div>
                                 </div>
 
@@ -91,6 +91,7 @@ import { mapStores } from "pinia";
 import { useQnaStore } from "@/store/useQnaStore";
 import SuperCategoryModal from "@/components/Category/SuperCategoryModal.vue";
 import SubCategoryModal from "@/components/Category/SubCategoryModal.vue";
+import {useCommonStore} from "@/store/useCommonStore";
 
 export default {
   name: "QnaRegisterComponent",
@@ -107,6 +108,7 @@ export default {
   },
   computed: {
     ...mapStores(useQnaStore),
+    ...mapStores(useCommonStore),
     isNullOrEmpty() {
       return (this.myTitle === '' || this.myText === '' || this.selectedSuperCategory === '' || this.selectedSubCategory === '')
     },

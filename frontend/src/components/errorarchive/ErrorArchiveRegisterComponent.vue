@@ -50,7 +50,7 @@
                   <!-- 본문 -->
                   <div class="space-y-1">
                     <label for="text" class="text-sm font-medium text-gray-700 dark:text-gray-300">본문</label>
-                    <v-md-editor v-model="errorArchive.content" height="400px"></v-md-editor>
+                    <v-md-editor v-model="errorArchive.content" :disabled-menus="[]" @upload-image="commonStore.imageUpload" height="400px"></v-md-editor>
                   </div>
                 </div>
 
@@ -97,6 +97,7 @@ import {mapStores} from "pinia";
 import SuperCategoryModal from '@/components/Category/SuperCategoryModal.vue';
 import SubCategoryModal from '@/components/Category/SubCategoryModal.vue';
 import { useErrorArchiveStore } from '@/store/useErrorArchiveStore';
+import {useCommonStore} from "@/store/useCommonStore";
 
 export default {
   name: 'ErrorArchiveRegisterComponent',
@@ -105,7 +106,8 @@ export default {
     SubCategoryModal,
   },
   computed: {
-    ...mapStores(useErrorArchiveStore) // 어떤 저장소랑 연결시켜 주겠다.
+    ...mapStores(useErrorArchiveStore), // 어떤 저장소랑 연결시켜 주겠다.
+    ...mapStores(useCommonStore)
   },
   data () {
     return {
