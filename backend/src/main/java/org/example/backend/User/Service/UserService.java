@@ -2,6 +2,7 @@ package org.example.backend.User.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Exception.custom.InvalidEmailException;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.User.Model.Req.UpdateUserPasswordReq;
@@ -115,5 +116,12 @@ public class UserService {
                     .build();
         }
         throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+    }
+
+    public void updateVerifiedStatus(String email){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new InvalidEmailException(BaseResponseStatus.EMAIL_VERIFY_FAIL));
+        user.updateVerified(true);
+        userRepository.save(user);
     }
 }

@@ -83,6 +83,9 @@ public enum BaseResponseStatus {
     EXCEED_MAX_SIZE(false, 10013, "파일의 크기가 허용된 최대 크기를 초과하였습니다."),
     INTERNAL_SERVER_ERROR(false,10014,"에러가 발생했습니다"),
 
+    // 이메일 인증 - 11000
+    EMAIL_VERIFY_FAIL(false, 11001, "이메일 인증에 실패하였습니다"),
+
 
     // 실패 - 40000 (위치 바꾸지 마시오)
     FAIL(false, 40000, "요청에 실패하였습니다.");

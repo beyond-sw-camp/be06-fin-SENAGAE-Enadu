@@ -3,6 +3,7 @@ package org.example.backend.User.Controller;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.EmailVerify.Service.EmailVerifyService;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
@@ -26,6 +27,7 @@ public class UserController {
     private final UserService userService;
     private final CloudFileUploadService cloudFileUploadService;
     private final JwtUtil jwtUtil;
+    private final EmailVerifyService emailVerifyService;
 
     @PostMapping("/signup")
     public BaseResponse<String> signup(
@@ -46,8 +48,8 @@ public class UserController {
         if(!userService.checkDuplicateNickname(userSignupReq.getNickname())){
             return new BaseResponse<>(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
         }
-
         userService.signup(userSignupReq, profileImgUrl);
+        emailVerifyService.sendEmail(userSignupReq.getEmail());
         return new BaseResponse<>();
     }
 

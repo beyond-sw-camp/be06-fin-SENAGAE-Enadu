@@ -135,4 +135,6 @@ public class User {
     public void updateEnable(Boolean enable) {
         this.enable = enable;
     }
+    public void updateVerified(boolean verify){ this.verify =verify; }
+
 }
