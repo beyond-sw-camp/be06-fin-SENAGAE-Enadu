@@ -1,23 +1,35 @@
 <template>
-    <div id="root">
+    <div v-if="isLoading"></div>
+    <div id="root" v-else>
         <div class="sc-dPiLbb sc-bBHHxi kTIDXm">
             <div class="sc-TBWPX dXONqK sc-jQrDum fiOuRZ">
                 <div class="head-wrapper">
                     <h1>{{ wikiDetail.title }}</h1>
                     <div class="sc-fvxzrP jGdQwA" style="display: flex; justify-content: space-between;">
-                        <div class="information" style="margin-left: 15px;">
+                        <div class="information">
                             <span class="version">
-                                <a href="#" class="sc-egiyK cyyZlI">이전 버전</a>
-                            </span>
-                            <span class="version" style="margin-left: 15px;">
-                                <span class="sc-egiyK cyyZlI">현재 버전 : {{ wikiDetail.version }}</span>
+                                <span class="sc-egiyK cyyZlI">현재 버전 : V{{ wikiDetail.version }}</span>
                             </span>
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
                             <button v-if="canEditWiki && wikiDetail.title" @click="goToEditPage"
-                                class="ml-3 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                                class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:var(--main-color)">
                                 수정
                             </button>
+                            <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#12B886">
+                              이전 버전 위키
+                            </button>
+                            <div class="bookmark-checkbox">
+                                <input type="checkbox" id="bookmark-toggle" :checked="wikiDetail.checkScrap"
+                                       class="bookmark-checkbox__input">
+                                <label for="bookmark-toggle" class="bookmark-checkbox__label">
+                                    <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
+                                        <path class="bookmark-checkbox__icon-back"
+                                              d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                        <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5"></path>
+                                    </svg>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -28,7 +40,11 @@
 
                 <div class="sc-jlRLRk iGRQXB">
                     <div class="sc-dUbtfd kOYWDF">
-                        <div class="sc-jHkVzv dyVEVs sc-htJRVC jfYEFP"></div>
+                        <div class="sc-jHkVzv dyVEVs sc-htJRVC jfYEFP">
+                          <div v-for="(anchor, idx) in titles" @click="handleAnchorClick(anchor)" :key="idx" class="sc-cbTzjv kUqjof" :style="{ marginLeft: `${anchor.indent * 12}px` }">
+                              <a style="cursor:pointer">{{anchor.title}}</a>
+                          </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -37,7 +53,7 @@
         <div class="sc-dFtzxp bfzjcP" style="margin-top: 1px;">
             <div class="sc-bXTejn FTZwa">
                 <div class="sc-eGRUor gdnhbG atom-one">
-                    <v-md-preview :text="wikiDetail.content" />
+                    <v-md-preview ref="preview" :text="wikiDetail.content" />
                 </div>
             </div>
         </div>
@@ -63,6 +79,8 @@ export default {
         return {
             id: '',
             userGrade: 'GUEST', // 기본값 설정
+            titles: [] , // 목차 저장할 변수
+            isLoading: true,
         };
     },
     computed: {
@@ -84,11 +102,29 @@ export default {
             }
         }
     },
-    created() {
+    async mounted() {
         this.id = this.$route.query.id || this.$route.params.id;
         if (this.id) {
-            this.fetchWikiDetail(); // 위키 상세 조회
+            await this.fetchWikiDetail(); // 위키 상세 조회
         }
+        this.isLoading = false;
+        this.$nextTick(() => {
+            const anchors = this.$refs.preview.$el.querySelectorAll('h1,h2,h3,h4,h5,h6');
+            const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
+
+            if (!titles.length) {
+                this.titles = [];
+                return;
+            }
+
+            const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
+
+            this.titles = titles.map((el) => ({
+                title: el.innerText,
+                lineIndex: el.getAttribute('data-v-md-line'),
+                indent: hTags.indexOf(el.tagName),
+            }));
+          });
     },
     methods: {
         async fetchWikiDetail() {
@@ -101,6 +137,21 @@ export default {
         },
         goToEditPage() {
             this.$router.push({ name: 'WikiUpdate', query: { id: this.id } });
+        },
+        handleAnchorClick(anchor) {
+            const { preview } = this.$refs;
+            const { lineIndex } = anchor;
+
+            const heading = preview.$el.querySelector(`[data-v-md-line="${lineIndex}"]`);
+
+            if (heading) {
+              // Note: If you are using the preview mode of the editing component, the method name here is changed to previewScrollToTarget
+                preview.scrollToTarget({
+                  target: heading,
+                  scrollContainer: window,
+                  top: 60,
+                });
+            }
         },
     },
     components: {
@@ -145,7 +196,7 @@ v-md-preview p {
 }
 
 .sc-egiyK {
-    color: #007bff;
+    color: #12B886;
     text-decoration: none;
     cursor: pointer;
 }
@@ -186,15 +237,6 @@ v-md-preview p {
     margin-bottom: 20px;
 }
 
-.sc-egiyK {
-    color: #007bff;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.sc-egiyK:hover {
-    text-decoration: underline;
-}
 
 .thumbnail-image {
     width: 100%;
@@ -274,7 +316,7 @@ body[data-theme="light"] {
 }
 
 .kTIDXm {
-    padding-bottom: 4rem;
+    padding-bottom: 1rem;
 }
 
 .jEdNvQ {
@@ -556,6 +598,7 @@ body[data-theme="light"] {
     justify-content: space-between;
     -webkit-box-align: center;
     align-items: center;
+    width: 100%;
 }
 
 .jGdQwA .information .version {
@@ -579,8 +622,8 @@ body[data-theme="light"] {
 }
 
 .iIZjji .follow-button {
-    color: var(--primary1);
-    border: 1px solid var(--primary1);
+    color: #12B886;
+    border: 1px solid #12B886;
 }
 
 .iIZjji .button {
@@ -651,7 +694,7 @@ textarea {
 
 .gISUXI {
     margin-bottom: 0.875rem;
-    background: var(--bg-tag);
+    background: #F8F9FA;
     padding-left: 1rem;
     padding-right: 1rem;
     height: 2rem;
@@ -660,7 +703,7 @@ textarea {
     -webkit-box-align: center;
     align-items: center;
     margin-right: 0.875rem;
-    color: #6798ca;
+    color: #12B886;
     text-decoration: none;
     font-weight: 700;
     font-size: 1rem;
@@ -774,13 +817,14 @@ textarea {
     }
 } */
 .jfYEFP {
+    position: fixed;
     width: 240px;
     margin-left: 5rem;
-    border-left: 2px solid var(--border4);
+    border-left: 2px solid #F1F3F5;
     padding: 0.25rem 0.75rem;
-    color: var(--text3);
+    color: #868E96;
     line-height: 1.5;
-    font-size: 0.875rem;
+    font-size: 1.2rem;
     max-height: calc(-128px + 100vh);
     overflow: hidden auto;
 }
@@ -1527,6 +1571,10 @@ body[data-theme="light"] {
     text-decoration: none;
     color: inherit;
 }
+.kUqjof a:hover {
+  color: #212529;
+}
+
 
 /* a:-webkit-any-link {
     color: -webkit-link;
@@ -1591,6 +1639,75 @@ body[data-theme="light"] {
     overflow-wrap: normal;
     tab-size: 4;
     hyphens: none;
+}
+
+
+.bookmark-checkbox {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.bookmark-checkbox__input {
+  display: none;
+}
+
+.bookmark-checkbox__label {
+  cursor: pointer;
+}
+
+.bookmark-checkbox__icon {
+  height: 45px;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s, fill 0.3s;
+}
+
+.bookmark-checkbox__icon-back {
+  stroke: #333;
+  transition: transform 0.3s;
+}
+
+.bookmark-checkbox__icon-check {
+  stroke: #fff;
+  stroke-dasharray: 16;
+  stroke-dashoffset: 16;
+  transition: stroke-dashoffset 0.3s, transform 0.3s;
+  transform: translateX(2px);
+}
+
+.bookmark-checkbox__input:checked
++ .bookmark-checkbox__label
+.bookmark-checkbox__icon {
+  fill: #ff5a5f;
+}
+
+.bookmark-checkbox__input:checked
++ .bookmark-checkbox__label
+.bookmark-checkbox__icon-back {
+  stroke: #ff5a5f;
+  transform: scale(1.1);
+  animation: bookmark-pop 0.4s ease;
+}
+
+.bookmark-checkbox__input:checked
++ .bookmark-checkbox__label
+.bookmark-checkbox__icon-check {
+  stroke-dashoffset: 0;
+  transition-delay: 0.2s;
+}
+
+@keyframes bookmark-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1.1);
+  }
 }
 </style>
   
