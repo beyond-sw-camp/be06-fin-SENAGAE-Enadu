@@ -1,22 +1,17 @@
 package org.example.backend.EmailVerify.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Common.GlobalMessage;
 import org.example.backend.EmailVerify.Model.Entity.EmailVerify;
 import org.example.backend.EmailVerify.Repository.EmailVerifyRepository;
 import org.example.backend.Exception.custom.InvalidEmailException;
-import org.example.backend.Exception.custom.InvalidErrorBoardException;
 import org.example.backend.User.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Optional;
+
 import java.util.UUID;
 
 @Service
