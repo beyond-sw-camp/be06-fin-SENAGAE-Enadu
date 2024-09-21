@@ -102,8 +102,8 @@
         <div class="sc-jlRLRk iGRQXB">
           <div class="sc-dUbtfd kOYWDF">
             <div class="sc-jHkVzv dyVEVs sc-htJRVC jfYEFP">
-              <div v-for="(line, idx) in index" :key="idx" class="sc-cbTzjv kUqjof" :style="{ marginLeft: `${line[1]}px` }">
-                {{line[0]}}
+              <div v-for="(anchor, idx) in titles" @click="handleAnchorClick(anchor)" :key="idx" class="sc-cbTzjv kUqjof" :style="{ marginLeft: `${anchor.indent * 12}px` }">
+               <a style="cursor:pointer">{{anchor.title}}</a>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@
         <div class="sc-eGRUor gdnhbG atom-one">
 
           <!-- 마크다운 내용 -->
-          <v-md-preview :text="errorarchiveStore.errorArchiveDetail.content"/>
+          <v-md-preview ref="preview" :text="errorarchiveStore.errorArchiveDetail.content"/>
         </div>
       </div>
     </div>
@@ -148,7 +148,8 @@ export default {
       selectedLike: null,
       likeCnt: 0,
       hateCnt: 0,
-      index: []
+      index: [],
+      titles: []
     }
   },
   computed: {
@@ -209,21 +210,60 @@ export default {
     getIndex(){
       let content = this.errorarchiveStore.errorArchiveDetail.content;
       let lines = content.split(/\r?\n/);
+      let idx = 1;
       for (const line of lines){
         if (line.startsWith("# ")){
-          this.index.push([line.split(" ")[1], 0])
+          this.index.push([line.split(" ")[1], 0, idx])
+          idx++;
         } else if (line.startsWith("## ")){
-          this.index.push([line.split(" ")[1], 12])
+          this.index.push([line.split(" ")[1], 12, idx])
+          idx++;
         } else if (line.startsWith("### ")){
-          this.index.push([line.split(" ")[1], 24])
+          this.index.push([line.split(" ")[1], 24, idx])
+          idx++;
         }
       }
-    }
+    },
+    handleAnchorClick(anchor) {
+      const { preview } = this.$refs;
+      const { lineIndex } = anchor;
+
+      const heading = preview.$el.querySelector(`[data-v-md-line="${lineIndex}"]`);
+
+      if (heading) {
+        // Note: If you are using the preview mode of the editing component, the method name here is changed to previewScrollToTarget
+        preview.scrollToTarget({
+          target: heading,
+          scrollContainer: window,
+          top: 60,
+        });
+      }
+    },
   },
   async mounted() {
     this.id = this.$route.query.id;
     await this.getErrorArchiveDetail();
     this.isLoading = false;
+
+    this.$nextTick(() => {
+      console.log(this.$el);  // DOM 업데이트가 완료된 후 접근
+      const anchors = this.$refs.preview.$el.querySelectorAll('h1,h2,h3,h4,h5,h6');
+      const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
+
+      if (!titles.length) {
+        this.titles = [];
+        return;
+      }
+
+      const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
+
+      this.titles = titles.map((el) => ({
+        title: el.innerText,
+        lineIndex: el.getAttribute('data-v-md-line'),
+        indent: hTags.indexOf(el.tagName),
+      }));
+    });
+
   }
 };
 </script>
@@ -1622,6 +1662,9 @@ body[data-theme="light"] {
 .kUqjof a {
   text-decoration: none;
   color: inherit;
+}
+.kUqjof a:hover {
+  color: #212529;
 }
 
 /* a:-webkit-any-link {
