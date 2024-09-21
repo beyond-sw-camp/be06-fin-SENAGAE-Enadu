@@ -85,6 +85,7 @@ public enum BaseResponseStatus {
 
     // 이메일 인증 - 11000
     EMAIL_VERIFY_FAIL(false, 11001, "이메일 인증에 실패하였습니다"),
+    UUID_ALREADY_USED(false,11002,"이미 사용된 UUID 입니다"),
 
 
     // 실패 - 40000 (위치 바꾸지 마시오)

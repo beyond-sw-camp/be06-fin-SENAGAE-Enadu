@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface EmailVerifyRepository extends JpaRepository<EmailVerify, Long> {
-   List<EmailVerify> findAllByEmail(String email);
+   Optional<EmailVerify> findByEmail(String email);
 
 }

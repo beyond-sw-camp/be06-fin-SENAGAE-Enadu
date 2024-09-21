@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -42,20 +43,25 @@ public class EmailVerifyService {
         javaMailSender.send(message); // 이메일 전송
     }
 
-    public void verifyEmail(@RequestParam String email,@RequestParam String uuid){
-        List<EmailVerify> emailVerifies = emailVerifyRepository.findAllByEmail(email);
-        if (emailVerifies.isEmpty()) {
+    public void verifyEmail(String email, String uuid) {
+        EmailVerify existingEmailVerify = emailVerifyRepository.findByEmail(email)
+                .orElseThrow(() -> new InvalidEmailException(BaseResponseStatus.EMAIL_VERIFY_FAIL));
+
+        // 이전 uuid와 비교하여 인증할 수 없는 경우 처리
+        if (existingEmailVerify.getUuid().equals(uuid)) {
+            throw new InvalidEmailException(BaseResponseStatus.UUID_ALREADY_USED);
+        }
+
+        // UUID 업데이트
+        existingEmailVerify.updateUuid(uuid);
+        emailVerifyRepository.save(existingEmailVerify);
+
+        // UUID 검증 로직: 이메일이 존재하고 UUID가 일치하면 verified 상태 업데이트
+        if (existingEmailVerify.getUuid().equals(uuid)) {
+            userService.updateVerifiedStatus(email);
+        } else {
             throw new InvalidEmailException(BaseResponseStatus.EMAIL_VERIFY_FAIL);
         }
-
-        for (EmailVerify emailVerify : emailVerifies) {
-            if (emailVerify.getUuid().equals(uuid)) {
-                userService.updateVerifiedStatus(email);
-                return;
-            }
-        }
-
-        throw new InvalidEmailException(BaseResponseStatus.EMAIL_VERIFY_FAIL);
     }
 
 }
