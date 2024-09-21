@@ -9,11 +9,14 @@
       <SortTypeComponent @checkLatest="handleCheckLatest"
                          @checkLike="handleCheckLike"/>
       <div class="errorarchive-list-flex">
-        <ErrorArchiveCardComponent
-            v-for="errorarchiveCard in errorarchiveStore.errorarchiveCards"
-            :key="errorarchiveCard.id"
-            v-bind:errorarchiveCard="errorarchiveCard"
-        />
+        <router-link 
+          v-for="errorarchiveCard in errorarchiveStore.errorarchiveCards" 
+          :key="errorarchiveCard.id" 
+          :to="{ path: '/errorarchive/detail', query: { id: errorarchiveCard.id } }"> <!-- 수정된 부분 -->
+          <ErrorArchiveCardComponent
+            :errorarchiveCard="errorarchiveCard"
+          />
+        </router-link>
       </div>
     </div>
   </div>
@@ -22,6 +25,7 @@
     <PaginationComponent v-else @updatePage="handlePageUpdate" :totalPage="totalPage"/>
   </div>
 </template>
+
 
 <script>
 import {mapStores} from "pinia";

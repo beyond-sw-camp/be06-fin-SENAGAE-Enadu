@@ -243,6 +243,7 @@ export default {
   async mounted() {
     this.id = this.$route.query.id;
     await this.getErrorArchiveDetail();
+    this.setModifiedTime();
     this.isLoading = false;
 
     this.$nextTick(() => {

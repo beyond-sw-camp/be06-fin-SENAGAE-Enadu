@@ -1,5 +1,7 @@
 <template>
-  <div class="PostCard_block__FTMsy">
+  <router-link
+  :to="{ path: '/errorarchive/detail', query: { id: errorarchiveCard.id } }"> <!-- 수정된 부분 -->
+    <div class ="PostCard_block__FTMsy">
     <div class="header">
       <div class="user-info">
         <a class="PostCard_userInfo__Cu1X5" :href="'/@' + errorarchiveCard.nickname + '/posts'">
@@ -42,7 +44,8 @@
         <span>{{ errorarchiveCard.nickname }}</span>
       </div>
     </div>
-  </div>
+    </div>
+  </router-link>
 </template>
 
 <script>
@@ -52,7 +55,12 @@ export default {
   data() {
     return {};
   },
-  props: ["errorarchiveCard"],
+  props: {
+    errorarchiveCard: {
+      type: Object, //props 검증 추가: 타입 확인
+      required: true // 필수 props로 설정
+    }
+  },
   methods: {
     formatDateTime
     },
