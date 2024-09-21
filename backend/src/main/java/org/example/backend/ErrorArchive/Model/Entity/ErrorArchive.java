@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
-@Setter
 @EntityListeners(AuditingEntityListener.class)
 public class ErrorArchive {
     @Id
@@ -65,26 +64,14 @@ public class ErrorArchive {
     private int scrapCount; // 스크랩 수를 저장할 필드
 
     // Getter, Setter for likeCount
-    public int getLikeCnt() {
-        return likeCount;
-    }
+
 
     public void setLikeCnt(int likeCount) {
         this.likeCount = likeCount;
     }
- // Getter, Setter for hateCount
-    public int getHateCnt() {
-        return hateCount;
-    }
-
     public void setHateCnt(int hateCount) {
         this.hateCount = hateCount;
     }
-
-    public int getScrapCount() {
-        return scrapCount;
-    }
-
     public void setScrapCount(int scrapCount) {
         this.scrapCount = scrapCount;
     }

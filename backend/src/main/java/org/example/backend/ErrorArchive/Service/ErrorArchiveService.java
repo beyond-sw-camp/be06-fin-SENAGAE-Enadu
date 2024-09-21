@@ -14,6 +14,7 @@ import org.example.backend.ErrorArchive.Model.Req.RegisterErrorArchiveReq;
 import org.example.backend.ErrorArchive.Model.Res.GetErrorArchiveDetailRes;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
 import org.example.backend.ErrorArchive.Model.Res.RegisterErrorArchiveRes;
+import org.example.backend.ErrorArchive.Model.Res.ToggleResponse;
 import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
 import org.example.backend.ErrorArchive.Repository.ErrorLikeRepository;
 import org.example.backend.ErrorArchive.Repository.ErrorScrapRepository;
@@ -143,7 +144,7 @@ public class ErrorArchiveService {
     return errorScrap.isPresent(); //존재하면 스크랩 함, 없으면 스크랩하지 않음
   }
     @Transactional
-    public BaseResponse<Boolean> toggleErrorArchiveLikeOrHate(Long errorarchiveId, Long userId, boolean isLike) {
+    public BaseResponse<ToggleResponse> toggleErrorArchiveLikeOrHate(Long errorarchiveId, Long userId, boolean isLike) {
         ErrorArchive errorArchive = errorArchiveReository.findById(errorarchiveId).orElseThrow(() -> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         // 사용자의 좋아요, 싫어요 상태 가져오기
@@ -158,23 +159,23 @@ public class ErrorArchiveService {
                         .state(true)
                         .build();
                 errorLikeRepository.save(newLike);
-                errorArchive.setLikeCnt(errorArchive.getLikeCnt() + 1);
+                errorArchive.setLikeCnt(errorArchive.getLikeCount() + 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(true);
+                return new BaseResponse<>(new ToggleResponse(true)); // true 반환
             } else if (errorLike.isState()) {
                 // 이미 좋아요를 누른 상태에서 다시 좋아요를 누른 경우(좋아요 취소)
                 errorLikeRepository.delete(errorLike);
-                errorArchive.setLikeCnt(errorArchive.getLikeCnt() - 1);
+                errorArchive.setLikeCnt(errorArchive.getLikeCount() - 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(null);
+                return new BaseResponse<>(new ToggleResponse(null)); // null 반환
             } else {
                 errorLike.updateState(true);
                 // 이미 싫어요를 누른 상태에서 좋아요로 변경하는 경우
                 errorLikeRepository.save(errorLike);
-                errorArchive.setLikeCnt(errorArchive.getLikeCnt() + 1);
+                errorArchive.setLikeCnt(errorArchive.getLikeCount() + 1);
                 errorArchive.setHateCnt(errorArchive.getHateCount() - 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(true);
+                return new BaseResponse<>(new ToggleResponse(true)); // true 반환
             }
         }
         // 싫어요 관련 로직
@@ -187,23 +188,23 @@ public class ErrorArchiveService {
                         .state(true)
                         .build();
                 errorLikeRepository.save(newHate);
-                errorArchive.setHateCnt(errorArchive.getHateCnt() + 1);
+                errorArchive.setHateCnt(errorArchive.getHateCount() + 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(false);
+                return new BaseResponse<>(new ToggleResponse(false)); // false 반환
             } else if (!errorLike.isState()) {
                 // 이미 싫어요를 누른 상태에서 다시 싫어요를 누른 경우 (싫어요 취소)
                 errorLikeRepository.delete(errorLike);
-                errorArchive.setHateCnt(errorArchive.getHateCnt() - 1);
+                errorArchive.setHateCnt(errorArchive.getHateCount() - 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(null);
+                return new BaseResponse<>(new ToggleResponse(null)); // null 반환
             } else {
                 // 이미 좋아요를 누른 상태에서 싫어요로 변경하는 경우
                 errorLike.updateState(false);
                 errorLikeRepository.save(errorLike);
-                errorArchive.setHateCnt(errorArchive.getHateCnt() + 1);
-                errorArchive.setLikeCnt(errorArchive.getLikeCnt() - 1);
+                errorArchive.setHateCnt(errorArchive.getHateCount() + 1);
+                errorArchive.setLikeCnt(errorArchive.getLikeCount() - 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(false);
+                return new BaseResponse<>(new ToggleResponse(false)); // false 반환
             }
         }
         // 좋아요가 되면 TRUE, 싫어요가 되면 FALSE, 취소되면 null 로 반환

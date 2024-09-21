@@ -9,6 +9,7 @@ import org.example.backend.ErrorArchive.Model.Req.RegisterErrorArchiveReq;
 import org.example.backend.ErrorArchive.Model.Res.GetErrorArchiveDetailRes;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
 import org.example.backend.ErrorArchive.Model.Res.RegisterErrorArchiveRes;
+import org.example.backend.ErrorArchive.Model.Res.ToggleResponse;
 import org.example.backend.ErrorArchive.Service.ErrorArchiveService;
 import org.example.backend.Exception.custom.InvalidErrorBoardException;
 import org.example.backend.Exception.custom.InvalidUserException;
@@ -64,17 +65,14 @@ public class ErrorArchiveController {
 
     // 좋아요 싫어요 토글
     @PostMapping("/like")
-    public BaseResponse<Boolean> toggleLikeOrHate(@RequestParam Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam boolean isLike) {
+    public BaseResponse<ToggleResponse> toggleLikeOrHate(@RequestParam Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam boolean isLike) {
         if(errorarchiveId == null){
             return new BaseResponse<>(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND_DETAIL);
         }
         if(customUserDetails == null || customUserDetails.getUserId() == null) {
             return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND);
         }
-        BaseResponse<Boolean> result = errorArchiveService.toggleErrorArchiveLikeOrHate(errorarchiveId, customUserDetails.getUserId(), isLike);
-        if(result == null){
-            return new BaseResponse<>(true,"요청이 성공하였습니다.",1000, null);
-        }
+        BaseResponse<ToggleResponse> result = errorArchiveService.toggleErrorArchiveLikeOrHate(errorarchiveId, customUserDetails.getUserId(), isLike);
         return result;
     }
 
