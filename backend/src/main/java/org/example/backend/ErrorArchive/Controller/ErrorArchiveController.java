@@ -4,15 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.ErrorArchive.Model.Req.GetErrorArchiveDetailReq;
+import org.example.backend.ErrorArchive.Model.Req.GetErrorArchiveSearchReq;
 import org.example.backend.ErrorArchive.Model.Req.ListErrorArchiveReq;
 import org.example.backend.ErrorArchive.Model.Req.RegisterErrorArchiveReq;
 import org.example.backend.ErrorArchive.Model.Res.GetErrorArchiveDetailRes;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
 import org.example.backend.ErrorArchive.Model.Res.RegisterErrorArchiveRes;
+import org.example.backend.ErrorArchive.Service.ErrorArchiveSearchService;
 import org.example.backend.ErrorArchive.Service.ErrorArchiveService;
 import org.example.backend.Exception.custom.InvalidErrorBoardException;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Security.CustomUserDetails;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +23,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/errorarchive")
-@RequiredArgsConstructor
 public class ErrorArchiveController {
 
     private final ErrorArchiveService errorArchiveService;
+    private final ErrorArchiveSearchService errorArchiveSearchService;
+
+    public ErrorArchiveController(ErrorArchiveService errorArchiveService, @Qualifier("DbSearch") ErrorArchiveSearchService errorArchiveSearchService) {
+        this.errorArchiveSearchService = errorArchiveSearchService;
+        this.errorArchiveService = errorArchiveService;
+    }
 
     // 아카이브 등록
     @PostMapping()
@@ -61,6 +69,11 @@ public class ErrorArchiveController {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
         return new BaseResponse<>(errorArchiveService.detail(getErrorArchiveDetailReq, customUserDetails));
+    }
+
+    @GetMapping("/search")
+    public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq errorArchiveSearchReq){
+        return new BaseResponse<>(errorArchiveSearchService.errorArchiveSearch(errorArchiveSearchReq));
     }
 }
 
