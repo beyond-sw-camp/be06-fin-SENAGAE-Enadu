@@ -47,21 +47,14 @@ public class EmailVerifyService {
         EmailVerify existingEmailVerify = emailVerifyRepository.findByEmail(email)
                 .orElseThrow(() -> new InvalidEmailException(BaseResponseStatus.EMAIL_VERIFY_FAIL));
 
-        // 이전 uuid와 비교하여 인증할 수 없는 경우 처리
-        if (existingEmailVerify.getUuid().equals(uuid)) {
-            throw new InvalidEmailException(BaseResponseStatus.UUID_ALREADY_USED);
+        // 기존 UUID와 비교하여 인증을 시도
+        if (!existingEmailVerify.getUuid().equals(uuid)) {
+            throw new InvalidEmailException(BaseResponseStatus.EMAIL_VERIFY_FAIL); // UUID 불일치
         }
 
-        // UUID 업데이트
-        existingEmailVerify.updateUuid(uuid);
-        emailVerifyRepository.save(existingEmailVerify);
-
-        // UUID 검증 로직: 이메일이 존재하고 UUID가 일치하면 verified 상태 업데이트
-        if (existingEmailVerify.getUuid().equals(uuid)) {
-            userService.updateVerifiedStatus(email);
-        } else {
-            throw new InvalidEmailException(BaseResponseStatus.EMAIL_VERIFY_FAIL);
-        }
+        // UUID가 일치할 경우 verified 상태 업데이트
+        userService.updateVerifiedStatus(email);
     }
+
 
 }
