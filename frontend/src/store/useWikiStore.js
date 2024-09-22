@@ -23,6 +23,7 @@ axios.interceptors.response.use(
 export const useWikiStore = defineStore("wiki", {
     state: () => ({
         wikiCards: [],
+        totalPages: 0,
         wikiRegisterReq: {
             title: '',
             categoryId: '',
@@ -44,19 +45,19 @@ export const useWikiStore = defineStore("wiki", {
                 const formData = new FormData();
                 const jsonBlob = new Blob([JSON.stringify(this.wikiRegisterReq)], { type: "application/json" });
                 formData.append("wikiRegisterReq", jsonBlob);
-        
+
                 if (thumbnail) {
                     formData.append("thumbnail", thumbnail);
                 }
-        
+
                 const response = await axios.post(backend + "/wiki", formData, {
                     withCredentials: true,
                     headers: { "Content-Type": "multipart/form-data" }
                 });
-        
+
                 if (response && response.data) {
                     console.log("응답 데이터:", response.data);
-                    
+
                     if (response.data.isSuccess) {
                         const newWikiId = response.data.result.wikiId; // 서버에서 반환된 ID 사용
                         return newWikiId; // 성공적으로 위키 등록되었을 때 ID 반환
@@ -114,7 +115,7 @@ export const useWikiStore = defineStore("wiki", {
         // 위키 상세 조회
         async fetchWikiDetail(id) {
             try {
-                const response = await axios.get(`${backend}/wiki/detail`, {
+                const response = await axios.get(backend + "wiki/detail", {
                     params: { id },
                     withCredentials: true,
                 });
@@ -123,7 +124,7 @@ export const useWikiStore = defineStore("wiki", {
                     console.log('Wiki Detail Response:', response.data);
                     this.wikiDetail = response.data.result;
 
-                    
+
                 } else {
                     throw new Error("위키 상세 조회 실패");
                 }
@@ -131,6 +132,30 @@ export const useWikiStore = defineStore("wiki", {
                 console.error("위키 상세 조회 중 오류 발생:", error);
             }
         },
-        
+
+        // 위키 목록 조회
+        async fetchWikiList(page) {
+            console.log(`Fetching page ${page}`);
+            const params = {
+                page: page - 1,
+                size: 20,
+            };
+            try {
+                const response = await axios.get(backend + "/wiki/list", {
+                    params: params,
+                    withCredentials: true,
+                });
+                this.wikiCards = response.data.result;
+                if (this.wikiCards.length > 0) {
+                    this.totalPages = this.wikiCards[0].totalPages;
+                } else {
+                    this.totalPages = 1;
+                }
+
+                console.log(`Total Pages: ${this.totalPages}`);
+            } catch (error) {
+                console.error("Error fetching wiki list:", error);
+            }
+        },
     }
 });
