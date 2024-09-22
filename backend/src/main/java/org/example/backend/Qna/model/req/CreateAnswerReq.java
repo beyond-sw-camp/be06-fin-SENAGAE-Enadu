@@ -11,6 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateAnswerReq {
-    private Long questionId;
+    private Long qnaBoardId;
     private String content;
 }

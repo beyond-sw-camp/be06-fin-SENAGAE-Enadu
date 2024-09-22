@@ -43,30 +43,22 @@ public class QuestionController {
     }
 
     //qna 질문 좋아요
-    @PostMapping("/qna-like")
+    @PostMapping("/like")
     public BaseResponse<Long> checkQnaLike(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaLike(qnaBoardId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 
     //qna 질문 싫어요
-    @PostMapping("/qna-hate")
+    @PostMapping("/hate")
     public BaseResponse<Long> checkQnaHate(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaHate(qnaBoardId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 
-    //qna 내 상태 확인
-    @PostMapping("/my-state")
-    public BaseResponse<Long> getMyState(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkQnaHate(qnaBoardId, customUserDetails.getUserId());
-
-        return new BaseResponse<>(id);
-    }
-
     //qna 스크랩
     @PostMapping("/scrap")
-    public BaseResponse<Long> checkScrap(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public BaseResponse<Long> checkScrap(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaScrap(qnaBoardId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
