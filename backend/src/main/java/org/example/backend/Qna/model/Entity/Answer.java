@@ -47,13 +47,27 @@ public class Answer {
     private boolean enable;
 
     @Column(name = "like_cnt", nullable = false)
-    private int likeCnt;
+    private int likeCount;
 
     @Column(name = "hate_cnt", nullable = false)
-    private int hateCnt;
+    private int hateCount;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+    public void decreaseLikeCount() {
+        this.likeCount--;
+    }
+
+    public void increaseHateCount() {
+        this.hateCount++;
+    }
+    public void decreaseHateCount() {
+        this.hateCount--;
+    }
 
 }
