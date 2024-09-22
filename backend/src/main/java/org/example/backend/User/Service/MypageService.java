@@ -38,10 +38,15 @@ public class MypageService {
         throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
     }
 
-    public List<GetUserQnaListRes> getUserQnaList(Long id, Integer page, Integer size) {
-        userRepository.findById(id).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+    public List<GetUserQnaListRes> getUserQnaList(Long id, Integer page, Integer size, String type) {
+        User user = userRepository.findById(id).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<QnaBoard> qnaBoardPage = questionRepository.findByUserId(id, pageable);
+        Page<QnaBoard> qnaBoardPage = null;
+        if (type.equals("question")) {
+            qnaBoardPage = questionRepository.findByUserId(id, pageable);
+        } else if (type.equals("answer")) {
+            qnaBoardPage = questionRepository.findByUser_AnswerList_User(user, pageable);
+        }
         if (qnaBoardPage.isEmpty()) {
             return null;
         }
