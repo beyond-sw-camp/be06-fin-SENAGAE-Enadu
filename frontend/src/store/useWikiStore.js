@@ -31,7 +31,6 @@ export const useWikiStore = defineStore("wiki", {
         },
         wikiDetail: null,
         wikiVersions: [], 
-        totalPages: 0,  
         currentPage: 0,  
         pageSize: 10,  
         wikiTitle: '',
