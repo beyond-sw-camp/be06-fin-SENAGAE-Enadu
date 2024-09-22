@@ -103,6 +103,7 @@ export default {
   transition: 200ms ease-in-out;
   justify-content: space-between;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .qna-category-highlow {

@@ -20,6 +20,7 @@ import UserLogComponent from "@/components/Mypage/UserLogComponent.vue";
 import ScrapListComponent from "@/components/Mypage/ScrapListComponent.vue";
 import ErrorArchiveDetailPage from "@/pages/ErrorArchiveDetailPage.vue";
 import WikiListPage from "@/pages/WikiListPage.vue";
+import MainPage from "@/pages/MainPage.vue";
 
 
 const router = createRouter({
@@ -47,6 +48,7 @@ const router = createRouter({
         { path: "scrap", component: ScrapListComponent }
       ] },
     { path:"/errorarchive/detail", component: ErrorArchiveDetailPage},
+    { path:"/", component: MainPage},
   ]
 });
 

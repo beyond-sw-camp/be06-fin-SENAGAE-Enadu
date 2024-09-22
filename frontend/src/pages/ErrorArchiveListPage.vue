@@ -1,10 +1,7 @@
 <template>
   <div v-if="isLoading"></div>
   <div v-else class="custom-container">
-    <div class="errorarchive-top">
-      <p id="main-title">에러 아카이브</p>
-      <p id="sub-title">당신의 에러 해결 방법을 공유해주세요</p>
-    </div>
+    <TagComponent :tagTitle="'에러 아카이브'" :tagSubTitle="'당신의 에러 해결 방법을 공유해주세요'"/>
     <div class="errorarchive-inner">
       <SortTypeComponent @checkLatest="handleCheckLatest"
                          @checkLike="handleCheckLike"/>
@@ -29,10 +26,12 @@ import { useErrorArchiveStore } from '@/store/useErrorArchiveStore';
 import ErrorArchiveCardComponent from '@/components/errorarchive/ErrorArchiveCardComponent.vue';
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import SortTypeComponent from "@/components/Common/SortTypeComponent.vue";
+import TagComponent from "@/components/Common/TagComponent.vue";
 
 export default {
   name: 'ErrorArchiveListPage',
   components: {
+    TagComponent,
     ErrorArchiveCardComponent,
     SortTypeComponent,
     PaginationComponent,
