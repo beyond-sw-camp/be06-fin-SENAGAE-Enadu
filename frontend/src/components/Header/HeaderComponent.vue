@@ -71,6 +71,7 @@ export default {
                 this.userStore.logout();
                 alert("로그아웃 되었습니다.")
                 this.$router.push("/");
+                window.location.reload();
             }
         }
     }
