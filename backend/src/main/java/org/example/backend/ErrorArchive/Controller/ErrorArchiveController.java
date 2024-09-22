@@ -11,11 +11,14 @@ import org.example.backend.ErrorArchive.Model.Res.GetErrorArchiveDetailRes;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
 import org.example.backend.ErrorArchive.Model.Res.RegisterErrorArchiveRes;
 import org.example.backend.ErrorArchive.Service.ErrorArchiveSearchService;
+import org.example.backend.ErrorArchive.Model.Res.ToggleResponse;
 import org.example.backend.ErrorArchive.Service.ErrorArchiveService;
 import org.example.backend.Exception.custom.InvalidErrorBoardException;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +66,7 @@ public class ErrorArchiveController {
     public BaseResponse<GetErrorArchiveDetailRes> detail(GetErrorArchiveDetailReq getErrorArchiveDetailReq,
                                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if(getErrorArchiveDetailReq.getId() == null){
-            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND);
+            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND_DETAIL);
         }
         if(customUserDetails.getUserId() == null){
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
@@ -74,6 +77,26 @@ public class ErrorArchiveController {
     @GetMapping("/search")
     public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq errorArchiveSearchReq){
         return new BaseResponse<>(errorArchiveSearchService.errorArchiveSearch(errorArchiveSearchReq));
+    }
+    
+    // 좋아요 싫어요 토글
+    @PostMapping("/like")
+    public BaseResponse<ToggleResponse> toggleLikeOrHate(@RequestParam Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam boolean isLike) {
+        if(errorarchiveId == null){
+            return new BaseResponse<>(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND_DETAIL);
+        }
+        if(customUserDetails == null || customUserDetails.getUserId() == null) {
+            return new BaseResponse<>(BaseResponseStatus.USER_NOT_FOUND);
+        }
+        BaseResponse<ToggleResponse> result = errorArchiveService.toggleErrorArchiveLikeOrHate(errorarchiveId, customUserDetails.getUserId(), isLike);
+        return result;
+    }
+
+    // 아카이브 스크랩
+    @PostMapping("/scrap")
+    public BaseResponse<Boolean> checkScrap(Long errorarchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Boolean isScrapped = errorArchiveService.checkErrorArchiveScrap(errorarchiveId, customUserDetails.getUserId());
+        return new BaseResponse<>(isScrapped);
     }
 }
 

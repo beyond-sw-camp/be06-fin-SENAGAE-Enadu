@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.backend.Answer.Model.Entity.Answer;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.User.Model.Entity.User;
@@ -74,4 +73,18 @@ public class QnaBoard {
     @LastModifiedDate
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+    public void decreaseLikeCount() {
+        this.likeCount--;
+    }
+
+    public void increaseHateCount() {
+        this.hateCount++;
+    }
+    public void decreaseHateCount() {
+        this.hateCount--;
+    }
 }

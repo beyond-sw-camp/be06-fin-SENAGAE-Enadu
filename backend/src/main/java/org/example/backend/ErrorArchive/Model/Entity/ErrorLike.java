@@ -1,10 +1,7 @@
 package org.example.backend.ErrorArchive.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.backend.User.Model.Entity.User;
 
 
@@ -28,7 +25,10 @@ public class ErrorLike {
     private ErrorArchive errorArchive;
 
 
-
     @Column(nullable = false)
     private boolean state;
+
+    public void updateState(boolean state){
+        this.state = state;
+    }
 }
