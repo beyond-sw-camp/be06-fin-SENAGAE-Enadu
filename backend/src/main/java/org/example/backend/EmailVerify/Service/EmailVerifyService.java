@@ -23,20 +23,35 @@ public class EmailVerifyService {
     private final UserService userService;
 
 
-    public void sendEmail(String email){
+    public void sendEmail(String email) {
         String uuid = UUID.randomUUID().toString();
-        EmailVerify emailVerify = EmailVerify.builder()
-                .email(email)
-                .uuid(uuid)
-                .build();
-       emailVerifyRepository.save(emailVerify);
+
+        // 이메일이 이미 존재하는지 확인
+        EmailVerify emailVerify = emailVerifyRepository.findByEmail(email)
+                .map(existing -> {
+                    existing.updateUuid(uuid); // UUID 업데이트
+                    return emailVerifyRepository.save(existing); // 업데이트된 레코드 저장
+                })
+                .orElseGet(() -> {
+                    // 존재하지 않으면 새로운 EmailVerify 객체 생성
+                    EmailVerify newEmailVerify = EmailVerify.builder()
+                            .email(email)
+                            .uuid(uuid)
+                            .build();
+                    return emailVerifyRepository.save(newEmailVerify); // 새 레코드 저장
+                });
+
+        // 인증 링크 생성 (UUID 포함)
+        String verificationLink = "http://localhost:8081/email/verify?email=" + email + "&uuid=" + uuid;
+
         // 이메일 전송 설정
-       SimpleMailMessage message = new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject(GlobalMessage.EMAIL_TITLE.getMessage());
-        message.setText(GlobalMessage.EMAIL_URL_TEMPLATE.formatUrl(email,uuid));
+        message.setText(verificationLink);
         javaMailSender.send(message); // 이메일 전송
     }
+
 
     public void verifyEmail(String email, String uuid) {
         EmailVerify existingEmailVerify = emailVerifyRepository.findByEmail(email)
@@ -50,6 +65,4 @@ public class EmailVerifyService {
         // UUID가 일치할 경우 verified 상태 업데이트
         userService.updateVerifiedStatus(email);
     }
-
-
 }
