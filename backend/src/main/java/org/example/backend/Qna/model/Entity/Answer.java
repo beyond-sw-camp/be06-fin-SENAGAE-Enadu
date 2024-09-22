@@ -1,4 +1,4 @@
-package org.example.backend.Answer.Model.Entity;
+package org.example.backend.Qna.model.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.User.Model.Entity.User;
-import org.example.backend.Qna.model.Entity.QnaBoard;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
