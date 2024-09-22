@@ -13,6 +13,7 @@
     import SignInComponent from "@/components/user/SignInComponent.vue";
     import SignUpComponent from "@/components/user/SignUpComponent.vue";
     import { useUserStore } from '@/store/useUserStore';
+    import {mapStores} from "pinia";
 
     export default {
         name: "LoginPage",
@@ -20,6 +21,9 @@
             return {
                 signIn: true,
             };
+        },
+        computed: {
+            ...mapStores(useUserStore)
         },
         methods: {
             checkRoute() {
@@ -37,8 +41,7 @@
                 this.signIn = value;
             },
             async handleLogin(user) {
-                const userStore = useUserStore();
-                const loginSuccess = await userStore.login(user);
+                const loginSuccess = await this.userStore.login(user);
                 if (loginSuccess) {
                     this.$router.push('/');
                 } else {
@@ -46,8 +49,7 @@
                 }
             },
             async handleSignup(userInfo, selectedProfileFile){
-                const userStore = useUserStore();
-                const signupSuccess = await userStore.signup(userInfo, selectedProfileFile);
+                const signupSuccess = await this.userStore.signup(userInfo, selectedProfileFile);
                 if(signupSuccess){
                  alert('회원가입 성공');
                  this.$router.push('/login');

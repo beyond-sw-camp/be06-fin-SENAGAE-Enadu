@@ -1,4 +1,28 @@
 <template>
+    <div class="overflow-hidden rounded-lg border border-gray-500 border-opacity-30">
+        <div class="mx-5 mb-5 mt-6 sm:mx-6">
+            <div class="flex items-center justify-center">
+                <img class="h-10 w-10 rounded-full border border-gray-500/30 sm:h-16 sm:w-16" alt="프로필 사진"
+                     :src="mypageStore.userInfo.profileImg">
+                <div class="ml-3.5 mr-2 flex flex-1 flex-col sm:ml-5 sm:text-2xl">
+                    <div class="flex items-center gap-x-2">
+                        <span class="line-clamp-1 w-fit break-all pl-0.5 font-bold">{{ mypageStore.userInfo.nickname }}</span>
+                        <div class="flex items-center text-sm sm:text-base">
+                            <span>{{ mypageStore.userInfo.grade }}</span>
+                        </div>
+                    </div>
+                </div>
+                <router-link :to="{ path: '/mypage/history' }"
+                             class="inline-flex justify-center rounded-md border border-white-500/30 bg-white px-4 py-2 text-sm font-medium text-black-700 hover:border-white-500/70 focus:outline-none dark:bg-white-700 dark:text-black-300 mr-2">
+                    작성 내역
+                </router-link>
+                <router-link :to="{ path: '/mypage/scrap' }"
+                             class="inline-flex justify-center rounded-md border border-white-500/30 bg-white px-4 py-2 text-sm font-medium text-black-700 hover:border-white-500/70 focus:outline-none dark:bg-white-700 dark:text-black-300">
+                    스크랩 목록
+                </router-link>
+            </div>
+        </div>
+    </div>
     <div class="my-4 lg:my-0 px-6 max-w-4xl mx-auto">
         <div class="my-4 flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
             <div class="flex-grow space-y-4">
@@ -7,11 +31,11 @@
                     <div class="mt-2 flex">
                         <span id="username"
                               class="block w-1/2 rounded-md border border-gray-500/30 px-3 py-2 text-sm shadow-sm sm:text-base cursor-not-allowed">
-                            {{ userStore.userInfo.email }}
+                            {{ mypageStore.userInfo.email }}
                         </span>
                     </div>
                 </div>
-                <div v-show="!userStore.userInfo.isSocialUser" class="block mt-4 text-xl">
+                <div v-show="!mypageStore.userInfo.isSocialUser" class="block mt-4 text-xl">
                     비밀번호
                     <div class="mt-2 flex">
                         <button
@@ -39,7 +63,7 @@
                     <div class="mt-2 flex">
                         <span id="username"
                               class="rounded-md border border-gray-500/30 px-3 py-2 text-sm shadow-sm sm:text-base w-sm cursor-default">
-                            {{ userStore.userInfo.isSocialUser }}
+                            {{ mypageStore.userInfo.isSocialUser }}
                         </span>
                     </div>
                 </div>
@@ -58,7 +82,7 @@
                     <div class="relative" data-headlessui-state="">
                         <div class="relative my-1 hidden overflow-hidden rounded-full lg:block">
                             <img class="h-40 w-40 rounded-full border-2 border-gray-200"
-                                 :src="userStore.userInfo.profileImg"
+                                 :src="mypageStore.userInfo.profileImg"
                                  alt="프로필 사진">
                         </div>
                         <input type="file" @change="handleFileChange" class="hidden" ref="fileInput">
@@ -76,7 +100,7 @@
 </template>
 
 <script>
-import { useUserStore } from "@/store/useUserStore";
+import { useMypageStore } from "@/store/useMypageStore";
 import { mapStores } from "pinia";
 import PasswordModal from "@/components/Mypage/Info/PasswordModal.vue";
 
@@ -92,13 +116,12 @@ export default {
         };
     },
     computed: {
-        ...mapStores(useUserStore)
+        ...mapStores(useMypageStore)
     },
     mounted() {
-        if (!this.userStore.userInfo.email) {
-            this.userStore.fetchUserInfo();
-        }
-        this.nickname = this.userStore.userInfo.nickname;
+        this.$emit("sub-title", "회원 정보 조회");
+        this.mypageStore.fetchUserInfo();
+        this.nickname = this.mypageStore.userInfo.nickname;
     },
     methods: {
         async toggleNicknameEdit() {
@@ -109,11 +132,11 @@ export default {
             }
         },
         togglePasswordModal() {
-            this.showPasswordModal = !this.showPasswordModal;  // 모달을 토글
+            this.showPasswordModal = !this.showPasswordModal;
         },
         async checkNicknameDuplicate() {
             try {
-                const isAvailable = await this.userStore.checkCheckNickname(this.nickname);
+                const isAvailable = await this.mypageStore.checkNickname(this.nickname);
                 if (isAvailable) {
                     if (window.confirm("닉네임을 사용할 수 있습니다. 변경 하시겠습니까?")) {
                         await this.updateNickname();
@@ -127,7 +150,7 @@ export default {
         },
         async updateNickname() {
             try {
-                const updateSuccess = await this.userStore.updateNickname(this.nickname);
+                const updateSuccess = await this.mypageStore.updateNickname(this.nickname);
                 if (updateSuccess) {
                     alert("닉네임을 성공적으로 변경하였습니다.");
                     this.isNicknameEditable = false;
@@ -164,7 +187,7 @@ export default {
                 console.log(`${key}:`, value);
             });
             try {
-                const response = await this.userStore.uploadProfileImage(formData);
+                const response = await this.mypageStore.uploadProfileImage(formData);
                 if (response) {
                     alert("이미지가 성공적으로 업로드되었습니다.");
                 }
@@ -174,7 +197,7 @@ export default {
         }
     },
     watch: {
-        'userStore.userInfo.nickname'(newNickname) {
+        'mypageStore.userInfo.nickname'(newNickname) {
             this.nickname = newNickname;
         }
     }
