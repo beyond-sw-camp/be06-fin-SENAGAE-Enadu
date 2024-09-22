@@ -23,6 +23,7 @@ axios.interceptors.response.use(
 export const useWikiStore = defineStore("wiki", {
     state: () => ({
         wikiCards: [],
+        totalPages: 0,
         wikiRegisterReq: {
             title: '',
             categoryId: '',
@@ -120,7 +121,7 @@ export const useWikiStore = defineStore("wiki", {
         // 위키 상세 조회
         async fetchWikiDetail(id) {
             try {
-                const response = await axios.get(`${backend}/wiki/detail`, {
+                const response = await axios.get(backend + "wiki/detail", {
                     params: { id },
                     withCredentials: true,
                 });
@@ -132,12 +133,13 @@ export const useWikiStore = defineStore("wiki", {
                     this.wikiDetail = result;
                     this.wikiTitle = result.title || 'Unknown Title';
                     this.category = result.category || 'Unknown Category';
-
+                  
                 }
             } catch (error) {
                 console.error("위키 상세 조회 중 오류 발생:", error);
             }
         },
+
         // 위키 버전 목록 조회
         async fetchWikiVersionList(wikiId, page) {
             try {
@@ -154,6 +156,7 @@ export const useWikiStore = defineStore("wiki", {
                 console.error('API 호출 중 오류 발생:', error);
             }
         },
+      
         // 위키 버전 상세 조회
         async fetchWikiVersionDetail(wikiContentId) {
             try {
@@ -167,6 +170,31 @@ export const useWikiStore = defineStore("wiki", {
                 }
             } catch (error) {
                 console.error('버전 상세 조회 중 오류 발생:', error);
+            }
+        },
+
+        // 위키 목록 조회
+        async fetchWikiList(page) {
+            console.log(`Fetching page ${page}`);
+            const params = {
+                page: page - 1,
+                size: 20,
+            };
+            try {
+                const response = await axios.get(backend + "/wiki/list", {
+                    params: params,
+                    withCredentials: true,
+                });
+                this.wikiCards = response.data.result;
+                if (this.wikiCards.length > 0) {
+                    this.totalPages = this.wikiCards[0].totalPages;
+                } else {
+                    this.totalPages = 1;
+                }
+
+                console.log(`Total Pages: ${this.totalPages}`);
+            } catch (error) {
+                console.error("Error fetching wiki list:", error);
             }
         },
     }
