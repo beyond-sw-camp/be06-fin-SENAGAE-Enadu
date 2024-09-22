@@ -2,11 +2,13 @@ package org.example.backend.Qna.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
+import org.example.backend.Qna.Service.BasicQnaSearchService;
 import org.example.backend.Qna.Service.QnaService;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
 import org.example.backend.Qna.model.req.CreateQuestionReq;
 import org.example.backend.Qna.model.req.GetQnaListReq;
+import org.example.backend.Qna.model.req.GetQnaSearchReq;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping("/qna")
 public class QuestionController {
     private final QnaService qnaService;
+    private final BasicQnaSearchService basicQnaSearchService;
 
     //qna 등록
     @PostMapping()
@@ -37,7 +40,7 @@ public class QuestionController {
     //qna 상세 조회
     @GetMapping("/detail")
     public BaseResponse<GetQuestionDetailRes> getQnaDetail(Integer qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId,customUserDetails.getUserId());
+        GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId, customUserDetails.getUserId());
         return new BaseResponse<>(questionDetailRes);
 
     }
@@ -61,6 +64,14 @@ public class QuestionController {
     public BaseResponse<Long> checkScrap(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaScrap(qnaBoardId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
+    }
+
+    //qna 검색
+    @GetMapping("/search")
+    public BaseResponse<List<GetQnaListRes>> getQnaSearch(GetQnaSearchReq getQnaSearchReq) {
+        List<GetQnaListRes> qnaListRes = basicQnaSearchService.getQnaSearch(getQnaSearchReq);
+        return new BaseResponse<>(qnaListRes);
+
     }
 
 }

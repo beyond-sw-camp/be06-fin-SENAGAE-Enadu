@@ -3,16 +3,11 @@ package org.example.backend.Qna.Controller;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Qna.Service.QnaService;
-import org.example.backend.Qna.model.Res.GetQnaListRes;
-import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
 import org.example.backend.Qna.model.req.CreateAnswerReq;
-import org.example.backend.Qna.model.req.CreateQuestionReq;
-import org.example.backend.Qna.model.req.GetQnaListReq;
+import org.example.backend.Qna.model.req.CreateCommentReq;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,4 +43,11 @@ public class AnswerController {
         return new BaseResponse<>(id);
     }
 
+    //답변 댓글 등록
+    //answer 등록
+    @PostMapping("/comment")
+    public BaseResponse<Long> saveComment(@RequestBody CreateCommentReq createCommentReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.saveComment(createCommentReq, customUserDetails.getUserId());
+        return new BaseResponse<>(id);
+    }
 }

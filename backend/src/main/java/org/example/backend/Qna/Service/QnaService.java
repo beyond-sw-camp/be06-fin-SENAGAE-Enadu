@@ -14,6 +14,7 @@ import org.example.backend.Qna.model.Res.GetAnswerDetailListRes;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
 import org.example.backend.Qna.model.req.CreateAnswerReq;
+import org.example.backend.Qna.model.req.CreateCommentReq;
 import org.example.backend.Qna.model.req.CreateQuestionReq;
 import org.example.backend.Qna.model.req.GetQnaListReq;
 import org.example.backend.User.Model.Entity.User;
@@ -39,6 +40,7 @@ public class QnaService {
     private final QnaLikeRepository qnaLikeRepository;
     private final AnswerLikeRepository answerLikeRepository;
     private final QnaScrapRepository qnaScrapRepository;
+    private final AnswerCommentRepository answerCommentRepository;
 
     @Transactional
     public Long saveQuestion(CreateQuestionReq createQuestionReq, Long userId) {
@@ -425,6 +427,37 @@ public class QnaService {
                 throw new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND);
             }
             throw new InvalidUserException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND);
+        }
+    }
+
+    @Transactional
+    public Long saveComment(CreateCommentReq createCommentReq, Long userId) {
+        Optional<AnswerComment> superComment = Optional.empty();
+        if (createCommentReq.getSuperCommentId() != null) {
+            superComment = answerCommentRepository.findById(createCommentReq.getSuperCommentId());
+            if (superComment.isEmpty()) {
+                throw new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND);
+            }
+        }
+
+        Optional<Answer> answer = answerRepository.findById(createCommentReq.getAnswerId());
+        Optional<User> user = userRepository.findById(userId);
+
+        if (answer.isPresent() && user.isPresent()) {
+            AnswerComment answerComment = AnswerComment.builder()
+                    .user(user.get())
+                    .answer(answer.get())
+                    .content(createCommentReq.getContent())
+                    .answerComment(superComment.orElse(null))
+                    .build();
+
+            answerCommentRepository.save(answerComment);
+            answer.get().increaseCommentCount();
+            return answerComment.getId();
+        } else if (answer.isEmpty()) {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND);
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
     }
 }
