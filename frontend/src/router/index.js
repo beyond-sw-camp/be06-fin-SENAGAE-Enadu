@@ -16,8 +16,8 @@ import ErrorArchiveListPage from "@/pages/ErrorArchiveListPage.vue";
 import {useChatStore} from "@/store/useChatStore";
 import MypagePage from "@/pages/MypagePage.vue";
 import InfoComponent from "@/components/Mypage/Info/InfoComponent.vue";
-import UserLogComponent from "@/components/Mypage/UserLogComponent.vue";
-import ScrapListComponent from "@/components/Mypage/ScrapListComponent.vue";
+import HistoryListComponent from "@/components/Mypage/History/HistoryListComponent.vue";
+import ScrapListComponent from "@/components/Mypage/Scrap/ScrapListComponent.vue";
 import ErrorArchiveDetailPage from "@/pages/ErrorArchiveDetailPage.vue";
 import WikiVersionListPage from '@/pages/WikiVersionListPage.vue';
 import WikiVersionDetailPage from '@/pages/WikiVersionDetailPage.vue'; 
@@ -47,7 +47,7 @@ const router = createRouter({
     { path: "/wiki/list", component: WikiListPage },
     { path: "/mypage", component: MypagePage, children: [
         { path: "info", component: InfoComponent },
-        { path: "history", component: UserLogComponent },
+        { path: "history", component: HistoryListComponent },
         { path: "scrap", component: ScrapListComponent }
       ] },
     { path:"/errorarchive/detail", component: ErrorArchiveDetailPage},
