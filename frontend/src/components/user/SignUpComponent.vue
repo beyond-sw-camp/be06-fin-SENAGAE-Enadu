@@ -65,8 +65,7 @@ import axios from 'axios';
           alert("비밀번호가 일치하지 않습니다.");
           return;
         }
-        console.log("success");
-        this.$emit('signup', this.userInfo, this.selectedProfileFile);
+        this.$emit('signup', this.userInfo, this.selectedProfileFile || null);
       },
       handleProfileImageUpload(event) {
         const file = event.target.files[0];

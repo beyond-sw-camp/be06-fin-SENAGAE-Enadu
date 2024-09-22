@@ -69,6 +69,10 @@ export const useUserStore = defineStore('user', {
                 const blob = new Blob([JSON.stringify(userInfo)], { type: 'application/json'});
                 formData.append('userSignupReq', blob);
                 formData.append('profileImg',selectedProfileFile);
+
+                if(selectedProfileFile){
+                    formData.append('profileImg',selectedProfileFile);
+                }
             
                 // 요청 보내기
                 const response = await axios.post("http://localhost:8080/user/signup", formData, {
