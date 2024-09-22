@@ -64,9 +64,6 @@ public class ErrorArchiveController {
         if(getErrorArchiveDetailReq.getId() == null){
             throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND_DETAIL);
         }
-        if(customUserDetails.getUserId() == null){
-            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
-        }
         return new BaseResponse<>(errorArchiveService.detail(getErrorArchiveDetailReq, customUserDetails));
     }
 

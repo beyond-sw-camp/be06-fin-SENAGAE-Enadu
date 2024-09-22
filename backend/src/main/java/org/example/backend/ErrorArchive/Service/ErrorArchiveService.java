@@ -94,14 +94,20 @@ public class ErrorArchiveService {
     // 에러 아카이브 상세 조회
     public GetErrorArchiveDetailRes detail(GetErrorArchiveDetailReq getErrorArchiveDetailReq, CustomUserDetails customUserDetails){
         ErrorArchive errorArchive = errorArchiveReository.findById(getErrorArchiveDetailReq.getId()).orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
-        Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
-        // 좋아요 상태 조회
-        Optional<Boolean> likeStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId);
-        boolean checkLike = likeStatus.isPresent() && likeStatus.get();
-        // 싫어요 상태 조회
-        boolean checkHate = likeStatus.isPresent() && !likeStatus.get();
-        // 스크랩 여부 조회
-        boolean checkScrap = ErrorArchiveScrap(errorArchive.getId(), customUserDetails);
+        Boolean checkLike = null;
+        Boolean checkHate =  null;
+        Boolean checkScrap = null;
+        if (customUserDetails != null) {
+            Long userId = customUserDetails.getUserId();
+            // 좋아요 상태 조회
+            Optional<Boolean> likeStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId);
+            checkLike = likeStatus.isPresent() && likeStatus.get();
+            // 싫어요 상태 조회
+            checkHate = likeStatus.isPresent() && !likeStatus.get();
+            // 스크랩 여부 조회
+            checkScrap = ErrorArchiveScrap(errorArchive.getId(), customUserDetails);
+        }
+
 
         GetErrorArchiveDetailRes ErrorArchiveDetailRes = GetErrorArchiveDetailRes.builder()
                 .id(errorArchive.getId())
