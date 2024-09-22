@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
     Page<QnaBoard> findByUserId(Long userId, Pageable pageable);
-    Page<QnaBoard> findByUser_AnswerList_User(User user, Pageable pageable);
+    Page<QnaBoard> findByUser_AnswerList_User_Id(Long id, Pageable pageable);
+    Page<QnaBoard> findByQnaScrapList_User_Id(Long id, Pageable pageable);
 }

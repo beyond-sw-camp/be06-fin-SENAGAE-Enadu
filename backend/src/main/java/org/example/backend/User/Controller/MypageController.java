@@ -5,6 +5,7 @@ import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidMypageException;
 import org.example.backend.Security.CustomUserDetails;
+import org.example.backend.User.Model.Res.GetQnaScrapListRes;
 import org.example.backend.User.Model.Res.GetUserInfoRes;
 import org.example.backend.User.Model.Res.GetUserQnaListRes;
 import org.example.backend.User.Service.MypageService;
@@ -53,5 +54,13 @@ public class MypageController {
             id = customUserDetails.getUserId();
         }
         return new BaseResponse<>(mypageService.getUserQnaList(id, page, size, "answer"));
+    }
+
+    @GetMapping("/scrap/qna")
+    public BaseResponse<List<GetQnaScrapListRes>> getQnaScrapList(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size) {
+        if (customUserDetails == null) {
+            throw new InvalidMypageException(BaseResponseStatus.MYPAGE_NO_USER_ID);
+        }
+        return new BaseResponse<>(mypageService.getQnaScrapList(customUserDetails.getUserId(), page, size));
     }
 }

@@ -6,6 +6,7 @@ import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Qna.Repository.QuestionRepository;
 import org.example.backend.Qna.model.Entity.QnaBoard;
 import org.example.backend.User.Model.Entity.User;
+import org.example.backend.User.Model.Res.GetQnaScrapListRes;
 import org.example.backend.User.Model.Res.GetUserInfoRes;
 import org.example.backend.User.Model.Res.GetUserQnaListRes;
 import org.example.backend.User.Repository.UserRepository;
@@ -39,13 +40,13 @@ public class MypageService {
     }
 
     public List<GetUserQnaListRes> getUserQnaList(Long id, Integer page, Integer size, String type) {
-        User user = userRepository.findById(id).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        userRepository.findById(id).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<QnaBoard> qnaBoardPage = null;
         if (type.equals("question")) {
             qnaBoardPage = questionRepository.findByUserId(id, pageable);
         } else if (type.equals("answer")) {
-            qnaBoardPage = questionRepository.findByUser_AnswerList_User(user, pageable);
+            qnaBoardPage = questionRepository.findByUser_AnswerList_User_Id(id, pageable);
         }
         if (qnaBoardPage.isEmpty()) {
             return null;
@@ -71,5 +72,32 @@ public class MypageService {
             getUserQnaList.add(getUserQnaListRes);
         }
         return getUserQnaList;
+    }
+
+    public List<GetQnaScrapListRes> getQnaScrapList(Long id, Integer page, Integer size) {
+        User user = userRepository.findById(id).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<QnaBoard> qnaBoardPage = questionRepository.findByQnaScrapList_User_Id(id, pageable);
+        List<GetQnaScrapListRes> getQnaScrapList = new ArrayList<>();
+        for (QnaBoard qnaBoard : qnaBoardPage) {
+            GetQnaScrapListRes getQnaScrapListRes = GetQnaScrapListRes.builder()
+                    .id(qnaBoard.getId())
+                    .title(qnaBoard.getTitle())
+                    .superCategoryName(qnaBoard.getCategory().getSuperCategory() != null ?
+                            qnaBoard.getCategory().getSuperCategory().getCategoryName() : null)
+                    .subCategoryName(qnaBoard.getCategory() != null ?
+                            qnaBoard.getCategory().getCategoryName() : null)
+                    .subCategoryName(qnaBoard.getCategory().getCategoryName())
+                    .nickname(qnaBoard.getUser().getNickname())
+                    .profileImage(qnaBoard.getUser().getProfileImg())
+                    .grade(qnaBoard.getUser().getGrade())
+                    .likeCnt(qnaBoard.getLikeCount())
+                    .answerCnt(qnaBoard.getAnswerCount())
+                    .createdAt(qnaBoard.getCreatedAt())
+                    .totalPage(qnaBoardPage.getTotalPages())
+                    .build();
+            getQnaScrapList.add(getQnaScrapListRes);
+        }
+        return getQnaScrapList;
     }
 }
