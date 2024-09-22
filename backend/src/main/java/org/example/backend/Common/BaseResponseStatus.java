@@ -46,6 +46,7 @@ public enum BaseResponseStatus {
 
     ERRORARCHIVE_INVALID_SEARCH_TYPE(false, 6060, "존재하지 않은 타입의 검색 방식 입니다."),
     ERRORARCHIVE_NOT_FOUND(false,6022, "삭제된 게시글입니다."),
+    ERRORARCHIVE_SEARCH_EMPTY_REQUEST(false, 6061, "검색 요청이 비어 있습니다."),
     ERRORARCHIVE_NOT_FOUND_DETAIL(false,6023,"해당 게시글이 존재하지 않습니다"),
     ERRORARCHIVE_BEFORE_LIKE(false,6024,"이전에 좋아요를 눌렀던 게시글입니다"),
     ERRORARCHIVE_BEFORE_Hate(false,6025,"이전에 싫어요를 눌렀던 게시글입니다"),
