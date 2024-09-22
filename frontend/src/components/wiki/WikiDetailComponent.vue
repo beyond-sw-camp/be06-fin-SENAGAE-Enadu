@@ -13,10 +13,10 @@
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
                             <button v-if="canEditWiki && wikiDetail.title" @click="goToEditPage"
-                                class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:var(--main-color)">
+                                class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#f4c2c2">
                                 수정
                             </button>
-                            <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#12B886"
+                            <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#42a5f5"
                                 @click="goToVersionList">
                                 이전 버전 위키
                             </button>
@@ -80,8 +80,8 @@ export default {
     data() {
         return {
             id: '',
-            userGrade: 'GUEST', // 기본값 설정
-            titles: [], // 목차 저장할 변수
+            userGrade: 'GUEST', 
+            titles: [], 
             isLoading: true,
         };
     },
@@ -92,22 +92,20 @@ export default {
             return this.wikiStore.wikiDetail || {};
         },
         canEditWiki() {
-            // 유저 등급과 로그인 상태에 따른 수정 권한 체크
             return this.userGrade !== '뉴비' && this.userGrade !== 'GUEST' && this.userStore.isLoggedIn;
         },
     },
     watch: {
-        // 로그인 상태가 변경될 때 버튼 상태를 갱신
         'userStore.isLoggedIn'(newValue) {
             if (!newValue) {
-                this.userGrade = 'GUEST'; // 로그아웃 상태로 변경
+                this.userGrade = 'GUEST'; 
             }
         }
     },
     async mounted() {
         this.id = this.$route.query.id || this.$route.params.id;
         if (this.id) {
-            await this.fetchWikiDetail(); // 위키 상세 조회
+            await this.fetchWikiDetail(); 
         }
         this.isLoading = false;
         this.$nextTick(() => {
@@ -201,7 +199,7 @@ v-md-preview p {
 }
 
 .sc-egiyK {
-    color: #12B886;
+    color: #2689d2;
     text-decoration: none;
     cursor: pointer;
 }
@@ -683,7 +681,7 @@ textarea {
     -webkit-box-align: center;
     align-items: center;
     margin-right: 0.875rem;
-    color: #12B886;
+    color: #2689d2;
     text-decoration: none;
     font-weight: 700;
     font-size: 1rem;
@@ -1523,7 +1521,7 @@ body[data-theme="light"] {
     --border2: #ADB5BD;
     --border3: #DEE2E6;
     --border4: #F1F3F5;
-    --primary1: #12B886;
+    --primary1: #42a5f5;
     --primary2: #20C997;
     --destructive1: #FF6B6B;
     --destructive2: #FF8787;

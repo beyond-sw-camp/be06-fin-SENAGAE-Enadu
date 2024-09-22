@@ -12,10 +12,13 @@
                             </span>
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
-                            <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#12B886"
-                                @click="goToVersionList">
-                                이전 버전 목록
+                            <!-- 최신 위키로 돌아가기 버튼 -->
+                            <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#42a5f5"
+                                @click="goToLatestWiki">
+                                최신 위키 돌아가기
                             </button>
+
+                            <!-- 스크랩 북마크 -->
                             <div class="bookmark-checkbox">
                                 <input type="checkbox" id="bookmark-toggle" :checked="wikiDetail.checkScrap"
                                     class="bookmark-checkbox__input">
@@ -32,7 +35,7 @@
                 </div>
 
                 <div class="sc-cZMNgc bpMcZw">
-                    <a class="sc-dtMgUX gISUXI" href="/tags/LomBok">{{ wikiDetail.category }}</a>
+                    <a class="sc-dtMgUX gISUXI" href="/tags/{{ wikiDetail.category }}">{{ wikiDetail.category }}</a>
                 </div>
 
                 <div class="sc-jlRLRk iGRQXB">
@@ -61,7 +64,6 @@
 <script>
 import { mapStores } from "pinia";
 import { useWikiStore } from "@/store/useWikiStore";
-import { useUserStore } from "@/store/useUserStore";
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/style/preview.css';
@@ -75,25 +77,26 @@ export default {
     name: "WikiVersionDetailComponent",
     data() {
         return {
-            id: '',
-            userGrade: 'GUEST', // 기본값 설정
-            titles: [], // 목차 저장할 변수
-            isLoading: true,
+            id: '', 
+            wikiId: '',  
+            isLoading: true, 
+            titles: [],      
         };
     },
     computed: {
         ...mapStores(useWikiStore),
-        ...mapStores(useUserStore),
         wikiDetail() {
             return this.wikiStore.wikiDetail || {};
-        },
+        }
     },
     async mounted() {
         this.id = this.$route.query.id || this.$route.params.id;
         if (this.id) {
-            await this.fetchWikiVersionDetail(); // 버전 상세 조회
+            const result = await this.wikiStore.fetchWikiVersionDetail(this.id);
+            this.wikiId = result.wikiId; 
         }
         this.isLoading = false;
+
         this.$nextTick(() => {
             const anchors = this.$refs.preview.$el.querySelectorAll('h1,h2,h3,h4,h5,h6');
             const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
@@ -113,16 +116,16 @@ export default {
         });
     },
     methods: {
-        async fetchWikiVersionDetail() {
+        async goToLatestWiki() {
             try {
-                await this.wikiStore.fetchWikiVersionDetail(this.id); // 버전 상세 조회 API 호출
-                this.userGrade = this.wikiStore.wikiDetail.userGrade || 'GUEST';
+                await this.wikiStore.fetchWikiDetail(this.wikiDetail.id);
+                this.$router.push({ path: '/wiki/detail', query: { id: this.wikiDetail.id } });
             } catch (error) {
-                console.error('Wiki Version Detail Fetch Error:', error);
+                console.error('최신 위키로 이동 중 오류 발생:', error);
             }
         },
-        goToVersionList() {
-            this.$router.push({ path: '/wiki/version/list', query: { id: this.id } });
+        goToVersionDetail(wikiContentId) {
+            this.$router.push({ path: '/wiki/version/detail', query: { id: wikiContentId } });
         },
         handleAnchorClick(anchor) {
             const { preview } = this.$refs;
@@ -144,6 +147,8 @@ export default {
     },
 };
 </script>
+
+
 
 <style scoped>
 v-md-preview {
@@ -179,7 +184,7 @@ v-md-preview p {
 }
 
 .sc-egiyK {
-    color: #12B886;
+    color: #2689d2;
     text-decoration: none;
     cursor: pointer;
 }
@@ -237,7 +242,7 @@ body[data-theme="light"] {
     --border2: #ADB5BD;
     --border3: #DEE2E6;
     --border4: #F1F3F5;
-    --primary1: #12B886;
+    --primary1: #42a5f5;
     --primary2: #20C997;
     --destructive1: #FF6B6B;
     --destructive2: #FF8787;
@@ -401,23 +406,6 @@ body[data-theme="light"] {
     cursor: pointer;
     margin-right: 0.5rem;
 }
-
-.bnYoDz {
-    height: 2rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-size: 1rem;
-    border-radius: 1rem;
-    outline: none;
-    font-weight: bold;
-    word-break: keep-all;
-    background: var(--bg-element2);
-    border: 1px solid var(--bg-element5);
-    color: var(--bg-element5);
-    transition: 0.125s ease-in;
-    cursor: pointer;
-}
-
 .gegLws {
     cursor: pointer;
     display: flex;
@@ -661,7 +649,7 @@ textarea {
     -webkit-box-align: center;
     align-items: center;
     margin-right: 0.875rem;
-    color: #12B886;
+    color: #2689d2;
     text-decoration: none;
     font-weight: 700;
     font-size: 1rem;

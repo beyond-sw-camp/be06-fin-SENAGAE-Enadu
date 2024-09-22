@@ -1,9 +1,15 @@
 <template>
-    <div class="container">
+        <div class="custom-container">
         <h1 class="title">WIKI : {{ wikiTitle }}</h1>
-        <p class="category">category : {{ category }}</p>
+        <p class="category">
+      <span class="category-badge"> category : {{ category }}</span>
+    </p>
 
-        <table>
+        <div class="pagination-container" v-if="!isLoading">
+            <PaginationComponent :totalPage="totalPages" @updatePage="handlePageUpdate" />
+        </div>
+
+        <table v-if="!isLoading">
             <thead>
                 <tr>
                     <th>날짜</th>
@@ -14,14 +20,15 @@
             <tbody>
                 <tr v-for="(version, index) in wikiVersions" :key="index">
                     <td>{{ version.createdAt }}</td>
-                    <td><a @click="goToVersionDetail(version.wikiContentId)" class="version-link">V{{ version.version }}</a></td>
+                    <td>
+                        <a @click="goToVersionDetail(version.wikiContentId)" class="version-link">
+                            V{{ version.version }}
+                        </a>
+                    </td>
                     <td>{{ version.nickname }}</td>
                 </tr>
             </tbody>
         </table>
-
-        <div v-if="!isLoading"></div>
-        <pagination-component v-else style="margin-top: 20px;" @updatePage="updatePage" :totalPage="totalPage" />
     </div>
 </template>
   
@@ -32,44 +39,40 @@ import { mapState, mapActions } from "pinia";
 
 export default {
     name: "WikiVersionListPage",
-    components: {
-        PaginationComponent
-    },
+    components: { PaginationComponent },
     computed: {
         ...mapState(useWikiStore, ["wikiVersions", "wikiTitle", "category", "currentPage", "totalPages"]),
     },
     data() {
         return {
             selectedPage: 1,
-            totalPages: 1,
+            page: 0,
             isLoading: true,
         }
     },
     methods: {
         ...mapActions(useWikiStore, ["fetchWikiVersionList", "fetchWikiDetail"]),
 
-        updatePage(page) {
-            this.page = page-1
+        async handlePageUpdate(newPage) {
+            if (newPage !== this.selectedPage) {
+                this.selectedPage = newPage;
+                await this.fetchWikiVersionList(this.$route.query.id, newPage - 1);
+            }
         },
         goToVersionDetail(wikiContentId) {
-            // 해당 버전의 위키 상세 페이지로 이동
-            this.$router.push(`/wiki/version/detail?id=${wikiContentId}`);
+            this.$router.push({ path: '/wiki/version/detail', query: { id: wikiContentId } });
         },
     },
     async mounted() {
         const id = this.$route.query.id;
         await this.fetchWikiDetail(id);
-        await this.fetchWikiVersionList(id);
+        await this.fetchWikiVersionList(id, this.selectedPage - 1); 
+        this.isLoading = false;
     },
 };
 </script>
   
 <style scoped>
-.container {
-    width: 80%;
-    margin: 50px auto;
-}
-
 .title {
     font-size: 2.5rem;
     font-weight: bold;
@@ -80,6 +83,14 @@ export default {
     font-size: 1.2rem;
     color: #666;
     margin-bottom: 30px;
+}
+
+.category-badge {
+  background-color: #f1f1f1;
+  padding: 5px 20px;
+  border-radius: 20px; 
+  display: inline-block;
+  color: #333;
 }
 
 table {
@@ -99,7 +110,7 @@ table td {
 }
 
 table th {
-    background-color: #f1f1f1;
+    background-color: #075baa21;
     font-weight: bold;
 }
 
@@ -111,5 +122,12 @@ table th {
 .version-link:hover {
     text-decoration: underline;
 }
+
+.pagination-container {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
-  

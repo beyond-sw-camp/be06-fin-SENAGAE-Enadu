@@ -16,5 +16,4 @@ export default {
 </script>
 
 <style scoped>
-/* 스타일 */
 </style>
