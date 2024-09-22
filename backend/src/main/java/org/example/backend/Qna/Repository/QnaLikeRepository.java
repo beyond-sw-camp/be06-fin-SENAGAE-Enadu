@@ -1,13 +1,10 @@
 package org.example.backend.Qna.Repository;
 
-import org.example.backend.Qna.model.Entity.QnaBoard;
 import org.example.backend.Qna.model.Entity.QnaLike;
-import org.example.backend.Qna.model.Entity.QnaScrap;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface QnaLikeRepository extends JpaRepository<QnaLike, Long> {
