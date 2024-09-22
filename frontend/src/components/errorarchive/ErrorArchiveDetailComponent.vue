@@ -14,9 +14,9 @@
               <span style="font-size:16px">{{ lastModifiedDate }}</span>
               <span style="font-size:16px" class="grade">{{ errorarchiveStore.errorArchiveDetail.grade }}</span>
             </div>
-            <div class="sc-fbyfCU eYeYLy">
+            <div class="sc-fbyfCU eYeYLy" v-show="userStore.isLoggedIn">
               <div class="bookmark-checkbox">
-                <input type="checkbox" id="bookmark-toggle" :checked="errorarchiveStore.errorArchiveDetail.checkScrap"
+                <input type="checkbox" id="bookmark-toggle" :checked="checkScrap" @click="clickScrap"
                        class="bookmark-checkbox__input">
                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                   <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
@@ -131,6 +131,7 @@ import '@kangc/v-md-editor/lib/style/preview.css';
 import {mapStores} from "pinia";
 import {useErrorArchiveStore} from "@/store/useErrorArchiveStore";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
+import {useUserStore} from "@/store/useUserStore";
 
 
 VMdPreview.use(githubTheme, {
@@ -149,11 +150,13 @@ export default {
       likeCnt: 0,
       hateCnt: 0,
       index: [],
-      titles: []
+      titles: [],
+      checkScrap: false,
     }
   },
   computed: {
     ...mapStores(useErrorArchiveStore),
+    ...mapStores(useUserStore)
   },
   watch: {
     selectedLike(newVal, oldVal) {
@@ -182,6 +185,7 @@ export default {
   methods: {
     async getErrorArchiveDetail() {
       await this.errorarchiveStore.getErrorArchiveDetail(this.id);
+      this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap;
       this.setModifiedTime();
       this.checkLike();
       this.setLikeAndHateCnt();
@@ -203,6 +207,9 @@ export default {
     },
     async clickLike(value) {
       this.selectedLike = await this.errorarchiveStore.likeErrorArchive(this.id, value)
+    },
+    async clickScrap(){
+      await this.errorarchiveStore.scrapErrorArchive(this.id);
     },
     handleAnchorClick(anchor) {
       const { preview } = this.$refs;
