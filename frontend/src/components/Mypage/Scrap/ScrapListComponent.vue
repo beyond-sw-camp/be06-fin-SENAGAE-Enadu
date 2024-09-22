@@ -102,10 +102,11 @@ export default {
         },
         async fetchQnaList() {
             await this.mypageStore.getQnaScrapList(this.page);
-            if (this.mypageStore.scrap.qnaList.length !== 0) {
-                this.totalPage = this.mypageStore.scrap.qnaList[0].totalPage;
+            const qnaList = this.mypageStore.scrap.qnaList || [];
+            if (qnaList.length !== 0) {
+                this.totalPage = qnaList[0].totalPage;
             } else {
-                alert("스크랩 내역이 없습니다");
+                alert("qna 스크랩한 내역이 없습니다.");
             }
         },
         getButtonClass(section) {
