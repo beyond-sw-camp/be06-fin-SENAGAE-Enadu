@@ -19,6 +19,8 @@ import InfoComponent from "@/components/Mypage/Info/InfoComponent.vue";
 import UserLogComponent from "@/components/Mypage/UserLogComponent.vue";
 import ScrapListComponent from "@/components/Mypage/ScrapListComponent.vue";
 import ErrorArchiveDetailPage from "@/pages/ErrorArchiveDetailPage.vue";
+import WikiVersionListPage from '@/pages/WikiVersionListPage.vue';
+import WikiVersionDetailPage from '@/pages/WikiVersionDetailPage.vue'; 
 
 
 const router = createRouter({
@@ -39,6 +41,8 @@ const router = createRouter({
       ]},
     { path: "/wiki/detail", name: "WikiDetail", component: WikiDetailPage },
     { path: "/wiki/update", name: "WikiUpdate", component: WikiUpdatePage },
+    { path: "/wiki/version/list", component: WikiVersionListPage },
+    { path: "/wiki/version/detail", component: WikiVersionDetailPage },
     { path: "/mypage", component: MypagePage, children: [
         { path: "info", component: InfoComponent },
         { path: "history", component: UserLogComponent },

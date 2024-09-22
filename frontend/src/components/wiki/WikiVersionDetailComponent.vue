@@ -8,17 +8,13 @@
                     <div class="sc-fvxzrP jGdQwA" style="display: flex; justify-content: space-between;">
                         <div class="information">
                             <span class="version">
-                                <span class="sc-egiyK cyyZlI">현재 버전 : V{{ wikiDetail.version }}</span>
+                                <span class="sc-egiyK cyyZlI">버전 : V{{ wikiDetail.version }}</span>
                             </span>
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
-                            <button v-if="canEditWiki && wikiDetail.title" @click="goToEditPage"
-                                class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:var(--main-color)">
-                                수정
-                            </button>
                             <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#12B886"
                                 @click="goToVersionList">
-                                이전 버전 위키
+                                이전 버전 목록
                             </button>
                             <div class="bookmark-checkbox">
                                 <input type="checkbox" id="bookmark-toggle" :checked="wikiDetail.checkScrap"
@@ -76,7 +72,7 @@ VMdPreview.use(githubTheme, {
 });
 
 export default {
-    name: "WikiDetailComponent",
+    name: "WikiVersionDetailComponent",
     data() {
         return {
             id: '',
@@ -91,23 +87,11 @@ export default {
         wikiDetail() {
             return this.wikiStore.wikiDetail || {};
         },
-        canEditWiki() {
-            // 유저 등급과 로그인 상태에 따른 수정 권한 체크
-            return this.userGrade !== '뉴비' && this.userGrade !== 'GUEST' && this.userStore.isLoggedIn;
-        },
-    },
-    watch: {
-        // 로그인 상태가 변경될 때 버튼 상태를 갱신
-        'userStore.isLoggedIn'(newValue) {
-            if (!newValue) {
-                this.userGrade = 'GUEST'; // 로그아웃 상태로 변경
-            }
-        }
     },
     async mounted() {
         this.id = this.$route.query.id || this.$route.params.id;
         if (this.id) {
-            await this.fetchWikiDetail(); // 위키 상세 조회
+            await this.fetchWikiVersionDetail(); // 버전 상세 조회
         }
         this.isLoading = false;
         this.$nextTick(() => {
@@ -129,16 +113,13 @@ export default {
         });
     },
     methods: {
-        async fetchWikiDetail() {
+        async fetchWikiVersionDetail() {
             try {
-                await this.wikiStore.fetchWikiDetail(this.id);
+                await this.wikiStore.fetchWikiVersionDetail(this.id); // 버전 상세 조회 API 호출
                 this.userGrade = this.wikiStore.wikiDetail.userGrade || 'GUEST';
             } catch (error) {
-                console.error('Wiki Detail Fetch Error:', error);
+                console.error('Wiki Version Detail Fetch Error:', error);
             }
-        },
-        goToEditPage() {
-            this.$router.push({ name: 'WikiUpdate', query: { id: this.id } });
         },
         goToVersionList() {
             this.$router.push({ path: '/wiki/version/list', query: { id: this.id } });
@@ -150,7 +131,6 @@ export default {
             const heading = preview.$el.querySelector(`[data-v-md-line="${lineIndex}"]`);
 
             if (heading) {
-                // Note: If you are using the preview mode of the editing component, the method name here is changed to previewScrollToTarget
                 preview.scrollToTarget({
                     target: heading,
                     scrollContainer: window,
@@ -164,8 +144,6 @@ export default {
     },
 };
 </script>
-
-
 
 <style scoped>
 v-md-preview {
