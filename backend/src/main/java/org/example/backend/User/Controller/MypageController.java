@@ -27,7 +27,7 @@ public class MypageController {
         return new BaseResponse<>(mypageService.getUserInfo(customUserDetails.getUserId()));
     }
 
-    @GetMapping("/log/qna")
+    @GetMapping("/log/question")
     public BaseResponse<List<GetUserQnaListRes>> getUserQnaList(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size, @RequestParam(value = "userId", required = false) Long userId) {
         if (customUserDetails == null && userId == null) {
             throw new InvalidMypageException(BaseResponseStatus.MYPAGE_NO_USER_ID);

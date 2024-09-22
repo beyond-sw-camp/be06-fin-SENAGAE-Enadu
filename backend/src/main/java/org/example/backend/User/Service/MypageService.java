@@ -61,6 +61,7 @@ public class MypageService {
                     .likeCnt(qnaBoard.getLikeCount())
                     .answerCnt(qnaBoard.getAnswerCount())
                     .createdAt(qnaBoard.getCreatedAt())
+                    .totalPage(qnaBoardPage.getTotalPages())
                     .build();
             getUserQnaList.add(getUserQnaListRes);
         }
