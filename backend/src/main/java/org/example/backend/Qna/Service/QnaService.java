@@ -7,15 +7,13 @@ import org.example.backend.Category.Repository.CategoryRepository;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidQnaException;
 import org.example.backend.Exception.custom.InvalidUserException;
-import org.example.backend.Qna.Repository.AnswerLikeRepository;
-import org.example.backend.Qna.Repository.QnaLikeRepository;
-import org.example.backend.Qna.Repository.QnaScrapRepository;
-import org.example.backend.Qna.Repository.QuestionRepository;
+import org.example.backend.Qna.Repository.*;
 import org.example.backend.Qna.model.Entity.*;
 import org.example.backend.Qna.model.Res.GetAnswerCommentDetailListRes;
 import org.example.backend.Qna.model.Res.GetAnswerDetailListRes;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.req.CreateAnswerReq;
 import org.example.backend.Qna.model.req.CreateQuestionReq;
 import org.example.backend.Qna.model.req.GetQnaListReq;
 import org.example.backend.User.Model.Entity.User;
@@ -34,8 +32,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class QnaService {
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+
     private final QnaLikeRepository qnaLikeRepository;
     private final AnswerLikeRepository answerLikeRepository;
     private final QnaScrapRepository qnaScrapRepository;
@@ -379,6 +379,28 @@ public class QnaService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Transactional
+    public Long saveAnswer(CreateAnswerReq createAnswerReq, Long userId) {
+        Optional<QnaBoard> qnaBoard = questionRepository.findById(createAnswerReq.getQuestionId());
+        Optional<User> user = userRepository.findById(userId);
+
+        if (qnaBoard.isPresent() && user.isPresent()) {
+            Answer answer = Answer.builder()
+                    .user(user.get())
+                    .qnaBoard(qnaBoard.get())
+                    .content(createAnswerReq.getContent())
+                    .build();
+
+            answerRepository.save(answer);
+            qnaBoard.get().increaseAnswerCount();
+            return answer.getId();
+        } else if (qnaBoard.isEmpty()) {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND);
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
     }
 }

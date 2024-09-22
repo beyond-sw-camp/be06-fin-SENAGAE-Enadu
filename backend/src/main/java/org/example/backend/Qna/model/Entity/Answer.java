@@ -40,16 +40,16 @@ public class Answer {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "adopted", nullable = false)
+    @Column(name = "adopted", nullable = false, columnDefinition = "Boolean DEFAULT false")
     private boolean adopted;
 
     @Column(name = "enable", nullable = false)
     private boolean enable;
 
-    @Column(name = "like_cnt", nullable = false)
+    @Column(name = "like_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int likeCount;
 
-    @Column(name = "hate_cnt", nullable = false)
+    @Column(name = "hate_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int hateCount;
 
     @CreatedDate

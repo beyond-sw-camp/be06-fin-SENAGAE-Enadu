@@ -5,6 +5,7 @@ import org.example.backend.Common.BaseResponse;
 import org.example.backend.Qna.Service.QnaService;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.req.CreateAnswerReq;
 import org.example.backend.Qna.model.req.CreateQuestionReq;
 import org.example.backend.Qna.model.req.GetQnaListReq;
 import org.example.backend.Security.CustomUserDetails;
@@ -15,14 +16,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/qna")
-public class QuestionController {
+@RequestMapping("/ans")
+public class AnswerController {
     private final QnaService qnaService;
 
-    //qna 등록
+    //answer 등록
     @PostMapping()
-    public BaseResponse<Long> saveQuestion(@RequestBody CreateQuestionReq createQuestionReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.saveQuestion(createQuestionReq, customUserDetails.getUserId());
+    public BaseResponse<Long> saveAnswer(@RequestBody CreateAnswerReq createAnswerReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.saveAnswer(createAnswerReq, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 
@@ -53,6 +54,20 @@ public class QuestionController {
     @PostMapping("/qna-hate")
     public BaseResponse<Long> checkQnaHate(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaHate(qnaBoardId, customUserDetails.getUserId());
+        return new BaseResponse<>(id);
+    }
+
+    //qna 답변 좋아요
+    @GetMapping("/ans-like")
+    public BaseResponse<Long> checkAnsLike(@RequestParam Long qnaBoardId, Long answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.checkAnswerLike(qnaBoardId, answerId, customUserDetails.getUserId());
+        return new BaseResponse<>(id);
+    }
+
+    //qna 답변 싫어요
+    @PostMapping("/ans-hate")
+    public BaseResponse<Long> checkAnsHate(@RequestParam Long qnaBoardId, Long answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.checkAnswerHate(qnaBoardId, answerId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 

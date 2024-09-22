@@ -55,16 +55,16 @@ public class QnaBoard {
     private String content;
 
     @Column(name = "answer_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
-    private int answerCount;
+    private Integer answerCount;
 
     @Column(name = "enable", nullable = false)
     private boolean enable;
 
     @Column(name = "like_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
-    private int likeCount;
+    private Integer likeCount;
 
     @Column(name = "hate_cnt", nullable = false, columnDefinition = "INT DEFAULT 0")
-    private int hateCount;
+    private Integer hateCount;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -86,5 +86,12 @@ public class QnaBoard {
     }
     public void decreaseHateCount() {
         this.hateCount--;
+    }
+
+    public void increaseAnswerCount() {
+        this.answerCount++;
+    }
+    public void decreaseAnswerCount() {
+        this.answerCount--;
     }
 }
