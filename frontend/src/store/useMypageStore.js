@@ -128,7 +128,22 @@ export const useMypageStore = defineStore("mypage", {
                 });
                 this.history.answerList = response.data.result;
             } catch (error) {
-                alert("작성 목록 불러오는데 실패하였습니다.");
+                alert("작성 목록을 불러오는데 실패하였습니다.");
+            }
+        },
+        async getQnaScrapList(page) {
+            const params = {
+                page: page,
+                size: 15
+            };
+            try {
+                const response = await axios.get("http://localhost:8080/mypage/scrap/qna", {
+                    params: params,
+                    withCredentials: true
+                });
+                this.scrap.qnaList = response.data.result;
+            } catch (error) {
+                alert("스크랩 내역을 불러오는데 실패하였습니다.");
             }
         },
     }
