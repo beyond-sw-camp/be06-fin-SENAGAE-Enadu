@@ -118,18 +118,20 @@ export default {
         },
         async fetchQuestionList() {
             await this.mypageStore.getLogQuestionList(this.page);
-            if (this.mypageStore.history.questionList.length !== 0) {
-                this.totalPage = this.mypageStore.history.questionList[0].totalPage;
+            const questionList = this.mypageStore.history.questionList || [];
+            if (questionList.length !== 0) {
+                this.totalPage = questionList[0].totalPage;
             } else {
-                alert("작성한 내역이 없습니다");
+                alert("작성한 질문 내역이 없습니다.");
             }
         },
         async fetchAnswerList() {
             await this.mypageStore.getLogAnswerList(this.page);
-            if (this.mypageStore.history.answerList.length !== 0) {
-                this.totalPage = this.mypageStore.history.answerList[0].totalPage;
+            const answerList = this.mypageStore.history.answerList || [];
+            if (answerList.length !== 0) {
+                this.totalPage = answerList[0].totalPage;
             } else {
-                alert("작성한 내역이 없습니다");
+                alert("작성한 답변 내역이 없습니다.");
             }
         },
         getButtonClass(section) {
