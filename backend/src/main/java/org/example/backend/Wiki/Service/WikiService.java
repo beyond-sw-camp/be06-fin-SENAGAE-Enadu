@@ -168,6 +168,7 @@ public class WikiService {
         WikiContent wikiContent = wikiContentRepository.findById(getWikiVersionDetailReq.getWikiContentId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         Wiki wiki = wikiContent.getWiki();
         GetWikiVersionDetailRes wikiDetailRes = GetWikiVersionDetailRes.builder()
+                .wikiId(wiki.getId())
                 .wikiContentId(wikiContent.getId())
                 .title(wiki.getTitle())
                 .content(wikiContent.getContent())
