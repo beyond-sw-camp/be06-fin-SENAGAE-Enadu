@@ -82,5 +82,24 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         console.error("error fetching errorarchive list:",  error);
       }
     },
+    async likeErrorArchive(id, like){
+      const request = {
+        id: id,
+        isLike: like
+      }
+      try {
+        const response = await axios.post(`${backend}/errorarchive/like`,request, {
+          withCredentials: true,
+        });
+
+        if (response.data.isSuccess) {
+          return response.data.result.result;
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (error) {
+        console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
+      }
+    }
   }
 });

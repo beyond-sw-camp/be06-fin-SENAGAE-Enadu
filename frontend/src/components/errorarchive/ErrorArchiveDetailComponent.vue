@@ -30,7 +30,7 @@
                 <div class="icons">
                   <label class="btn-label" for="like-checkbox">
                     <span class="like-text-content">{{ likeCnt }}</span>
-                    <input class="input-box" id="like-checkbox" type="radio" value="like" @click="clickLike('like')"
+                    <input class="input-box" id="like-checkbox" type="radio" value=true @click="clickLike(true)"
                            name="like" v-model="selectedLike"/>
                     <svg
                         class="svgs"
@@ -62,7 +62,7 @@
                     <input
                         class="input-box"
                         id="dislike-checkbox"
-                        type="radio" name="like" v-model="selectedLike" value="hate" @click="clickLike('hate')"
+                        type="radio" name="like" v-model="selectedLike" value=false @click="clickLike(false)"
                     />
                     <svg
                         class="svgs"
@@ -160,20 +160,20 @@ export default {
       if(this.isLoading){
         return;
       }
-      if (newVal === "like") {
+      if (newVal === true) {
         this.likeCnt++;
-        if (oldVal === "hate") {
+        if (oldVal === false) {
           this.hateCnt--;
         }
-      } else if (newVal === "hate"){
+      } else if (newVal === false){
         this.hateCnt++;
-        if (oldVal === "like") {
+        if (oldVal === true) {
           this.likeCnt--;
         }
       } else {
-        if (oldVal === "like"){
+        if (oldVal === true){
           this.likeCnt --;
-        } else if(oldVal==="hate") {
+        } else if(oldVal===false) {
           this.hateCnt--;
         }
       }
@@ -185,7 +185,6 @@ export default {
       this.setModifiedTime();
       this.checkLike();
       this.setLikeAndHateCnt();
-      this.getIndex();
     },
     setModifiedTime() {
       let date = this.errorarchiveStore.errorArchiveDetail.modifiedAt.split("T")[0].split("-")
@@ -193,36 +192,17 @@ export default {
     },
     checkLike() {
       if (this.errorarchiveStore.errorArchiveDetail.checkLike) {
-        this.selectedLike = "like";
+        this.selectedLike = true;
       } else if (this.errorarchiveStore.errorArchiveDetail.checkHate) {
-        this.selectedLike = "hate";
+        this.selectedLike = false;
       }
     },
     setLikeAndHateCnt() {
       this.hateCnt = this.errorarchiveStore.errorArchiveDetail.hateCnt
       this.likeCnt = this.errorarchiveStore.errorArchiveDetail.likeCnt
     },
-    clickLike(value) {
-      if (this.selectedLike === value) {
-        this.selectedLike = null;
-      }
-    },
-    getIndex(){
-      let content = this.errorarchiveStore.errorArchiveDetail.content;
-      let lines = content.split(/\r?\n/);
-      let idx = 1;
-      for (const line of lines){
-        if (line.startsWith("# ")){
-          this.index.push([line.split(" ")[1], 0, idx])
-          idx++;
-        } else if (line.startsWith("## ")){
-          this.index.push([line.split(" ")[1], 12, idx])
-          idx++;
-        } else if (line.startsWith("### ")){
-          this.index.push([line.split(" ")[1], 24, idx])
-          idx++;
-        }
-      }
+    async clickLike(value) {
+      this.selectedLike = await this.errorarchiveStore.likeErrorArchive(this.id, value)
     },
     handleAnchorClick(anchor) {
       const { preview } = this.$refs;
