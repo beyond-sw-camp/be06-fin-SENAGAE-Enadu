@@ -52,7 +52,6 @@ export default {
 
       await this.wikiStore.fetchWikiList(page);
 
-
       if (this.wikiStore.wikiCards.length > 0) {
         this.totalPages = this.wikiStore.wikiCards[0].totalPages || 1;
       } else {
@@ -64,12 +63,10 @@ export default {
       console.log("Total Pages:", this.totalPages);
     },
     handlePageUpdate(newPage) {
-      console.log("weweewewnewPage: "+newPage);
       if (newPage !== this.selectedPage) {
         this.selectedPage = newPage;
         this.wikiStore.fetchWikiList(this.selectedPage);
 
-        // this.fetchWikiList(this.selectedPage);
       }
     },
   },
