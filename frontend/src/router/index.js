@@ -11,6 +11,8 @@ import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
 import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
+import ErrorArchiveListPage from "@/pages/ErrorArchiveListPage.vue";
+import EmailVerifyPage from "@/pages/EmailVerifyPage.vue";
 import WikiUpdatePage from "@/pages/WikiUpdatePage.vue";
 import ErrorArchiveListPage from "@/pages/ErrorArchiveListPage.vue";
 import {useChatStore} from "@/store/useChatStore";
@@ -24,7 +26,6 @@ import WikiVersionDetailPage from '@/pages/WikiVersionDetailPage.vue';
 import WikiListPage from "@/pages/WikiListPage.vue";
 import MainPage from "@/pages/MainPage.vue";
 
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -34,6 +35,7 @@ const router = createRouter({
     { path: '/qna/detail/:id', component: QnaDetailPage },
     { path: "/wiki/register", component: WikiRegisterPage },
     { path: "/chat", component: ChatPage },
+    { path: "/errorarchive", component: ErrorArchiveRegisterPage },
     { path: "/errorarchive/register", component: ErrorArchiveRegisterPage },
     { path: "/errorarchive/list", component: ErrorArchiveListPage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
@@ -41,6 +43,9 @@ const router = createRouter({
         { path: "info", component: PointInfoComponent },
         { path: "rank", component: PointRankingComponent },
       ]},
+    { path: "/wiki/detail", component: WikiDetailPage },
+    { path: "/email/verify", component: EmailVerifyPage },
+   
     { path: "/wiki/detail", name: "WikiDetail", component: WikiDetailPage },
     { path: "/wiki/update", name: "WikiUpdate", component: WikiUpdatePage },
     { path: "/wiki/version/list", component: WikiVersionListPage },
