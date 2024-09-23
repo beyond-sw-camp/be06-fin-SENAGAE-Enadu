@@ -111,37 +111,36 @@ export const useUserStore = defineStore('user', {
             }
         },
         async checkEmail(email) {
-            try {
-                // 서버에 이메일 중복 여부 확인 요청
-                const response = await axios.get("http://localhost:8080/user/duplicate/email", { params : {email: email} }
-                );
-                console.log(response);  // 응답 데이터 확인
+            // 서버에 이메일 중복 여부 확인 요청
+            const response = await axios.get("http://localhost:8080/user/duplicate/email", {params: {email: email}}
+            );
+            console.log(response);  // 응답 데이터 확인
 
-                // 서버로부터 받은 응답에 따라 처리
-                if(response.data.result == true) {
-                    alert("사용 가능한 이메일입니다.");
-                } else {
-                    alert("중복되는 이메일입니다.");
-                }
-            },
-            async verifyEmail(email, uuid) {
-                try {
-                    const response = await axios.post(`http://localhost:8080/email/verify`, {
-                            email,
-                            uuid,
-                    });
-                    
-            
-                    // 응답 코드와 성공 여부 확인
-                    if (response.data.code === 1000 && response.data.isSuccess) {
-                        alert('이메일 인증에 성공했습니다!');
-                    } else {
-                        alert(response.data.message || '이메일 인증에 실패했습니다.');
-                    }
-                } catch (error) {
-                    console.error('이메일 인증 중 오류 발생:', error);
-                    alert('이메일 인증에 실패했습니다.');
-                }
+            // 서버로부터 받은 응답에 따라 처리
+            if (response.data.result == true) {
+                alert("사용 가능한 이메일입니다.");
+            } else {
+                alert("중복되는 이메일입니다.");
             }
+        },
+        async verifyEmail(email, uuid) {
+            try {
+                const response = await axios.post(`http://localhost:8080/email/verify`, {
+                        email,
+                        uuid,
+                });
+
+
+                // 응답 코드와 성공 여부 확인
+                if (response.data.code === 1000 && response.data.isSuccess) {
+                    alert('이메일 인증에 성공했습니다!');
+                } else {
+                    alert(response.data.message || '이메일 인증에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('이메일 인증 중 오류 발생:', error);
+                alert('이메일 인증에 실패했습니다.');
+            }
+        }
     },
 });
