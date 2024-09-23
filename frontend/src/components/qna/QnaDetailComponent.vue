@@ -17,7 +17,7 @@
         </div>
         <div class="" style="font-size: 13px">
           <div>
-            <p>{{ qnaDetail.content }}</p>
+            <v-md-preview :text="qnaDetail.content" />
             <aside class="bg-black text-white p-6 rounded-lg w-full max-w-md font-mono">
               <div class="flex justify-between items-center">
                 <div class="flex space-x-2 text-red-500">
@@ -87,6 +87,7 @@
 
 <script>
 import {formatDateTime} from "@/utils/FormatDate";
+import VMdPreview from "@kangc/v-md-editor/lib/preview";
 
 export default {
   name: "QuestionDetailComponent",
@@ -99,11 +100,12 @@ export default {
     formatDateTime
   },
   components: {
+    VMdPreview
   },
 };
 </script>
 
-<style>
+<style scoped>
 .rounded-box {
   border-radius: 20px;
 }

@@ -57,7 +57,7 @@
                                     <div class="space-y-1">
                                         <label for="text"
                                             class="text-sm font-medium text-gray-700 dark:text-gray-300">본문</label>
-                                        <v-md-editor v-model="wikiRegisterReq.myText" height="400px"></v-md-editor>
+                                        <v-md-editor v-model="wikiRegisterReq.myText" :disabled-menus="[]" height="400px" @upload-image="commonStore.imageUpload"></v-md-editor>
                                     </div>
                                 </div>
 
@@ -92,6 +92,7 @@
 import { useWikiStore } from "@/store/useWikiStore";
 import { mapStores } from "pinia";
 import SuperCategoryModal from '../../components/Category/SuperCategoryModal.vue';
+import {useCommonStore} from "@/store/useCommonStore";
 
 export default {
     name: "WikiRegisterComponent",
@@ -101,15 +102,16 @@ export default {
                 title: '',
                 myText: '',
                 mySuperCategory: '',
-                mySuperCategoryName: '' // 카테고리 이름을 위한 변수 추가
+                mySuperCategoryName: ''
             },
             thumbnail: null,
-            showSuperCategoryModal: false, // 모달 열림 상태
+            showSuperCategoryModal: false,
         }
-        
+
     },
     computed: {
         ...mapStores(useWikiStore),
+        ...mapStores(useCommonStore),
         isNullOrEmpty() {
             return (this.wikiRegisterReq.title === '' || this.wikiRegisterReq.myText === '' || this.wikiRegisterReq.mySuperCategory === '')
         },
@@ -125,45 +127,44 @@ export default {
             }
             this.wikiRegisterReq.mySuperCategory = selectedSuperCategory.id;
             this.wikiRegisterReq.mySuperCategoryName = selectedSuperCategory.categoryName; // 수정된 부분
-            this.showSuperCategoryModal = false; 
+            this.showSuperCategoryModal = false;
         },
         closeSuperCategoryModal() {
             this.showSuperCategoryModal = false;
         },
         setImages(event) {
-            const file = event.target.files[0]; 
+            const file = event.target.files[0];
             this.thumbnail = file;
         },
         clearThumbnail() {
             this.thumbnail = null;
-            this.$refs.thumbnailInput.value = ''; // 파일 입력 필드 초기화
+            this.$refs.thumbnailInput.value = '';
         },
         async submitForm() {
-            console.log(this.wikiRegisterReq.title);
-     
-            if (this.wikiRegisterReq.myText.trim() === '') {
-                alert('본문을 입력해주세요.');
-                return;
-            }
-            if (!this.wikiRegisterReq.mySuperCategory) {
-                alert('상위 카테고리를 선택해주세요.');
-                return;
-            }
-            console.log("mySuperCategory 값:", this.wikiRegisterReq.mySuperCategory);
-            console.log("mySuperCategory 값:", this.wikiRegisterReq.myText);
+    console.log(this.wikiRegisterReq.title);
 
+    if (this.wikiRegisterReq.myText.trim() === '') {
+        alert('본문을 입력해주세요.');
+        return;
+    }
+    if (!this.wikiRegisterReq.mySuperCategory) {
+        alert('상위 카테고리를 선택해주세요.');
+        return;
+    }
 
-            this.wikiStore.wikiRegisterReq.title=this.wikiRegisterReq.title;
-            this.wikiStore.wikiRegisterReq.content=this.wikiRegisterReq.myText;
-            this.wikiStore.wikiRegisterReq.categoryId=this.wikiRegisterReq.mySuperCategory;
-            const result = await this.wikiStore.registerWiki(this.thumbnail);
-            if (result) {
-                alert("정상적으로 등록되었습니다.");
-                this.$router.push("/wiki");
-            } else {
-                alert("등록에 실패하였습니다. 다시 시도해주세요.");
-                this.$router.go();
-            }
+    this.wikiStore.wikiRegisterReq.title = this.wikiRegisterReq.title;
+    this.wikiStore.wikiRegisterReq.content = this.wikiRegisterReq.myText;
+    this.wikiStore.wikiRegisterReq.categoryId = this.wikiRegisterReq.mySuperCategory;
+    
+    const result = await this.wikiStore.registerWiki(this.thumbnail);
+
+    if (result) {
+        alert("정상적으로 등록되었습니다.");
+        // 등록된 위키의 상세 페이지로 리다이렉트
+        this.$router.push({ name: "WikiDetail", query: { id: result } });
+    } else {
+        alert("등록에 실패하였습니다. 다시 시도해주세요.");
+    }
         },
         cancel() {
         }

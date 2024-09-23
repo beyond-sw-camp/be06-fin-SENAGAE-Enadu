@@ -25,6 +25,7 @@
             </li>
           </ul>
         </div>
+        <div class="chat_empty"  v-if="chatStore.chatMessageList.length === 0"><span class="chat_empty_span">대화 내역이 없습니다.</span></div>
       </section>
       <footer class="chat_write" aria-hidden="false">
         <div>
@@ -86,6 +87,14 @@ export default {
       }
     },
     clickSendMessageButton(){
+      if (this.chatStore.selectedChatRoom.chatRoomId === 0){
+        alert("채팅방이 선택되지 않았습니다.");
+        this.content=""
+        return;
+      } else if (this.content === ""){
+        alert("채팅 메세지를 입력해주세요.");
+        return;
+      }
       this.chatStore.sendMessage(this.content);
       this.content=""
       this.autoResize()
@@ -141,7 +150,7 @@ export default {
 /* class: chat_header 채팅방 헤더 */
 .chat_header {
   position: relative;
-  z-index: 1000;
+  z-index: 200;
   -webkit-box-flex: 0;
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
@@ -604,5 +613,14 @@ img {
   max-width: 100%;
   border: 0;
   vertical-align: top;
+}
+.chat_empty {
+  margin-bottom:280px;
+  display: flex;
+}
+
+.chat_empty_span {
+  margin: auto auto;
+  font-weight: bold
 }
 </style>

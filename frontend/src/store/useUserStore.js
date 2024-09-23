@@ -8,12 +8,15 @@ export const useUserStore = defineStore('user', {
         userId: null,
         isLoggedIn: false,
     }),
+    persist: {
+        storage: sessionStorage,
+    },
     actions: {
         async login(user) {
             try {
                 const response = await axios.post(backend + "/login", user, {
                     headers: {
-                        'Content-Type': 'application/json' 
+                        'Content-Type': 'application/json'
                     } ,
                     withCredentials: true
                 });
@@ -21,11 +24,11 @@ export const useUserStore = defineStore('user', {
                 if (!response || !response.data) {
                     throw new Error("Invalid response from server");
                 }
-        
+
                 this.userId = response.data.userId;
                 this.isLoggedIn = true;
                 return true;
-                
+
             } catch (error) {
                 if (error.response) {
                     console.error("서버 응답 에러:", error.response.data);
@@ -43,13 +46,13 @@ export const useUserStore = defineStore('user', {
             try {
                 const response = await axios.post(backend + "/user/logout", {
                     headers: {
-                        'Content-Type': 'application/json' 
+                        'Content-Type': 'application/json'
                     } ,
                     withCredentials: true
                 });
                 if (!response || !response.data) {
                     throw new Error("Invalid response from server");
-                }        
+                }
                 this.userId = null;
                 this.isLoggedIn = false;
                 return true;
@@ -76,32 +79,28 @@ export const useUserStore = defineStore('user', {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                
-                
+
+
                 if (response || response.data) {
                    return true;
                 } else {
                     throw new Error("Invalid response from server");
                 }
-              
+
             }
             catch(error) {
                 alert("회원가입 실패");
                 console.error("회원가입 에러:", error.response ? error.response.data : error.message);
                 return false;
-            }   
+            }
         },
-        async checkNickname() {
+        async checkNickname(nickname) {
             try {
-              // 닉네임이 입력되지 않았을 때의 처리
-              if(!this.userInfo.nickname){
-                alert("닉네임을 입력해주세요.");
-                return;
-              }
               // 서버에 닉네임 중복 여부 확인 요청
-              const response = await axios.post("http://localhost:8080"+"/user/duplicate/nickname", {nickname: this.userInfo.nickname });
+              const response = await axios.get("http://localhost:8080"+"/user/duplicate/nickname", { params : {nickname: nickname }
+              });
               // 서버로부터 받은 응답에 따라 처리
-              if(response.data.code === 2024){
+              if(response.data.result === false){
                 alert("중복되는 닉네임입니다.")
               } else {
                 alert("중복되지 않는 닉네임입니다.");
@@ -111,25 +110,18 @@ export const useUserStore = defineStore('user', {
               alert("닉네임 확인 중 문제가 발생했습니다. 다시 시도해주세요");
             }
         },
-        async checkEmail() {
-                try {
-                  // 이메일이 입력되지 않을때의 처리
-                  if(!this.userInfo.email){
-                    alert("이메일을 입력해주세요.");
-                    return
-                  }
-                  // 서버에 이메일 중복 여부 확인 요청
-                  const response = await axios.post("http://localhost:8080"+"/user/duplicate/email", {email: this.userInfo.email});
-        
-                 // 서버로부터 받은 응답에 따라 처리
-                 if(response.data.isDuplicate) {
-                  alert("중복되는 이메일입니다.");
-                 } else {
-                  alert("중복되지 않는 이메일입니다.");
-                 }
-                } catch(error){
-                  console.error("이메일 중복 확인 중 오류 발생:", error);
-                  this.alert("이메일 확인 중 문제가 발생했습니다. 다시 시도해주세요");
+        async checkEmail(email) {
+            try {
+                // 서버에 이메일 중복 여부 확인 요청
+                const response = await axios.get("http://localhost:8080/user/duplicate/email", { params : {email: email} }
+                );
+                console.log(response);  // 응답 데이터 확인
+
+                // 서버로부터 받은 응답에 따라 처리
+                if(response.data.result == true) {
+                    alert("사용 가능한 이메일입니다.");
+                } else {
+                    alert("중복되는 이메일입니다.");
                 }
             },
             async verifyEmail(email, uuid) {
@@ -153,4 +145,3 @@ export const useUserStore = defineStore('user', {
             }
     },
 });
-         

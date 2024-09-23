@@ -5,6 +5,25 @@ const backend = "/api";
 export const useErrorArchiveStore = defineStore('errorarchive', {
   state: () => ({
     errorArchiveId: 1,
+    errorArchiveDetail: {
+      id: 1,
+      nickname: "",
+      title: "",
+      content: "",
+      superCategory: "",
+      subCategory: "",
+      createAt: "",
+      modifiedAt: "",
+      likeCnt: 0,
+      hateCnt: 0,
+      checkLike: false,
+      checkHate: false,
+      checkScrap: false,
+      profileImg: "",
+      grade: "",
+      gradeImg: ""
+    },
+    errorarchiveCards: [],
   }),
   actions: {
     async registerErrorArchive(errorarchive) {
@@ -32,7 +51,74 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         throw error;
       }
     },
-  },
+    async getErrorArchiveDetail(id) {
+      try {
+        const response = await axios.get(backend + "/errorarchive/detail", {
+          params: { id: id },
+          withCredentials: true,
+        });
+        if (response && response.data) {
+          this.errorArchiveDetail = response.data.result;
+        } else {
+          throw new Error("에러아카이브 상세 조회 실패");
+        }
+      } catch (error) {
+        console.error("에러아카이브 상세 조회 중 오류 발생:", error);
+      }
+    },
+    async getErrorArchiveList(sort, page) {
+      const params = {
+        sort: sort,
+        page: page,
+        size: 15
+      };
+      try {
+        const response = await axios.get(backend+"/errorarchive/list", { 
+          params: params,
+          withCredentials: true });
+        this.errorarchiveCards  = response.data.result;
+        console.log(this.errorarchiveCards);
+      } catch(error) {
+        console.error("error fetching errorarchive list:",  error);
+      }
+    },
+    async likeErrorArchive(id, like){
+      const request = {
+        id: id,
+        isLike: like
+      }
+      try {
+        const response = await axios.post(`${backend}/errorarchive/like`,request, {
+          withCredentials: true,
+        });
+
+        if (response.data.isSuccess) {
+          return response.data.result.result;
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (error) {
+        console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
+      }
+    },
+    async scrapErrorArchive(id){
+      console.log(id);
+      const scrapReq = {
+        id: id,
+      }
+      try {
+        const response = await axios.post(`${backend}/errorarchive/scrap`,scrapReq, {
+          withCredentials: true,
+        });
+
+        if (response.data.isSuccess) {
+          return response.data.result.result;
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (error) {
+        console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
+      }
+    },
+  }
 });
-
-

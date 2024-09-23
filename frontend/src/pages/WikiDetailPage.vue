@@ -1,10 +1,6 @@
 <template>
     <div class="custom-container">
-      <div id="root">
-        <div class="content-wrapper">
-          <WikiDetailComponent />
-        </div>
-      </div>
+      <WikiDetailComponent />
     </div>
   </template>
   
@@ -20,13 +16,6 @@
   </script>
   
   <style scoped>
-  .custom-container {
-    padding: 20px;
-  }
-  .content-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+
   </style>
   

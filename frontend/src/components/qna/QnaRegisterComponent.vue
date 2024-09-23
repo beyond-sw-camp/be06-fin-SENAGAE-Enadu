@@ -20,20 +20,20 @@
                                   <div id="rowGapZero">
                                   <label for="tags" class="text-sm font-medium text-gray-700 dark:text-gray-300">카테고리</label>
                                   <div class="space-y-1 flex w-full">
-                                    <input type="text" id="category1" placeholder="상위 카테고리를 선택해주세요." v-model="mySuperCategory"
+                                    <input type="text" id="category1" :placeholder="selectedSuperCategory ? selectedSuperCategory.categoryName : '상위 카테고리를 선택해주세요.'"
                                            class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"
-                                           name="category1">
+                                           name="category1" disabled>
                                     <div style="margin-left:10px; margin-right:10px">
-                                      <button type="button"
-                                              class="w-20 items-center space-x-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600">
+                                      <button type="button" @click="openSuperCategoryModal"
+                                              class="w-20 items-center space-x-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600 ui-state-disabled">
                                         검색
                                       </button>
                                     </div>
-                                    <input type="text" id="category2" placeholder="하위 카테고리를 선택해주세요." v-model="mySubCategory"
-                                           class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"
-                                           name="category2">
+                                    <input type="text" id="category2" :placeholder="selectedSubCategory ? selectedSubCategory.categoryName : '하위 카테고리를 선택해주세요.'"
+                                           class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20 ui-state-disabled"
+                                           name="category2" disabled>
                                     <div style="margin-left:10px">
-                                      <button type="button"
+                                      <button type="button" @click="openSubCategoryModal"
                                               class="w-20 items-center space-x-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600">
                                         검색
                                       </button>
@@ -44,7 +44,7 @@
                                     <!-- 본문 -->
                                     <div class="space-y-1">
                                         <label for="text" class="text-sm font-medium text-gray-700 dark:text-gray-300" >본문</label>
-                                        <v-md-editor v-model="myText" height="400px"></v-md-editor>
+                                        <v-md-editor v-model="myText" :disabled-menus="[]" @upload-image="commonStore.imageUpload" height="400px"></v-md-editor>
                                     </div>
                                 </div>
 
@@ -70,6 +70,18 @@
                     </div>
                 </div>
             </div>
+          <SuperCategoryModal
+              v-if="showSuperModal"
+              @mySuperCategory="handleSuperCategorySelection"
+              @closeSuper="closeSuperCategoryModal"
+          />
+          <!-- 하위 카테고리 모달 -->
+          <SubCategoryModal
+              v-if="showSubModal"
+              :superCategory="selectedSuperCategory"
+              @mySubCategory="handleSubCategorySelection"
+              @closeSub="closeSubCategoryModal"
+          />
         </main>
     </div>
 </template>
@@ -77,6 +89,9 @@
 <script>
 import { mapStores } from "pinia";
 import { useQnaStore } from "@/store/useQnaStore";
+import SuperCategoryModal from "@/components/Category/SuperCategoryModal.vue";
+import SubCategoryModal from "@/components/Category/SubCategoryModal.vue";
+import {useCommonStore} from "@/store/useCommonStore";
 
 export default {
   name: "QnaRegisterComponent",
@@ -84,26 +99,76 @@ export default {
     return {
       myTitle: '',
       myText: '',
-      mySuperCategory: '',
-      mySubCategory: ''
+      selectedSuperCategory: "",
+      selectedSubCategory: "",
+      showSuperModal: false,
+      showSubModal: false,
+      myCategory: 0,
     };
   },
   computed: {
     ...mapStores(useQnaStore),
+    ...mapStores(useCommonStore),
     isNullOrEmpty() {
-      return (this.myTitle === '' || this.myText === '' || this.mySuperCategory === '' || this.mySubCategory === '')
+      return (this.myTitle === '' || this.myText === '' || this.selectedSuperCategory === '' || this.selectedSubCategory === '')
     },
   },
   methods: {
     async click() {
-      await useQnaStore().registerQna(this.myTitle, this.myText);
+      if (!this.myTitle || !this.myText || !this.myCategory) {
+        alert('모든 필드를 올바르게 입력해 주세요.');
+      }
+      else {
+        try {
+          await useQnaStore().registerQna(this.myTitle, this.myText, this.myCategory);
+          alert('등록이 완료되었습니다.');
+          this.cancel();
+        }
+        catch (error){
+          alert('등록 중 오류 발생');
+        }
+      }
     },
     cancel() {
       this.myTitle = '';
       this.myText = '';
-      this.mySuperCategory = '';
-      this.mySubCategory = '';
+      this.selectedSuperCategory = '';
+      this.selectedSubCategory = '';
+      this.myCategory='';
     },
+    openSuperCategoryModal() {
+      this.showSuperModal = true;
+    },
+    closeSuperCategoryModal() {
+      this.showSuperModal = false;
+    },
+    handleSuperCategorySelection(category){
+      this.selectedSuperCategory = category;
+      this.closeSuperCategoryModal();
+      this.openSubCategoryModal();
+    },
+
+    openSubCategoryModal() {
+      if (this.selectedSuperCategory) {
+        this.showSubModal = true;
+        this.showSuperModal=false;
+      } else {
+        alert('상위 카테고리를 먼저 선택하세요.');
+      }
+    },
+    closeSubCategoryModal(){
+      this.showSubModal = false;
+    },
+
+    handleSubCategorySelection(category) {
+      this.selectedSubCategory = category;
+      this.myCategory = category.id;
+      this.closeSubCategoryModal();
+    },
+  },
+  components: {
+    SuperCategoryModal,
+    SubCategoryModal,
   },
 };
 </script>
@@ -112,5 +177,12 @@ export default {
   #rowGapZero {
     row-gap: 0;
   }
+  @media (prefers-color-scheme: dark) {
+    .dark\:bg-gray-700 {
+      --tw-bg-opacity: 1;
+      background-color: #db282873;
+    }
+  }
+
 </style>
 
