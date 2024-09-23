@@ -2,47 +2,42 @@
     <div class="full-page">
         <div class="container">
             <div class="message">이메일 인증이 완료되었습니다</div>
-            <router-link to="/login" class="login-btn" >로그인 하러 가기</router-link>
+            <router-link to="/login?mode=login" class="login-btn">로그인 하러 가기</router-link>
         </div>
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { useUserStore } from '@/store/useUserStore'; // UserStore를 가져옵니다.
 
 export default {
     name: 'EmailVerifyPage',
     data() {
         return {
-            message: '',
-            isverified: false, // 인증 상태
+            email: '',
+            uuid: '',
+            isVerified: false, // 인증 상태
         };
     },
+    mounted() {
+        const email = this.$route.query.email;
+        const uuid = this.$route.query.uuid;
+        this.verifyEmail(email, uuid); 
+    },
     methods: {
-        async verifyEmail() {
-            const email = this.$route.query.email;
-            const uuid = this.$route.query.uuid;
-
+        async verifyEmail(email, uuid) {
+            const userStore = useUserStore(); // UserStore 인스턴스 생성
             try {
-                const response = await axios.get(`http://localhost:8080/email/verify`, {
-                    params: {
-                        email,
-                        uuid,
-                    },
-                });
-                if (response.status === 302) {
-                    this.message = '이메일 인증이 완료되었습니다';
-                    this.isverified = true; // 인증 성공 상태로 변경
+                await userStore.verifyEmail(email, uuid); // UserStore의 verifyEmail 메소드 호출
+                
+                if (userStore.isverified) {
+                    this.isVerified = true; // 인증 성공 상태로 변경
                     alert('이메일 인증에 성공했습니다!');
                 }
             } catch (error) {
-                this.message = '이메일 인증에 실패했습니다';
                 alert('이메일 인증에 실패했습니다.');
             }
         },
-    },
-    mounted() {
-        this.verifyEmail(); // 페이지 로드 시 이메일 인증 호출
     },
 };
 </script>

@@ -7,6 +7,7 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         userId: null,
         isLoggedIn: false,
+        isverified: false,
     }),
     actions: {
         async login(user) {
@@ -70,10 +71,6 @@ export const useUserStore = defineStore('user', {
                 formData.append('userSignupReq', blob);
                 formData.append('profileImg',selectedProfileFile);
 
-                if(selectedProfileFile){
-                    formData.append('profileImg',selectedProfileFile);
-                }
-            
                 // 요청 보내기
                 const response = await axios.post("http://localhost:8080/user/signup", formData, {
                     headers: {
@@ -135,7 +132,31 @@ export const useUserStore = defineStore('user', {
                   console.error("이메일 중복 확인 중 오류 발생:", error);
                   this.alert("이메일 확인 중 문제가 발생했습니다. 다시 시도해주세요");
                 }
+            },
+            async verifyEmail(email, uuid) {
+                try {
+                    const response = await axios.get(`http://localhost:8080/email/verify`, {
+                        params: {
+                            email,
+                            uuid,
+                        },
+                    });
+            
+                    // 응답 코드와 성공 여부 확인
+                    if (response.data.code === 1000 && response.data.isSuccess) {
+                        this.isverified = true; // 인증 성공 상태로 변경
+                        alert('이메일 인증에 성공했습니다!');
+                    } else {
+                        alert(response.data.message || '이메일 인증에 실패했습니다.');
+                    }
+                } catch (error) {
+                    console.error('이메일 인증 중 오류 발생:', error);
+                    alert('이메일 인증에 실패했습니다.');
+                }
             }
+            
+            
+            
 
     },
 });
