@@ -7,7 +7,6 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         userId: null,
         isLoggedIn: false,
-        isverified: false,
     }),
     actions: {
         async login(user) {
@@ -135,16 +134,14 @@ export const useUserStore = defineStore('user', {
             },
             async verifyEmail(email, uuid) {
                 try {
-                    const response = await axios.get(`http://localhost:8080/email/verify`, {
-                        params: {
+                    const response = await axios.post(`http://localhost:8080/email/verify`, {
                             email,
                             uuid,
-                        },
                     });
+                    
             
                     // 응답 코드와 성공 여부 확인
                     if (response.data.code === 1000 && response.data.isSuccess) {
-                        this.isverified = true; // 인증 성공 상태로 변경
                         alert('이메일 인증에 성공했습니다!');
                     } else {
                         alert(response.data.message || '이메일 인증에 실패했습니다.');
@@ -154,10 +151,6 @@ export const useUserStore = defineStore('user', {
                     alert('이메일 인증에 실패했습니다.');
                 }
             }
-            
-            
-            
-
     },
 });
          

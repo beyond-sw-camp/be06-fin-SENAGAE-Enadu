@@ -16,7 +16,6 @@ export default {
         return {
             email: '',
             uuid: '',
-            isVerified: false, // 인증 상태
         };
     },
     mounted() {
@@ -28,10 +27,9 @@ export default {
         async verifyEmail(email, uuid) {
             const userStore = useUserStore(); // UserStore 인스턴스 생성
             try {
-                await userStore.verifyEmail(email, uuid); // UserStore의 verifyEmail 메소드 호출
+               const result =  await userStore.verifyEmail(email, uuid); // UserStore의 verifyEmail 메소드 호출
                 
-                if (userStore.isverified) {
-                    this.isVerified = true; // 인증 성공 상태로 변경
+                if (result) {
                     alert('이메일 인증에 성공했습니다!');
                 }
             } catch (error) {
