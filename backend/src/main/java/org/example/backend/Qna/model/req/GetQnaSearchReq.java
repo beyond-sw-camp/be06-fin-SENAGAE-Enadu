@@ -7,8 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class GetQnaSearchReq {
     private String type;
     private String keyword;

@@ -8,8 +8,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateQuestionReq {
     private String title;
     private String content;

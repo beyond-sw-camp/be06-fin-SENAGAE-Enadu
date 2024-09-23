@@ -18,4 +18,5 @@ public class GetQnaListRes {
     private Integer likeCnt;
     private Integer answerCnt;
     private LocalDateTime createdAt;
+    private Integer totalPage;
 }

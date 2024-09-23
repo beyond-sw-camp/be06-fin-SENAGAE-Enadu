@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,22 +48,22 @@ public class QuestionController {
 
     //qna 질문 좋아요
     @PostMapping("/like")
-    public BaseResponse<Long> checkQnaLike(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkQnaLike(qnaBoardId, customUserDetails.getUserId());
+    public BaseResponse<Long> checkQnaLike(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.checkQnaLike(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 
     //qna 질문 싫어요
     @PostMapping("/hate")
-    public BaseResponse<Long> checkQnaHate(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkQnaHate(qnaBoardId, customUserDetails.getUserId());
+    public BaseResponse<Long> checkQnaHate(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.checkQnaHate(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 
     //qna 스크랩
     @PostMapping("/scrap")
-    public BaseResponse<Long> checkScrap(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkQnaScrap(qnaBoardId, customUserDetails.getUserId());
+    public BaseResponse<Long> checkScrap(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.checkQnaScrap(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 

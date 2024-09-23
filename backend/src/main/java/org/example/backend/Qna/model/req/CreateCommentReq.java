@@ -7,8 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateCommentReq {
     private Long answerId;
     private Long superCommentId;

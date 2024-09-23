@@ -7,8 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class GetQnaListReq {
     private String sort;
     private Integer page;

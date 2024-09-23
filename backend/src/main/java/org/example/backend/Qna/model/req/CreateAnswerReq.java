@@ -7,8 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateAnswerReq {
     private Long qnaBoardId;
     private String content;
