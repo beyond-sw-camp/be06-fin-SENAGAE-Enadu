@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.User.Model.Entity.User;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 public class Answer {
     @Id
@@ -40,20 +42,24 @@ public class Answer {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Builder.Default()
     @Column(name = "adopted", nullable = false)
-    private boolean adopted;
+    private boolean adopted=false;
 
+    @Builder.Default()
     @Column(name = "enable", nullable = false)
-    private boolean enable;
+    private boolean enable=true;
 
+    @Builder.Default()
     @Column(name = "like_cnt", nullable = false)
-    private int likeCount;
+    private Integer likeCount=0;
 
+    @Builder.Default()
     @Column(name = "hate_cnt", nullable = false)
-    private int hateCount;
+    private Integer hateCount=0;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public void increaseLikeCount() {
@@ -68,6 +74,10 @@ public class Answer {
     }
     public void decreaseHateCount() {
         this.hateCount--;
+    }
+
+    public void adoptedAnswer(boolean adopted) {
+        this.adopted = adopted;
     }
 
 }

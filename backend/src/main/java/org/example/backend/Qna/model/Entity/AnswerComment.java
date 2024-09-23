@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.User.Model.Entity.User;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,10 +41,12 @@ public class AnswerComment {
         @Column(name = "content", columnDefinition = "TEXT", nullable = false)
         private String content;
 
+        @CreatedDate
         @Column(name = "created_at", nullable = false)
         private LocalDateTime createdAt;
 
+        @Builder.Default()
         @Column(name = "enable", nullable = false)
-        private boolean enable;
+        private boolean enable=true;
 
 }

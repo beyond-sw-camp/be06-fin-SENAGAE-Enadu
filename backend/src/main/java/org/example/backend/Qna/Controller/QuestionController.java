@@ -43,44 +43,22 @@ public class QuestionController {
     }
 
     //qna 질문 좋아요
-    @GetMapping("/qna-like")
-    public BaseResponse<Long> checkQnaLike(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @PostMapping("/like")
+    public BaseResponse<Long> checkQnaLike(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaLike(qnaBoardId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
 
     //qna 질문 싫어요
-    @GetMapping("/qna-hate")
-    public BaseResponse<Long> checkQnaHate(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @PostMapping("/hate")
+    public BaseResponse<Long> checkQnaHate(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaHate(qnaBoardId, customUserDetails.getUserId());
-        return new BaseResponse<>(id);
-    }
-
-    //qna 답변 좋아요
-    @GetMapping("/ans-like")
-    public BaseResponse<Long> checkAnsLike(Long qnaBoardId, Long answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkAnswerLike(qnaBoardId, answerId, customUserDetails.getUserId());
-        return new BaseResponse<>(id);
-    }
-
-    //qna 답변 싫어요
-    @GetMapping("/ans-hate")
-    public BaseResponse<Long> checkAnsHate(Long qnaBoardId, Long answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkAnswerHate(qnaBoardId, answerId, customUserDetails.getUserId());
-        return new BaseResponse<>(id);
-    }
-
-    //qna 내 상태 확인
-    @GetMapping("/my-state")
-    public BaseResponse<Long> getMyState(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkQnaHate(qnaBoardId, customUserDetails.getUserId());
-
         return new BaseResponse<>(id);
     }
 
     //qna 스크랩
-    @GetMapping("/scrap")
-    public BaseResponse<Long> checkScrap(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @PostMapping("/scrap")
+    public BaseResponse<Long> checkScrap(@RequestParam Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaScrap(qnaBoardId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
