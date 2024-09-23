@@ -79,8 +79,8 @@ public class WikiService {
     }
 
     // 위키 목록 조회
-    public List<WikiListRes> wikiList(GetWikiListReq getWikiListReq) {
-        Pageable pageable = PageRequest.of(getWikiListReq.getPage(), getWikiListReq.getSize(), Sort.by(Sort.Direction.DESC, "latestWiki.createdAt"));
+    public List<WikiListRes> wikiList(Integer page,Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "latestWiki.createdAt"));
         Page<Wiki> wikiPage = wikiRepository.findAll(pageable);
 
         return wikiPage.getContent().stream().map
@@ -97,7 +97,7 @@ public class WikiService {
     }
 
     // 위키 상세 조회
-    public GetWikiDetailRes detail(GetWikiDetailReq getWikiDetailReq, Long userId) {
+    public GetWikiDetailRes detail(Long id, Long userId) {
 
         String userGrade = "GUEST";
 
@@ -108,7 +108,7 @@ public class WikiService {
             }
         }
 
-        Wiki wiki = wikiRepository.findById(getWikiDetailReq.getId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        Wiki wiki = wikiRepository.findById(id).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         LatestWiki latestWiki = wiki.getLatestWiki(); //최신 위키
 
         GetWikiDetailRes wikiDetailRes = GetWikiDetailRes.builder()
@@ -163,9 +163,9 @@ public class WikiService {
 
 
     // 위키 이전버전 상세 조회
-    public GetWikiVersionDetailRes versionDetail(GetWikiVersionDetailReq getWikiVersionDetailReq, Long userId){
+    public GetWikiVersionDetailRes versionDetail(Long wikiContentId, Long userId){
 
-        WikiContent wikiContent = wikiContentRepository.findById(getWikiVersionDetailReq.getWikiContentId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        WikiContent wikiContent = wikiContentRepository.findById(wikiContentId).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         Wiki wiki = wikiContent.getWiki();
         GetWikiVersionDetailRes wikiDetailRes = GetWikiVersionDetailRes.builder()
                 .id(wiki.getId())
