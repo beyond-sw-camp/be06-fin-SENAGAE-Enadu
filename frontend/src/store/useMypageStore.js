@@ -107,7 +107,7 @@ export const useMypageStore = defineStore("mypage", {
                 size: 15
             };
             try {
-                const response = await axios.get("http://localhost:8080/mypage/log/question", {
+                const response = await axios.get(backend + "/mypage/log/question", {
                     params: params,
                     withCredentials: true
                 });
@@ -122,7 +122,7 @@ export const useMypageStore = defineStore("mypage", {
                 size: 15
             };
             try {
-                const response = await axios.get("http://localhost:8080/mypage/log/answer", {
+                const response = await axios.get(backend + "/mypage/log/answer", {
                     params: params,
                     withCredentials: true
                 });
@@ -137,7 +137,7 @@ export const useMypageStore = defineStore("mypage", {
                 size: 15
             };
             try {
-                const response = await axios.get("http://localhost:8080/mypage/scrap/qna", {
+                const response = await axios.get(backend + "/mypage/scrap/qna", {
                     params: params,
                     withCredentials: true
                 });
