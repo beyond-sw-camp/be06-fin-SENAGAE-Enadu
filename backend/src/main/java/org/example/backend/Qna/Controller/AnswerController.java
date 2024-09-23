@@ -35,9 +35,9 @@ public class AnswerController {
 
     //qna 답변 좋아요
     @PostMapping("/like")
-
     public BaseResponse<Long> checkAnsLike(@RequestBody Map<String,Long> qnaBoardId, @RequestBody Map<String,Long> answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkAnswerLike(qnaBoardId.get("qnaBoardId"), answerId.get("answerId"), customUserDetails.getUserId());
+        return new BaseResponse<>(id);
     }
 
     //qna 답변 싫어요
