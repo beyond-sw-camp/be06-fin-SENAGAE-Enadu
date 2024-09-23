@@ -8,8 +8,17 @@ import org.example.backend.Qna.model.req.CreateCommentReq;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
+import org.example.backend.Qna.model.Res.GetQnaListRes;
+import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.req.CreateAnswerReq;
+import org.example.backend.Qna.model.req.CreateQuestionReq;
+import org.example.backend.Qna.model.req.GetQnaListReq;
+import org.example.backend.Security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -26,9 +35,9 @@ public class AnswerController {
 
     //qna 답변 좋아요
     @PostMapping("/like")
+
     public BaseResponse<Long> checkAnsLike(@RequestBody Map<String,Long> qnaBoardId, @RequestBody Map<String,Long> answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkAnswerLike(qnaBoardId.get("qnaBoardId"), answerId.get("answerId"), customUserDetails.getUserId());
-        return new BaseResponse<>(id);
     }
 
     //qna 답변 싫어요

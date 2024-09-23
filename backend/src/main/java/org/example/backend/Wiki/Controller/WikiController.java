@@ -53,21 +53,20 @@ public class WikiController {
 
     // 위키 목록 조회
     @GetMapping("/list")
-    public BaseResponse<List<WikiListRes>> list(GetWikiListReq getWikiListReq) {
-        if (getWikiListReq.getPage() == null) {
-            getWikiListReq.setPage(0);
+    public BaseResponse<List<WikiListRes>> list(Integer page,Integer size) {
+        if (page == null) {
+            page = 0;
         }
-        if (getWikiListReq.getSize() == null || getWikiListReq.getSize() == 0) {
-            getWikiListReq.setSize(20);
-
+        if (size == null || size == 0) {
+            size =20;
         }
-        List<WikiListRes> wikiList = wikiService.wikiList(getWikiListReq);
+        List<WikiListRes> wikiList = wikiService.wikiList(page,size);
         return new BaseResponse<>(wikiList);
     }
 
     // 위키 상세 조회
     @GetMapping("/detail")
-    public BaseResponse<GetWikiDetailRes> detail(GetWikiDetailReq getWikiDetailReq,
+    public BaseResponse<GetWikiDetailRes> detail(Long id,
                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
         Long userId = null;
@@ -78,7 +77,7 @@ public class WikiController {
             userGrade = customUserDetails.getGrade();
         }
 
-        return new BaseResponse<>(wikiService.detail(getWikiDetailReq, userId));
+        return new BaseResponse<>(wikiService.detail(id, userId));
     }
 
     // 위키 수정
@@ -101,12 +100,12 @@ public class WikiController {
 
     // 위키 이전버전 상세 조회
     @GetMapping("/version/detail")
-    public BaseResponse<GetWikiVersionDetailRes> versionDetail(GetWikiVersionDetailReq getWikiVersionDetailReq,
+    public BaseResponse<GetWikiVersionDetailRes> versionDetail(Long wikiContentId,
                                                                @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
         Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
 
-        return new BaseResponse<>(wikiService.versionDetail(getWikiVersionDetailReq, userId));
+        return new BaseResponse<>(wikiService.versionDetail(wikiContentId, userId));
     }
     // 위키 (이전버전) 목록 조회
     @GetMapping("/version/list")

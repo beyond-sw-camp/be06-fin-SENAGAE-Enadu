@@ -3,6 +3,7 @@ package org.example.backend.User.Controller;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.EmailVerify.Service.EmailVerifyService;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
@@ -25,11 +26,12 @@ public class UserController {
     private final UserService userService;
     private final CloudFileUploadService cloudFileUploadService;
     private final JwtUtil jwtUtil;
+    private final EmailVerifyService emailVerifyService;
 
     @PostMapping("/signup")
     public BaseResponse<String> signup(
             @RequestPart UserSignupReq userSignupReq,
-            @RequestPart MultipartFile profileImg) {
+            @RequestPart(required=false) MultipartFile profileImg) {
         String profileImgUrl;
         if(profileImg == null || profileImg.isEmpty()){
             profileImgUrl = "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6";
@@ -45,8 +47,16 @@ public class UserController {
         if(!userService.checkDuplicateNickname(userSignupReq.getNickname())){
             return new BaseResponse<>(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
         }
-
         userService.signup(userSignupReq, profileImgUrl);
+        System.out.println("회원가입 완료: " + userSignupReq.getEmail());
+
+        // 이메일 인증 메일 발송
+        try {
+            emailVerifyService.sendEmail(userSignupReq.getEmail());
+            System.out.println("이메일 발송 성공: " + userSignupReq.getEmail());
+        } catch (Exception e) {
+            System.err.println("이메일 발송 실패: " + e.getMessage());
+        }
         return new BaseResponse<>();
     }
 

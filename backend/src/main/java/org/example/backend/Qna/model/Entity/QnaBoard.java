@@ -70,6 +70,7 @@ public class QnaBoard {
     @Column(name = "hate_cnt", nullable = false)
     private Integer hateCount = 0;
 
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -97,7 +98,7 @@ public class QnaBoard {
     public void increaseAnswerCount() {
         this.answerCount++;
     }
-
+  
     public void decreaseAnswerCount() {
         this.answerCount--;
     }

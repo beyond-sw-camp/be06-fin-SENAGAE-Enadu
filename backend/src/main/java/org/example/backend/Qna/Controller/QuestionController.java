@@ -72,7 +72,6 @@ public class QuestionController {
     public BaseResponse<List<GetQnaListRes>> getQnaSearch(GetQnaSearchReq getQnaSearchReq) {
         List<GetQnaListRes> qnaListRes = basicQnaSearchService.getQnaSearch(getQnaSearchReq);
         return new BaseResponse<>(qnaListRes);
-
     }
 
 }
