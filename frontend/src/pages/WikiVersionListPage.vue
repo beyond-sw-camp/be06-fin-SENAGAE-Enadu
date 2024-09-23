@@ -6,7 +6,7 @@
     </p>
 
         <div class="pagination-container" v-if="!isLoading">
-            <PaginationComponent :totalPage="totalPages" @updatePage="handlePageUpdate" />
+            <PaginationComponent :totalPage="totalPages" :nowPage="page + 1" @updatePage="handlePageUpdate" />
         </div>
 
         <table v-if="!isLoading">

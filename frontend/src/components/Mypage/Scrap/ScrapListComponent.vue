@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="pagination-container">
-            <pagination-component @updatePage="updatePage" :totalPage="totalPage"/>
+            <PaginationComponent @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>
         </div>
     </div>
 </template>
