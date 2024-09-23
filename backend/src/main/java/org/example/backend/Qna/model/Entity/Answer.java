@@ -44,19 +44,23 @@ public class Answer {
 
     @Builder.Default()
     @Column(name = "adopted", nullable = false)
-    private boolean adopted=false;
+    private boolean adopted = false;
 
     @Builder.Default()
     @Column(name = "enable", nullable = false)
-    private boolean enable=true;
+    private boolean enable = true;
+
+    @Builder.Default()
+    @Column(name = "comment_cnt", nullable = false)
+    private Integer commentCount = 0;
 
     @Builder.Default()
     @Column(name = "like_cnt", nullable = false)
-    private Integer likeCount=0;
+    private Integer likeCount = 0;
 
     @Builder.Default()
     @Column(name = "hate_cnt", nullable = false)
-    private Integer hateCount=0;
+    private Integer hateCount = 0;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -65,6 +69,7 @@ public class Answer {
     public void increaseLikeCount() {
         this.likeCount++;
     }
+
     public void decreaseLikeCount() {
         this.likeCount--;
     }
@@ -72,8 +77,17 @@ public class Answer {
     public void increaseHateCount() {
         this.hateCount++;
     }
+
     public void decreaseHateCount() {
         this.hateCount--;
+    }
+
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decreaseCommentCount() {
+        this.commentCount--;
     }
 
     public void adoptedAnswer(boolean adopted) {

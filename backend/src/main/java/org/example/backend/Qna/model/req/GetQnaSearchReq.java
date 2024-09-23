@@ -7,7 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GetQnaListReq {
+public class GetQnaSearchReq {
+    private String type;
+    private String keyword;
+    private Long categoryId;
+
     private String sort;
     private Integer page;
     private Integer size;
