@@ -139,7 +139,7 @@ public class QnaService {
                 .map(answerComment -> GetAnswerCommentDetailListRes.builder()
                         .id(answerComment.getId())
                         .superCommentId(answerComment.getAnswerComment() != null ?
-                                answerComment.getId() : null)
+                                answerComment.getAnswerComment().getId() : null)
                         .answerComment(answerComment.getContent())
                         .nickname(answerComment.getUser().getNickname())
                         .grade(answerComment.getUser().getGrade())
