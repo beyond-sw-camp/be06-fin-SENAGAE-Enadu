@@ -20,6 +20,7 @@
         <p class="wiki-card-description">{{ truncatedContent }}</p>
         <div class="wiki-card-category">
           {{ wikiCard.category }}
+            <div class="wiki-link-underline"></div>
         </div>
       </div>
     </a>
@@ -49,8 +50,10 @@ export default {
 .wiki-card {
   display: flex;
   flex-direction: column;
-  width: 270px;
-  height: 400px;
+  width: 100%;
+  max-width: 270px;
+  min-width: 200px;
+  height: 90%;
   border-radius: 20px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -84,7 +87,7 @@ export default {
   padding: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 50%;
   position: relative;
 }
@@ -108,6 +111,19 @@ export default {
   font-size: 1rem;
   color: #999;
   text-align: right;
-  margin-top: auto; 
+  margin-top: auto;
+  display: inline-block;
+  align-self: flex-end;
+}
+
+.wiki-card .wiki-link-underline {
+    width: 0;
+    height: 1px;
+    background-color: #999;
+    transition: .3s ease-out;
+}
+
+.wiki-card:hover .wiki-link-underline {
+    width: 100%;
 }
 </style>
