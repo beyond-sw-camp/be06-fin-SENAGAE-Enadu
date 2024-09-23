@@ -1,6 +1,6 @@
 <template>
   <div class="wiki-card">
-    <a :href="'/wiki/detail?id=' + wikiCard.id" class="wiki-card-link">
+      <router-link :to="computedLink" class="wiki-card-link">
       <div class="wiki-card-image-wrapper">
         <img
           v-if="wikiCard.thumbnail"
@@ -23,7 +23,7 @@
             <div class="wiki-link-underline"></div>
         </div>
       </div>
-    </a>
+      </router-link>
   </div>
 </template>
 
@@ -41,6 +41,12 @@ export default {
       return this.wikiCard.content.length > 80
         ? this.wikiCard.content.substring(0, 80) + "..."
         : this.wikiCard.content;
+    },
+    computedLink() {
+      if (this.$route.path.includes("/mypage")) {
+        return `/wiki/version/detail?id=${this.wikiCard.id}`;
+      }
+      return `/wiki/detail?id=${this.wikiCard.id}`;
     },
   },
 };
