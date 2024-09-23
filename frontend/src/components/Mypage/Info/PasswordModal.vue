@@ -23,7 +23,7 @@
 
 <script>
 import {mapStores} from "pinia";
-import {useUserStore} from "@/store/useUserStore";
+import {useMypageStore} from "@/store/useMypageStore";
 
 export default {
     name: "PasswordModal",
@@ -37,7 +37,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useUserStore)
+        ...mapStores(useMypageStore)
     },
     methods: {
         closeModal() {
@@ -52,7 +52,7 @@ export default {
                 return;
             }
             if (window.confirm("비밀번호를 변경하시겠습니까?")) {
-                const success = await this.userStore.updatePassword(this.passwordData);
+                const success = await this.mypageStore.updatePassword(this.passwordData);
                 if (success) {
                     alert("비밀번호가 성공적으로 변경되었습니다.");
                     this.closeModal();
