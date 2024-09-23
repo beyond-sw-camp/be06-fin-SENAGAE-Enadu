@@ -14,7 +14,7 @@ import org.example.backend.ErrorArchive.Model.Req.RegisterErrorArchiveReq;
 import org.example.backend.ErrorArchive.Model.Res.GetErrorArchiveDetailRes;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
 import org.example.backend.ErrorArchive.Model.Res.RegisterErrorArchiveRes;
-import org.example.backend.ErrorArchive.Model.Res.ToggleResponse;
+import org.example.backend.ErrorArchive.Model.Res.LikeOrHateRes;
 import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
 import org.example.backend.ErrorArchive.Repository.ErrorLikeRepository;
 import org.example.backend.ErrorArchive.Repository.ErrorScrapRepository;
@@ -28,12 +28,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -97,14 +94,20 @@ public class ErrorArchiveService {
     // 에러 아카이브 상세 조회
     public GetErrorArchiveDetailRes detail(GetErrorArchiveDetailReq getErrorArchiveDetailReq, CustomUserDetails customUserDetails){
         ErrorArchive errorArchive = errorArchiveReository.findById(getErrorArchiveDetailReq.getId()).orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
-        Long userId = (customUserDetails != null) ? customUserDetails.getUserId() : null;
-        // 좋아요 상태 조회
-        Optional<Boolean> likeStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId);
-        boolean checkLike = likeStatus.isPresent() && likeStatus.get();
-        // 싫어요 상태 조회
-        boolean checkHate = likeStatus.isPresent() && !likeStatus.get();
-        // 스크랩 여부 조회
-        boolean checkScrap = ErrorArchiveScrap(errorArchive.getId(), customUserDetails);
+        Boolean checkLike = null;
+        Boolean checkHate =  null;
+        Boolean checkScrap = null;
+        if (customUserDetails != null) {
+            Long userId = customUserDetails.getUserId();
+            // 좋아요 상태 조회
+            Optional<Boolean> likeStatus = ErrorArchiveLikeOrHate(errorArchive.getId(), userId);
+            checkLike = likeStatus.isPresent() && likeStatus.get();
+            // 싫어요 상태 조회
+            checkHate = likeStatus.isPresent() && !likeStatus.get();
+            // 스크랩 여부 조회
+            checkScrap = ErrorArchiveScrap(errorArchive.getId(), customUserDetails);
+        }
+
 
         GetErrorArchiveDetailRes ErrorArchiveDetailRes = GetErrorArchiveDetailRes.builder()
                 .id(errorArchive.getId())
@@ -160,7 +163,7 @@ public class ErrorArchiveService {
     return errorScrap.isPresent(); //존재하면 스크랩 함, 없으면 스크랩하지 않음
   }
     @Transactional
-    public BaseResponse<ToggleResponse> toggleErrorArchiveLikeOrHate(Long errorarchiveId, Long userId, boolean isLike) {
+    public LikeOrHateRes toggleErrorArchiveLikeOrHate(Long errorarchiveId, Long userId, boolean isLike) {
         ErrorArchive errorArchive = errorArchiveReository.findById(errorarchiveId).orElseThrow(() -> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         // 사용자의 좋아요, 싫어요 상태 가져오기
@@ -177,13 +180,13 @@ public class ErrorArchiveService {
                 errorLikeRepository.save(newLike);
                 errorArchive.setLikeCnt(errorArchive.getLikeCount() + 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(new ToggleResponse(true)); // true 반환
+                return LikeOrHateRes.builder().result(true).build(); // true 반환
             } else if (errorLike.isState()) {
                 // 이미 좋아요를 누른 상태에서 다시 좋아요를 누른 경우(좋아요 취소)
                 errorLikeRepository.delete(errorLike);
                 errorArchive.setLikeCnt(errorArchive.getLikeCount() - 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(new ToggleResponse(null)); // null 반환
+                return LikeOrHateRes.builder().result(null).build(); // null 반환
             } else {
                 errorLike.updateState(true);
                 // 이미 싫어요를 누른 상태에서 좋아요로 변경하는 경우
@@ -191,7 +194,7 @@ public class ErrorArchiveService {
                 errorArchive.setLikeCnt(errorArchive.getLikeCount() + 1);
                 errorArchive.setHateCnt(errorArchive.getHateCount() - 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(new ToggleResponse(true)); // true 반환
+                return LikeOrHateRes.builder().result(true).build(); // true 반환
             }
         }
         // 싫어요 관련 로직
@@ -201,18 +204,18 @@ public class ErrorArchiveService {
                 ErrorLike newHate = ErrorLike.builder()
                         .errorArchive(errorArchive)
                         .user(user)
-                        .state(true)
+                        .state(false)
                         .build();
                 errorLikeRepository.save(newHate);
                 errorArchive.setHateCnt(errorArchive.getHateCount() + 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(new ToggleResponse(false)); // false 반환
+                return LikeOrHateRes.builder().result(false).build(); // false 반환
             } else if (!errorLike.isState()) {
                 // 이미 싫어요를 누른 상태에서 다시 싫어요를 누른 경우 (싫어요 취소)
                 errorLikeRepository.delete(errorLike);
                 errorArchive.setHateCnt(errorArchive.getHateCount() - 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(new ToggleResponse(null)); // null 반환
+                return LikeOrHateRes.builder().result(null).build(); // null 반환
             } else {
                 // 이미 좋아요를 누른 상태에서 싫어요로 변경하는 경우
                 errorLike.updateState(false);
@@ -220,7 +223,7 @@ public class ErrorArchiveService {
                 errorArchive.setHateCnt(errorArchive.getHateCount() + 1);
                 errorArchive.setLikeCnt(errorArchive.getLikeCount() - 1);
                 errorArchiveReository.save(errorArchive);
-                return new BaseResponse<>(new ToggleResponse(false)); // false 반환
+                return LikeOrHateRes.builder().result(false).build(); // false 반환
             }
         }
         // 좋아요가 되면 TRUE, 싫어요가 되면 FALSE, 취소되면 null 로 반환

@@ -8,7 +8,6 @@ import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.User.Model.Req.UpdateUserPasswordReq;
 import org.example.backend.User.Model.Req.UserSignupReq;
-import org.example.backend.User.Model.Res.GetUserInfoRes;
 import org.example.backend.User.Service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -100,10 +99,5 @@ public class UserController {
     public BaseResponse<String> quit(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody Map<String, String> passwordMap) {
         userService.disableUser(customUserDetails.getUserId(), passwordMap.get("password"));
         return new BaseResponse<>();
-    }
-
-    @PostMapping("/info")
-    public BaseResponse<GetUserInfoRes> getUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return new BaseResponse<>(userService.getUserInfo(customUserDetails.getUserId()));
     }
 }

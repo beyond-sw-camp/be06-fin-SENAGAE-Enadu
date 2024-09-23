@@ -19,4 +19,7 @@ public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
     // type이 c일때 검색 쿼리문
     @Query("SELECT q FROM QnaBoard q WHERE q.content LIKE CONCAT('%', :keyword, '%') AND :categoryId IS NULL OR q.category.id = :categoryId")
     Page<QnaBoard> findByKeywordAndCategoryId_C(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, Pageable pageable);
+
+public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
+    Page<QnaBoard> findByUserId(Long userId, Pageable pageable);
 }
