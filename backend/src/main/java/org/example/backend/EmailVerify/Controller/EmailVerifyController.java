@@ -18,7 +18,7 @@ public class EmailVerifyController {
     private final EmailVerifyService emailVerifyService;
 
     @PostMapping("/verify")
-    public BaseResponse<String> verify(@RequestParam String email, @RequestParam String uuid){
+    public BaseResponse<String> verify(@RequestBody String email, @RequestBody String uuid){
             emailVerifyService.verifyEmail(email, uuid);
             return new BaseResponse<>("EMAIL VERIFICATION SUCCESS!");
     }
