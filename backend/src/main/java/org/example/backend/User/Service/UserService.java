@@ -124,4 +124,5 @@ public class UserService {
         user.updateVerified(true);
         userRepository.save(user);
     }
+
 }

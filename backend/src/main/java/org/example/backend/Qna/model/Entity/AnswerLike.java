@@ -1,4 +1,4 @@
-package org.example.backend.Answer.Model.Entity;
+package org.example.backend.Qna.model.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

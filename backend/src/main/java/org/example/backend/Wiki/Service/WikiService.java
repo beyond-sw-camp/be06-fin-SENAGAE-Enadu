@@ -91,6 +91,7 @@ public class WikiService {
                                 .content(wiki.getLatestWiki().getContent())
                                 .thumbnail(wiki.getLatestWiki().getThumbnailImgUrl())
                                 .createdAt(wiki.getLatestWiki().getCreatedAt())
+                                .totalPages(wikiPage.getTotalPages())
                                 .build())
                 .collect(Collectors.toList());
     }
@@ -167,6 +168,7 @@ public class WikiService {
         WikiContent wikiContent = wikiContentRepository.findById(getWikiVersionDetailReq.getWikiContentId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         Wiki wiki = wikiContent.getWiki();
         GetWikiVersionDetailRes wikiDetailRes = GetWikiVersionDetailRes.builder()
+                .id(wiki.getId())
                 .wikiContentId(wikiContent.getId())
                 .title(wiki.getTitle())
                 .content(wikiContent.getContent())

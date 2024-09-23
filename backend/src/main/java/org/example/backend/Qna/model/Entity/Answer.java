@@ -1,4 +1,4 @@
-package org.example.backend.Answer.Model.Entity;
+package org.example.backend.Qna.model.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.User.Model.Entity.User;
-import org.example.backend.Qna.model.Entity.QnaBoard;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -48,13 +47,27 @@ public class Answer {
     private boolean enable;
 
     @Column(name = "like_cnt", nullable = false)
-    private int likeCnt;
+    private int likeCount;
 
     @Column(name = "hate_cnt", nullable = false)
-    private int hateCnt;
+    private int hateCount;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+    public void decreaseLikeCount() {
+        this.likeCount--;
+    }
+
+    public void increaseHateCount() {
+        this.hateCount++;
+    }
+    public void decreaseHateCount() {
+        this.hateCount--;
+    }
 
 }
