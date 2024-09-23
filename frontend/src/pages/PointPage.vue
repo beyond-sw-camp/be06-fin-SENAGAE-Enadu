@@ -2,7 +2,7 @@
   <div class="custom-container" style="text-align:center;">
     <router-view v-show="isLoading" />
     <div v-if="!isLoading"></div>
-    <pagination-component v-else style="margin-top: 20px;" @updatePage="updatePage" :totalPage="totalPage"/>
+    <PaginationComponent v-else style="margin-top: 20px;" @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>
   </div>
 
 </template>
