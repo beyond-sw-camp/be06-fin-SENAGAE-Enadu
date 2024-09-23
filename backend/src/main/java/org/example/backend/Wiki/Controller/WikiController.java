@@ -119,5 +119,12 @@ public class WikiController {
         List<GetWikiVersionListRes> wikiVersionList = wikiService.versionList(getWikiVersionListReq);
         return new BaseResponse<>(wikiVersionList);
     }
+
+    // 위키 스크랩
+    @PostMapping("/scrap")
+    public BaseResponse<WikiScrapRes> scrap(WikiScrapReq wikiScrapReq,
+                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return new BaseResponse<>(wikiService.scrap(wikiScrapReq, customUserDetails.getUserId()));
+    }
 }
 
