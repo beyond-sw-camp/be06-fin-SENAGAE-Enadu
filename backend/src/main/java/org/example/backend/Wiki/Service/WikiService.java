@@ -207,7 +207,7 @@ public class WikiService {
                 .collect(Collectors.toList());
     }
 
-    // 위키 롤백 //해당 버전을 클릭하면 -> 해당 버전이 최신 버전으로 객체 생성 됨 -> 해당 버전이 latestWiki로 들어감
+    // 위키 롤백
     @Transactional
     public WikiRollbackRes rollback(WikiRollbackReq wikiRollbackReq, Long userId) {
 
@@ -223,8 +223,8 @@ public class WikiService {
         WikiContent rollbackWikiContent = WikiContent.builder()
                 .wiki(wiki)
                 .content(wikiContent.getContent())
-                .version(wikiContent.getVersion() + 1)
-                .user(wikiContent.getUser()) // 롤백한 사람이 아닌ㄴ 작성자가 나와야함
+                .version(latestWiki.getVersion()+1)
+                .user(wikiContent.getUser())
                 .thumbnail(wikiContent.getThumbnail())
                 .build();
         wikiContentRepository.save(rollbackWikiContent);
