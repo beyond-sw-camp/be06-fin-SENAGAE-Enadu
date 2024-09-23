@@ -58,9 +58,6 @@ public class MypageController {
 
     @GetMapping("/scrap/qna")
     public BaseResponse<List<GetQnaScrapListRes>> getQnaScrapList(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size) {
-        if (customUserDetails == null) {
-            throw new InvalidMypageException(BaseResponseStatus.MYPAGE_NO_USER_ID);
-        }
         return new BaseResponse<>(mypageService.getQnaScrapList(customUserDetails.getUserId(), page, size));
     }
 }
