@@ -1,7 +1,6 @@
 <template>
   <div class="custom-container">
-    <p id="main-title">WIKI</p>
-    <p id="sub-title">당신의 위키를 만들어보세요</p>
+    <TagComponent :tagTitle="'WIKI'" :tagSubTitle="'당신의 위키를 만들어보세요'"/>
 
     <div v-if="isLoading" style="text-align:center;">
       <p>로딩 중...</p>
@@ -22,10 +21,12 @@ import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import { mapStores } from "pinia";
 import { useWikiStore } from "@/store/useWikiStore";
+import TagComponent from "@/components/Common/TagComponent.vue";
 
 export default {
   name: "WikiListPage",
   components: {
+    TagComponent,
     WikiCardComponent,
     PaginationComponent,
   },
@@ -80,7 +81,6 @@ export default {
   grid-auto-rows: auto;
   gap: 64px;
   width: 100%;
-  max-width: 1200px;
   padding: 20px;
   justify-items: center;
 }

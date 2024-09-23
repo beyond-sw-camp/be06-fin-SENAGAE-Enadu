@@ -5,7 +5,7 @@
         </div>
         <nav class="navigation">
             <ul>
-                <li><router-link :to="{ path: '/' }"><i class="fas fa-code"></i> 아카이브</router-link></li>
+                <li><router-link :to="{ path: '/errorarchive/list' }"><i class="fas fa-code"></i> 아카이브</router-link></li>
                 <li class="divider">|</li>
                 <li><router-link :to="{ path: '/wiki/list' }"><i class="fas fa-book"></i> 위키</router-link></li>
                 <li class="divider">|</li>

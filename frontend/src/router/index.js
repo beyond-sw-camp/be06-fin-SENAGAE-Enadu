@@ -22,6 +22,7 @@ import ErrorArchiveDetailPage from "@/pages/ErrorArchiveDetailPage.vue";
 import WikiVersionListPage from '@/pages/WikiVersionListPage.vue';
 import WikiVersionDetailPage from '@/pages/WikiVersionDetailPage.vue'; 
 import WikiListPage from "@/pages/WikiListPage.vue";
+import MainPage from "@/pages/MainPage.vue";
 
 
 const router = createRouter({
@@ -51,6 +52,7 @@ const router = createRouter({
         { path: "scrap", component: ScrapListComponent }
       ] },
     { path:"/errorarchive/detail", component: ErrorArchiveDetailPage},
+    { path:"/", component: MainPage},
   ]
 });
 

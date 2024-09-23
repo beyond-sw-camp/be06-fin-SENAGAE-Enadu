@@ -1,4 +1,5 @@
 <template>
+  <router-link :to="{ path: '/errorarchive/detail', query: { id: errorarchiveCard.id }}">
   <div class="PostCard_block__FTMsy">
     <div class="header">
       <div class="user-info">
@@ -43,6 +44,7 @@
       </div>
     </div>
   </div>
+  </router-link>
 </template>
 
 <script>

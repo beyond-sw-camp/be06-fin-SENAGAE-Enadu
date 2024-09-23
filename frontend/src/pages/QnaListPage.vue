@@ -1,9 +1,6 @@
 <template>
   <div class="custom-container">
-    <div class="qna-top">
-      <p id="main-title">QnA</p>
-      <p id="sub-title">당신의 에러를 해결해보세요</p>
-    </div>
+    <TagComponent :tagTitle="'QnA'" :tagSubTitle="'당신의 에러를 해결해보세요'"/>
     <div class="qna-inner">
       <SearchComponent  @checkLatest="handleCheckLatest"
                         @checkLike="handleCheckLike"/>
@@ -27,6 +24,7 @@ import {useQnaStore} from "@/store/useQnaStore";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import SearchComponent from "@/components/Common/SearchComponent.vue";
+import TagComponent from "@/components/Common/TagComponent.vue";
 
 export default {
   name: "QnaListPage",
@@ -63,6 +61,7 @@ export default {
     },
   },
   components: {
+    TagComponent,
     QnaCardComponent,
     PaginationComponent,
     SearchComponent,
