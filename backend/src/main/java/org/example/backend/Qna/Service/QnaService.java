@@ -403,4 +403,27 @@ public class QnaService {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
     }
+    @Transactional
+    public Long adoptedAnswer(Long qnaBoardId, Long answerId, Long userId) {
+        Optional<QnaBoard> qnaBoard = questionRepository.findById(qnaBoardId);
+        Optional<Answer> answer = answerRepository.findById(answerId);
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
+        }
+
+        if (qnaBoard.isPresent() && answer.isPresent()) {
+            if (answerRepository.countAdoptedAnswersByQuestionId(qnaBoardId).equals(0)) {
+                answer.get().adoptedAnswer(true);
+                return answer.get().getId();
+            } else {
+                throw new InvalidQnaException(BaseResponseStatus.QNA_ALREADY_ADOPTED);
+            }
+        } else {
+            if (answerRepository.findAllByQnaBoardIdAndId(answerId, qnaBoardId).isEmpty()) {
+                throw new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND);
+            }
+            throw new InvalidUserException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND);
+        }
+    }
 }
