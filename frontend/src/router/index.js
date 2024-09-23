@@ -11,7 +11,6 @@ import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
 import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
-import ErrorArchiveListPage from "@/pages/ErrorArchiveListPage.vue";
 import EmailVerifyPage from "@/pages/EmailVerifyPage.vue";
 import WikiUpdatePage from "@/pages/WikiUpdatePage.vue";
 import ErrorArchiveListPage from "@/pages/ErrorArchiveListPage.vue";
