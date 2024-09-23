@@ -2,7 +2,6 @@ package org.example.backend.EmailVerify.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
-import org.example.backend.Common.GlobalMessage;
 import org.example.backend.EmailVerify.Model.Entity.EmailVerify;
 import org.example.backend.EmailVerify.Repository.EmailVerifyRepository;
 import org.example.backend.Exception.custom.InvalidEmailException;
@@ -21,7 +20,6 @@ public class EmailVerifyService {
     private final EmailVerifyRepository emailVerifyRepository;
     private final JavaMailSender javaMailSender;
     private final UserService userService;
-
 
     public void sendEmail(String email) {
         String uuid = UUID.randomUUID().toString();
@@ -42,16 +40,15 @@ public class EmailVerifyService {
                 });
 
         // 인증 링크 생성 (UUID 포함)
-        String verificationLink = "http://localhost:8081/email/verify?email=" + email + "&uuid=" + uuid;
+        String verificationLink = String.format("http://localhost:8081/email/verify?email=%s&uuid=%s", email, uuid);
 
         // 이메일 전송 설정
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject(GlobalMessage.EMAIL_TITLE.getMessage());
-        message.setText(verificationLink);
+        message.setSubject("[SENAGAE] 인증 메세지"); // 제목을 직접 설정
+        message.setText(verificationLink); // 인증 링크를 본문에 추가
         javaMailSender.send(message); // 이메일 전송
     }
-
 
     public void verifyEmail(String email, String uuid) {
         EmailVerify existingEmailVerify = emailVerifyRepository.findByEmail(email)
