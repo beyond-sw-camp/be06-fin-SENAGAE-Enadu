@@ -30,11 +30,11 @@ export const useWikiStore = defineStore("wiki", {
             content: '',
         },
         wikiDetail: null,
-        wikiVersions: [], 
-        currentPage: 0,  
-        pageSize: 10,  
+        wikiVersions: [],
+        currentPage: 0,
+        pageSize: 10,
         wikiTitle: '',
-        category: '',    
+        category: '',
     }),
 
     actions: {
@@ -65,7 +65,7 @@ export const useWikiStore = defineStore("wiki", {
 
                     if (response.data.isSuccess) {
                         const newWikiId = response.data.result.wikiId;
-                        return newWikiId; 
+                        return newWikiId;
                     } else {
                         throw new Error(response.data.message || "서버 응답 오류");
                     }
@@ -74,7 +74,7 @@ export const useWikiStore = defineStore("wiki", {
                 }
             } catch (error) {
                 console.error("위키 등록 중 오류 발생:", error);
-                return false; 
+                return false;
             }
         },
 
@@ -132,7 +132,7 @@ export const useWikiStore = defineStore("wiki", {
                     this.wikiDetail = result;
                     this.wikiTitle = result.title || 'Unknown Title';
                     this.category = result.category || 'Unknown Category';
-                  
+
                 }
             } catch (error) {
                 console.error("위키 상세 조회 중 오류 발생:", error);
@@ -155,7 +155,7 @@ export const useWikiStore = defineStore("wiki", {
                 console.error('API 호출 중 오류 발생:', error);
             }
         },
-      
+
         // 위키 버전 상세 조회
         async fetchWikiVersionDetail(wikiContentId) {
             try {
@@ -165,7 +165,7 @@ export const useWikiStore = defineStore("wiki", {
                 });
                 if (response && response.data.isSuccess) {
                     this.wikiDetail = response.data.result;
-                    return response.data.result; 
+                    return response.data.result;
                 }
             } catch (error) {
                 console.error('버전 상세 조회 중 오류 발생:', error);
@@ -196,5 +196,31 @@ export const useWikiStore = defineStore("wiki", {
                 console.error("Error fetching wiki list:", error);
             }
         },
+        // 위키 스크랩 기능
+        async scrapWiki(wikiContentId) {
+            const userStore = useUserStore();
+            if (!userStore.isLoggedIn) {
+                console.log("로그인이 필요합니다.");
+                return false;
+            }
+            try {
+                const response = await axios.post(backend + "/wiki/scrap", {
+                    wikiContentId: wikiContentId
+                }, {
+                    withCredentials: true,
+                });
+
+                if (response && response.data.isSuccess) {
+        
+                    this.wikiDetail.checkScrap = !this.wikiDetail.checkScrap;
+                    return response.data.result; 
+                } else {
+                    throw new Error("스크랩 실패");
+                }
+            } catch (error) {
+                console.error("위키 스크랩 중 오류 발생:", error);
+                return false;
+            }
+        },  
     }
 });

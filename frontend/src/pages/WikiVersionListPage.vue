@@ -117,6 +117,7 @@ table th {
 .version-link {
     color: #007bff;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .version-link:hover {
