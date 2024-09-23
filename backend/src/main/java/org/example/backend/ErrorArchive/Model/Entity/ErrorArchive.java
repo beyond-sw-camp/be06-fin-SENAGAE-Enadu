@@ -63,8 +63,6 @@ public class ErrorArchive {
 
     private int scrapCount; // 스크랩 수를 저장할 필드
 
-    // Getter, Setter for likeCount
-
 
     public void setLikeCnt(int likeCount) {
         this.likeCount = likeCount;
@@ -76,6 +74,14 @@ public class ErrorArchive {
         this.scrapCount = scrapCount;
     }
 
-
+    public void updateTitle(String title){
+        this.title = title;
+    }
+    public void updateContent(String content){
+        this.content = content;
+    }
+    public void updateCategory(Category category){
+        this.category = category;
+    }
 }
 

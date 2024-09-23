@@ -54,6 +54,7 @@ public enum BaseResponseStatus {
     ERRORARCHIVE_BEFORE_SCRAP(false,6026,"이전에 스크랩 했던 게시글입니다"),
     ERROR_ALREADY_LIKED(false,6027, "이미 좋아요를 눌렀던 게시글입니다."),
     ERROR_ALREADY_HATED(false, 6028, "이미 싫어요를 눌렀던 게시글입니다"),
+    ERROR_PERMISSION_DENIED(false,6029,"권한이 없습니다"),
 
 
     // 에러 QnA 기능 - 7000

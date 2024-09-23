@@ -2,6 +2,7 @@ package org.example.backend.ErrorArchive.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.Category.Repository.CategoryRepository;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
@@ -9,12 +10,10 @@ import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorLike;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorScrap;
 import org.example.backend.ErrorArchive.Model.Req.GetErrorArchiveDetailReq;
+import org.example.backend.ErrorArchive.Model.Req.GetErrorArchiveUpdateReq;
 import org.example.backend.ErrorArchive.Model.Req.ListErrorArchiveReq;
 import org.example.backend.ErrorArchive.Model.Req.RegisterErrorArchiveReq;
-import org.example.backend.ErrorArchive.Model.Res.GetErrorArchiveDetailRes;
-import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
-import org.example.backend.ErrorArchive.Model.Res.RegisterErrorArchiveRes;
-import org.example.backend.ErrorArchive.Model.Res.LikeOrHateRes;
+import org.example.backend.ErrorArchive.Model.Res.*;
 import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
 import org.example.backend.ErrorArchive.Repository.ErrorLikeRepository;
 import org.example.backend.ErrorArchive.Repository.ErrorScrapRepository;
@@ -31,6 +30,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -256,6 +256,38 @@ public class ErrorArchiveService {
             return false;
         }
     }
+    // 에러 아카이브 수정
+    @Transactional
+    public GetErrorArchiveUpdateRes update(GetErrorArchiveUpdateReq getErrorArchiveUpdateReq, Long userId){
+        // 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        // 기존 에러 아카이브 조회
+        ErrorArchive errorArchive = errorArchiveReository.findById(getErrorArchiveUpdateReq.getId()).orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERROR_PERMISSION_DENIED));
+        // 작성자 확인
+        if(!errorArchive.getUser().getId().equals(userId)){
+            throw new InvalidErrorBoardException(BaseResponseStatus.ERROR_PERMISSION_DENIED);
+        }
+
+        // 카테고리 업데이트
+        Category updatedCategory = null;
+        if(getErrorArchiveUpdateReq.getCategoryId() != null){
+            updatedCategory = categoryRepository.findById(getErrorArchiveUpdateReq.getCategoryId())
+                    .orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.CATEGORY_NOT_FOUND_CATEGORY));
+        } else {
+            updatedCategory = errorArchive.getCategory();
+        }
+        // 에러 아카이브 수정
+        errorArchive.updateTitle(getErrorArchiveUpdateReq.getTitle());
+        errorArchive.updateContent(getErrorArchiveUpdateReq.getContent());
+        errorArchive.updateCategory(updatedCategory);
+        // 변경된 엔티티 저장
+        errorArchiveReository.save(errorArchive);
+        return GetErrorArchiveUpdateRes.builder()
+                .id(errorArchive.getId()) // 업데이트된 에러 아카이브의 ID 반환
+                .build();
+    }
+
 }
 
 
