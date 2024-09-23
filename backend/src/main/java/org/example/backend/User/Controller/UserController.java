@@ -33,10 +33,6 @@ public class UserController {
     public BaseResponse<String> signup(
             @RequestPart UserSignupReq userSignupReq,
             @RequestPart(required=false) MultipartFile profileImg) {
-
-        System.out.println("회원가입 요청 수신: " + userSignupReq.getEmail());
-
-
         String profileImgUrl;
         if(profileImg == null || profileImg.isEmpty()){
             profileImgUrl = "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6";

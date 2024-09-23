@@ -14,19 +14,13 @@ import java.net.URI;
 @RestController
 @RequestMapping(value="/email")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8081")
 public class EmailVerifyController {
     private final EmailVerifyService emailVerifyService;
 
-    @GetMapping("/verify")
+    @PostMapping("/verify")
     public BaseResponse<String> verify(@RequestParam String email, @RequestParam String uuid){
-        try {
             emailVerifyService.verifyEmail(email, uuid);
             return new BaseResponse<>("EMAIL VERIFICATION SUCCESS!");
-        } catch(InvalidEmailException e){
-            // 인증 실패시 에러 메시지 반환
-            return new BaseResponse<>(e.getStatus());
-        }
     }
 
 }
