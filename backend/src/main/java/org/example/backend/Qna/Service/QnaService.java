@@ -403,7 +403,6 @@ public class QnaService {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
     }
-
     @Transactional
     public Long adoptedAnswer(Long qnaBoardId, Long answerId, Long userId) {
         Optional<QnaBoard> qnaBoard = questionRepository.findById(qnaBoardId);

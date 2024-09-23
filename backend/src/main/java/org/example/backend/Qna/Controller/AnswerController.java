@@ -11,7 +11,6 @@ import org.example.backend.Qna.model.req.GetQnaListReq;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -47,5 +46,4 @@ public class AnswerController {
         Long id = qnaService.adoptedAnswer(qnaBoardId, answerId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
-
 }
