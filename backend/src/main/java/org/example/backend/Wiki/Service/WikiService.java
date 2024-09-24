@@ -223,7 +223,7 @@ public class WikiService {
 
         Optional<WikiScrap> checkScrap = wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId());
 
-        if(checkScrap.isPresent()){
+        if (checkScrap.isPresent()) {
             wikiScrapRepository.delete(checkScrap.get());
             return WikiScrapRes.builder().wikiContentId(wikiContent.getId()).build();
 
@@ -235,7 +235,7 @@ public class WikiService {
             wikiScrapRepository.save(wikiScrap);
         }
         return WikiScrapRes.builder().wikiContentId(wikiContent.getId()).build();
-
+    }
       
     // 위키 롤백
     @Transactional
@@ -267,7 +267,5 @@ public class WikiService {
         return WikiRollbackRes.builder().id(wiki.getId()).build();
     }
 }
-
-
 
 

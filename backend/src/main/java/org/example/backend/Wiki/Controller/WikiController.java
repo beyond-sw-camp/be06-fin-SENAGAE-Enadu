@@ -122,9 +122,10 @@ public class WikiController {
 
     // 위키 스크랩
     @PostMapping("/scrap")
-    public BaseResponse<WikiScrapRes> scrap(WikiScrapReq wikiScrapReq,
+    public BaseResponse<WikiScrapRes> scrap(@RequestBody WikiScrapReq wikiScrapReq,
                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return new BaseResponse<>(wikiService.scrap(wikiScrapReq, customUserDetails.getUserId()));
+    }
 
     // 위키 롤백
     @PostMapping("/rollback")
