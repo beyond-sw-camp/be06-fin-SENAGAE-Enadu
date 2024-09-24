@@ -68,10 +68,12 @@ export const useChatStore = defineStore("chat", {
                 withCredentials: true
             });
             this.chatMessageList = res.data.result;
-            for (let idx=0; idx < this.chatRoomList.length; idx++){
-                if (this.chatRoomList[idx].chatRoomId === this.selectedChatRoom.chatRoomId) {
-                    this.chatRoomList[idx].lastMessage = this.chatMessageList[0].message;
-                    this.chatRoomList[idx].lastMessageDay = this.chatMessageList[0].sendTime;
+            if (this.chatMessageList.length !== 0){
+                for (let idx=0; idx < this.chatRoomList.length; idx++){
+                    if (this.chatRoomList[idx].chatRoomId === this.selectedChatRoom.chatRoomId) {
+                        this.chatRoomList[idx].lastMessage = this.chatMessageList[0].message;
+                        this.chatRoomList[idx].lastMessageDay = this.chatMessageList[0].sendTime;
+                    }
                 }
             }
             this.connect();

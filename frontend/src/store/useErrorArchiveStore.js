@@ -120,5 +120,13 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
       }
     },
+    async searchErrorArchive(request){
+      request.size= 3;
+      const response = await axios.get(backend+"/errorarchive/search", {
+        params: request
+      });
+      this.errorarchiveCards  = response.data.result;
+      console.log(this.errorarchiveCards);
+    }
   }
 });

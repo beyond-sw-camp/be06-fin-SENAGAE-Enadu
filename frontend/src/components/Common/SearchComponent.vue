@@ -4,13 +4,13 @@
     <div class="top-bar">
       <div :class="!$route.path.startsWith('/wiki') ? 'separator' : ''">
       <select v-model="selectedCategory" @change="getSubCategory" class="category-dropdown">
-        <option disabled value="">카테고리 선택</option>
+        <option value="">카테고리 선택</option>
         <option v-for="(super_category, idx) in categoryStore.superCategories" :key=idx :value="super_category.id">{{ super_category.categoryName }}</option>
       </select>
       </div>
       <!-- 탭 네비게이션 -->
       <div v-show="!$route.path.startsWith('/wiki')" class="tabs">
-        <div :class="selectedSubCategory.id !== 0 ? 'tab active': ''">{{selectedSubCategory.id !== 0 ? selectedSubCategory.categoryName:''}}</div>
+        <div :class="selectedSubCategory.id != 0 ? 'tab active': ''">{{selectedSubCategory.id !== 0 ? selectedSubCategory.categoryName:''}}</div>
         <div class="tab" @click="handleMoreCategory">
           모든 하위 카테고리 보기
           <i data-v-55f5a47e="" class="fas fa-caret-down"></i>
@@ -38,14 +38,14 @@
       <SortTypeComponent v-show="!$route.path.startsWith('/wiki')" style="margin-bottom: 0" @checkLatest="handleCheckLatest" @checkLike="handleCheckLike"/>
       <div style="display:flex" class="search-bar">
         <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery">
-        <button @click="showAlert"><i class="fas fa-search"></i></button>
+        <button @click="performSearch"><i class="fas fa-search"></i></button>
       </div>
 
       <!-- 두 번째 드롭다운 -->
       <select style="display:flex;" v-model="selectedType" class="type-dropdown">
-        <option value="제목+내용">제목+내용</option>
-        <option value="제목">제목</option>
-        <option value="내용">내용</option>
+        <option value="tc">제목+내용</option>
+        <option value="t">제목</option>
+        <option value="c">내용</option>
       </select>
     </div>
 
@@ -70,8 +70,9 @@ export default {
         categoryName: ''
       },
       searchQuery: '', // 검색어
-      selectedType: '제목+내용',  // 검색 범위
+      selectedType: 'tc',  // 검색 범위
       show_more_category: false,
+      sort: "latest",
     };
   },
   computed:{
@@ -82,8 +83,21 @@ export default {
       this.selectedSubCategory = subCategory; // 탭 선택
     },
     performSearch() {
-      console.log(`Search Query: ${this.searchQuery}`);
-      // 검색 로직 추가
+      this.isLoading = true;
+      const request = {
+        keyword: this.searchQuery,
+        selectedCategory: this.selectedCategory,
+        selectedSubCategoryId: this.selectedSubCategory.id,
+        selectedSubCategoryName: this.selectedSubCategory.categoryName,
+        type: this.selectedType,
+        sort: this.sort,
+        page: 0,
+        size: 16,
+      }
+      this.$router.push({
+        path: this.$route.path,  // 현재 경로 유지
+        query: request
+      });
     },
     handleMoreCategory(){
       this.show_more_category = !this.show_more_category;
@@ -114,8 +128,13 @@ export default {
       this.handleMoreCategory();
     }
   },
-  mounted() {
-    this.getSuperCategory();
+  async mounted() {
+    await this.getSuperCategory();
+    this.selectedCategory = this.$route.query.selectedCategory || '';
+    this.searchQuery = this.$route.query.keyword || "";
+    this.selectedType = this.$route.query.type || "tc";
+    this.selectedSubCategory.id = this.$route.query.selectedSubCategoryId || 0;
+    this.selectedSubCategory.categoryName = this.$route.query.selectedSubCategoryName || "";
   },
   components: {
     SortTypeComponent
