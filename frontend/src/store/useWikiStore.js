@@ -196,7 +196,27 @@ export const useWikiStore = defineStore("wiki", {
                 console.error("Error fetching wiki list:", error);
             }
         },
+        // 위키 스크랩 기능
+        async scrapWiki(wikiContentId) {
+            try {
+                const response = await axios.post(backend + "/wiki/scrap", {
+                    wikiContentId: wikiContentId
+                }, {
+                    withCredentials: true,
+                });
 
+                if (response && response.data.isSuccess) {
+        
+                    this.wikiDetail.checkScrap = !this.wikiDetail.checkScrap;
+                    return response.data.result; 
+                } else {
+                    throw new Error("스크랩 실패");
+                }
+            } catch (error) {
+                console.error("위키 스크랩 중 오류 발생:", error);
+                return false;
+            }
+        },
         // 위키 롤백 기능
         async rollbackWikiVersion(wikiContentId) {
             const userStore = useUserStore();
@@ -204,7 +224,6 @@ export const useWikiStore = defineStore("wiki", {
                 console.log("로그인이 필요합니다.");
                 return false;
             }
-
             try {
                 const confirmRollback = confirm('이 버전으로 되돌리시겠습니까?');
                 if (!confirmRollback) return false;
@@ -226,6 +245,6 @@ export const useWikiStore = defineStore("wiki", {
                 console.error("롤백 중 오류 발생:", error);
                 return false;
             }
-        },
+        },  
     }
 });
