@@ -128,7 +128,7 @@ public class WikiService {
     @Transactional
     public GetWikiUpdateRes update(GetWikiUpdateReq getWikiUpdateReq, String thumbnailUrl, Long userId) {
 
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_PERMISSION_DENIED));
 
         if (user.getGrade().equals("뉴비")) {
             throw new InvalidWikiException(BaseResponseStatus.WIKI_PERMISSION_DENIED);
@@ -205,6 +205,36 @@ public class WikiService {
                                 .totalPages(wikiVersionPage.getTotalPages())
                                 .build())
                 .collect(Collectors.toList());
+    }
+
+    // 위키 롤백
+    @Transactional
+    public WikiRollbackRes rollback(WikiRollbackReq wikiRollbackReq, Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_PERMISSION_DENIED));
+        if (user.getGrade().equals("뉴비")) {
+            throw new InvalidWikiException(BaseResponseStatus.WIKI_PERMISSION_DENIED);
+        }
+
+        WikiContent wikiContent = wikiContentRepository.findById(wikiRollbackReq.getWikiContentId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        Wiki wiki = wikiContent.getWiki();
+        LatestWiki latestWiki = wiki.getLatestWiki();
+
+        WikiContent rollbackWikiContent = WikiContent.builder()
+                .wiki(wiki)
+                .content(wikiContent.getContent())
+                .version(latestWiki.getVersion()+1)
+                .user(wikiContent.getUser())
+                .thumbnail(wikiContent.getThumbnail())
+                .build();
+        wikiContentRepository.save(rollbackWikiContent);
+
+        // LatestWiki 업데이트
+        latestWiki.updateContentAndVersion(rollbackWikiContent.getContent(), rollbackWikiContent.getVersion());
+        latestWiki.updateThumbnail(rollbackWikiContent.getThumbnail());
+        latestWikiRepository.save(latestWiki);
+
+        return WikiRollbackRes.builder().id(wiki.getId()).build();
     }
 }
 

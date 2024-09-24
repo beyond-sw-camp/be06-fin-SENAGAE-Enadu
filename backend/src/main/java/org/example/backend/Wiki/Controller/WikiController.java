@@ -119,5 +119,14 @@ public class WikiController {
         List<GetWikiVersionListRes> wikiVersionList = wikiService.versionList(getWikiVersionListReq);
         return new BaseResponse<>(wikiVersionList);
     }
+
+    // 위키 롤백
+    @PostMapping("/rollback")
+    public BaseResponse<WikiRollbackRes> rollback(@RequestBody WikiRollbackReq wikiRollbackReq,
+                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        return new BaseResponse<>(wikiService.rollback(wikiRollbackReq, customUserDetails.getUserId()));
+
+    }
 }
 
