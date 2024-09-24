@@ -5,7 +5,7 @@
       <input type="email" placeholder="이메일" v-model="user.email" />
       <input type="password" placeholder="비밀번호" v-model="user.password" />
       <button type="button" @click="submit">로그인</button>
-      <img class="github"
+      <img class="github" alt="깃허브로 로그인하기"
         src="https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/14/dfa57956-15f7-44cc-afd6-b1c7ce31c0b2"
         @click="githubLogin">
     </form>
@@ -42,7 +42,7 @@
         this.$emit('login', this.user);
       },
       githubLogin() {
-        window.location.href = "http://localhost:8080/oauth2/authorization/github"
+        window.location.href = "/api/oauth2/authorization/github"
       }
     }
   };
@@ -86,7 +86,7 @@
     padding: 12px 15px;
     margin-bottom: 20px;
     width: 90%;
-    box-shadow: 4px 4px 8px 0px rgba(82, 82, 82, 0.25);
+    box-shadow: 4px 4px 8px 0 rgba(82, 82, 82, 0.25);
   }
 
   input :focus {

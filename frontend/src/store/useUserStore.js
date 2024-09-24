@@ -74,7 +74,7 @@ export const useUserStore = defineStore('user', {
                 formData.append('profileImg',selectedProfileFile);
 
                 // 요청 보내기
-                const response = await axios.post("http://localhost:8080/user/signup", formData, {
+                const response = await axios.post(backend + "/user/signup", formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -97,7 +97,7 @@ export const useUserStore = defineStore('user', {
         async checkNickname(nickname) {
             try {
               // 서버에 닉네임 중복 여부 확인 요청
-              const response = await axios.get("http://localhost:8080"+"/user/duplicate/nickname", { params : {nickname: nickname }
+              const response = await axios.get(backend +"/user/duplicate/nickname", { params : {nickname: nickname }
               });
               // 서버로부터 받은 응답에 따라 처리
               if(response.data.result === false){
@@ -112,12 +112,12 @@ export const useUserStore = defineStore('user', {
         },
         async checkEmail(email) {
             // 서버에 이메일 중복 여부 확인 요청
-            const response = await axios.get("http://localhost:8080/user/duplicate/email", {params: {email: email}}
+            const response = await axios.get(backend + "/user/duplicate/email", {params: {email: email}}
             );
             console.log(response);  // 응답 데이터 확인
 
             // 서버로부터 받은 응답에 따라 처리
-            if (response.data.result == true) {
+            if (response.data.result === true) {
                 alert("사용 가능한 이메일입니다.");
             } else {
                 alert("중복되는 이메일입니다.");
@@ -125,7 +125,7 @@ export const useUserStore = defineStore('user', {
         },
         async verifyEmail(email, uuid) {
             try {
-                const response = await axios.post(`http://localhost:8080/email/verify`, {
+                const response = await axios.post(backend + "/email/verify", {
                         email,
                         uuid,
                 });
