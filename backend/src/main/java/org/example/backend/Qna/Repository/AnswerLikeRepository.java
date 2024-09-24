@@ -1,7 +1,6 @@
 package org.example.backend.Qna.Repository;
 
 import org.example.backend.Qna.model.Entity.AnswerLike;
-import org.example.backend.Qna.model.Entity.QnaLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -22,9 +22,10 @@ public class ErrorArchive {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // bigint
+    private User user;
+
 
     @OneToMany(mappedBy = "errorArchive", fetch = FetchType.LAZY)
     private List<ErrorScrap> errorScrapList; // bigint
@@ -63,8 +64,6 @@ public class ErrorArchive {
 
     private int scrapCount; // 스크랩 수를 저장할 필드
 
-    // Getter, Setter for likeCount
-
 
     public void setLikeCnt(int likeCount) {
         this.likeCount = likeCount;
@@ -76,6 +75,14 @@ public class ErrorArchive {
         this.scrapCount = scrapCount;
     }
 
-
+    public void updateTitle(String title){
+        this.title = title;
+    }
+    public void updateContent(String content){
+        this.content = content;
+    }
+    public void updateCategory(Category category){
+        this.category = category;
+    }
 }
 

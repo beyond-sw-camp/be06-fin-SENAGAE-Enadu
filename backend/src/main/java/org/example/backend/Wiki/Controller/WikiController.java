@@ -125,6 +125,14 @@ public class WikiController {
     public BaseResponse<WikiScrapRes> scrap(WikiScrapReq wikiScrapReq,
                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return new BaseResponse<>(wikiService.scrap(wikiScrapReq, customUserDetails.getUserId()));
+
+    // 위키 롤백
+    @PostMapping("/rollback")
+    public BaseResponse<WikiRollbackRes> rollback(@RequestBody WikiRollbackReq wikiRollbackReq,
+                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        return new BaseResponse<>(wikiService.rollback(wikiRollbackReq, customUserDetails.getUserId()));
+
     }
 }
 

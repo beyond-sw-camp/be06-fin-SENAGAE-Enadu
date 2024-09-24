@@ -14,19 +14,19 @@ import org.example.backend.User.Model.Entity.User;
 @NoArgsConstructor
 @Builder
 public class AnswerLike {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id; // bigint
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // bigint
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id", nullable = false)
-        private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "answer_id", nullable = false)
-        private Answer answer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_id", nullable = false)
+    private Answer answer;
 
-        @Column(name = "state", nullable = false)
-        private boolean state;
+    @Column(name = "state", nullable = false)
+    private boolean state;
 
 }

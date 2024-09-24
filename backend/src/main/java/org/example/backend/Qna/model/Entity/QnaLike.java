@@ -14,18 +14,18 @@ import org.example.backend.User.Model.Entity.User;
 @NoArgsConstructor
 @Builder
 public class QnaLike {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id", nullable = false)
-        private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "qna_board_id", nullable = false)
-        private QnaBoard qnaBoard;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "qna_board_id", nullable = false)
+    private QnaBoard qnaBoard;
 
-        @Column(name = "state", nullable = false)
-        private boolean state;
+    @Column(name = "state", nullable = false)
+    private boolean state;
 }

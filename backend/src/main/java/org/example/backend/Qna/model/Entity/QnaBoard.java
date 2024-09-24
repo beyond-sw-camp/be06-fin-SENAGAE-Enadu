@@ -56,19 +56,20 @@ public class QnaBoard {
 
     @Builder.Default()
     @Column(name = "answer_cnt", nullable = false)
-    private Integer answerCount=0;
+    private Integer answerCount = 0;
 
     @Builder.Default()
     @Column(name = "enable", nullable = false)
-    private boolean enable=true;
+    private boolean enable = true;
 
     @Builder.Default()
     @Column(name = "like_cnt", nullable = false)
-    private Integer likeCount=0;
+    private Integer likeCount = 0;
 
     @Builder.Default()
     @Column(name = "hate_cnt", nullable = false)
-    private Integer hateCount=0;
+    private Integer hateCount = 0;
+
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -81,6 +82,7 @@ public class QnaBoard {
     public void increaseLikeCount() {
         this.likeCount++;
     }
+
     public void decreaseLikeCount() {
         this.likeCount--;
     }
@@ -88,6 +90,7 @@ public class QnaBoard {
     public void increaseHateCount() {
         this.hateCount++;
     }
+
     public void decreaseHateCount() {
         this.hateCount--;
     }
@@ -95,6 +98,7 @@ public class QnaBoard {
     public void increaseAnswerCount() {
         this.answerCount++;
     }
+  
     public void decreaseAnswerCount() {
         this.answerCount--;
     }
