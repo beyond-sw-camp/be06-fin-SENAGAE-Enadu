@@ -38,10 +38,8 @@
         </div>
       </div>
     </div>
-    <div class="" style="font-size: 13px">
-      <p>
-        {{ qnaAnswer.answer }}
-      </p>
+    <div >
+      <v-md-preview :text="qnaAnswer.answer"/>
       <div>
         <aside class="bg-black text-white p-6 rounded-lg w-full max-w-md font-mono">
           <div class="flex justify-between items-center">
@@ -121,7 +119,7 @@
         <button @click="toggleContent" class="mt-2 text-sm text-blue-500">
           {{ isContentVisible ? '댓글 숨기기' : '댓글 보기' }}
         </button>
-        <button  @click="writeRipple"
+        <button @click="writeRipple"
                 class="mt-2 text-sm text-blue-500">
           {{ isRegistered ? '작성 취소' : '댓글 작성' }}
         </button>
@@ -149,6 +147,7 @@
 import {formatDateTime} from "@/utils/FormatDate";
 import QnaCommentDetailComponent from "@/components/qna/QnaCommentDetailComponent.vue";
 import QnaCommentRegisterComponent from "@/components/qna/QnaCommentRegisterComponent.vue";
+import VMdPreview from "@kangc/v-md-editor/lib/preview";
 
 export default {
   name: "QnaAnswerDetailComponent",
@@ -167,7 +166,7 @@ export default {
       this.isContentVisible = !this.isContentVisible;
     },
     writeRipple() {
-      this.isRegistered = true;
+      this.isRegistered = !this.isRegistered;
     },
   },
   mounted() {
@@ -175,8 +174,9 @@ export default {
     this.isRegistered = false
   },
   components: {
+    VMdPreview,
     QnaCommentDetailComponent,
-    QnaCommentRegisterComponent
+    QnaCommentRegisterComponent,
   },
   computed: {
     filteredComments() {
@@ -187,7 +187,7 @@ export default {
 </script>
 
 <style scoped>
-.button-divider{
+.button-divider {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
