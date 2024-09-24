@@ -8,7 +8,7 @@
         <div class="flex flex-col gap-x-1 sm:flex-row sm:items-center">
           <div class="flex items-center gap-x-1 text-gray-700 dark:text-gray-300"><a
               class="font-medium text-gray-900"
-          >{{ qnaComment.nickname }}<span>·</span> <span
+          ><NicknameComponent :nickname="qnaComment.nickname"/><span>·</span> <span
               class="rounded-md bg-sky-500/20 px-1.5 py-0.5 text-xs">{{ qnaComment.grade }}</span></a></div>
           <div class="flex items-center gap-x-1"><span class="hidden sm:inline">·</span><a
               class="text-gray-700"
@@ -54,6 +54,7 @@
 <script>
 import {formatDateTime} from "@/utils/FormatDate";
 import QnaCommentRegisterComponent from "@/components/qna/QnaCommentRegisterComponent.vue";
+import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 
 export default {
   name: "QnaCommentDetailComponent",
@@ -99,7 +100,7 @@ export default {
       this.isTopComment = false;
     }
   },
-  components: {QnaCommentRegisterComponent},
+  components: {NicknameComponent, QnaCommentRegisterComponent},
   computed: {
     filteredComments() {
       return Array.isArray(this.myComments) ?

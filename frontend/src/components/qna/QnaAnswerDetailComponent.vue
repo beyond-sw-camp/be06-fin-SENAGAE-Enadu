@@ -13,7 +13,7 @@
             <div class="mantine-824czz">
               <a
                   class="mantine-Text-root mantine-3qdwx9 answer-name-text"
-              >{{ qnaAnswer.nickname }}</a
+              ><NicknameComponent :nickname="qnaAnswer.nickname"/></a
               >
               <div class="mantine-Badge-root mantine-11jjpd0">
                           <span class="mantine-1jlwn9k mantine-Badge-inner"
@@ -27,6 +27,7 @@
           </div>
         </div>
         <button class="red-button-size ui inverted red button">edit</button>
+        <AdoptedTagComponent/>
       </div>
       <div class="flex justify-between">
         <div id="answer-title-text" class="question-answer mb-5 build-section-card-title">
@@ -148,6 +149,8 @@ import {formatDateTime} from "@/utils/FormatDate";
 import QnaCommentDetailComponent from "@/components/qna/QnaCommentDetailComponent.vue";
 import QnaCommentRegisterComponent from "@/components/qna/QnaCommentRegisterComponent.vue";
 import VMdPreview from "@kangc/v-md-editor/lib/preview";
+import AdoptedTagComponent from "@/components/qna/AdoptedTagComponent.vue"
+import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 
 export default {
   name: "QnaAnswerDetailComponent",
@@ -174,6 +177,8 @@ export default {
     this.isRegistered = false
   },
   components: {
+    NicknameComponent,
+    AdoptedTagComponent,
     VMdPreview,
     QnaCommentDetailComponent,
     QnaCommentRegisterComponent,
