@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: be-color-deployment
+  labels:
+    type: backend
+    deployment: color
+spec:
+  selector:
+    matchLabels:
+      type: backend
+      deployment: color
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        type: backend
+        deployment: color
+    spec:
+      containers:
+        - name: be-color-pod
+          image: senagae/enadu-be:latest
+          readinessProbe:
+            httpGet:
+              path: /test
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 4
+          livenessProbe:
+            httpGet:
+              path: /test
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+      terminationGracePeriodSeconds: 0
