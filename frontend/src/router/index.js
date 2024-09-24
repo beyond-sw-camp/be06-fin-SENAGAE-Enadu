@@ -42,7 +42,6 @@ const router = createRouter({
         { path: "info", component: PointInfoComponent },
         { path: "rank", component: PointRankingComponent },
       ]},
-    { path: "/wiki/detail", component: WikiDetailPage },
     { path: "/email/verify", component: EmailVerifyPage },
    
     { path: "/wiki/detail", name: "WikiDetail", component: WikiDetailPage },
