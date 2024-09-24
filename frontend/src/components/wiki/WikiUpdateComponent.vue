@@ -23,7 +23,7 @@
 
                   <div class="space-y-1">
                     <label for="content" class="text-sm font-medium text-gray-700">내용</label>
-                    <v-md-editor v-model="updatedContent" height="400px"></v-md-editor>
+                    <v-md-editor v-model="updatedContent" :disabled-menus="[]" height="400px" @upload-image="commonStore.imageUpload"></v-md-editor>
                   </div>
 
                   <div class="space-y-1">
@@ -70,6 +70,7 @@
 import { useWikiStore } from "@/store/useWikiStore";
 import { mapStores } from "pinia";
 import VMdEditor from '@kangc/v-md-editor';
+import {useCommonStore} from "@/store/useCommonStore";
 
 export default {
   name: "WikiUpdateComponent",
@@ -87,6 +88,7 @@ export default {
   },
   computed: {
     ...mapStores(useWikiStore),
+    ...mapStores(useCommonStore),
     isNullOrEmpty() {
       return this.updatedContent.trim() === "";
     },
