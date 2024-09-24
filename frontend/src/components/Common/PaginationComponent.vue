@@ -16,7 +16,16 @@
 <script>
 export default {
   name: "PaginationComponent",
-  props: ["totalPage"],
+    props: {
+        totalPage: {
+            type: Number,
+            required: true
+        },
+        nowPage: {
+            type: Number,
+            default: 1
+        },
+    },
   data() {
     return {
       currentPage: 1,
@@ -26,7 +35,7 @@ export default {
   },
   methods: {
     setActivePage(number) {
-      this.currentPage = number
+      this.currentPage = number;
       this.$emit('updatePage', this.currentPage);
     },
     setPrevPage() {
@@ -66,6 +75,7 @@ export default {
       }
       this.pageNumbers.push(page);
     }
+    this.currentPage = this.nowPage;
     this.isLoading = true;
   }
 };
