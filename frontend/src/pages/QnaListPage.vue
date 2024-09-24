@@ -14,7 +14,7 @@
     </div>
   </div>
   <div class="qna-bottom">
-    <PaginationComponent @updatePage="handlePageUpdate"/>
+    <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage + 1"/>
   </div>
 </template>
 

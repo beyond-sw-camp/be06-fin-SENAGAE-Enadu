@@ -11,7 +11,7 @@
     </div>
 
     <div class="pagination-container" v-if="!isLoading">
-      <PaginationComponent :totalPage="totalPages" @updatePage="handlePageUpdate" />
+      <PaginationComponent :totalPage="totalPages" :nowPage="selectedPage" @updatePage="handlePageUpdate" />
     </div>
   </div>
 </template>
@@ -76,15 +76,14 @@ export default {
 
 <style scoped>
 .wiki-list-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  grid-auto-rows: auto;
-  gap: 64px;
-  width: 100%;
-  padding: 20px;
-  justify-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-auto-rows: auto;
+    gap: 0 36px;
+    justify-items: stretch;
+    max-width: 100%;
+    margin: 0 auto
 }
-
 .pagination-container {
   margin-top: 20px;
   display: flex;

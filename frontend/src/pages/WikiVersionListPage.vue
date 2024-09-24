@@ -1,12 +1,12 @@
 <template>
-        <div class="custom-container">
+    <div class="custom-container">
         <h1 class="title">WIKI : {{ wikiTitle }}</h1>
         <p class="category">
-      <span class="category-badge"> category : {{ category }}</span>
-    </p>
+            <span class="category-badge"> category : {{ category }}</span>
+        </p>
 
         <div class="pagination-container" v-if="!isLoading">
-            <PaginationComponent :totalPage="totalPages" @updatePage="handlePageUpdate" />
+            <PaginationComponent :totalPage="totalPages" :nowPage="page + 1" @updatePage="handlePageUpdate" />
         </div>
 
         <table v-if="!isLoading">
@@ -15,6 +15,7 @@
                     <th>날짜</th>
                     <th>버전 명</th>
                     <th>작성자 명</th>
+                    <th>되돌리기</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,10 +23,15 @@
                     <td>{{ version.createdAt }}</td>
                     <td>
                         <a @click="goToVersionDetail(version.wikiContentId)" class="version-link">
-                            V{{ version.version }}
+                            Version {{ version.version }}
                         </a>
                     </td>
                     <td>{{ version.nickname }}</td>
+                    <td>
+                        <button @click="rollbackVersion(version.wikiContentId)" class="rollback-button">
+                            이 버전으로 되돌리기
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -51,7 +57,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(useWikiStore, ["fetchWikiVersionList", "fetchWikiDetail"]),
+        ...mapActions(useWikiStore, ["fetchWikiVersionList", "fetchWikiDetail", "rollbackWikiVersion"]),
 
         async handlePageUpdate(newPage) {
             if (newPage !== this.selectedPage) {
@@ -62,11 +68,22 @@ export default {
         goToVersionDetail(wikiContentId) {
             this.$router.push({ path: '/wiki/version/detail', query: { id: wikiContentId } });
         },
+        async rollbackVersion(wikiContentId) {
+            try {
+                const success = await this.rollbackWikiVersion(wikiContentId);
+                if (success) {
+                    alert('롤백 성공 !');
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('롤백 중 오류 발생 :', error);
+            }
+        },
     },
     async mounted() {
         const id = this.$route.query.id;
         await this.fetchWikiDetail(id);
-        await this.fetchWikiVersionList(id, this.selectedPage - 1); 
+        await this.fetchWikiVersionList(id, this.selectedPage - 1);
         this.isLoading = false;
     },
 };
@@ -86,11 +103,11 @@ export default {
 }
 
 .category-badge {
-  background-color: #f1f1f1;
-  padding: 5px 20px;
-  border-radius: 20px; 
-  display: inline-block;
-  color: #333;
+    background-color: #f1f1f1;
+    padding: 5px 20px;
+    border-radius: 20px;
+    display: inline-block;
+    color: #333;
 }
 
 table {
@@ -125,10 +142,20 @@ table th {
 }
 
 .pagination-container {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.rollback-button {
+    color: #e81f1f; /* 어두운 빨간색 */
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.rollback-button:hover {
+    text-decoration: underline;
 }
 </style>
