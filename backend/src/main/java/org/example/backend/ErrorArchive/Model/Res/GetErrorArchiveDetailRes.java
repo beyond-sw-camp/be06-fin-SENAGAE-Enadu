@@ -24,4 +24,5 @@ public class GetErrorArchiveDetailRes {
     private String profileImg;
     private String grade;
     private String gradeImg;
+    private Long authorId; // 작성자 ID 추가
 }

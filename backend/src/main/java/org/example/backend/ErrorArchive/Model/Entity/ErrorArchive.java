@@ -22,9 +22,10 @@ public class ErrorArchive {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // bigint
+    private User user;
+
 
     @OneToMany(mappedBy = "errorArchive", fetch = FetchType.LAZY)
     private List<ErrorScrap> errorScrapList; // bigint

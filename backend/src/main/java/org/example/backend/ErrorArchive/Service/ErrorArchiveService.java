@@ -111,6 +111,7 @@ public class ErrorArchiveService {
 
         GetErrorArchiveDetailRes ErrorArchiveDetailRes = GetErrorArchiveDetailRes.builder()
                 .id(errorArchive.getId())
+                .authorId(errorArchive.getUser().getId()) // 작성자 ID
                 .nickname(errorArchive.getUser().getNickname())
                 .title(errorArchive.getTitle())
                 .content(errorArchive.getContent())
