@@ -2,6 +2,11 @@
   <div class="custom-container">
     <TagComponent :tagTitle="'WIKI'" :tagSubTitle="'당신의 위키를 만들어보세요'"/>
 
+        <!-- 작성하기 버튼 추가 -->
+        <div class="create-wiki-btn-container">
+      <button @click="navigateToWikiRegister" class="create-wiki-btn">작성하기</button>
+    </div>
+
     <div v-if="isLoading" style="text-align:center;">
       <p>로딩 중...</p>
     </div>
@@ -70,6 +75,9 @@ export default {
 
       }
     },
+    navigateToWikiRegister() {
+      this.$router.push("/wiki/register");
+    }
   },
 };
 </script>
@@ -82,11 +90,37 @@ export default {
     gap: 0 36px;
     justify-items: stretch;
     max-width: 100%;
-    margin: 0 auto
+    margin: 0 auto;
 }
 .pagination-container {
   margin-top: 20px;
   display: flex;
   justify-content: center;
+}
+
+.create-wiki-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.create-wiki-btn {
+  margin-bottom: 0.875rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: 2rem;
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-right: 0.875rem;
+    color: #2689d2;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.create-wiki-btn:hover {
+  text-decoration: underline;
 }
 </style>
