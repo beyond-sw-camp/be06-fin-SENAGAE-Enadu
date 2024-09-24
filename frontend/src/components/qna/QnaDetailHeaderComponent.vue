@@ -5,7 +5,7 @@
     </div>
     <span class="title-text">{{ qnaDetail.title }}</span>
   </div>
-  <span class="username-text">{{ qnaDetail.nickname }}</span>
+  <span class="username-text"><NicknameComponent :nickname="qnaDetail.nickname"/></span>
   <span class="datetime-text">{{ formatDateTime(qnaDetail.createdAt) }}</span>
   <div class="label-custom">
     <div class="ui tag labels">
@@ -102,6 +102,7 @@
 
 <script>
 import {formatDateTime} from "@/utils/FormatDate";
+import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 
 export default {
   name: "QnaDetailHeaderComponent",
@@ -116,6 +117,7 @@ export default {
   mounted() {
   },
   components: {
+    NicknameComponent
   },
 };
 </script>

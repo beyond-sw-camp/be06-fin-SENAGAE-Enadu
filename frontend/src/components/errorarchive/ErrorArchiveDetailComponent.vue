@@ -14,9 +14,9 @@
               <span style="font-size:16px">{{ lastModifiedDate }}</span>
               <span style="font-size:16px" class="grade">{{ errorarchiveStore.errorArchiveDetail.grade }}</span>
             </div>
-            <div class="sc-fbyfCU eYeYLy">
+            <div class="sc-fbyfCU eYeYLy" v-show="userStore.isLoggedIn">
               <div class="bookmark-checkbox">
-                <input type="checkbox" id="bookmark-toggle" :checked="errorarchiveStore.errorArchiveDetail.checkScrap"
+                <input type="checkbox" id="bookmark-toggle" :checked="checkScrap" @click="clickScrap"
                        class="bookmark-checkbox__input">
                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                   <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@
                 <div class="icons">
                   <label class="btn-label" for="like-checkbox">
                     <span class="like-text-content">{{ likeCnt }}</span>
-                    <input class="input-box" id="like-checkbox" type="radio" value="like" @click="clickLike('like')"
+                    <input class="input-box" id="like-checkbox" type="radio" value=true @click="clickLike(true)"
                            name="like" v-model="selectedLike"/>
                     <svg
                         class="svgs"
@@ -62,7 +62,7 @@
                     <input
                         class="input-box"
                         id="dislike-checkbox"
-                        type="radio" name="like" v-model="selectedLike" value="hate" @click="clickLike('hate')"
+                        type="radio" name="like" v-model="selectedLike" value=false @click="clickLike(false)"
                     />
                     <svg
                         class="svgs"
@@ -131,6 +131,7 @@ import '@kangc/v-md-editor/lib/style/preview.css';
 import {mapStores} from "pinia";
 import {useErrorArchiveStore} from "@/store/useErrorArchiveStore";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
+import {useUserStore} from "@/store/useUserStore";
 
 
 VMdPreview.use(githubTheme, {
@@ -149,31 +150,33 @@ export default {
       likeCnt: 0,
       hateCnt: 0,
       index: [],
-      titles: []
+      titles: [],
+      checkScrap: false,
     }
   },
   computed: {
     ...mapStores(useErrorArchiveStore),
+    ...mapStores(useUserStore)
   },
   watch: {
     selectedLike(newVal, oldVal) {
       if(this.isLoading){
         return;
       }
-      if (newVal === "like") {
+      if (newVal === true) {
         this.likeCnt++;
-        if (oldVal === "hate") {
+        if (oldVal === false) {
           this.hateCnt--;
         }
-      } else if (newVal === "hate"){
+      } else if (newVal === false){
         this.hateCnt++;
-        if (oldVal === "like") {
+        if (oldVal === true) {
           this.likeCnt--;
         }
       } else {
-        if (oldVal === "like"){
+        if (oldVal === true){
           this.likeCnt --;
-        } else if(oldVal==="hate") {
+        } else if(oldVal===false) {
           this.hateCnt--;
         }
       }
@@ -182,10 +185,10 @@ export default {
   methods: {
     async getErrorArchiveDetail() {
       await this.errorarchiveStore.getErrorArchiveDetail(this.id);
+      this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap;
       this.setModifiedTime();
       this.checkLike();
       this.setLikeAndHateCnt();
-      this.getIndex();
     },
     setModifiedTime() {
       let date = this.errorarchiveStore.errorArchiveDetail.modifiedAt.split("T")[0].split("-")
@@ -193,36 +196,20 @@ export default {
     },
     checkLike() {
       if (this.errorarchiveStore.errorArchiveDetail.checkLike) {
-        this.selectedLike = "like";
+        this.selectedLike = true;
       } else if (this.errorarchiveStore.errorArchiveDetail.checkHate) {
-        this.selectedLike = "hate";
+        this.selectedLike = false;
       }
     },
     setLikeAndHateCnt() {
       this.hateCnt = this.errorarchiveStore.errorArchiveDetail.hateCnt
       this.likeCnt = this.errorarchiveStore.errorArchiveDetail.likeCnt
     },
-    clickLike(value) {
-      if (this.selectedLike === value) {
-        this.selectedLike = null;
-      }
+    async clickLike(value) {
+      this.selectedLike = await this.errorarchiveStore.likeErrorArchive(this.id, value)
     },
-    getIndex(){
-      let content = this.errorarchiveStore.errorArchiveDetail.content;
-      let lines = content.split(/\r?\n/);
-      let idx = 1;
-      for (const line of lines){
-        if (line.startsWith("# ")){
-          this.index.push([line.split(" ")[1], 0, idx])
-          idx++;
-        } else if (line.startsWith("## ")){
-          this.index.push([line.split(" ")[1], 12, idx])
-          idx++;
-        } else if (line.startsWith("### ")){
-          this.index.push([line.split(" ")[1], 24, idx])
-          idx++;
-        }
-      }
+    async clickScrap(){
+      await this.errorarchiveStore.scrapErrorArchive(this.id);
     },
     handleAnchorClick(anchor) {
       const { preview } = this.$refs;

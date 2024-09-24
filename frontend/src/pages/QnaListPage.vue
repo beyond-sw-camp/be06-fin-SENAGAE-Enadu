@@ -1,12 +1,9 @@
 <template>
   <div class="custom-container">
-    <div class="qna-top">
-      <p id="main-title">QnA</p>
-      <p id="sub-title">당신의 에러를 해결해보세요</p>
-    </div>
+    <TagComponent :tagTitle="'QnA'" :tagSubTitle="'당신의 에러를 해결해보세요'"/>
     <div class="qna-inner">
-      <SortTypeComponent @checkLatest="handleCheckLatest"
-                         @checkLike="handleCheckLike"/>
+      <SearchComponent  @checkLatest="handleCheckLatest"
+                        @checkLike="handleCheckLike"/>
       <div class="qna-list-flex">
         <QnaCardComponent
             v-for="qnaCard in qnaStore.qnaCards"
@@ -17,7 +14,7 @@
     </div>
   </div>
   <div class="qna-bottom">
-    <PaginationComponent @updatePage="handlePageUpdate"/>
+    <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage + 1"/>
   </div>
 </template>
 
@@ -25,8 +22,9 @@
 import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
-import SortTypeComponent from "@/components/Common/SortTypeComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
+import SearchComponent from "@/components/Common/SearchComponent.vue";
+import TagComponent from "@/components/Common/TagComponent.vue";
 
 export default {
   name: "QnaListPage",
@@ -63,9 +61,10 @@ export default {
     },
   },
   components: {
+    TagComponent,
     QnaCardComponent,
-    SortTypeComponent,
     PaginationComponent,
+    SearchComponent,
   },
 };
 </script>

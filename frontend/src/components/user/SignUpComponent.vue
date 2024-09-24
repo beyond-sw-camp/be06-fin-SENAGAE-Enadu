@@ -72,17 +72,7 @@ import { useUserStore } from '@/store/useUserStore';
           alert("비밀번호가 일치하지 않습니다.");
           return;
         }
-        if (!this.emailAvailable) {
-        alert("이메일 중복 확인이 필요합니다.");
-        return;
-      }
-      if (!this.nicknameAvailable) {
-        alert("닉네임 중복 확인이 필요합니다.");
-        return;
-      }
-        console.log("success");
-        this.$emit('signup', this.userInfo, this.selectedProfileFile);
-        alert("가입 하시겠습니까?");
+        this.$emit('signup', this.userInfo, this.selectedProfileFile || null);
       },
       handleProfileImageUpload(event) {
         const file = event.target.files[0];

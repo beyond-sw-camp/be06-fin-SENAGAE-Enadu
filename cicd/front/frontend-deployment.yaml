@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-color-deployment
+  labels:
+    type: frontend
+    deployment: color
+spec:
+  selector:
+    matchLabels:
+      type: frontend
+      deployment: color
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        type: frontend
+        deployment: color
+    spec:
+      containers:
+        - name: fe-color-pod
+          image: senagae/enadu-fe:latest
+          ports:
+            - containerPort: 443
+          readinessProbe:
+            tcpSocket:
+              port: 443
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 4
+          livenessProbe:
+            tcpSocket:
+              port: 443
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          volumeMounts:
+            - name: tls-secret-volume
+              mountPath: /etc/nginx/ssl
+              readOnly: true
+      volumes:
+        - name: tls-secret-volume
+          secret:
+            secretName: tls-secret
+            items:
+              - key: tls.crt
+                path: certificate.crt
+              - key: tls.key
+                path: private.key
+              - key: ca.crt
+                path: ca_bundle.crt
+      terminationGracePeriodSeconds: 0

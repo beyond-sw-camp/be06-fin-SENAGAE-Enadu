@@ -58,18 +58,17 @@ export default {
         }
     },
     methods: {
-        loadSuperCategories() {
+        async loadSuperCategories() {
             this.loading = true;
             const categoryStore = useCategoryStore();
-            categoryStore.loadSuperCategories()
-                .then(() => {
-                    this.loading = false;
-                    this.filteredCategories = categoryStore.filteredCategories;
-                })
-                .catch((error) => {
-                    console.log("error : " + error);
-                    this.loading = false;
-                });
+            try {
+                await categoryStore.loadSuperCategories();
+                this.filteredCategories = categoryStore.filteredCategories;
+            } catch (error) {
+                console.log("error : " + error);
+            } finally {
+                this.loading = false;
+            }
         },
         handleCategorySelect(mySuperCategory) {
             this.mySuperCategory = mySuperCategory;

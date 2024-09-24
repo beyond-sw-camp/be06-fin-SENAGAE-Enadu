@@ -1,29 +1,39 @@
 import {defineStore} from "pinia";
 import axios from "axios";
 
-axios.interceptors.response.use((response) => response, (error) => {
-    if (error.response && error.response.status === 401) {
-        console.log("401 에러 처리");
-    } else if (error.response && error.response.status === 405) {
-        console.log("405 에러 처리");
-    } else if (error.response && error.response.status === 304) {
-        console.log("304 에러 처리");
+const backend = "/api";
+
+axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            console.log("401 에러 처리");
+        } else if (error.response && error.response.status === 405) {
+            console.log("405 에러 처리");
+        } else if (error.response && error.response.status === 304) {
+            console.log("304 에러 처리");
+        }
     }
-});
+);
 
 export const useQnaStore = defineStore("qna", {
     state: () => ({
-        qnaCards: [], qnaDetail: [], qnaAnswers: [], qnaComments: []
+        qnaCards: [],
+        qnaDetail: [],
+        qnaAnswers: []
     }),
+
 
     actions: {
         async registerQna(myTitle, myText, myCategory) {
             const data = {
-                title: myTitle, content: myText, categoryId: myCategory
+                title: myTitle,
+                content: myText,
+                categoryId: myCategory
             };
 
             try {
-                await axios.post("http://localhost:8080/qna", data, {
+                await axios.post(backend + "/qna", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
@@ -35,11 +45,13 @@ export const useQnaStore = defineStore("qna", {
 
         async getQnaList(sort, page) {
             const params = {
-                sort: sort, page: page, size: 15
+                sort: sort,
+                page: page,
+                size: 15
             };
 
             try {
-                const res = await axios.get("http://localhost:8080/qna/list", {
+                const res = await axios.get(backend + "/qna/list", {
                     params: params, withCredentials: true
                 });
                 this.qnaCards = res.data.result;
@@ -48,7 +60,7 @@ export const useQnaStore = defineStore("qna", {
             }
         }, async getQnaDetail(id) {
             try {
-                let res = await axios.get("http://localhost:8080/qna/detail?qnaBoardId=" +id, {withCredentials: true});
+                let res = await axios.get(backend + "/qna/detail?qnaBoardId=" + id, {withCredentials: true});
                 this.qnaDetail = res.data.result;
                 this.qnaAnswers = res.data.result.answers;
             } catch (error) {
@@ -60,7 +72,7 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                await axios.post("http://localhost:8080/ans/comment", data, {
+                await axios.post(backend + "/ans/comment", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true

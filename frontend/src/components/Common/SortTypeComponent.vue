@@ -1,12 +1,12 @@
 <template>
   <div class="radio-input">
     <label>
-      <input value="value-1" name="value-radio" id="value-1" type="radio" v-model="selectedSort"
+      <input value="latest" name="value-radio" id="value-1" type="radio" v-model="selectedSort"
              @change="emitSortChange('checkLatest')"/>
       <span>최신 순</span>
     </label>
     <label>
-      <input value="value-2" name="value-radio" id="value-2" type="radio" v-model="selectedSort"
+      <input value="like" name="value-radio" id="value-2" type="radio" v-model="selectedSort"
              @change="emitSortChange('checkLike')"/>
       <span>좋아요 순</span>
     </label>
