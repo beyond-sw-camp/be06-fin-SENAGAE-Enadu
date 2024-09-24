@@ -1,7 +1,7 @@
 <template>
   <div class="qna-detail-top-title">
     <div class="circle">
-      <img id="user-profile-image" src="@/assets/logo.png" alt="Profile Image"/>
+      <img id="user-profile-image" :src="qnaDetail.profileImage" alt="Profile Image"/>
     </div>
     <span class="title-text">{{ qnaDetail.title }}</span>
   </div>
@@ -112,6 +112,8 @@ export default {
   props: ["qnaDetail"],
   methods: {
     formatDateTime
+  },
+  mounted() {
   },
   components: {
   },
