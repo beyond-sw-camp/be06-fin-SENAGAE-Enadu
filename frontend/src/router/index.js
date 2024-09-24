@@ -24,6 +24,7 @@ import WikiVersionListPage from '@/pages/WikiVersionListPage.vue';
 import WikiVersionDetailPage from '@/pages/WikiVersionDetailPage.vue'; 
 import WikiListPage from "@/pages/WikiListPage.vue";
 import MainPage from "@/pages/MainPage.vue";
+import ErrorArchiveUpdatePage from "@/pages/ErrorArchiveUpdatePage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -37,6 +38,7 @@ const router = createRouter({
     { path: "/errorarchive", component: ErrorArchiveRegisterPage },
     { path: "/errorarchive/register", component: ErrorArchiveRegisterPage },
     { path: "/errorarchive/list", component: ErrorArchiveListPage },
+    { path: "/errorarchive/update", name: "ErrorArchiveUpdate", component: ErrorArchiveUpdatePage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
     { path: "/point", component: PointPage, children: [
         { path: "info", component: PointInfoComponent },

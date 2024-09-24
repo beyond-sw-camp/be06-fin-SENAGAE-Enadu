@@ -6,6 +6,7 @@
         <div class="head-wrapper">
           <h1>{{ errorarchiveStore.errorArchiveDetail.title }}</h1>
           <div class="sc-fvxzrP jGdQwA" style="display: flex; justify-content: space-between;">
+            <button v-if="isAuthor" @click="editErrorArchive">수정하기</button>
             <div class="information">
               <img class="profile" :src="errorarchiveStore.errorArchiveDetail.profileImg">
               <span class="username"><NicknameComponent :nickname="errorarchiveStore.errorArchiveDetail.nickname"/>
@@ -156,7 +157,11 @@ export default {
   },
   computed: {
     ...mapStores(useErrorArchiveStore),
-    ...mapStores(useUserStore)
+    ...mapStores(useUserStore),
+    // 로그인한 사용자 ID와 작성자 ID를 비교하여 isAuthor 값을 설정
+    isAuthor() {
+      return this.userStore.userId === this.errorarchiveStore.errorArchiveDetail.authorId; // userId와 authorId 비교
+    }
   },
   watch: {
     selectedLike(newVal, oldVal) {
@@ -226,6 +231,9 @@ export default {
         });
       }
     },
+    editErrorArchive() {
+      this.$router.push({ name: 'EditErrorArchive', query: { id: this.id }});
+    }
   },
   async mounted() {
     this.id = this.$route.query.id;
@@ -264,7 +272,6 @@ export default {
   display: inline-block;
   margin-right: 5px;
 }
-
 v-md-preview {
   font-size: 1.125rem;
   line-height: 1.7;
@@ -272,19 +279,15 @@ v-md-preview {
   overflow-wrap: break-word;
   color: var(--text1);
 }
-
 v-md-preview h1,
 v-md-preview h2,
 v-md-preview h3 {
   margin-bottom: 1rem;
   color: var(--text1);
 }
-
 v-md-preview p {
   margin-bottom: 1.5rem;
 }
-
-
 .dXONqK {
   width: 768px;
   margin-left: auto;
@@ -322,7 +325,6 @@ v-md-preview p {
   padding: 10px 20px;
   cursor: pointer;
 }
-
 .scrap-btn:hover {
   background-color: #0056b3;
 }
@@ -372,7 +374,6 @@ body[data-theme="light"] {
   --prism-code-9: #a626a4;
   --prism-line-number: #585c63;
 }
-
 .__jazzbar {
   z-index: 1000;
   position: fixed;
@@ -384,7 +385,6 @@ body[data-theme="light"] {
   -webkit-transition: all .4s ease-in;
   transition: all .4s ease-in;
 }
-
 .kTIDXm {
   padding-bottom: 1rem;
 }
@@ -392,7 +392,24 @@ body[data-theme="light"] {
 .jEdNvQ {
   height: 4rem;
 }
+.edit-button {
+  background-color: #39415e; /* 버튼 배경색 */
+  color: white; /* 글자색 */
+  border: none; /* 테두리 없애기 */
+  padding: 10px 15px; /* 패딩 */
+  text-align: center; /* 중앙 정렬 */
+  text-decoration: none; /* 밑줄 없애기 */
+  display: inline-block; /* 인라인 블록으로 설정 */
+  font-size: 16px; /* 글자 크기 */
+  margin: 4px 2px; /* 여백 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  border-radius: 5px; /* 둥근 모서리 */
+  transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
+}
 
+.edit-button:hover {
+  background-color: #45a049; /* 마우스 오버 시 색상 변화 */
+}
 .hrgwyc {
   height: 100%;
   display: flex;
@@ -401,13 +418,11 @@ body[data-theme="light"] {
   -webkit-box-pack: justify;
   justify-content: space-between;
 }
-
 @media (max-width: 1440px) {
   .cQvXTx {
     width: 1024px;
   }
 }
-
 @media (max-width: 1919px) {
   .cQvXTx {
     width: 1376px;
