@@ -6,6 +6,7 @@ import org.example.backend.EmailVerify.Model.Entity.EmailVerify;
 import org.example.backend.EmailVerify.Repository.EmailVerifyRepository;
 import org.example.backend.Exception.custom.InvalidEmailException;
 import org.example.backend.User.Service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class EmailVerifyService {
     private final EmailVerifyRepository emailVerifyRepository;
     private final JavaMailSender javaMailSender;
     private final UserService userService;
+
+    @Value("${frontend.url}")
+    private static String FRONT_URL;
 
     public void sendEmail(String email) {
         String uuid = UUID.randomUUID().toString();
@@ -40,7 +44,7 @@ public class EmailVerifyService {
                 });
 
         // 인증 링크 생성 (UUID 포함)
-        String verificationLink = String.format("http://localhost:8081/email/verify?email=%s&uuid=%s", email, uuid);
+        String verificationLink = String.format(FRONT_URL+"/email/verify?email=%s&uuid=%s", email, uuid);
 
         // 이메일 전송 설정
         SimpleMailMessage message = new SimpleMailMessage();

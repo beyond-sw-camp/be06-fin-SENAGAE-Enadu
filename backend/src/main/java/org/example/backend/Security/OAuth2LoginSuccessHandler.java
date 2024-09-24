@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.backend.Util.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,9 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
+
+    @Value("${frontend.url}")
+    private String FRONT_URL;
 
     public OAuth2LoginSuccessHandler(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -27,7 +31,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         Cookie jwtCookie = jwtUtil.createCookie(jwtToken);
         response.addCookie(jwtCookie);
 
-        String redirectUrl = "http://localhost:8081/oauth?userId=" + oAuth2User.getUserId();
+        String redirectUrl = FRONT_URL+"/oauth?userId=" + oAuth2User.getUserId();
         response.sendRedirect(redirectUrl);
     }
 }

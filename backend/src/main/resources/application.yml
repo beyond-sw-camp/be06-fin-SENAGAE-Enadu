@@ -44,7 +44,7 @@ spring:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_SECRET}
             scope: read:user, user:email
-            redirect-uri: http://localhost:8080/login/oauth2/code/{registrationId}
+            redirect-uri: ${BACK_URL}/login/oauth2/code/{registrationId}
             client-name: Enadu
         provider:
           github:
@@ -70,3 +70,7 @@ cloud:
       auto: false
     s3:
       bucket: ${S3_BUCKET}
+
+
+frontend:
+  url: ${FRONT_URL}
