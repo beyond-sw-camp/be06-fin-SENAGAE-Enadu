@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import { useRoute } from 'vue-router';
 import axios from "axios";
 
+const backend = "/api";
+
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -33,7 +35,7 @@ export const useQnaStore = defineStore("qna", {
       };
 
       try {
-        await axios.post("http://localhost:8080/qna", data, {
+        await axios.post(backend + "/qna", data, {
           headers: {
             'Content-Type': 'application/json'
           }, withCredentials: true
@@ -51,7 +53,7 @@ export const useQnaStore = defineStore("qna", {
       };
 
       try {
-        const res = await axios.get("http://localhost:8080/qna/list", {
+        const res = await axios.get(backend + "/qna/list", {
           params: params,
           withCredentials: true
         });
@@ -64,7 +66,7 @@ export const useQnaStore = defineStore("qna", {
       try{
       const route = useRoute();
       let res = await axios.get(
-          "/api/qna/detail?qnaBoardId="+ route.params.id, { withCredentials: true }
+          backend + "/qna/detail?qnaBoardId="+ route.params.id, { withCredentials: true }
       );
       this.qnaDetail = res.data.result;
       this.qnaAnswers = res.data.result.answers;
