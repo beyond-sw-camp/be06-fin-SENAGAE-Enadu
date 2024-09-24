@@ -76,7 +76,7 @@ pipeline {
                                     sshTransfer(
                                         sourceFiles: "cicd/back/backend-service.yaml",
                                         remoteDirectory: "/home/test"
-                                    )
+                                    ),
                                     sshTransfer(
                                         sourceFiles: "cicd/back/backend.sh",
                                         remoteDirectory: "/home/test",
