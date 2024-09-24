@@ -12,6 +12,7 @@ import org.example.backend.User.Repository.UserRepository;
 import org.example.backend.Wiki.Model.Entity.LatestWiki;
 import org.example.backend.Wiki.Model.Entity.Wiki;
 import org.example.backend.Wiki.Model.Entity.WikiContent;
+import org.example.backend.Wiki.Model.Entity.WikiScrap;
 import org.example.backend.Wiki.Model.Req.*;
 import org.example.backend.Wiki.Model.Res.*;
 import org.example.backend.Wiki.Repository.LatestWikiRepository;
@@ -110,6 +111,7 @@ public class WikiService {
 
         Wiki wiki = wikiRepository.findById(id).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
         LatestWiki latestWiki = wiki.getLatestWiki(); //최신 위키
+        WikiContent wikiContent = wikiContentRepository.findByWikiIdAndVersion(wiki.getId(), latestWiki.getVersion()).get();
 
         GetWikiDetailRes wikiDetailRes = GetWikiDetailRes.builder()
                 .id(wiki.getId())
@@ -119,6 +121,7 @@ public class WikiService {
                 .version(latestWiki.getVersion())
                 .checkScrap(ischeckScrap(wiki.getId(), latestWiki.getVersion(), userId))
                 .userGrade(userGrade)
+                .wikiContentId(wikiContent.getId())
                 .build();
         return wikiDetailRes;
 
@@ -207,6 +210,33 @@ public class WikiService {
                 .collect(Collectors.toList());
     }
 
+  
+    // 위키 스크랩
+    @Transactional
+    public WikiScrapRes scrap(WikiScrapReq wikiScrapReq, Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_LOGIN));
+
+        WikiContent wikiContent = wikiContentRepository.findById(wikiScrapReq.getWikiContentId())
+                .orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+
+        Optional<WikiScrap> checkScrap = wikiScrapRepository.findByUserIdAndWikiContentId(userId, wikiContent.getId());
+
+        if(checkScrap.isPresent()){
+            wikiScrapRepository.delete(checkScrap.get());
+            return WikiScrapRes.builder().wikiContentId(wikiContent.getId()).build();
+
+        } else {
+            WikiScrap wikiScrap = WikiScrap.builder()
+                    .user(user)
+                    .wikiContent(wikiContent)
+                    .build();
+            wikiScrapRepository.save(wikiScrap);
+        }
+        return WikiScrapRes.builder().wikiContentId(wikiContent.getId()).build();
+
+      
     // 위키 롤백
     @Transactional
     public WikiRollbackRes rollback(WikiRollbackReq wikiRollbackReq, Long userId) {
