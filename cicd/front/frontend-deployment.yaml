@@ -23,6 +23,8 @@ spec:
       containers:
         - name: fe-color-pod
           image: senagae/enadu-fe:latest
+          ports:
+            - containerPort: 443
           readinessProbe:
             tcpSocket:
               port: 80
@@ -34,4 +36,19 @@ spec:
               port: 80
             initialDelaySeconds: 10
             periodSeconds: 5
+          volumeMounts:
+            - name: tls-secret-volume
+              mountPath: /etc/nginx/ssl
+              readOnly: true
+      volumes:
+        - name: tls-secret-volume
+          secret:
+            secretName: tls-secret
+            items:
+              - key: tls.crt
+                path: certificate.crt
+              - key: tls.key
+                path: private.key
+              - key: ca.crt
+                path: ca_bundle.crt
       terminationGracePeriodSeconds: 0

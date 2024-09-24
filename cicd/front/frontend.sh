@@ -39,7 +39,7 @@ done
 
 if [[ "$result" == false ]]; then
     echo "Deployment did not complete successfully. Deleting deployment..."
-    kubectl delete deployment -l deployment=$color
+    kubectl delete deployment -l deployment=$color,type=frontend
     exit 1
 fi
 
