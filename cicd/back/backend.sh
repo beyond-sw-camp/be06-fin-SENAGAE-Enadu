@@ -44,11 +44,11 @@ fi
 
 # 서비스 업데이트 및 이전 배포 삭제
 if [[ "$color" != "green" ]]; then
-    sed -i 's/green/blue/g' /home/test/cicd/back/backend-service.yaml
+    sed -i 's/color/blue/g' /home/test/cicd/back/backend-service.yaml
     kubectl apply -f /home/test/cicd/back/backend-service.yaml
     kubectl delete deployment -l deployment=green, type=backend
 else
-    sed -i 's/blue/green/g' /home/test/cicd/back/backend-service.yaml
+    sed -i 's/color/green/g' /home/test/cicd/back/backend-service.yaml
     kubectl apply -f /home/test/cicd/back/backend-service.yaml
     kubectl delete deployment -l deployment=blue, type=backend
 fi
