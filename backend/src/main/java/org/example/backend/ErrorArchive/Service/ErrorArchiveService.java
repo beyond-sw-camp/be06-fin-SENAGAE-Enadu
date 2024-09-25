@@ -9,10 +9,7 @@ import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorLike;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorScrap;
-import org.example.backend.ErrorArchive.Model.Req.GetErrorArchiveDetailReq;
-import org.example.backend.ErrorArchive.Model.Req.GetErrorArchiveUpdateReq;
-import org.example.backend.ErrorArchive.Model.Req.ListErrorArchiveReq;
-import org.example.backend.ErrorArchive.Model.Req.RegisterErrorArchiveReq;
+import org.example.backend.ErrorArchive.Model.Req.*;
 import org.example.backend.ErrorArchive.Model.Res.*;
 import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
 import org.example.backend.ErrorArchive.Repository.ErrorLikeRepository;
@@ -287,6 +284,26 @@ public class ErrorArchiveService {
         return GetErrorArchiveUpdateRes.builder()
                 .id(errorArchive.getId()) // 업데이트된 에러 아카이브의 ID 반환
                 .build();
+    }
+
+    public Boolean delete(RemoveErrorArchiveReq removeErrorArchiveReq, Long userId) {
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+            ErrorArchive errorArchive = errorArchiveReository.findById(removeErrorArchiveReq.getId())
+                    .orElseThrow(() -> new InvalidErrorBoardException(BaseResponseStatus.ERROR_PERMISSION_DENIED));
+
+            // 작성자 확인
+            if (!errorArchive.getUser().getId().equals(userId)) {
+                throw new InvalidErrorBoardException(BaseResponseStatus.ERROR_PERMISSION_DENIED);
+            }
+
+            errorArchiveReository.delete(errorArchive);
+            return true; // 정상적으로 삭제되면 true 반환
+        } catch (Exception e) {
+            // 예외가 발생한 경우 false 반환
+            return false;
+        }
     }
 
 }
