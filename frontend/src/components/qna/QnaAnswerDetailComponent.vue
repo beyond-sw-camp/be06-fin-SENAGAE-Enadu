@@ -30,7 +30,7 @@
           <div v-if="isAdopted">
             <AdoptedTagComponent/>
           </div>
-          <AdditionalInfoComponent style="margin-left: 20px" v-bind:adopted="isShowAdopted" v-bind:answer="qnaAnswer"/>
+          <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000" v-bind:adopted="isShowAdopted" v-bind:answer="qnaAnswer"/>
         </div>
       </div>
       <div class="flex justify-between">
