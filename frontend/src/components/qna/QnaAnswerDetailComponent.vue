@@ -88,9 +88,9 @@
         <div class="like-dislike-container">
           <div class="icons-box">
             <div class="icons">
-              <label class="btn-label" for="like-checkbox">
+              <label class="btn-label" for="like-checkbox-a">
                 <span class="like-text-content">{{ qnaAnswer.likeCnt }}</span>
-                <input class="input-box" id="like-checkbox" type="checkbox" @click="clickAnsLike"
+                <input class="input-box" id="like-checkbox-a" type="checkbox" @click="clickAnsLike"
                        :checked="isCheckedAnsLike"/>
                 <svg
                     class="svgs"
@@ -118,10 +118,10 @@
               </label>
             </div>
             <div class="icons">
-              <label class="btn-label" for="dislike-checkbox">
+              <label class="btn-label" for="dislike-checkbox-a">
                 <input
                     class="input-box"
-                    id="dislike-checkbox"
+                    id="dislike-checkbox-a"
                     type="checkbox"
                     @click="clickAnsHate" :checked="isCheckedAnsHate"
                 />
@@ -279,9 +279,6 @@ export default {
     this.cnt = this.countAdopted;
     this.showAdopted();
     this.checking();
-    console.log(this.qnaAnswer.checkLikeOrHate);
-    console.log(this.isCheckedAnsLike);
-    console.log(this.isCheckedAnsHate);
   },
   components: {
     AdditionalInfoComponent,
@@ -302,8 +299,18 @@ export default {
       }
       return 0;
     },
-  }
+    checkAnsLike() {
+      return this.qnaAnswer.checkLikeOrHate;
+    },
+  },
+  watch: {
+    checkAnsLike() {
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
+  },
+
 }
+
 </script>
 
 <style scoped>
@@ -535,12 +542,12 @@ img {
   animation: rotate-icon-like 0.7s ease-in-out both;
 }
 
-.like-dislike-container .icons #like-checkbox:checked ~ #icon-like-regular {
+.like-dislike-container .icons #like-checkbox-a:checked ~ #icon-like-regular {
   display: none;
   animation: checked-icon-like 0.5s;
 }
 
-.like-dislike-container .icons #like-checkbox:checked ~ #icon-like-solid {
+.like-dislike-container .icons #like-checkbox-a:checked ~ #icon-like-solid {
   display: block;
   animation: checked-icon-like 0.5s;
 }
@@ -563,13 +570,13 @@ img {
 
 .like-dislike-container
 .icons
-#dislike-checkbox:checked
+#dislike-checkbox-a:checked
 ~ #icon-dislike-regular {
   display: none;
   animation: checked-icon-dislike 0.5s;
 }
 
-.like-dislike-container .icons #dislike-checkbox:checked ~ #icon-dislike-solid {
+.like-dislike-container .icons #dislike-checkbox-a:checked ~ #icon-dislike-solid {
   display: block;
   animation: checked-icon-dislike 0.5s;
 }
@@ -580,7 +587,7 @@ img {
 
 .like-dislike-container
 .icons
-#like-checkbox:checked
+#like-checkbox-a:checked
 ~ .fireworks
 > .checked-like-fx {
   position: absolute;
@@ -604,7 +611,7 @@ img {
 
 .like-dislike-container
 .icons
-#dislike-checkbox:checked
+#dislike-checkbox-a:checked
 ~ .fireworks
 > .checked-dislike-fx {
   position: absolute;
