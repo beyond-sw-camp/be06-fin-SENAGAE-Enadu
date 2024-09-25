@@ -22,7 +22,7 @@ echo $color
 result=true
 for i in {1..10}; do
 
-    kubectl rollout status deployment | grep be-deployment-$color
+    kubectl rollout status deployment | grep be-$color-deployment
     rollout_status=$?
     echo $rollout_status
     if [[ $rollout_status -eq 0 ]]; then
