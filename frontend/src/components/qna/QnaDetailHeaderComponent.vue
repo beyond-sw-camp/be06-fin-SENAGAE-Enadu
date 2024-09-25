@@ -86,6 +86,7 @@
             type="checkbox"
             id="bookmark-toggle"
             class="bookmark-checkbox__input"
+            @click="clickScrap" :checked="isCheckedScrap"
         />
         <label for="bookmark-toggle" class="bookmark-checkbox__label">
           <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
@@ -113,6 +114,7 @@ export default {
     return {
       isCheckedLike: false,
       isCheckedHate: false,
+      isCheckedScrap: false,
     };
   },
   props: ["qnaDetail"],
@@ -123,8 +125,7 @@ export default {
       useQnaStore().questionLike(this.$route.params.id);
       if (this.qnaDetail.checkLikeOrHate !== false) {
         this.isCheckedLike = !this.isCheckedLike;
-      }
-      else {
+      } else {
         alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
         window.location.reload();
       }
@@ -136,11 +137,16 @@ export default {
       useQnaStore().questionHate(this.$route.params.id);
       if (this.qnaDetail.checkLikeOrHate !== true) {
         this.isCheckedHate = !this.isCheckedHate;
-      }
-      else {
+      } else {
         alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
         window.location.reload();
       }
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
+
+    clickScrap() {
+      useQnaStore().questionScrap(this.$route.params.id);
+      this.isCheckedScrap = !this.isCheckedScrap;
       useQnaStore().getQnaDetail(this.$route.params.id);
     },
 
@@ -157,9 +163,13 @@ export default {
         this.isCheckedHate = false;
       }
     },
+    checkingScrap() {
+      this.isCheckedScrap = this.qnaDetail.checkScrap === true;
+    }
   },
   mounted() {
     this.checking();
+    this.checkingScrap();
   },
   components: {
     NicknameComponent

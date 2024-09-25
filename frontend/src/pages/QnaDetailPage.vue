@@ -2,7 +2,7 @@
   <div class="inner">
     <div v-if="isLoading"></div>
     <div v-else>
-      <QnaDetailHeader v-bind:qnaDetail=qnaStore.qnaDetail v-on:reload="getQnaDetail"/>
+      <QnaDetailHeader v-bind:qnaDetail=qnaStore.qnaDetail />
       <QnaDetailComponent v-bind:qnaDetail=qnaStore.qnaDetail />
       <QnaAnswerDetailComponent v-for="qnaAnswer in qnaStore.qnaAnswers"
                                 :key="qnaAnswer.id"
@@ -37,12 +37,18 @@ export default {
     ...mapStores(useQnaStore),
     checkLike() {
       return useQnaStore().qnaDetail.checkLikeOrHate;
-    }
+    },
+    checkScrap() {
+      return useQnaStore().qnaDetail.checkScrap;
+    },
   },
   watch: {
     checkLike() {
       useQnaStore().getQnaDetail(this.$route.params.id);
-    }
+    },
+    checkScrap() {
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
   },
   mounted() {
     this.getQnaDetail();
