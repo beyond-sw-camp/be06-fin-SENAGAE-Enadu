@@ -105,6 +105,7 @@ export const useUserStore = defineStore('user', {
               } else {
                 alert("중복되지 않는 닉네임입니다.");
               }
+              return response.data.result;
             } catch (error) {
               console.error("닉네임 중복 확인 중 오류 발생:", error);
               alert("닉네임 확인 중 문제가 발생했습니다. 다시 시도해주세요");
@@ -114,14 +115,13 @@ export const useUserStore = defineStore('user', {
             // 서버에 이메일 중복 여부 확인 요청
             const response = await axios.get(backend + "/user/duplicate/email", {params: {email: email}}
             );
-            console.log(response);  // 응답 데이터 확인
-
             // 서버로부터 받은 응답에 따라 처리
             if (response.data.result === true) {
                 alert("사용 가능한 이메일입니다.");
             } else {
                 alert("중복되는 이메일입니다.");
             }
+            return response.data.result;
         },
         async verifyEmail(email, uuid) {
             try {

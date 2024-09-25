@@ -120,7 +120,7 @@ export const useWikiStore = defineStore("wiki", {
         // 위키 상세 조회
         async fetchWikiDetail(id) {
             try {
-                const response = await axios.get(backend + "wiki/detail", {
+                const response = await axios.get(backend + "/wiki/detail", {
                     params: { id },
                     withCredentials: true,
                 });
