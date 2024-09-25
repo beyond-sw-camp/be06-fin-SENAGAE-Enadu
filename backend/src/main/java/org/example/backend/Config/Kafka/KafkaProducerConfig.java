@@ -3,6 +3,7 @@ package org.example.backend.Config.Kafka;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.RoundRobinPartitioner;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -17,12 +18,14 @@ import java.util.Map;
 @EnableKafka
 public class KafkaProducerConfig {
 
-    private static final String BOOTSTRAP_SERVER = "localhost:9092";
+    @Value("${kafka.url}")
+    private String KAFKA_URL;
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
+        String bootStrapServer = KAFKA_URL;
         Map<String, Object> config = new HashMap<>();
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER); // 카프카 주소
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrapServer); // 카프카 주소
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 

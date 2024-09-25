@@ -6,9 +6,9 @@ import org.example.backend.Chat.Model.Req.GetMessageReq;
 import org.example.backend.Chat.Model.Res.GetMessageRes;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class KafkaConsumerService {
 
@@ -17,8 +17,7 @@ public class KafkaConsumerService {
     private final SimpMessageSendingOperations template;
 
     ObjectMapper objectMapper = new ObjectMapper();
-
-    @KafkaListener(topics = TOPIC_NAME, groupId = "group_1")
+    @KafkaListener(topics = TOPIC_NAME)
     public void listenMessage(String jsonMessage) {
         try {
             GetMessageReq getMessageReq = objectMapper.readValue(jsonMessage, GetMessageReq.class);

@@ -44,7 +44,7 @@ spring:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_SECRET}
             scope: read:user, user:email
-            redirect-uri: ${BACK_URL}/login/oauth2/code/{registrationId}
+            redirect-uri: http://${BACK_URL}/login/oauth2/code/{registrationId}
             client-name: Enadu
         provider:
           github:
@@ -74,3 +74,5 @@ cloud:
 
 frontend:
   url: ${FRONT_URL}
+kafka:
+  url: ${KAFKA_URL}
