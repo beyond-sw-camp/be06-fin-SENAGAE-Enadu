@@ -25,8 +25,8 @@
 
       <p class="explanation">닉네임</p>
       <div class="half-form">
-        <input type="text" placeholder="닉네임" v-model="userInfo.nickname" />
-        <button type="button" class="check-button" @click="validateNickname">중복 확인</button>
+        <input type="text" placeholder="닉네임" v-model="userInfo.nickname" @input="validateNickname"/>
+        <button type="button" class="check-button" @click="checkNickname">중복 확인</button>
         <span v-if="nicknameAvailable">✔️ 사용 가능합니다</span>
         <span v-else></span>
       </div>
