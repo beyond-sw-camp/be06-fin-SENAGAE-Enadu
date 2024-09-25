@@ -70,7 +70,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       const params = {
         sort: sort,
         page: page,
-        size: 15
+        size: 5
       };
       try {
         const response = await axios.get(backend+"/errorarchive/list", { 
@@ -125,8 +125,12 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       const response = await axios.get(backend+"/errorarchive/search", {
         params: request
       });
-      this.errorarchiveCards  = response.data.result;
-      console.log(this.errorarchiveCards);
+      console.log(response);
+      if (response.data.result){
+        this.errorarchiveCards  = response.data.result;
+      } else {
+        this.errorarchiveCards = [];
+      }
     }
   }
 });

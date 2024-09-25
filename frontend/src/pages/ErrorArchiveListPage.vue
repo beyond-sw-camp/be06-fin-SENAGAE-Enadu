@@ -1,13 +1,13 @@
 <template>
   <div class="custom-container">
-    <TagComponent :tagTitle="'에러 아카이브'" :tagSubTitle="'당신의 에러 해결 방법을 공유해주세요'"/>
+    <router-link to="/errorarchive/list"><TagComponent :tagTitle="'에러 아카이브'" :tagSubTitle="'당신의 에러 해결 방법을 공유해주세요'"/></router-link>
     <div class="errorarchive-inner">
-      <div v-if="isLoading"></div>
+      <div v-if="isLoading && isLoading2"></div>
       <SearchComponent v-else @checkLatest="handleCheckLatest"
                        @checkLike="handleCheckLike"
       />
       <div class="errorarchive-list-flex">
-        <LoadingComponent v-if="isLoading" style="margin-top: 150px"/>
+        <LoadingComponent v-if="isLoading && isLoading2" style="margin-top: 150px"/>
         <ErrorArchiveCardComponent v-else
             v-for="errorarchiveCard in errorarchiveStore.errorarchiveCards"
             :key="errorarchiveCard.id"
@@ -17,8 +17,8 @@
     </div>
   </div>
   <div class="errorarchive-bottom">
-    <div v-if="isLoading"></div>
-    <PaginationComponent v-else @updatePage="handlePageUpdate" :totalPage="totalPage"/>
+    <div v-if="isLoading && isLoading2"></div>
+    <PaginationComponent v-else @updatePage="handlePageUpdate" :nowPage="selectedPageAndSort.page" :totalPage="totalPage"/>
   </div>
 </template>
 
@@ -42,12 +42,17 @@ export default {
   },
   data() {
     return {
-      selectedSort: "latest",
-      selectedPage: 1,
+      selectedPageAndSort: {
+        sort: "latest",
+        page: 1,
+      },
       page: 0,
       totalPage: 1,
       isLoading: true,
+      isLoading2: true,
       searchRequest: null,
+      isUpdating: false ,// 감지 여부 제어용 플래그
+      ddff: "",
     };
   },
   computed: {
@@ -67,70 +72,83 @@ export default {
         if (Object.keys(newQuery).length !== 0) {
           this.searchErrorArchiveList();
         } else {
-          this.selectedPage = 1;
-          this.selectedSort = "latest";
-          this.searchRequest= null;
-          this.errorarchiveStore.getErrorArchiveList(this.selectedSort, this.selectedPage - 1);
+          this.searchRequest = null;
+          this.isLoading2 = true;
+          this.isLoading = true;
+          if (this.selectedPageAndSort.page === 1 && this.selectedPageAndSort.sort ==="latest") {
+            this.getErrorArchiveList();
+          } else {
+            this.selectedPageAndSort.page = 1;
+            this.selectedPageAndSort.sort = "latest";
+          }
         }
       }
     },
-    selectedSort() {
-      this.isLoading = true;
-      if(this.searchRequest === null) {
-        this.errorarchiveStore.getErrorArchiveList(this.selectedSort, this.selectedPage - 1);
-      } else {
-        this.searchRequest.sort = this.selectedSort;
-        this.errorarchiveStore.searchErrorArchive(this.searchRequest);
-      }
-      this.isLoading = false;
-    },
-    selectedPage() {
-      this.isLoading = true;
-      if (this.searchRequest === null) {
-        this.errorarchiveStore.getErrorArchiveList(this.selectedSort, this.selectedPage - 1);
-      } else {
-        this.searchRequest.page = this.selectedPage - 1;
-        this.errorarchiveStore.searchErrorArchive(this.searchRequest);
-      }
-      this.isLoading = false;
+    selectedPageAndSort: {
+      async handler() {
+        if (this.isUpdating){
+          return;
+        }
+        this.isLoading = true;
+        if (this.searchRequest === null) {
+          await this.getErrorArchiveList();
+        } else {
+          this.searchRequest.page = this.selectedPageAndSort.page - 1;
+          this.searchRequest.sort = this.selectedPageAndSort.sort;
+          await this.errorarchiveStore.searchErrorArchive(this.searchRequest);
+        }
+        this.isLoading = false;
+      },
+      deep:true
     },
   },
   methods: {
     handleCheckLatest() {
-      this.selectedSort = "latest";
+      this.isLoading2 = false;
+      this.selectedPageAndSort.sort = "latest";
     },
     handleCheckLike() {
-      this.selectedSort = "like";
+      this.isLoading2 = false;
+      this.selectedPageAndSort.sort = "like";
     },
     handlePageUpdate(newPage) {
-      this.selectedPage = newPage;
+      this.selectedPageAndSort.page = newPage;
     },
     async getErrorArchiveList() {
       this.isLoading = true;
-      await this.errorarchiveStore.getErrorArchiveList(this.selectedSort, this.selectedPage - 1);
+      await this.errorarchiveStore.getErrorArchiveList(this.selectedPageAndSort.sort, this.selectedPageAndSort.page - 1);
       if (this.errorarchiveStore.errorarchiveCards.length !== 0) {
         this.totalPage = this.errorarchiveStore.errorarchiveCards[0].totalPage;
       }
       this.isLoading = false;
       this.searchRequest = null;
     },
-    async searchErrorArchiveList(){
+    async searchErrorArchiveList(){ // 검색 처음 했을 때
       this.isLoading = true;
+      this.isLoading2 = true;
+      this.isUpdating = true // watch에서 감지 안돼도록
+      this.selectedPageAndSort.sort = "latest";
+      this.selectedPageAndSort.page = 1;
+      this.isUpdating = false;
       const request = {
         keyword:  this.$route.query.keyword,
-        categoryId: this.$route.query.selectedSubCategoryId !== 0 ? this.$route.query.selectedSubCategoryId : this.$route.query.selectedCategory,
+        categoryId: this.$route.query.selectedSubCategoryId != 0 ? this.$route.query.selectedSubCategoryId : this.$route.query.selectedCategory,
         type: this.$route.query.type,
-        sort: this.$route.query.sort,
-        page: this.$route.query.page,
-        size: this.$route.query.size,
+        sort: this.selectedPageAndSort.sort,
+        page: this.selectedPageAndSort.page-1,
+        size: 16,
       }
       await this.errorarchiveStore.searchErrorArchive(request);
       if (this.errorarchiveStore.errorarchiveCards.length !== 0) {
         this.totalPage = this.errorarchiveStore.errorarchiveCards[0].totalPage;
+      } else {
+        this.totalPage = 1;
       }
       this.searchRequest = request;
       this.isLoading = false;
-    }
+      this.isLoading2 = false;
+
+    },
   },
 };
 </script>

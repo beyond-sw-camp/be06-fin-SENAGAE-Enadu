@@ -38,7 +38,7 @@
       <SortTypeComponent v-show="!$route.path.startsWith('/wiki')" style="margin-bottom: 0" @checkLatest="handleCheckLatest" @checkLike="handleCheckLike"/>
       <div style="display:flex" class="search-bar">
         <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery">
-        <button @click="performSearch"><i class="fas fa-search"></i></button>
+        <button @click="searchData"><i class="fas fa-search"></i></button>
       </div>
 
       <!-- 두 번째 드롭다운 -->
@@ -82,22 +82,29 @@ export default {
     selectCategory(subCategory) {
       this.selectedSubCategory = subCategory; // 탭 선택
     },
-    performSearch() {
-      this.isLoading = true;
-      const request = {
-        keyword: this.searchQuery,
-        selectedCategory: this.selectedCategory,
-        selectedSubCategoryId: this.selectedSubCategory.id,
-        selectedSubCategoryName: this.selectedSubCategory.categoryName,
-        type: this.selectedType,
-        sort: this.sort,
-        page: 0,
-        size: 16,
+    searchData() {
+      switch(this.$route.path){
+        case "/errorarchive/list": {
+          const request = {
+            keyword: this.searchQuery,
+            selectedCategory: this.selectedCategory,
+            selectedSubCategoryId: this.selectedSubCategory.id,
+            selectedSubCategoryName: this.selectedSubCategory.categoryName,
+            type: this.selectedType,
+          };
+          this.$router.push({
+            path: this.$route.path,  // 현재 경로 유지
+            query: request
+          });
+          break;
+        }
+        case "/qna/list":
+          this.$emit("search", {
+            selectedSubCategory: this.selectedSubCategory,
+            searchQuery: this.searchQuery,
+            selectedType: this.selectedType
+          });
       }
-      this.$router.push({
-        path: this.$route.path,  // 현재 경로 유지
-        query: request
-      });
     },
     handleMoreCategory(){
       this.show_more_category = !this.show_more_category;
