@@ -5,7 +5,7 @@ flag=true
 for line in $(kubectl get deployment -l type=backend | awk 'NR>1'); do
     flag=false
     if [[ "$line" != *green* ]]; then
-        sed -i 's/color/green/g' /home/test/back/cicd/backend-deployment.yaml
+        sed -i 's/color/green/g' /home/test/cicd/back/backend-deployment.yaml
         color="green"
     else
         sed -i 's/color/blue/g' /home/test/cicd/back/backend-deployment.yaml
