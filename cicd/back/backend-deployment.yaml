@@ -36,4 +36,75 @@ spec:
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 10
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: DB_HOST
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: DB_PASSWORD
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: DB_USERNAME
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: JWT_SECRET
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: S3_ACCESS_KEY
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: S3_BUCKET
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: S3_SECRET_KEY
+            - name: GITHUB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: GITHUB_SECRET
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: GITHUB_CLIENT_ID
+            - name: FRONT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: FRONT_URL
+            - name: BACK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: BACK_URL
+            - name: KAFKA_URL
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: KAFKA_URL
+            - name: EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: EMAIL
+            - name: EMAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: EMAIL_PASSWORD
       terminationGracePeriodSeconds: 0
