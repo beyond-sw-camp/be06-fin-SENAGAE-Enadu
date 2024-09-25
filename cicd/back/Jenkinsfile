@@ -69,9 +69,9 @@ pipeline {
                                         remoteDirectory: "/home/test",
                                         // 전송 후 yaml 파일의 latest 파이프라인 빌드 숫자로 변경
                                         // backend-deployment 야멜 파일 실행
-                                        execCommand: """
+                                        execCommand: '''
                                             sed -i "s/latest/1.$BUILD_ID/g" cicd/back/backend-deployment.yaml
-                                        """
+                                        '''
                                     ),
                                     sshTransfer(
                                         sourceFiles: "cicd/back/backend-service.yaml",
@@ -80,10 +80,10 @@ pipeline {
                                     sshTransfer(
                                         sourceFiles: "cicd/back/backend.sh",
                                         remoteDirectory: "/home/test",
-                                        execCommand: """
-                                            sed -i "s/latest/1.$BUILD_ID/g" cicd/back/backend.sh
+                                        execCommand: '''
                                             bash cicd/back/backend.sh
-                                        """
+                                        '''
+
                                     )
                                 ]
                             )
