@@ -13,9 +13,7 @@
             <div class="mantine-824czz">
               <a
                   class="mantine-Text-root mantine-3qdwx9 answer-name-text"
-              >
-                <NicknameComponent :nickname="qnaAnswer.nickname"/>
-              </a
+              ><NicknameComponent :nickname="qnaAnswer.nickname"/></a
               >
               <div class="mantine-Badge-root mantine-11jjpd0">
                           <span class="mantine-1jlwn9k mantine-Badge-inner"
@@ -32,7 +30,7 @@
           <div v-if="isAdopted">
             <AdoptedTagComponent/>
           </div>
-          <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000;" v-bind:adopted="isShowAdopted" v-bind:answer="qnaAnswer"/>
+          <AdditionalInfoComponent style="margin-left: 20px" v-bind:adopted="isShowAdopted" v-bind:answer="qnaAnswer"/>
         </div>
       </div>
       <div class="flex justify-between">
@@ -45,7 +43,7 @@
         </div>
       </div>
     </div>
-    <div>
+    <div >
       <v-md-preview :text="qnaAnswer.answer"/>
       <div>
         <aside class="bg-black text-white p-6 rounded-lg w-full max-w-md font-mono">
@@ -208,9 +206,6 @@ export default {
     this.checkAdopted()
     this.cnt = this.countAdopted;
     this.showAdopted();
-    console.log(this.qnaStore.qnaAnswers);
-    console.log(this.cnt);
-    console.log(this.isShowAdopted);
   },
   components: {
     AdditionalInfoComponent,
