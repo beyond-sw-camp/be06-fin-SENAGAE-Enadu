@@ -38,7 +38,7 @@ for i in {1..10}; do
 done
 
 if [[ "$result" == false ]]; then
-    kubectl delete deployment  -l type=backend, deployment="$color"
+    kubectl delete deployment  -l type=backend,deployment="$color"
     exit 1
 fi
 
@@ -46,9 +46,9 @@ fi
 if [[ "$color" != "green" ]]; then
     sed -i 's/color/blue/g' /home/test/cicd/back/backend-service.yaml
     kubectl apply -f /home/test/cicd/back/backend-service.yaml
-    kubectl delete deployment -l deployment=green, type=backend
+    kubectl delete deployment -l deployment=green,type=backend
 else
     sed -i 's/color/green/g' /home/test/cicd/back/backend-service.yaml
     kubectl apply -f /home/test/cicd/back/backend-service.yaml
-    kubectl delete deployment -l deployment=blue, type=backend
+    kubectl delete deployment -l deployment=blue,type=backend
 fi
