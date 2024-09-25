@@ -133,7 +133,7 @@ export default {
 
 .comment-content {
   margin-top: 5px;
-  margin-left: 30px;
+  margin-left: 45px;
   font-weight: 700;
   font-size: 13px;
 }

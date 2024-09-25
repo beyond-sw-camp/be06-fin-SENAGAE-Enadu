@@ -13,7 +13,9 @@
             <div class="mantine-824czz">
               <a
                   class="mantine-Text-root mantine-3qdwx9 answer-name-text"
-              ><NicknameComponent :nickname="qnaAnswer.nickname"/></a
+              >
+                <NicknameComponent :nickname="qnaAnswer.nickname"/>
+              </a
               >
               <div class="mantine-Badge-root mantine-11jjpd0">
                           <span class="mantine-1jlwn9k mantine-Badge-inner"
@@ -26,8 +28,12 @@
             </p>
           </div>
         </div>
-        <button class="red-button-size ui inverted red button">edit</button>
-        <AdoptedTagComponent/>
+        <div class="adopt-control-component">
+          <div v-if="isAdopted">
+            <AdoptedTagComponent/>
+          </div>
+          <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000;" v-bind:adopted="isShowAdopted" v-bind:answer="qnaAnswer"/>
+        </div>
       </div>
       <div class="flex justify-between">
         <div id="answer-title-text" class="question-answer mb-5 build-section-card-title">
@@ -39,7 +45,7 @@
         </div>
       </div>
     </div>
-    <div >
+    <div>
       <v-md-preview :text="qnaAnswer.answer"/>
       <div>
         <aside class="bg-black text-white p-6 rounded-lg w-full max-w-md font-mono">
@@ -145,12 +151,15 @@
 </template>
 
 <script>
+import {mapStores} from "pinia";
+import {useQnaStore} from "@/store/useQnaStore";
 import {formatDateTime} from "@/utils/FormatDate";
 import QnaCommentDetailComponent from "@/components/qna/QnaCommentDetailComponent.vue";
 import QnaCommentRegisterComponent from "@/components/qna/QnaCommentRegisterComponent.vue";
 import VMdPreview from "@kangc/v-md-editor/lib/preview";
 import AdoptedTagComponent from "@/components/qna/AdoptedTagComponent.vue"
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
+import AdditionalInfoComponent from "@/components/Common/AdditionalInfoComponent.vue";
 
 export default {
   name: "QnaAnswerDetailComponent",
@@ -159,7 +168,10 @@ export default {
       isLoading: true,
       isRegistered: false,
       isContentVisible: false,
+      isAdopted: false,
+      cnt: 0,
 
+      isShowAdopted : true,
     };
   },
   props: ["qnaAnswer"],
@@ -171,12 +183,37 @@ export default {
     writeRipple() {
       this.isRegistered = !this.isRegistered;
     },
+    checkAdopted() {
+      if (this.qnaAnswer !== undefined) {
+        if (this.qnaAnswer.checkAdopted) {
+          this.isAdopted = true;
+        }
+      } else {
+        this.isAdopted = false;
+      }
+    },
+    showAdopted(){
+      if (this.cnt !== undefined) {
+        if (this.cnt === 1) {
+          this.isShowAdopted = false
+        } else {
+          this.isShowAdopted = true;
+        }
+      }
+    },
   },
   mounted() {
     this.isLoading = false
     this.isRegistered = false
+    this.checkAdopted()
+    this.cnt = this.countAdopted;
+    this.showAdopted();
+    console.log(this.qnaStore.qnaAnswers);
+    console.log(this.cnt);
+    console.log(this.isShowAdopted);
   },
   components: {
+    AdditionalInfoComponent,
     NicknameComponent,
     AdoptedTagComponent,
     VMdPreview,
@@ -184,14 +221,27 @@ export default {
     QnaCommentRegisterComponent,
   },
   computed: {
+    ...mapStores(useQnaStore),
     filteredComments() {
       return this.qnaAnswer.comments.filter(c => c.superCommentId === null);
-    }
+    },
+    countAdopted() {
+      if (Array.isArray(this.qnaStore.qnaAnswers)) {
+        return this.qnaStore.qnaAnswers.filter(answer => answer.checkAdopted).length;
+      }
+      return 0;
+    },
   }
 }
 </script>
 
 <style scoped>
+.adopt-control-component {
+  display: flex;
+  justify-content: flex-end;
+
+}
+
 .button-divider {
   display: flex;
   justify-content: space-between;

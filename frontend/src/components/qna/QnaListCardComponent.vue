@@ -143,15 +143,6 @@ export default {
   text-overflow: ellipsis;
 }
 
-.body .text {
-  margin: 0 10px 0 0;
-  white-space: pre-line;
-  color: #c0c3d7;
-  font-weight: 400;
-  line-height: 1.5;
-  margin-bottom: 4px;
-}
-
 .footer {
   width: 100%;
   color: #9fa4aa;

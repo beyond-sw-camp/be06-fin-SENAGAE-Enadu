@@ -25,7 +25,7 @@
     box-sizing: border-box;
   }
   body {
-    font-family: 'Arial', sans-serif;
+    font-family: "Noto Sans KR", sans-serif;
     background-color: #fff;
     --main-color: #1e88e5;
   }
