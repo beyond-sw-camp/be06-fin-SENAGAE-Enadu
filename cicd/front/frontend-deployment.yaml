@@ -49,6 +49,4 @@ spec:
                 path: certificate.crt
               - key: tls.key
                 path: private.key
-              - key: ca.crt
-                path: ca_bundle.crt
       terminationGracePeriodSeconds: 0
