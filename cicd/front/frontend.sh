@@ -44,17 +44,11 @@ if [[ "$result" == false ]]; then
 fi
 
 if [[ "$color" != "green" ]]; then
-    echo $color
-    cat /home/test/cicd/front/frontend-service.yaml
     sed -i 's/color/blue/g' /home/test/cicd/front/frontend-service.yaml
-    cat /home/test/cicd/front/frontend-service.yaml
     kubectl apply -f /home/test/cicd/front/frontend-service.yaml
     kubectl delete deployment -l deployment=green,type=frontend
 else
-    echo $color
-    cat /home/test/cicd/front/frontend-service.yaml
     sed -i 's/color/green/g' /home/test/cicd/front/frontend-service.yaml
-    cat /home/test/cicd/front/frontend-service.yaml
     kubectl apply -f /home/test/cicd/front/frontend-service.yaml
     kubectl delete deployment -l deployment=blue,type=frontend
 fi
