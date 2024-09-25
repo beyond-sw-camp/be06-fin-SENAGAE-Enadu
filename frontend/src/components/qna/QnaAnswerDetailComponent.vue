@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-box p-5 mb-10 md:p-8 bento-card" style="background: #efefef; border: 1px solid #19192c">
+  <div class="rounded-box p-5 mb-10 md:p-8 bento-card" style="background: #f8f9fa; border: 1px solid #19192c">
     <div class="mb-10">
       <div class="mantine-2j9uwr">
         <div class="mantine-1uguyhf">
@@ -7,7 +7,7 @@
               class="mantine-Avatar-root mantine-18l6s09"
           ><img
               class="mantine-9rx0rd mantine-Avatar-image"
-              src="@/assets/logo.png"
+              :src="qnaAnswer.profileImage"
           /></a>
           <div class="mantine-Stack-root mantine-1l47z8p">
             <div class="mantine-824czz">
@@ -116,41 +116,84 @@
           </div>
         </div>
       </div>
+      <br/>
+      <div class="button-divider">
+        <button @click="toggleContent" class="mt-2 text-sm text-blue-500">
+          {{ isContentVisible ? '댓글 숨기기' : '댓글 보기' }}
+        </button>
+        <button  @click="writeRipple"
+                class="mt-2 text-sm text-blue-500">
+          {{ isRegistered ? '작성 취소' : '댓글 작성' }}
+        </button>
+      </div>
+      <div v-show="isRegistered">
+        <QnaCommentRegisterComponent v-bind:answer="qnaAnswer"/>
+      </div>
+
+      <ul v-show="isContentVisible"
+          class="my-3 divide-y divide-gray-500/30 border-y border-gray-500/30 dark:divide-gray-500/70 dark:border-gray-500/70">
+        <div v-if="isLoading"></div>
+        <QnaCommentDetailComponent v-else
+                                   v-for="qnaComment in filteredComments"
+                                   :key="qnaComment.id"
+                                   :qnaComment="qnaComment"
+                                   v-bind:qnaAnswer="qnaAnswer"
+        />
+      </ul>
     </div>
   </div>
-  <div v-if="isLoading"></div>
-  <QnaCommentDetailComponent v-else
-                             v-for="qnaComment in qnaAnswer.comments"
-                             :key="qnaComment.id"
-                             :qnaComment="qnaComment"
-  />
+
 </template>
 
 <script>
 import {formatDateTime} from "@/utils/FormatDate";
 import QnaCommentDetailComponent from "@/components/qna/QnaCommentDetailComponent.vue";
+import QnaCommentRegisterComponent from "@/components/qna/QnaCommentRegisterComponent.vue";
 
 export default {
   name: "QnaAnswerDetailComponent",
   data() {
     return {
-      isLoading: true
+      isLoading: true,
+      isRegistered: false,
+      isContentVisible: false,
+
     };
   },
   props: ["qnaAnswer"],
   methods: {
-    formatDateTime
+    formatDateTime,
+    toggleContent() {
+      this.isContentVisible = !this.isContentVisible;
+    },
+    writeRipple() {
+      this.isRegistered = true;
+    },
   },
   mounted() {
-    this.isLoading=false
+    this.isLoading = false
+    this.isRegistered = false
   },
   components: {
-    QnaCommentDetailComponent
+    QnaCommentDetailComponent,
+    QnaCommentRegisterComponent
   },
+  computed: {
+    filteredComments() {
+      return this.qnaAnswer.comments.filter(c => c.superCommentId === null);
+    }
+  }
 }
 </script>
 
 <style scoped>
+.button-divider{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
+}
+
 .rounded-box {
   border-radius: 20px;
 }
@@ -676,7 +719,7 @@ img {
 /* book mark */
 
 element.style {
-  background: #fff;
+  background: #f8f9fa;
   border: 1px solid #19192c;
 }
 

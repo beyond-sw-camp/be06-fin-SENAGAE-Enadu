@@ -15,7 +15,6 @@
 <script>
 import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
-import {useRoute} from 'vue-router';
 import QnaDetailComponent from "@/components/qna/QnaDetailComponent.vue";
 import QnaDetailHeader from "@/components/qna/QnaDetailHeaderComponent.vue";
 import QnaAnswerDetailComponent from "@/components/qna/QnaAnswerDetailComponent.vue";
@@ -31,9 +30,7 @@ export default {
   },
   methods: {
     async getQnaDetail(){
-      const route = useRoute();
-      const qnaDetailId = route.params.id;
-      await this.qnaStore.getQnaDetail(qnaDetailId);
+      await useQnaStore().getQnaDetail(this.$route.params.id);
       this.isLoading=false
     }
   },
@@ -43,8 +40,6 @@ export default {
   },
   mounted() {
     this.getQnaDetail()
-
-
   },
   components: {
     QnaAnswerDetailComponent,

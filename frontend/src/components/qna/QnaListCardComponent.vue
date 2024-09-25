@@ -25,8 +25,9 @@
         </div>
       </div>
     </div>
-    <div class="qna-title">
+    <div class="qna-title" ><a :href="'/qna/detail/' + qnaCard.id">
       {{ qnaCard.title }}
+    </a>
     </div>
     <div class="footer">
       <div class="test">
@@ -77,6 +78,8 @@ export default {
   name: "QnaCardComponent",
   data() {
     return {};
+  },
+  mounted() {
   },
   props: ["qnaCard"],
   methods: {
