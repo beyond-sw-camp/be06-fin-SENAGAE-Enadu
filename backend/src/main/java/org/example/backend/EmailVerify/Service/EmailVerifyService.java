@@ -23,7 +23,7 @@ public class EmailVerifyService {
     private final UserService userService;
 
     @Value("${frontend.url}")
-    private static String FRONT_URL;
+    private String FRONT_URL;
 
     public void sendEmail(String email) {
         String uuid = UUID.randomUUID().toString();
