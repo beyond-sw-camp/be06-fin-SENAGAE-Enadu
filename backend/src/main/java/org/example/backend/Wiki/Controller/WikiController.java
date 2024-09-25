@@ -8,6 +8,7 @@ import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.Wiki.Model.Req.*;
 import org.example.backend.Wiki.Model.Res.*;
+import org.example.backend.Wiki.Service.WikiSearchService;
 import org.example.backend.Wiki.Service.WikiService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.List;
 public class WikiController {
     private final WikiService wikiService;
     private final CloudFileUploadService cloudFileUploadService;
+    private final WikiSearchService wikiSearchService;
 
     // 위키 등록
     @PostMapping
@@ -134,6 +136,12 @@ public class WikiController {
 
         return new BaseResponse<>(wikiService.rollback(wikiRollbackReq, customUserDetails.getUserId()));
 
+    }
+
+    // 위키 검색
+    @GetMapping("/search")
+    public BaseResponse<List<WikiListRes>> search(GetWikiSearchReq getWikiSearchReq) {
+        return new BaseResponse<>(wikiSearchService.search(getWikiSearchReq));
     }
 }
 
