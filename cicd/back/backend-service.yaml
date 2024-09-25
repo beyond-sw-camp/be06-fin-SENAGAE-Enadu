@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     type: backend
-    deployment: green
+    deployment: color
   ports:
     - port: 8080
       protocol: TCP
