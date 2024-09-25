@@ -20,7 +20,9 @@ export const useQnaStore = defineStore("qna", {
     state: () => ({
         qnaCards: [],
         qnaDetail: [],
-        qnaAnswers: []
+        qnaAnswers: [],
+        checkQnaLike: 0,
+        checkQnaHate: 0,
     }),
 
 
@@ -110,6 +112,38 @@ export const useQnaStore = defineStore("qna", {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+        async questionLike(qnaBoardId) {
+            const data = {
+                qnaBoardId: qnaBoardId,
+            };
+
+            try {
+                const res= await axios.post(backend + "/qna/like", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+                this.checkQnaLike = res.data.result;
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+        async questionHate(qnaBoardId) {
+            const data = {
+                qnaBoardId: qnaBoardId,
+            };
+
+            try {
+                const res= await axios.post(backend + "/qna/hate", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+                this.checkQnaHate = res.data.result;
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
