@@ -74,7 +74,8 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:8083");
         config.addAllowedOrigin("http://localhost:8084");
         config.addAllowedOrigin("http://localhost:8085");
-        config.addAllowedOrigin("http://enadu.o-r.kr");
+        config.addAllowedOrigin("https://www.enadu.kro.kr");
+        config.addAllowedOriginPattern("*");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);

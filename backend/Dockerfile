@@ -1,6 +1,7 @@
-FROM openjdk:17-jdk-buster
+FROM openjdk:17-jdk-alpine
 EXPOSE 8080
 ADD ./build/libs/backend-0.0.1-SNAPSHOT.jar /app.jar
+
 ENV DB_DATABASE = ${DB_DATABASE}
 ENV DB_HOST = ${DB_HOST}
 ENV DB_PASSWORD = ${DB_PASSWORD}
@@ -13,4 +14,6 @@ ENV GITHUB_SECRET = ${GITHUB_SECRET}
 ENV GITHUB_CLIENT_ID = ${GITHUB_CLIENT_ID}
 ENV FRONT_URL = ${FRONT_URL}
 ENV BACK_URL = ${BACK_URL}
+ENV KAFKA_URL = ${KAFK_URL}
+
 CMD java -jar /app.jar
