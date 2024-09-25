@@ -36,7 +36,6 @@ export default {
   },
   computed: {
     ...mapStores(useQnaStore),
-
   },
   mounted() {
     this.getQnaDetail()

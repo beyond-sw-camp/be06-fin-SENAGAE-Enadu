@@ -98,5 +98,21 @@ export const useQnaStore = defineStore("qna", {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
         },
+        async adoptAnswer(qnaBoardId, answerId) {
+            const data = {
+                qnaBoardId: qnaBoardId,
+                answerId: answerId
+            };
+
+            try {
+                await axios.post(backend + "/ans/adopted", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
     },
 });
