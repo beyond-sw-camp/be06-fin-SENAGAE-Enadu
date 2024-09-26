@@ -2,7 +2,7 @@
   <div class="container">
     <!-- 상단 네비게이션 바 -->
     <div class="top-bar">
-      <div : class="!$route. path.startsWith('/wiki') ? 'separator' : ''">
+      <div :class="!$route. path.startsWith('/wiki') ? 'separator' : ''">
       <select v-model="selectedCategory" @change="getSubCategory" class="category-dropdown">
         <option disabled value="">카테고리 선택</option>
         <option v-for="(super_category, idx) in categoryStore.superCategories" :key=idx :value="super_category.id">{{ super_category.categoryName }}</option>
