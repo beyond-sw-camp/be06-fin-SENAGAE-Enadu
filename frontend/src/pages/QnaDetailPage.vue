@@ -1,15 +1,14 @@
 <template>
   <div class="inner">
-    <QnaDetailHeader v-bind:qnaDetail=qnaStore.qnaDetail />
-    <QnaDetailComponent v-bind:qnaDetail=qnaStore.qnaDetail />
     <div v-if="isLoading"></div>
-    <QnaAnswerDetailComponent v-else
-        v-for="qnaAnswer in qnaStore.qnaAnswers"
-        :key="qnaAnswer.id"
-        :qnaAnswer="qnaAnswer"
-    />
+    <div v-else>
+      <QnaDetailHeader v-bind:qnaDetail=qnaStore.qnaDetail />
+      <QnaDetailComponent v-bind:qnaDetail=qnaStore.qnaDetail />
+      <QnaAnswerDetailComponent v-for="qnaAnswer in qnaStore.qnaAnswers"
+                                :key="qnaAnswer.id"
+                                :qnaAnswer="qnaAnswer"/>
+    </div>
   </div>
-
 </template>
 
 <script>
@@ -29,16 +28,30 @@ export default {
     };
   },
   methods: {
-    async getQnaDetail(){
+    async getQnaDetail() {
       await useQnaStore().getQnaDetail(this.$route.params.id);
-      this.isLoading=false
+      this.isLoading = false
     }
   },
   computed: {
     ...mapStores(useQnaStore),
+    checkLike() {
+      return useQnaStore().qnaDetail.checkLikeOrHate;
+    },
+    checkScrap() {
+      return useQnaStore().qnaDetail.checkScrap;
+    },
+  },
+  watch: {
+    checkLike() {
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
+    checkScrap() {
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
   },
   mounted() {
-    this.getQnaDetail()
+    this.getQnaDetail();
   },
   components: {
     QnaAnswerDetailComponent,

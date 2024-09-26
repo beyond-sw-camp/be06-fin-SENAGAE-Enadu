@@ -20,7 +20,7 @@
         <div class="icons">
           <label class="btn-label" for="like-checkbox">
             <span class="like-text-content">{{ qnaDetail.likeCnt }}</span>
-            <input class="input-box" id="like-checkbox" type="checkbox"/>
+            <input class="input-box" id="like-checkbox" type="checkbox" @click="clickLike" :checked="isCheckedLike"/>
             <svg
                 class="svgs"
                 id="icon-like-solid"
@@ -52,6 +52,7 @@
                 class="input-box"
                 id="dislike-checkbox"
                 type="checkbox"
+                @click="clickHate" :checked="isCheckedHate"
             />
             <div class="fireworks">
               <div class="checked-dislike-fx"></div>
@@ -85,6 +86,7 @@
             type="checkbox"
             id="bookmark-toggle"
             class="bookmark-checkbox__input"
+            @click="clickScrap" :checked="isCheckedScrap"
         />
         <label for="bookmark-toggle" class="bookmark-checkbox__label">
           <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
@@ -101,6 +103,8 @@
 </template>
 
 <script>
+import {mapStores} from "pinia";
+import {useQnaStore} from "@/store/useQnaStore";
 import {formatDateTime} from "@/utils/FormatDate";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 
@@ -108,16 +112,70 @@ export default {
   name: "QnaDetailHeaderComponent",
   data() {
     return {
+      isCheckedLike: false,
+      isCheckedHate: false,
+      isCheckedScrap: false,
     };
   },
   props: ["qnaDetail"],
   methods: {
-    formatDateTime
+    formatDateTime,
+
+    clickLike() {
+      useQnaStore().questionLike(this.$route.params.id);
+      if (this.qnaDetail.checkLikeOrHate !== false) {
+        this.isCheckedLike = !this.isCheckedLike;
+      } else {
+        alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
+        window.location.reload();
+      }
+      useQnaStore().getQnaDetail(this.$route.params.id);
+
+    },
+
+    clickHate() {
+      useQnaStore().questionHate(this.$route.params.id);
+      if (this.qnaDetail.checkLikeOrHate !== true) {
+        this.isCheckedHate = !this.isCheckedHate;
+      } else {
+        alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
+        window.location.reload();
+      }
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
+
+    clickScrap() {
+      useQnaStore().questionScrap(this.$route.params.id);
+      this.isCheckedScrap = !this.isCheckedScrap;
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
+
+    //초기 세팅
+    checking() {
+      if (this.qnaDetail.checkLikeOrHate === true) {
+        this.isCheckedLike = true;
+        this.isCheckedHate = false
+      } else if (this.qnaDetail.checkLikeOrHate === false) {
+        this.isCheckedLike = false;
+        this.isCheckedHate = true;
+      } else {
+        this.isCheckedLike = false;
+        this.isCheckedHate = false;
+      }
+    },
+    checkingScrap() {
+      this.isCheckedScrap = this.qnaDetail.checkScrap === true;
+    }
   },
   mounted() {
+    this.checking();
+    this.checkingScrap();
   },
   components: {
     NicknameComponent
+  },
+  computed: {
+    ...mapStores(useQnaStore),
   },
 };
 </script>
@@ -506,6 +564,7 @@ img {
     transform: scale(1.1)
   }
 }
+
 h1 {
   font-size: 2em
 }
