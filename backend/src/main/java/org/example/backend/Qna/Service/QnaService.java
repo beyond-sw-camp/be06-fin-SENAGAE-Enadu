@@ -436,4 +436,17 @@ public class QnaService {
         answerRepository.save(answer);
         return answer.getId();
     }
+
+    @Transactional
+    public Long disableQuestion(Long qnaBoardId, Long userId) {
+        QnaBoard qnaBoard  = questionRepository.findById(qnaBoardId)
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        //후에 권한 처리
+
+        qnaBoard.disable();
+        questionRepository.save(qnaBoard);
+        return qnaBoard.getId();
+    }
 }
