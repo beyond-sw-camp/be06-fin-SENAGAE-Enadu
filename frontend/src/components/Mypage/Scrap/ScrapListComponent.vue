@@ -45,7 +45,15 @@
     <div>
         <LoadingComponent v-if="isLoading" style="margin-top: 30px" />
         <div v-if="activeSection === 'archive'">
-            에러 아카이브 페이지
+            <div class="errorarchive-inner">
+                <div class="errorarchive-list-flex">
+                    <ErrorArchiveCardComponent
+                        v-for="errorarchiveCard in mypageStore.history.archiveList"
+                        :key="errorarchiveCard.id"
+                        v-bind:errorarchiveCard="errorarchiveCard"
+                    />
+                </div>
+            </div>
         </div>
         <div v-if="activeSection === 'wiki'">
             <div class="wiki-list-grid" v-if="!isLoading">
@@ -76,10 +84,11 @@ import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
 import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import LoadingComponent from "@/components/Common/LoadingComponent.vue";
+import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";
 
 export default {
     name: "ScrapListComponent",
-    components: {LoadingComponent, WikiCardComponent, QnaCardComponent, PaginationComponent},
+    components: {ErrorArchiveCardComponent, LoadingComponent, WikiCardComponent, QnaCardComponent, PaginationComponent},
     data() {
         return {
             isLoading: true,
@@ -105,6 +114,9 @@ export default {
             this.isLoading = true;
             try {
                 switch (this.activeSection) {
+                    case 'archive':
+                        await this.fetchArchiveList();
+                        break;
                     case 'wiki':
                         await this.fetchWikiList();
                         break;
@@ -114,6 +126,15 @@ export default {
                 }
             } finally {
                 this.isLoading = false;
+            }
+        },
+        async fetchArchiveList() {
+            await this.mypageStore.getArchiveScrapList(this.page);
+            const archiveList = this.mypageStore.scrap.archiveList || [];
+            if (archiveList.length !== 0) {
+                this.totalPage = archiveList[0].totalPage;
+            } else {
+                alert("스크랩한 아카이브가 없습니다.");
             }
         },
         async fetchWikiList() {
@@ -164,6 +185,23 @@ export default {
 
 .bg-white {
     border: 1px solid rgb(107 114 128 / 0.3);
+}
+
+.errorarchive-inner {
+    width: auto;
+    height: max-content;
+    background-color: #fff;
+    margin: 25px;
+}
+
+.errorarchive-list-flex {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-auto-rows: auto;
+    gap: 26px 36px;
+    justify-items: stretch;
+    max-width: 100%;
+    margin: 0 auto
 }
 
 .qna-inner {
