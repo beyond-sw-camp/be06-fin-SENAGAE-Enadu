@@ -406,12 +406,34 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         //후에 권한 처리
-
-        qnaBoard.updateTitle(editQuestionReq.getTitle());
-        qnaBoard.updateContent(editQuestionReq.getContent());
-        qnaBoard.updateCategory(category);
+        if(!(qnaBoard.getAnswerList().isEmpty())){
+            qnaBoard.updateTitle(editQuestionReq.getTitle());
+            qnaBoard.updateContent(editQuestionReq.getContent());
+            qnaBoard.updateCategory(category);
+        }
+        else {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_ANSWERED_EDIT);
+        }
 
         questionRepository.save(qnaBoard);
         return qnaBoard.getId();
+    }
+
+    @Transactional
+    public Long editAnswer(EditAnswerReq editAnswerReq, Long userId) {
+        Answer answer  = answerRepository.findById(editAnswerReq.getId())
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        //후에 권한 처리
+
+        if(!answer.isAdopted()) {
+            answer.updateContent(editAnswerReq.getContent());
+        }
+        else {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_ADOPTED_EDIT);
+        }
+        answerRepository.save(answer);
+        return answer.getId();
     }
 }
