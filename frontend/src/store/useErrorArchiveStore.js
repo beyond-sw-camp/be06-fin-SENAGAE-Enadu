@@ -70,7 +70,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       const params = {
         sort: sort,
         page: page,
-        size: 5
+        size: 16
       };
       try {
         const response = await axios.get(backend+"/errorarchive/list", { 
@@ -121,7 +121,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       }
     },
     async searchErrorArchive(request){
-      request.size= 3;
+      request.size= 16;
       const response = await axios.get(backend+"/errorarchive/search", {
         params: request
       });
