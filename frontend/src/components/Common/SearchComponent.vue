@@ -36,17 +36,16 @@
       <!-- 검색창 -->
     <div style="display:flex; flex-direction: row; justify-content: center; width: 100%">
       <SortTypeComponent v-show="!$route.path.startsWith('/wiki')" style="margin-bottom: 0" @checkLatest="handleCheckLatest" @checkLike="handleCheckLike"/>
-      <div style="display:flex" class="search-bar">
-        <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery">
-        <button @click="searchData"><i class="fas fa-search"></i></button>
-      </div>
-
-      <!-- 두 번째 드롭다운 -->
       <select style="display:flex;" v-model="selectedType" class="type-dropdown">
         <option value="tc">제목+내용</option>
         <option value="t">제목</option>
         <option value="c">내용</option>
       </select>
+      <div style="display:flex" class="search-bar">
+        <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery" @keydown.enter="searchData">
+        <button @click="searchData"><i class="fas fa-search"></i></button>
+      </div>
+      <button @click="moveToPostPage" class="create-btn">작성하기</button>
     </div>
 
     <!-- 콘텐츠 영역 -->
@@ -60,6 +59,7 @@
 import SortTypeComponent from "@/components/Common/SortTypeComponent.vue";
 import {mapStores} from "pinia";
 import {useCategoryStore} from "@/store/useCategoryStore";
+import {useUserStore} from "@/store/useUserStore";
 
 export default {
   data() {
@@ -77,6 +77,8 @@ export default {
   },
   computed:{
     ...mapStores(useCategoryStore),
+    ...mapStores(useUserStore),
+
   },
   methods: {
     selectCategory(subCategory) {
@@ -135,6 +137,19 @@ export default {
           });
       }
     },
+    moveToPostPage(){
+      if(!this.userStore.isLoggedIn){
+        alert("로그인이 필요합니다.");
+        this.$router.push({path: "/login"})
+        return;
+      }
+      if (this.$route.path.includes("qna")){
+        this.$router.push({path: "/qna/register"})
+      } else if (this.$route.path.includes("errorarchive")){
+        this.$router.push({path: "/errorarchive/register"})
+
+      }
+    }
   },
   async mounted() {
     await this.getSuperCategory();
@@ -178,6 +193,7 @@ export default {
   margin-right: 20px;
   font-size: 16px;
   border: 1px solid #cfcfcf;
+  margin-left: auto;
 }
 
 .tabs {
@@ -214,7 +230,7 @@ export default {
   padding: 8px;
   border-radius: 25px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-left: auto;
+  //margin-left: auto;
   margin-right: 30px;
   border: 1px solid var(--main-color);
 }
@@ -347,5 +363,18 @@ export default {
 .pagination-bullet-active{
   color: #00c471;
   box-shadow: inset 0 0 0 2px #00c471;
+}
+
+.create-btn {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.875rem;
+  margin-top: 0.875rem;
+  color: #2689d2;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
 }
 </style>

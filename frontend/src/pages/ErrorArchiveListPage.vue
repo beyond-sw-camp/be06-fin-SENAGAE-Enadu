@@ -52,7 +52,6 @@ export default {
       isLoading2: true,
       searchRequest: null,
       isUpdating: false ,// 감지 여부 제어용 플래그
-      ddff: "",
     };
   },
   computed: {
