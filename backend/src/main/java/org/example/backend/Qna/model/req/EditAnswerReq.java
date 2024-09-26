@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EditAnswerReq {
-    private Long Id;
+    private Long id;
     private String content;
 }

@@ -406,7 +406,7 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         //후에 권한 처리
-        if(!(qnaBoard.getAnswerList().isEmpty())){
+        if(qnaBoard.getAnswerList().isEmpty()){
             qnaBoard.updateTitle(editQuestionReq.getTitle());
             qnaBoard.updateContent(editQuestionReq.getContent());
             qnaBoard.updateCategory(category);
