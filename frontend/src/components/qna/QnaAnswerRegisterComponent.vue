@@ -273,17 +273,6 @@ fieldset[data-v-0571ceb3] {
   src: url(https://ssl.pstatic.net/static/kin/iconfont/kin_iconfont_883933.woff) format("woff")
 }
 
-body, div, fieldset, form, h1, h2, h3, h4, h5, h6, legend, textarea {
-  margin: 0;
-  padding: 0
-}
-
-body, textarea {
-  font-family: -apple-system, BlinkMacSystemFont, Helvetica, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  font-size: 12px;
-  line-height: 1.2
-}
-
 fieldset {
   border: 0
 }
