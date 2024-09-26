@@ -9,6 +9,10 @@ import java.util.List;
 @Getter
 @Builder
 public class GetQuestionDetailRes {
+    private Long id;
+    private Long userId;
+    private Long superCategoryId;
+    private Long subCategoryId;
     private String title;
     private String content;
     private String superCategoryName;

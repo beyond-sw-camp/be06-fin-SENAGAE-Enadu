@@ -94,6 +94,10 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
 
         return GetQuestionDetailRes.builder()
+                .id(qnaBoard.getId())
+                .userId(qnaBoard.getUser().getId())
+                .superCategoryId(qnaBoard.getCategory().getSuperCategory().getId())
+                .subCategoryId(qnaBoard.getCategory().getId())
                 .title(qnaBoard.getTitle())
                 .content(qnaBoard.getContent())
                 .superCategoryName(qnaBoard.getCategory().getSuperCategory() != null ?
@@ -116,6 +120,7 @@ public class QnaService {
         return answers.stream()
                 .map(answer -> GetAnswerDetailListRes.builder()
                         .id(answer.getId())
+                        .userId(answer.getUser().getId())
                         .answer(answer.getContent())
                         .likeCnt(answer.getLikeCount())
                         .hateCnt(answer.getHateCount())
@@ -135,6 +140,7 @@ public class QnaService {
         return answerComments.stream()
                 .map(answerComment -> GetAnswerCommentDetailListRes.builder()
                         .id(answerComment.getId())
+                        .userId(answerComment.getUser().getId())
                         .superCommentId(answerComment.getAnswerComment() != null ?
                                 answerComment.getAnswerComment().getId() : null)
                         .answerComment(answerComment.getContent())

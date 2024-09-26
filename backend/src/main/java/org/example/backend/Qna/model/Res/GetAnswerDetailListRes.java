@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 public class GetAnswerDetailListRes {
     private Long id;
+    private Long userId;
     private String answer;
     private Integer likeCnt;
     private Integer hateCnt;
