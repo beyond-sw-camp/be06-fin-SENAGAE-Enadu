@@ -2,7 +2,7 @@
   <div class="container">
     <!-- 상단 네비게이션 바 -->
     <div class="top-bar">
-      <div :class="!$route.path.startsWith('/wiki') ? 'separator' : ''">
+      <div :class="!$route. path.startsWith('/wiki') ? 'separator' : ''">
       <select v-model="selectedCategory" @change="getSubCategory" class="category-dropdown">
         <option value="">카테고리 선택</option>
         <option v-for="(super_category, idx) in categoryStore.superCategories" :key=idx :value="super_category.id">{{ super_category.categoryName }}</option>
@@ -82,30 +82,7 @@ export default {
     selectCategory(subCategory) {
       this.selectedSubCategory = subCategory; // 탭 선택
     },
-    searchData() {
-      switch(this.$route.path){
-        case "/errorarchive/list": {
-          const request = {
-            keyword: this.searchQuery,
-            selectedCategory: this.selectedCategory,
-            selectedSubCategoryId: this.selectedSubCategory.id,
-            selectedSubCategoryName: this.selectedSubCategory.categoryName,
-            type: this.selectedType,
-          };
-          this.$router.push({
-            path: this.$route.path,  // 현재 경로 유지
-            query: request
-          });
-          break;
-        }
-        case "/qna/list":
-          this.$emit("search", {
-            selectedSubCategory: this.selectedSubCategory,
-            searchQuery: this.searchQuery,
-            selectedType: this.selectedType
-          });
-      }
-    },
+    
     handleMoreCategory(){
       this.show_more_category = !this.show_more_category;
     },
@@ -133,7 +110,31 @@ export default {
         categoryName: ''
       };
       this.handleMoreCategory();
-    }
+    },
+    searchData() {
+      switch(this.$route.path){
+        case "/errorarchive/list": {
+          const request = {
+            keyword: this.searchQuery,
+            selectedCategory: this.selectedCategory,
+            selectedSubCategoryId: this.selectedSubCategory.id,
+            selectedSubCategoryName: this.selectedSubCategory.categoryName,
+            type: this.selectedType,
+          };
+          this.$router.push({
+            path: this.$route.path,  // 현재 경로 유지
+            query: request
+          });
+          break;
+        }
+        case "/qna/list":
+          this.$emit("search", {
+            selectedSubCategory: this.selectedSubCategory,
+            searchQuery: this.searchQuery,
+            selectedType: this.selectedType
+          });
+      },
+    },
   },
   async mounted() {
     await this.getSuperCategory();

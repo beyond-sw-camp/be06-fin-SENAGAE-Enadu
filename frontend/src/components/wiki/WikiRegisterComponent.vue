@@ -90,6 +90,7 @@
 
 <script>
 import { useWikiStore } from "@/store/useWikiStore";
+import { useUserStore } from "@/store/useUserStore";
 import { mapStores } from "pinia";
 import SuperCategoryModal from '../../components/Category/SuperCategoryModal.vue';
 import {useCommonStore} from "@/store/useCommonStore";
@@ -112,10 +113,19 @@ export default {
     computed: {
         ...mapStores(useWikiStore),
         ...mapStores(useCommonStore),
+        ...mapStores(useUserStore),
         isNullOrEmpty() {
             return (this.wikiRegisterReq.title === '' || this.wikiRegisterReq.myText === '' || this.wikiRegisterReq.mySuperCategory === '')
         },
     },
+    mounted() {
+    const userStore = useUserStore();
+    if (!userStore.isLoggedIn) {
+      // 비로그인 상태일 경우 에러 메시지 및 리다이렉트 처리
+      alert("로그인이 필요합니다.");
+      this.$router.push('/login');
+    }
+  },
     methods: {
         openSuperCategoryModal() {
             this.showSuperCategoryModal = true;

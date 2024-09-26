@@ -25,8 +25,9 @@
         </div>
       </div>
     </div>
-    <div class="qna-title">
+    <div class="qna-title" ><a :href="'/qna/detail/' + qnaCard.id">
       {{ qnaCard.title }}
+    </a>
     </div>
     <div class="footer">
       <div class="test">
@@ -77,6 +78,8 @@ export default {
   name: "QnaCardComponent",
   data() {
     return {};
+  },
+  mounted() {
   },
   props: ["qnaCard"],
   methods: {
@@ -138,15 +141,6 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.body .text {
-  margin: 0 10px 0 0;
-  white-space: pre-line;
-  color: #c0c3d7;
-  font-weight: 400;
-  line-height: 1.5;
-  margin-bottom: 4px;
 }
 
 .footer {

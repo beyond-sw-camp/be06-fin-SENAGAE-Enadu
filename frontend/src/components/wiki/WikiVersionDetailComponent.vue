@@ -13,15 +13,14 @@
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
                             <!-- 최신 위키로 돌아가기 버튼 -->
-                            <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#42a5f5"
+                            <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color: rgb(39, 194, 224); padding-bottom: 11px;padding-top: 10px; font-weight: bold;"
                                 @click="goToLatestWiki">
                                 최신 위키 돌아가기
                             </button>
 
-                            <!-- 스크랩 북마크 -->
-                            <div class="bookmark-checkbox">
+                             <div class="bookmark-checkbox" v-if="isLoggedIn">
                                 <input type="checkbox" id="bookmark-toggle" :checked="wikiDetail.checkScrap"
-                                    class="bookmark-checkbox__input">
+                                    class="bookmark-checkbox__input" @change="toggleScrap" />
                                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                                     <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
                                         <path class="bookmark-checkbox__icon-back"
@@ -58,12 +57,13 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 </template>
 
 <script>
 import { mapStores } from "pinia";
 import { useWikiStore } from "@/store/useWikiStore";
+import { useUserStore } from "@/store/useUserStore";
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/style/preview.css';
@@ -85,8 +85,12 @@ export default {
     },
     computed: {
         ...mapStores(useWikiStore),
+        ...mapStores(useUserStore),
         wikiDetail() {
             return this.wikiStore.wikiDetail || {};
+        },
+        isLoggedIn() {
+            return this.userStore.isLoggedIn;
         }
     },
     async mounted() {
@@ -122,6 +126,18 @@ export default {
                 this.$router.push({ path: '/wiki/detail', query: { id: this.wikiDetail.id } });
             } catch (error) {
                 console.error('최신 위키로 이동 중 오류 발생:', error);
+            }
+        },
+        async toggleScrap() {
+            try {
+                const wikiContentId = this.wikiDetail.wikiContentId;
+                
+                if (!wikiContentId) {
+                    throw new Error('Invalid wikiContentId');
+                }
+                await this.wikiStore.scrapWiki(wikiContentId);
+            } catch (error) {
+                console.error('Error toggling scrap:', error);
             }
         },
         goToVersionDetail(wikiContentId) {

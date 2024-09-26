@@ -140,12 +140,14 @@ export default {
   margin: 0 auto
 }
 
+
 .wiki-list-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  grid-auto-rows: auto;
-  gap: 64px;
-  width: 100%;
-  justify-items: center;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: auto;
+    gap: 0 64px;
+    justify-items: stretch;
+    max-width: 100%;
+    margin: 0 auto
 }
 </style>
