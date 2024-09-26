@@ -285,7 +285,7 @@ public class ErrorArchiveService {
                 .id(errorArchive.getId()) // 업데이트된 에러 아카이브의 ID 반환
                 .build();
     }
-
+    @Transactional
     public Boolean delete(RemoveErrorArchiveReq removeErrorArchiveReq, Long userId) {
         try {
             User user = userRepository.findById(userId)
