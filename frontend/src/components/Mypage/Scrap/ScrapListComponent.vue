@@ -48,7 +48,7 @@
             <div class="errorarchive-inner">
                 <div class="errorarchive-list-flex">
                     <ErrorArchiveCardComponent
-                        v-for="errorarchiveCard in mypageStore.history.archiveList"
+                        v-for="errorarchiveCard in mypageStore.scrap.archiveList"
                         :key="errorarchiveCard.id"
                         v-bind:errorarchiveCard="errorarchiveCard"
                     />
