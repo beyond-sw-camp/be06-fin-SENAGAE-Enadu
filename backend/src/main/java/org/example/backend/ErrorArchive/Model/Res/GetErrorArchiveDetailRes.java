@@ -12,10 +12,10 @@ public class GetErrorArchiveDetailRes {
     private String nickname;
     private String title;
     private String content;
-    private String superCategory;
-    private String subCategory;
     private Long superCategoryId;
     private Long subCaegoryId;
+    private String superCategory;
+    private String subCategory;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
     private Integer likeCnt;
