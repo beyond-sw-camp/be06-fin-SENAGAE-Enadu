@@ -96,26 +96,13 @@ public class UserService {
         if (user != null) {
             if (passwordEncoder.matches(password, user.getPassword())) {
                 user.updateEnable(false);
+                userRepository.save(user);
             } else {
                 throw new InvalidUserException(BaseResponseStatus.USER_PASSWORDS_DO_NOT_MATCH);
             }
         } else {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
-    }
-
-    public GetUserInfoRes getUserInfo(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            return GetUserInfoRes.builder()
-                    .email(user.getEmail())
-                    .nickname(user.getNickname())
-                    .isSocialUser(!"InApp".equals(user.getType()))
-                    .profileImg(user.getProfileImg())
-                    .grade(user.getGrade())
-                    .build();
-        }
-        throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
     }
 
     public void updateVerifiedStatus(String email){
