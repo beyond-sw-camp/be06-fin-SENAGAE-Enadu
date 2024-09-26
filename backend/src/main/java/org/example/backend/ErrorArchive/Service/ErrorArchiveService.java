@@ -114,6 +114,8 @@ public class ErrorArchiveService {
                 .content(errorArchive.getContent())
                 .superCategory(errorArchive.getCategory().getCategoryName())
                 .subCategory(errorArchive.getCategory().getCategoryName())
+                .superCategoryId(errorArchive.getCategory().getId())
+                .subCaegoryId(errorArchive.getCategory().getId())
                 .createAt(errorArchive.getCreatedAt())
                 .modifiedAt(errorArchive.getModifiedAt())
                 .likeCnt(errorArchive.getLikeCount())

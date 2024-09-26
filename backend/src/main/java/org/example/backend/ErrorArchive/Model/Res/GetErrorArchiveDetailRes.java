@@ -14,6 +14,8 @@ public class GetErrorArchiveDetailRes {
     private String content;
     private String superCategory;
     private String subCategory;
+    private Long superCategoryId;
+    private Long subCaegoryId;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
     private Integer likeCnt;
