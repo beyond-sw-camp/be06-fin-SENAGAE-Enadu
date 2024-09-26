@@ -2,14 +2,14 @@
   <div class="container">
     <!-- 상단 네비게이션 바 -->
     <div class="top-bar">
-      <div>
+      <div : class="!$route. path.startsWith('/wiki') ? 'separator' : '">
       <select v-model="selectedCategory" @change="getSubCategory" class="category-dropdown">
         <option disabled value="">카테고리 선택</option>
         <option v-for="(super_category, idx) in categoryStore.superCategories" :key=idx :value="super_category.id">{{ super_category.categoryName }}</option>
       </select>
       </div>
       <!-- 탭 네비게이션 -->
-      <div>
+      <div v-show="!$route.path.startsWith('/wiki')" class="tabs">
         <div :class="selectedSubCategory.id !== 0 ? 'tab active': ''">{{selectedSubCategory.id !== 0 ? selectedSubCategory.categoryName:''}}</div>
         <div class="tab" @click="handleMoreCategory">
           모든 하위 카테고리 보기
@@ -35,7 +35,7 @@
     </div>
       <!-- 검색창 -->
     <div style="display:flex; flex-direction: row; justify-content: center; width: 100%">
-      <SortTypeComponent style="margin-bottom: 0" @checkLatest="handleCheckLatest" @checkLike="handleCheckLike"/>
+      <SortTypeComponent v-show="!$route.path.startsWith('/wiki')" style="margin-bottom: 0" @checkLatest="handleCheckLatest" @checkLike="handleCheckLike"/>
       <div style="display:flex" class="search-bar">
         <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery">
         <button @click="searchData"><i class="fas fa-search"></i></button>
