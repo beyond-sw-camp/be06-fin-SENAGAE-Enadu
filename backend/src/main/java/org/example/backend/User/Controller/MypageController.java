@@ -5,9 +5,9 @@ import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidMypageException;
 import org.example.backend.Security.CustomUserDetails;
-import org.example.backend.User.Model.Res.GetQnaScrapListRes;
 import org.example.backend.User.Model.Res.GetUserInfoRes;
 import org.example.backend.User.Model.Res.GetUserQnaListRes;
+import org.example.backend.User.Model.Res.GetUserWikiListRes;
 import org.example.backend.User.Service.MypageService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,8 +56,27 @@ public class MypageController {
         return new BaseResponse<>(mypageService.getUserQnaList(id, page, size, "answer"));
     }
 
+    @GetMapping("/log/wiki")
+    public BaseResponse<List<GetUserWikiListRes>> getUserWikiList(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size, @RequestParam(value = "userId", required = false) Long userId) {
+        if (customUserDetails == null && userId == null) {
+            throw new InvalidMypageException(BaseResponseStatus.MYPAGE_NO_USER_ID);
+        }
+        Long id;
+        if (userId != null) {
+            id = userId;
+        } else {
+            id = customUserDetails.getUserId();
+        }
+        return new BaseResponse<>(mypageService.getUserWikiList(id, page, size, "log"));
+    }
+
     @GetMapping("/scrap/qna")
-    public BaseResponse<List<GetQnaScrapListRes>> getQnaScrapList(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size) {
-        return new BaseResponse<>(mypageService.getQnaScrapList(customUserDetails.getUserId(), page, size));
+    public BaseResponse<List<GetUserQnaListRes>> getQnaScrapList(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size) {
+        return new BaseResponse<>(mypageService.getUserQnaList(customUserDetails.getUserId(), page, size, "scrap"));
+    }
+
+    @GetMapping("/scrap/wiki")
+    public BaseResponse<List<GetUserWikiListRes>> getWikiScrapList(@AuthenticationPrincipal CustomUserDetails customUserDetails, Integer page, Integer size) {
+        return new BaseResponse<>(mypageService.getUserWikiList(customUserDetails.getUserId(), page, size, "scrap"));
     }
 }
