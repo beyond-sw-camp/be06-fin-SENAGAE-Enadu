@@ -298,7 +298,8 @@ public class ErrorArchiveService {
                 throw new InvalidErrorBoardException(BaseResponseStatus.ERROR_PERMISSION_DENIED);
             }
 
-            errorArchiveReository.delete(errorArchive);
+            errorArchive.updateEnalbe(false);
+            errorArchiveReository.save(errorArchive);
             return true; // 정상적으로 삭제되면 true 반환
         } catch (Exception e) {
             // 예외가 발생한 경우 false 반환
