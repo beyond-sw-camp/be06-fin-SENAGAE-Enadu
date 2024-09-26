@@ -151,7 +151,7 @@ export default {
             if (archiveList.length !== 0) {
                 this.totalPage = archiveList[0].totalPage;
             } else {
-                alert("작성한 위키 내역이 없습니다.");
+                alert("작성한 아카이브 내역이 없습니다.");
             }
         },
         async fetchWikiList() {
