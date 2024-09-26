@@ -112,10 +112,13 @@ public class ErrorArchiveService {
                 .nickname(errorArchive.getUser().getNickname())
                 .title(errorArchive.getTitle())
                 .content(errorArchive.getContent())
-                .superCategoryId(errorArchive.getCategory().getId())
-                .subCaegoryId(errorArchive.getCategory().getId())
-                .superCategory(errorArchive.getCategory().getCategoryName())
-                .subCategory(errorArchive.getCategory().getCategoryName())
+                .superCategoryId(errorArchive.getCategory().getSuperCategory() == null ?
+                        errorArchive.getCategory().getId() : errorArchive.getCategory().getSuperCategory().getId())
+                .subCaegoryId(errorArchive.getCategory().getSuperCategory() == null? null : errorArchive.getCategory().getId())
+                .superCategory(errorArchive.getCategory().getSuperCategory() == null ?
+                        errorArchive.getCategory().getCategoryName() :
+                        errorArchive.getCategory().getSuperCategory().getCategoryName())
+                .subCategory(errorArchive.getCategory().getSuperCategory() == null ? null: errorArchive.getCategory().getCategoryName())
                 .createAt(errorArchive.getCreatedAt())
                 .modifiedAt(errorArchive.getModifiedAt())
                 .likeCnt(errorArchive.getLikeCount())
