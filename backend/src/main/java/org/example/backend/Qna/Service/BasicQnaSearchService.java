@@ -48,11 +48,11 @@ public class BasicQnaSearchService implements QnaSearchService {
         // paging 처리 및 responseList 생성
         Page<QnaBoard> qnaBoardPage;
         if (getQnaSearchReq.getType().equals("tc")) {
-            qnaBoardPage = questionRepository.findByKeywordAndCategoryId_TC(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), pageable);
+            qnaBoardPage = questionRepository.findByTC(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), pageable);
         } else if (getQnaSearchReq.getType().equals("t")) {
-            qnaBoardPage = questionRepository.findByKeywordAndCategoryId_T(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), pageable);
+            qnaBoardPage = questionRepository.findByT(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), pageable);
         } else if (getQnaSearchReq.getType().equals("c")) {
-            qnaBoardPage = questionRepository.findByKeywordAndCategoryId_C(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), pageable);
+            qnaBoardPage = questionRepository.findByC(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), pageable);
         } else {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
         }

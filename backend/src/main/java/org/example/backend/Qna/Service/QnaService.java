@@ -21,7 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -160,13 +159,14 @@ public class QnaService {
                 .state(true)
                 .build();
 
-        Optional<QnaLike> beforeLike = qnaLikeRepository.findLikeByQnaBoardIdAndUserIdAndState(qnaBoard.getId(), userId, true);
-        Optional<QnaLike> beforeHate = qnaLikeRepository.findLikeByQnaBoardIdAndUserIdAndState(qnaBoard.getId(), userId, false);
+        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUser_IdAndQnaBoard_IdAndState(qnaBoard.getId(), userId, true);
+        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUser_IdAndQnaBoard_IdAndState(qnaBoard.getId(), userId, false);
 
         // 이전에 좋아요만 했을 경우
         if (beforeLike.isPresent() && beforeHate.isEmpty()) {
             qnaLikeRepository.delete(beforeLike.get());
             qnaBoard.decreaseLikeCount();
+            questionRepository.save(qnaBoard);
             return 0L;
         }
         // 이전에 싫어요만 했을 경우
@@ -177,6 +177,7 @@ public class QnaService {
         else {
             qnaLikeRepository.save(qnaLike);
             qnaBoard.increaseLikeCount();
+            questionRepository.save(qnaBoard);
             return qnaLike.getId();
         }
     }
@@ -194,13 +195,14 @@ public class QnaService {
                 .state(false)
                 .build();
 
-        Optional<QnaLike> beforeLike = qnaLikeRepository.findLikeByQnaBoardIdAndUserIdAndState(qnaBoard.getId(), userId, true);
-        Optional<QnaLike> beforeHate = qnaLikeRepository.findLikeByQnaBoardIdAndUserIdAndState(qnaBoard.getId(), userId, false);
+        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUser_IdAndQnaBoard_IdAndState(qnaBoard.getId(), userId, true);
+        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUser_IdAndQnaBoard_IdAndState(qnaBoard.getId(), userId, false);
 
         // 이전에 싫어요만 했을 경우
         if (beforeHate.isPresent() && beforeLike.isEmpty()) {
             qnaLikeRepository.delete(beforeHate.get());
             qnaBoard.decreaseHateCount();
+            questionRepository.save(qnaBoard);
             return 0L;
         }
         // 이전에 좋아요만 했을 경우
@@ -211,6 +213,7 @@ public class QnaService {
         else {
             qnaLikeRepository.save(qnaLike);
             qnaBoard.increaseHateCount();
+            questionRepository.save(qnaBoard);
             return qnaLike.getId();
         }
     }
@@ -233,13 +236,14 @@ public class QnaService {
                 .state(true)
                 .build();
 
-        Optional<AnswerLike> beforeLike = answerLikeRepository.findLikeByQnaAnswerIdAndUserIdAndState(answer.getId(), userId, true);
-        Optional<AnswerLike> beforeHate = answerLikeRepository.findLikeByQnaAnswerIdAndUserIdAndState(answer.getId(), userId, false);
+        Optional<AnswerLike> beforeLike = answerLikeRepository.findByAnswer_IdAndUser_IdAndStateAndAnswer_EnableTrue(answer.getId(), userId, true);
+        Optional<AnswerLike> beforeHate = answerLikeRepository.findByAnswer_IdAndUser_IdAndStateAndAnswer_EnableTrue(answer.getId(), userId, false);
 
         // 이전에 좋아요만 했을 경우
         if (beforeLike.isPresent() && beforeHate.isEmpty()) {
             answerLikeRepository.delete(beforeLike.get());
             answer.decreaseLikeCount();
+            answerRepository.save(answer);
             return 0L;
         }
         // 이전에 싫어요만 했을 경우
@@ -250,6 +254,7 @@ public class QnaService {
         else {
             answerLikeRepository.save(answerLike);
             answer.increaseLikeCount();
+            answerRepository.save(answer);
             return answerLike.getId();
         }
     }
@@ -272,13 +277,14 @@ public class QnaService {
                 .state(false)
                 .build();
 
-        Optional<AnswerLike> beforeLike = answerLikeRepository.findLikeByQnaAnswerIdAndUserIdAndState(answer.getId(), userId, true);
-        Optional<AnswerLike> beforeHate = answerLikeRepository.findLikeByQnaAnswerIdAndUserIdAndState(answer.getId(), userId, false);
+        Optional<AnswerLike> beforeLike = answerLikeRepository.findByAnswer_IdAndUser_IdAndStateAndAnswer_EnableTrue(answer.getId(), userId, true);
+        Optional<AnswerLike> beforeHate = answerLikeRepository.findByAnswer_IdAndUser_IdAndStateAndAnswer_EnableTrue(answer.getId(), userId, false);
 
         // 이전에 싫어요만 했을 경우
         if (beforeHate.isPresent() && beforeLike.isEmpty()) {
             answerLikeRepository.delete(beforeHate.get());
             answer.decreaseHateCount();
+            answerRepository.save(answer);
             return 0L;
         }
         // 이전에 좋아요만 했을 경우
@@ -289,6 +295,7 @@ public class QnaService {
         else {
             answerLikeRepository.save(answerLike);
             answer.increaseHateCount();
+            answerRepository.save(answer);
             return answerLike.getId();
         }
     }
@@ -305,7 +312,7 @@ public class QnaService {
                 .user(user)
                 .build();
 
-        Optional<QnaScrap> beforeScrap = qnaScrapRepository.findScrapByQnaBoardIdAndUserId(qnaBoardId, userId);
+        Optional<QnaScrap> beforeScrap = qnaScrapRepository.findByQnaBoard_EnableTrueAndQnaBoard_IdAndUser_Id(qnaBoardId, userId);
         if (beforeScrap.isPresent()) {
             qnaScrapRepository.delete(beforeScrap.get());
             return 0L;
@@ -318,17 +325,17 @@ public class QnaService {
     // 현재 접속한 사용자의 좋아요/싫어요/선택 X 상태를 알아내는 함수
     //userID-qnaBoardId를 활용해서 해당 사용자가 답변글에 어떤 상태를 표시했는지 나타내는 함수
     public Boolean isQuestionLikeORHate(QnaBoard qnaBoard, User user) {
-        Optional<Boolean> state = qnaLikeRepository.findStateByQnaBoardIdAndUserId(qnaBoard.getId(), user.getId());
+        Optional<Boolean> state = qnaLikeRepository.findState(qnaBoard.getId(), user.getId());
         return state.orElse(null);
     }
     // userID-qnaBoardId를 활용해서 해당 사용자가 답변글에 어떤 상태를 표시했는지 나타내는 함수
     public Boolean isAnswerLikeORHate(Answer answer, User user) {
-        Optional<Boolean> state = answerLikeRepository.findStateByAnswerIdAndUserId(answer.getId(), user.getId());
+        Optional<Boolean> state = answerLikeRepository.findState(answer.getId(), user.getId());
         return state.orElse(null);
     }
     // 현재 접속한 사용자의 질문에 대한 스크랩 상태를 알아내는 함수
     private boolean isQuestionScarp(QnaBoard qnaBoard, User user) {
-        Optional<QnaScrap> qnaScrap = qnaScrapRepository.findScrapByQnaBoardIdAndUserId(qnaBoard.getId(), user.getId());
+        Optional<QnaScrap> qnaScrap = qnaScrapRepository.findByQnaBoard_EnableTrueAndQnaBoard_IdAndUser_Id(qnaBoard.getId(), user.getId());
         if (qnaScrap.isPresent()) {
             return true;
         } else {
@@ -351,6 +358,7 @@ public class QnaService {
 
         answerRepository.save(answer);
         qnaBoard.increaseAnswerCount();
+        questionRepository.save(qnaBoard);
         return answer.getId();
     }
 
@@ -363,7 +371,7 @@ public class QnaService {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
-        if (answerRepository.countAdoptedAnswersByQuestionId(qnaBoardId).equals(0)) {
+        if (answerRepository.countAdopted(qnaBoardId).equals(0)) {
             answer.adoptedAnswer(true);
             return answer.getId();
         } else {
@@ -395,6 +403,7 @@ public class QnaService {
 
         answerCommentRepository.save(answerComment);
         answer.increaseCommentCount();
+        answerRepository.save(answer);
         return answerComment.getId();
     }
 
@@ -448,5 +457,24 @@ public class QnaService {
         qnaBoard.disable();
         questionRepository.save(qnaBoard);
         return qnaBoard.getId();
+    }
+
+    @Transactional
+    public Long disableAnswer(Long qnaBoardId, Long answerId, Long userId) {
+        QnaBoard qnaBoard  = questionRepository.findById(qnaBoardId)
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
+        Answer answer  = answerRepository.findById(answerId)
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        //후에 권한 처리
+
+        qnaBoard.decreaseAnswerCount();
+        questionRepository.save(qnaBoard);
+        answer.disable();
+        answerRepository.save(answer);
+
+
+        return answer.getId();
     }
 }

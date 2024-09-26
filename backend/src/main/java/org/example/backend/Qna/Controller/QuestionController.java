@@ -82,7 +82,7 @@ public class QuestionController {
     }
 
     @PatchMapping("/removal")
-    public BaseResponse<Long> editQuestion(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public BaseResponse<Long> disableQuestion(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.disableQuestion(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
         return new BaseResponse<>(id);
     }
