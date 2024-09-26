@@ -2,7 +2,7 @@
   <div class="container">
     <!-- 상단 네비게이션 바 -->
     <div class="top-bar">
-      <div :class="!$route.path.startsWith('/wiki') ? 'separator' : ''">
+      <div : class="!$route. path.startsWith('/wiki') ? 'separator' : ''">
       <select v-model="selectedCategory" @change="getSubCategory" class="category-dropdown">
         <option disabled value="">카테고리 선택</option>
         <option v-for="(super_category, idx) in categoryStore.superCategories" :key=idx :value="super_category.id">{{ super_category.categoryName }}</option>
@@ -38,14 +38,14 @@
       <SortTypeComponent v-show="!$route.path.startsWith('/wiki')" style="margin-bottom: 0" @checkLatest="handleCheckLatest" @checkLike="handleCheckLike"/>
       <div style="display:flex" class="search-bar">
         <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery">
-        <button @click="showAlert"><i class="fas fa-search"></i></button>
+        <button @click="searchData"><i class="fas fa-search"></i></button>
       </div>
 
       <!-- 두 번째 드롭다운 -->
       <select style="display:flex;" v-model="selectedType" class="type-dropdown">
-        <option value="제목+내용">제목+내용</option>
-        <option value="제목">제목</option>
-        <option value="내용">내용</option>
+        <option value="tc">제목+내용</option>
+        <option value="t">제목</option>
+        <option value="c">내용</option>
       </select>
     </div>
 
@@ -81,10 +81,6 @@ export default {
     selectCategory(subCategory) {
       this.selectedSubCategory = subCategory; // 탭 선택
     },
-    performSearch() {
-      console.log(`Search Query: ${this.searchQuery}`);
-      // 검색 로직 추가
-    },
     handleMoreCategory(){
       this.show_more_category = !this.show_more_category;
     },
@@ -112,7 +108,14 @@ export default {
         categoryName: ''
       };
       this.handleMoreCategory();
-    }
+    },
+    searchData(){
+      this.$emit("search", {
+        selectedSubCategory: this.selectedSubCategory,
+        searchQuery: this.searchQuery,
+        selectedType: this.selectedType
+      });
+    },
   },
   mounted() {
     this.getSuperCategory();

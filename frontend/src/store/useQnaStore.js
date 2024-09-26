@@ -26,6 +26,7 @@ export const useQnaStore = defineStore("qna", {
         checkScrap: 0,
         checkAnsLike: 0,
         checkAnsHate: 0,
+        qnaSearchedCards: [],
     }),
 
 
@@ -197,6 +198,29 @@ export const useQnaStore = defineStore("qna", {
                     }, withCredentials: true
                 });
                 this.checkAnsHate = res.data.result;
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+        async qnaSearch(type, keyword, category, sort, page) {
+            const params = {
+                type: type,
+                keyword: keyword,
+                categoryId: category.id,
+                sort: sort,
+                page: page-1,
+                size: 15,
+            };
+
+            try {
+                const res = await axios.get(backend + "/qna/search", {
+                    params: params,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+                this.qnaSearchedCards = res.data.result;
+                console.log(res.data.result);
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
