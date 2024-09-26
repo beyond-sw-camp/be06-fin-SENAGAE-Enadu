@@ -66,13 +66,30 @@ export const useQnaStore = defineStore("qna", {
             } catch (error) {
                 alert("질문 상세 데이터 요청 중 에러가 발생했습니다.");
             }
-        }, async registerComment(answerId, superCommentId, myComment) {
+        },
+        async registerComment(answerId, superCommentId, myComment) {
             const data = {
                 answerId: answerId, superCommentId: superCommentId, content: myComment,
             };
 
             try {
                 await axios.post(backend + "/ans/comment", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+        async registerAnswer(qnaBoardId, myAnswer) {
+            const data = {
+                qnaBoardId: qnaBoardId,
+                content: myAnswer
+            };
+
+            try {
+                await axios.post(backend + "/ans", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
