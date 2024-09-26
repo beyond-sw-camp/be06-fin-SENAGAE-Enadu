@@ -142,9 +142,6 @@ async mounted() {
     this.errorArchive.content = this.errorarchiveStore.errorArchiveDetail.content;
     this.selectedSuperCategory.categoryName = this.errorarchiveStore.errorArchiveDetail.superCategory;
     this.selectedSubCategory.categoryName = this.errorarchiveStore.errorArchiveDetail.subCategory;
-    if (this.errorArchive.categoryId) {
-      this.selectedSuperCategory = await this.fetchSuperCategory(this.errorArchive.categoryId);
-    }
 
   } catch (error) {
     console.error('Error fetching error archive data:', error);
@@ -164,24 +161,24 @@ async mounted() {
     }
   },
   methods: {
-    async handleSubmit(){
-      if (!this.errorArchive.title || !this.errorArchive.content || !this.selectedSuperCategory) {
-        alert('모든 필드를 올바르게 입력해 주세요.');
-        return;
-      }
-      // errorArchive 객체에서 ID를 분리
-      const { id, ...data } = this.errorArchive; // errorArchive에 id 필드가 있다고 가정
-
-      // subcategory null인지 확인해서 어떤거를 erroArchive 안에 넣어줄지 판별해서 id 넣어주기
+    async handleSubmit() {
       try { 
-        const errorArchiveStore = useErrorArchiveStore(); // Use your store
-        await errorArchiveStore. updateErrorArchive(id,data);
+        const errorarchiveStore = useErrorArchiveStore();
+        const errorarchive = {
+          id: this. errorArchive.id,
+          title: this. errorArchive.title,
+          content: this. errorArchive.content,
+          categoryId: this.selectedSubCategory.categoryId
+        };
+        await errorarchiveStore.updateErrorArchive(errorarchive);
         alert('수정이 완료되었습니다.');
+        this.$router.push('/errorarchive/list');
       } catch (error) {
         console.error('수정 중 오류 발생:', error);
         alert(`수정 중 오류 발생: ${error.message}`);
       }
     },
+   
     // 메소드 2개일 필요없고, if-else문으로 처리 가능
     openSuperCategoryModal() {
       this.showSuperModal = true;

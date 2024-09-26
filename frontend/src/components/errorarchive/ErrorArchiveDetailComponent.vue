@@ -247,6 +247,13 @@ export default {
 </script>
 
 <style scoped>
+.sc-fvxzrP {
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: space-between; /* 양 끝 정렬 */
+}
+
+
 .profile {
   border-radius: 50%;
   width: 25px;

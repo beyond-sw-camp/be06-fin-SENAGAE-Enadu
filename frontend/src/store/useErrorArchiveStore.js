@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { useUserStore } from './useUserStore';
+import { useUserStore } from '@/store/useUserStore';
+
 
 const backend = "/api";
 
@@ -31,7 +32,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     // 에러 아카이브 등록 기능
     async registerErrorArchive(errorarchive) {
       try {
-        const response = await axios.post(backend + "/errorarchive", errorarchive, {
+        const response = await axios.post(backend + "/errorarchive/register", errorarchive, {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
@@ -55,43 +56,38 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       }
     },
     // 에러 아카이브 수정 기능
-    async updateErrorArchive(id, updatedContent, updatedTitle, categoryId) {
+    async updateErrorArchive(errorarchive) {
       const userStore = useUserStore();
-      if(!userStore.isLoggedIn){
+      console.log("수정할 에러 아카이브:", errorarchive.id);
+
+      if (!userStore.isLoggedIn) {
         console.log("로그인이 필요합니다.");
         return false;
       }
+      
       try {
-        const formData = new FormData();
-        const updateReq = {
-          id: id,
-          content: updatedContent,
-          title: updatedTitle,
-          categoryId: categoryId
-        };
-        const jsonBlob = new Blob([JSON.stringify(updateReq)], { type: "application/json"});
-        formData.append("getErrorArchiveUpdateReq", jsonBlob);
-
-        const response = await axios.patch(backend+"/errorarchive", formData, {
+        const response = await axios.patch(backend+"/errorarchive", errorarchive, {
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data"
-          }
         });
-        if (response && response.data.isSuccess) {
-          console.log("에러 아카이브 수정 성공:", response.data);
-          return true;
-      } else {
-          throw new Error("수정 실패");
-      }
+    
+        // 응답 확인
+        if (response.data.isSuccess) {
+          console.log("에러 아카이브 수정 성공:", response.data.message);
+          alert("수정 완료!!!!");
+          return response.data.result; // 수정된 결과를 반환
+        } else {
+          throw new Error("수정 실패: " + response.data.message);
+        }
       } catch (error) {
-          console.error("에러 아카이브 수정 중 오류 발생:", error);
-          throw error;
+        console.error("에러 아카이브 수정 중 오류 발생:", error);
+        if (error.response) {
+          console.error("응답 데이터:", error.response.data); // 응답 데이터 확인
+        }
+        throw error;
       }
     },
-    async fetchErrorArchiveDetail(id) {
-      const response = await fetch(`api/erroarchive/detail?${id}`);
-      this.errorArchiveDetail = await response.json();
-    },
+    
     // 에러 아카이브 상세 조회
     async getErrorArchiveDetail(id) {
       try {
