@@ -48,7 +48,15 @@
     <div>
         <LoadingComponent v-if="isLoading" style="margin-top: 30px" />
         <div v-if="activeSection === 'archive'">
-            에러 아카이브 페이지
+            <div class="errorarchive-inner">
+                <div class="errorarchive-list-flex">
+                    <ErrorArchiveCardComponent
+                        v-for="errorarchiveCard in mypageStore.history.archiveList"
+                        :key="errorarchiveCard.id"
+                        v-bind:errorarchiveCard="errorarchiveCard"
+                    />
+                </div>
+            </div>
         </div>
         <div v-if="activeSection === 'wiki'">
             <div class="wiki-list-grid" v-if="!isLoading">
@@ -90,14 +98,15 @@ import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import LoadingComponent from "@/components/Common/LoadingComponent.vue";
+import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";
 
 export default {
     name: "HistoryListComponent",
-    components: {LoadingComponent, WikiCardComponent, PaginationComponent, QnaCardComponent },
+    components: {ErrorArchiveCardComponent, LoadingComponent, WikiCardComponent, PaginationComponent, QnaCardComponent },
     data() {
         return {
             isLoading: true,
-            activeSection: 'wiki',
+            activeSection: 'archive',
             page: 0,
             totalPage: 1
         };
@@ -119,6 +128,9 @@ export default {
             this.isLoading = true;
             try {
                 switch (this.activeSection) {
+                    case 'archive':
+                        await this.fetchArchiveList();
+                        break;
                     case 'wiki':
                         await this.fetchWikiList();
                         break;
@@ -133,11 +145,20 @@ export default {
                 this.isLoading = false;
             }
         },
+        async fetchArchiveList() {
+            await this.mypageStore.getLogArchiveList(this.page);
+            const archiveList = this.mypageStore.history.archiveList || [];
+            if (archiveList.length !== 0) {
+                this.totalPage = archiveList[0].totalPage;
+            } else {
+                alert("작성한 위키 내역이 없습니다.");
+            }
+        },
         async fetchWikiList() {
             await this.mypageStore.getLogWikiList(this.page);
             const wikiList = this.mypageStore.history.wikiList || [];
             if (wikiList.length !== 0) {
-                this.totalPage = wikiList[0].totalPages;
+                this.totalPage = wikiList[0].totalPage;
             } else {
                 alert("작성한 위키 내역이 없습니다.");
             }
@@ -190,6 +211,23 @@ export default {
 
 .bg-white {
     border: 1px solid rgb(107 114 128 / 0.3);
+}
+
+.errorarchive-inner {
+    width: auto;
+    height: max-content;
+    background-color: #fff;
+    margin: 25px;
+}
+
+.errorarchive-list-flex {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-auto-rows: auto;
+    gap: 26px 36px;
+    justify-items: stretch;
+    max-width: 100%;
+    margin: 0 auto
 }
 
 .wiki-list-grid {

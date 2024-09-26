@@ -101,6 +101,21 @@ export const useMypageStore = defineStore("mypage", {
                 alert("비밀번호 변경에 실패하였습니다.");
             }
         },
+        async getLogArchiveList(page) {
+            const params = {
+                page: page,
+                size: 15
+            };
+            try {
+                const response = await axios.get(backend + "/mypage/log/archive", {
+                    params: params,
+                    withCredentials: true
+                });
+                this.history.archiveList = response.data.result;
+            } catch (error) {
+                alert("아카이브 목록 불러오는데 실패하였습니다.")
+            }
+        },
         async getLogWikiList(page) {
             const params = {
                 page: page,
