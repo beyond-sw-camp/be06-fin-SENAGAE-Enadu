@@ -14,6 +14,7 @@ public class GetAnswerDetailListRes {
     private Integer likeCnt;
     private Integer hateCnt;
     private Boolean checkLikeOrHate;
+    private Boolean checkAdopted;
     private String nickname;
     private String grade;
     private String profileImage;

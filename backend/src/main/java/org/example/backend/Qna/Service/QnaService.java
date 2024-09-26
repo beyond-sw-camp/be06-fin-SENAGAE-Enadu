@@ -124,6 +124,7 @@ public class QnaService {
                         .likeCnt(answer.getLikeCount())
                         .hateCnt(answer.getHateCount())
                         .checkLikeOrHate(isAnswerLikeORHate(answer, user))
+                        .checkAdopted(answer.isAdopted())
                         .nickname(answer.getUser().getNickname())
                         .grade(answer.getUser().getGrade())
                         .profileImage(answer.getUser().getProfileImg())
