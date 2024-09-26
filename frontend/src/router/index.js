@@ -24,6 +24,7 @@ import WikiVersionListPage from '@/pages/WikiVersionListPage.vue';
 import WikiVersionDetailPage from '@/pages/WikiVersionDetailPage.vue'; 
 import WikiListPage from "@/pages/WikiListPage.vue";
 import MainPage from "@/pages/MainPage.vue";
+import UserLogPage from "@/pages/UserLogPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -54,6 +55,7 @@ const router = createRouter({
         { path: "history", component: HistoryListComponent },
         { path: "scrap", component: ScrapListComponent }
       ] },
+      { path: "/user/log/:nickname", component: UserLogPage },
     { path:"/errorarchive/detail", component: ErrorArchiveDetailPage},
     { path:"/", component: MainPage},
   ]
