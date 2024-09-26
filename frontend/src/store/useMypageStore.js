@@ -146,6 +146,21 @@ export const useMypageStore = defineStore("mypage", {
                 alert("작성 목록을 불러오는데 실패하였습니다.");
             }
         },
+        async getWikiScrapList(page) {
+            const params = {
+                page: page,
+                size: 12
+            };
+            try {
+                const response = await axios.get(backend + "/mypage/scrap/wiki", {
+                    params: params,
+                    withCredentials: true
+                });
+                this.scrap.wikiList = response.data.result;
+            } catch (error) {
+                alert("스크랩 내역을 불러오는데 실패하였습니다.");
+            }
+        },
         async getQnaScrapList(page) {
             const params = {
                 page: page,

@@ -43,11 +43,14 @@
         </div>
     </div>
     <div>
+        <LoadingComponent v-if="isLoading" style="margin-top: 30px" />
         <div v-if="activeSection === 'archive'">
             에러 아카이브 페이지
         </div>
         <div v-if="activeSection === 'wiki'">
-            위키
+            <div class="wiki-list-grid" v-if="!isLoading">
+                <WikiCardComponent v-for="wikiCard in mypageStore.scrap.wikiList" :key="wikiCard.id" :wikiCard="wikiCard" />
+            </div>
         </div>
         <div v-if="activeSection === 'qna'">
             <div class="qna-inner">
@@ -60,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="pagination-container">
+        <div class="pagination-container" v-if="!isLoading && totalPage > 0">
             <PaginationComponent @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>
         </div>
     </div>
@@ -71,12 +74,15 @@ import {mapStores} from "pinia";
 import {useMypageStore} from "@/store/useMypageStore";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
+import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
+import LoadingComponent from "@/components/Common/LoadingComponent.vue";
 
 export default {
     name: "ScrapListComponent",
-    components: {QnaCardComponent, PaginationComponent},
+    components: {LoadingComponent, WikiCardComponent, QnaCardComponent, PaginationComponent},
     data() {
         return {
+            isLoading: true,
             activeSection: 'qna',
             page: 0,
             totalPage: 1
@@ -96,8 +102,27 @@ export default {
             this.loadData();
         },
         async loadData() {
-            if (this.activeSection === 'qna') {
-                await this.fetchQnaList();
+            this.isLoading = true;
+            try {
+                switch (this.activeSection) {
+                    case 'wiki':
+                        await this.fetchWikiList();
+                        break;
+                    case 'qna':
+                        await this.fetchQnaList();
+                        break;
+                }
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        async fetchWikiList() {
+            await this.mypageStore.getWikiScrapList(this.page);
+            const wikiList = this.mypageStore.scrap.wikiList || [];
+            if (wikiList.length !== 0) {
+                this.totalPage = wikiList[0].totalPages;
+            } else {
+                alert("스크랩한 위키가 없습니다.");
             }
         },
         async fetchQnaList() {
@@ -106,7 +131,7 @@ export default {
             if (qnaList.length !== 0) {
                 this.totalPage = qnaList[0].totalPage;
             } else {
-                alert("qna 스크랩한 내역이 없습니다.");
+                alert("스크랩한 QnA가 없습니다.");
             }
         },
         getButtonClass(section) {
@@ -146,6 +171,18 @@ export default {
     height: max-content;
     background-color: #fff;
     margin: 25px;
+}
+
+.wiki-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 270px));
+    grid-auto-rows: auto;
+    gap: 0 36px;
+    justify-items: center;
+    justify-content: center;
+    align-content: center;
+    max-width: 100%;
+    margin: 35px 10px;
 }
 
 .qna-list-flex {
