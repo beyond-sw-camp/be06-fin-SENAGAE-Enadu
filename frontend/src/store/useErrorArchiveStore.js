@@ -125,7 +125,6 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       const response = await axios.get(backend+"/errorarchive/search", {
         params: request
       });
-      console.log(response);
       if (response.data.result){
         this.errorarchiveCards  = response.data.result;
       } else {

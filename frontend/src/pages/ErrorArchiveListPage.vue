@@ -126,10 +126,10 @@ export default {
     async searchErrorArchiveList(){ // 검색 처음 했을 때
       this.isLoading = true;
       this.isLoading2 = true;
-      this.isUpdating = true // watch에서 감지 안돼도록
+      this.isUpdating = true; // watch에서 감지 안돼도록
       this.selectedPageAndSort.sort = "latest";
       this.selectedPageAndSort.page = 1;
-      this.isUpdating = false;
+
       const request = {
         keyword:  this.$route.query.keyword,
         categoryId: this.$route.query.selectedSubCategoryId != 0 ? this.$route.query.selectedSubCategoryId : this.$route.query.selectedCategory,
@@ -147,7 +147,8 @@ export default {
       this.searchRequest = request;
       this.isLoading = false;
       this.isLoading2 = false;
-
+      await this.$nextTick(); // DOM 업데이트가 끝날 때까지 기다림
+      this.isUpdating = false; // 이렇게 안하면 watch에서 감지됨
     },
   },
 };

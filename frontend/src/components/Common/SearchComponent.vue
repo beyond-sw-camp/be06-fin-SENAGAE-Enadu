@@ -133,7 +133,7 @@ export default {
             searchQuery: this.searchQuery,
             selectedType: this.selectedType
           });
-      },
+      }
     },
   },
   async mounted() {
