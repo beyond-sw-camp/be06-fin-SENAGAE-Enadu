@@ -21,7 +21,7 @@ public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
     @Query("SELECT q FROM QnaBoard q WHERE q.content LIKE CONCAT('%', :keyword, '%') AND :categoryId IS NULL OR q.category.id = :categoryId")
     Page<QnaBoard> findByKeywordAndCategoryId_C(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, Pageable pageable);
 
-    Page<QnaBoard> findByUserId(Long userId, Pageable pageable);
-    Page<QnaBoard> findByUser_AnswerList_User_Id(Long id, Pageable pageable);
-    Page<QnaBoard> findByQnaScrapList_User_Id(Long id, Pageable pageable);
+    Page<QnaBoard> findByUserIdAndEnableTrue(Long userId, Pageable pageable);
+    Page<QnaBoard> findByUser_AnswerList_User_IdAndEnableTrue(Long id, Pageable pageable);
+    Page<QnaBoard> findByQnaScrapList_User_IdAndEnableTrue(Long id, Pageable pageable);
 }
