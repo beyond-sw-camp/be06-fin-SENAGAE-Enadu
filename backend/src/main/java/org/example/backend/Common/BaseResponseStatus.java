@@ -14,7 +14,7 @@ public enum BaseResponseStatus {
     USER_EMAIL_OR_PASSWORD_NULL(false, 2004, "이메일 또는 비밀번호가 비어있습니다."),
     USER_NOT_FOUND(false, 2005, "등록되지 않은 사용자입니다."),
     USER_INVALID_EMAIL_FORMAT(false, 2005, "잘못된 이메일 형식입니다."),
-    USER_INACTIVE_ACCOUNT(false, 2006, "비활성화된 계정입니다."),
+    USER_INACTIVE_ACCOUNT(false, 2006, "탈퇴한 계정입니다."),
     USER_EMAIL_NOT_VERIFIED(false, 2007, "이메일 인증이 완료되지 않았습니다."),
     USER_INVALID_CREDENTIALS(false, 2008, "잘못된 자격 증명입니다."),
     USER_NOT_LOGIN(false, 2011, "로그인 하지 않은 사용자입니다."),
@@ -25,6 +25,7 @@ public enum BaseResponseStatus {
     USER_DUPLICATE_EMAIL(false,2032,"이미 있는 이메일입니다"),
     USER_PASSWORDS_DO_NOT_MATCH(false,2041, "비밀번호가 일치하지 않습니다."),
     USER_NEW_PASSWORDS_DO_NOT_MATCH(false, 2042, "새로운 비밀번호와 비밀번호 확인이 일치하지 않습니다"),
+
 
     // 이메일 인증 실패
     USER_EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다"),
