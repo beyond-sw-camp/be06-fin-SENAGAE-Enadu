@@ -55,7 +55,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       }
     },
     // 에러 아카이브 수정 기능
-    async updateErrorArchive(id, updatedContent, updatedTitle) {
+    async updateErrorArchive(id, updatedContent, updatedTitle, categoryId) {
       const userStore = useUserStore();
       if(!userStore.isLoggedIn){
         console.log("로그인이 필요합니다.");
@@ -66,7 +66,8 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         const updateReq = {
           id: id,
           content: updatedContent,
-          title: updatedTitle
+          title: updatedTitle,
+          categoryId: categoryId
         };
         const jsonBlob = new Blob([JSON.stringify(updateReq)], { type: "application/json"});
         formData.append("getErrorArchiveUpdateReq", jsonBlob);

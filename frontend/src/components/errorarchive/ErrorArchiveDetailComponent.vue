@@ -89,17 +89,13 @@
                   </label>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
-
         <div class="sc-cZMNgc bpMcZw">
           <a class="sc-dtMgUX gISUXI" href="/tags/LomBok">{{ errorarchiveStore.errorArchiveDetail.superCategory }}</a>
           <a class="sc-dtMgUX gISUXI" href="/tags/LomBok">{{ errorarchiveStore.errorArchiveDetail.subCategory }}</a>
-
         </div>
-
         <div class="sc-jlRLRk iGRQXB">
           <div class="sc-dUbtfd kOYWDF">
             <div class="sc-jHkVzv dyVEVs sc-htJRVC jfYEFP">
@@ -111,11 +107,9 @@
         </div>
       </div>
     </div>
-
     <div class="sc-dFtzxp bfzjcP" style="margin-top: 1px;">
       <div class="sc-bXTejn FTZwa">
         <div class="sc-eGRUor gdnhbG atom-one">
-
           <!-- 마크다운 내용 -->
           <v-md-preview ref="preview" :text="errorarchiveStore.errorArchiveDetail.content"/>
         </div>
@@ -123,7 +117,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import VMdPreview from "@kangc/v-md-editor/lib/preview";
 import hljs from "highlight.js";
@@ -133,12 +126,9 @@ import {mapStores} from "pinia";
 import {useErrorArchiveStore} from "@/store/useErrorArchiveStore";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 import {useUserStore} from "@/store/useUserStore";
-
-
 VMdPreview.use(githubTheme, {
   Hljs: hljs,
 });
-
 export default {
   name: "ErrorArchiveDetailComponent",
   components: {NicknameComponent},
@@ -219,9 +209,7 @@ export default {
     handleAnchorClick(anchor) {
       const { preview } = this.$refs;
       const { lineIndex } = anchor;
-
       const heading = preview.$el.querySelector(`[data-v-md-line="${lineIndex}"]`);
-
       if (heading) {
         // Note: If you are using the preview mode of the editing component, the method name here is changed to previewScrollToTarget
         preview.scrollToTarget({
@@ -232,37 +220,31 @@ export default {
       }
     },
     editErrorArchive() {
-      this.$router.push({ name: 'EditErrorArchive', query: { id: this.id }});
+      this.$router.push({ name: 'ErrorArchiveUpdate', query: { id: this.id }});
     }
   },
   async mounted() {
     this.id = this.$route.query.id;
     await this.getErrorArchiveDetail();
     this.isLoading = false;
-
     this.$nextTick(() => {
       console.log(this.$el);  // DOM 업데이트가 완료된 후 접근
       const anchors = this.$refs.preview.$el.querySelectorAll('h1,h2,h3,h4,h5,h6');
       const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
-
       if (!titles.length) {
         this.titles = [];
         return;
       }
-
       const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
-
       this.titles = titles.map((el) => ({
         title: el.innerText,
         lineIndex: el.getAttribute('data-v-md-line'),
         indent: hTags.indexOf(el.tagName),
       }));
     });
-
   }
 };
 </script>
-
 
 <style scoped>
 .profile {

@@ -7,8 +7,6 @@
       <div class="half-form">
         <input type="email" placeholder="sample@gmail.com" v-model="userInfo.email" @input="validateEmail" />
         <button type="button" class="check-button" @click="checkEmail">중복 확인</button>
-        <span v-if="emailAvailable">✔️ 사용 가능합니다</span>
-        <span v-else></span>
       </div>
       
       <p class="explanation">비밀번호</p>
@@ -25,10 +23,8 @@
 
       <p class="explanation">닉네임</p>
       <div class="half-form">
-        <input type="text" placeholder="닉네임" v-model="userInfo.nickname" />
-        <button type="button" class="check-button" @click="validateNickname">중복 확인</button>
-        <span v-if="nicknameAvailable">✔️ 사용 가능합니다</span>
-        <span v-else></span>
+        <input type="text" placeholder="닉네임" v-model="userInfo.nickname" @input="validateNickname"/>
+        <button type="button" class="check-button" @click="checkNickname">중복 확인</button>
       </div>
 
       <p class="explanation">프로필 이미지</p>
