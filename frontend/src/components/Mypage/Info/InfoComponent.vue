@@ -67,8 +67,8 @@
                         </span>
                     </div>
                 </div>
-                <div class="quit_button mt-4">
-                    <div class="quit_button_text">
+                <div v-show="!mypageStore.userInfo.isSocialUser" class="quit_button mt-4">
+                    <div class="quit_button_text" @click="confirmQuit">
                         회원 탈퇴
                     </div>
                 </div>
@@ -101,6 +101,7 @@
 
 <script>
 import { useMypageStore } from "@/store/useMypageStore";
+import { useUserStore } from "@/store/useUserStore";
 import { mapStores } from "pinia";
 import PasswordModal from "@/components/Mypage/Info/PasswordModal.vue";
 
@@ -116,7 +117,7 @@ export default {
         };
     },
     computed: {
-        ...mapStores(useMypageStore)
+        ...mapStores(useMypageStore, useUserStore)
     },
     mounted() {
         this.$emit("sub-title", "회원 정보 조회");
@@ -194,7 +195,33 @@ export default {
             } catch (error) {
                 alert("이미지 업로드 중 오류가 발생했습니다.");
             }
-        }
+        },
+        confirmQuit() {
+            if (window.confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
+                this.quitAccount();
+            }
+        },
+        async quitAccount() {
+            // 비밀번호 입력 요청
+            const password = prompt("회원 탈퇴를 위해 비밀번호를 입력해주세요.");
+            if (!password) {
+                alert("비밀번호를 입력해주세요.");
+                return;
+            }
+            try {
+                const quitSuccess = await this.userStore.quitAccount(password);
+                if (quitSuccess) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    this.$router.push("/").then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    alert("회원 탈퇴에 실패하였습니다.");
+                }
+            } catch (error) {
+                alert("회원 탈퇴 중 오류가 발생했습니다.");
+            }
+        },
     },
     watch: {
         'mypageStore.userInfo.nickname'(newNickname) {

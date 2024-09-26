@@ -43,11 +43,22 @@
         </div>
     </div>
     <div>
+        <LoadingComponent v-if="isLoading" style="margin-top: 30px" />
         <div v-if="activeSection === 'archive'">
-            에러 아카이브 페이지
+            <div class="errorarchive-inner">
+                <div class="errorarchive-list-flex">
+                    <ErrorArchiveCardComponent
+                        v-for="errorarchiveCard in mypageStore.scrap.archiveList"
+                        :key="errorarchiveCard.id"
+                        v-bind:errorarchiveCard="errorarchiveCard"
+                    />
+                </div>
+            </div>
         </div>
         <div v-if="activeSection === 'wiki'">
-            위키
+            <div class="wiki-list-grid" v-if="!isLoading">
+                <WikiCardComponent v-for="wikiCard in mypageStore.scrap.wikiList" :key="wikiCard.id" :wikiCard="wikiCard" />
+            </div>
         </div>
         <div v-if="activeSection === 'qna'">
             <div class="qna-inner">
@@ -60,7 +71,7 @@
                 </div>
             </div>
         </div>
-        <div class="pagination-container">
+        <div class="pagination-container" v-if="!isLoading && totalPage > 0">
             <PaginationComponent @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>
         </div>
     </div>
@@ -71,12 +82,16 @@ import {mapStores} from "pinia";
 import {useMypageStore} from "@/store/useMypageStore";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
+import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
+import LoadingComponent from "@/components/Common/LoadingComponent.vue";
+import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";
 
 export default {
     name: "ScrapListComponent",
-    components: {QnaCardComponent, PaginationComponent},
+    components: {ErrorArchiveCardComponent, LoadingComponent, WikiCardComponent, QnaCardComponent, PaginationComponent},
     data() {
         return {
+            isLoading: true,
             activeSection: 'qna',
             page: 0,
             totalPage: 1
@@ -96,8 +111,39 @@ export default {
             this.loadData();
         },
         async loadData() {
-            if (this.activeSection === 'qna') {
-                await this.fetchQnaList();
+            this.isLoading = true;
+            try {
+                switch (this.activeSection) {
+                    case 'archive':
+                        await this.fetchArchiveList();
+                        break;
+                    case 'wiki':
+                        await this.fetchWikiList();
+                        break;
+                    case 'qna':
+                        await this.fetchQnaList();
+                        break;
+                }
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        async fetchArchiveList() {
+            await this.mypageStore.getArchiveScrapList(this.page);
+            const archiveList = this.mypageStore.scrap.archiveList || [];
+            if (archiveList.length !== 0) {
+                this.totalPage = archiveList[0].totalPage;
+            } else {
+                alert("스크랩한 아카이브가 없습니다.");
+            }
+        },
+        async fetchWikiList() {
+            await this.mypageStore.getWikiScrapList(this.page);
+            const wikiList = this.mypageStore.scrap.wikiList || [];
+            if (wikiList.length !== 0) {
+                this.totalPage = wikiList[0].totalPages;
+            } else {
+                alert("스크랩한 위키가 없습니다.");
             }
         },
         async fetchQnaList() {
@@ -106,7 +152,7 @@ export default {
             if (qnaList.length !== 0) {
                 this.totalPage = qnaList[0].totalPage;
             } else {
-                alert("qna 스크랩한 내역이 없습니다.");
+                alert("스크랩한 QnA가 없습니다.");
             }
         },
         getButtonClass(section) {
@@ -141,11 +187,40 @@ export default {
     border: 1px solid rgb(107 114 128 / 0.3);
 }
 
+.errorarchive-inner {
+    width: auto;
+    height: max-content;
+    background-color: #fff;
+    margin: 25px;
+}
+
+.errorarchive-list-flex {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-auto-rows: auto;
+    gap: 26px 36px;
+    justify-items: stretch;
+    max-width: 100%;
+    margin: 0 auto
+}
+
 .qna-inner {
     width: auto;
     height: max-content;
     background-color: #fff;
     margin: 25px;
+}
+
+.wiki-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 270px));
+    grid-auto-rows: auto;
+    gap: 0 36px;
+    justify-items: center;
+    justify-content: center;
+    align-content: center;
+    max-width: 100%;
+    margin: 35px 10px;
 }
 
 .qna-list-flex {
