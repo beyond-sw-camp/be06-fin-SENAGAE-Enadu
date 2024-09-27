@@ -10,11 +10,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
-    @Query("SELECT q FROM QnaBoard q WHERE q.id = :id AND q.enable=true")
-    Optional<QnaBoard> findById(Long id);
+    Optional<QnaBoard> findByIdAndEnableTrue(Long id);
 
-    @Query("SELECT q FROM QnaBoard q WHERE q.enable=true")
-    Page<QnaBoard> findAll(Pageable pageable);
+    Page<QnaBoard> findByEnableTrue(Pageable pageable);
+
 
     // type이 tc일 때 검색 쿼리문
     @Query("SELECT q FROM QnaBoard q WHERE (q.title LIKE CONCAT('%', :keyword, '%') OR q.content LIKE CONCAT('%', :keyword, '%')) AND (:categoryId IS NULL OR q.category.id = :categoryId) AND q.enable = true")

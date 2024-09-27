@@ -67,7 +67,7 @@ public class QnaService {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
         }
         // paging 처리 및 responseList 생성
-        Page<QnaBoard> qnaBoardPage = questionRepository.findAll(pageable);
+        Page<QnaBoard> qnaBoardPage = questionRepository.findByEnableTrue(pageable);
 
         return qnaBoardPage.getContent().stream().map(qnaBoard -> GetQnaListRes.builder()
                         .id(qnaBoard.getId())
@@ -90,7 +90,7 @@ public class QnaService {
     public GetQuestionDetailRes getQuestionDetail(Integer qnaBoardId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
-        QnaBoard qnaBoard = questionRepository.findById(qnaBoardId.longValue())
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId.longValue())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
 
         return GetQuestionDetailRes.builder()
@@ -148,7 +148,7 @@ public class QnaService {
 
     @Transactional
     public Long checkQnaLike(Long qnaBoardId, Long userId) {
-        QnaBoard qnaBoard = questionRepository.findById(qnaBoardId)
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -159,8 +159,8 @@ public class QnaService {
                 .state(true)
                 .build();
 
-        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUser_IdAndQnaBoard_IdAndState(qnaBoard.getId(), userId, true);
-        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUser_IdAndQnaBoard_IdAndState(qnaBoard.getId(), userId, false);
+        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(qnaBoard.getId(), userId, true);
+        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(qnaBoard.getId(), userId, false);
 
         // 이전에 좋아요만 했을 경우
         if (beforeLike.isPresent() && beforeHate.isEmpty()) {
@@ -184,7 +184,7 @@ public class QnaService {
 
     @Transactional
     public Long checkQnaHate(Long qnaBoardId, Long userId) {
-        QnaBoard qnaBoard = questionRepository.findById(qnaBoardId)
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -195,8 +195,8 @@ public class QnaService {
                 .state(false)
                 .build();
 
-        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUser_IdAndQnaBoard_IdAndState(qnaBoard.getId(), userId, true);
-        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUser_IdAndQnaBoard_IdAndState(qnaBoard.getId(), userId, false);
+        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(qnaBoard.getId(), userId, true);
+        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(qnaBoard.getId(), userId, false);
 
         // 이전에 싫어요만 했을 경우
         if (beforeHate.isPresent() && beforeLike.isEmpty()) {
@@ -220,7 +220,7 @@ public class QnaService {
 
     @Transactional
     public Long checkAnswerLike(Long qnaBoardId, Long answerId, Long userId) {
-        QnaBoard qnaBoard = questionRepository.findById(qnaBoardId)
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -236,8 +236,8 @@ public class QnaService {
                 .state(true)
                 .build();
 
-        Optional<AnswerLike> beforeLike = answerLikeRepository.findByAnswer_IdAndUser_IdAndStateAndAnswer_EnableTrue(answer.getId(), userId, true);
-        Optional<AnswerLike> beforeHate = answerLikeRepository.findByAnswer_IdAndUser_IdAndStateAndAnswer_EnableTrue(answer.getId(), userId, false);
+        Optional<AnswerLike> beforeLike = answerLikeRepository.findByAnswerIdAndUserIdAndStateAndAnswerEnableTrue(answer.getId(), userId, true);
+        Optional<AnswerLike> beforeHate = answerLikeRepository.findByAnswerIdAndUserIdAndStateAndAnswerEnableTrue(answer.getId(), userId, false);
 
         // 이전에 좋아요만 했을 경우
         if (beforeLike.isPresent() && beforeHate.isEmpty()) {
@@ -261,7 +261,7 @@ public class QnaService {
 
     @Transactional
     public Long checkAnswerHate(Long qnaBoardId, Long answerId, Long userId) {
-        QnaBoard qnaBoard = questionRepository.findById(qnaBoardId)
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -277,8 +277,8 @@ public class QnaService {
                 .state(false)
                 .build();
 
-        Optional<AnswerLike> beforeLike = answerLikeRepository.findByAnswer_IdAndUser_IdAndStateAndAnswer_EnableTrue(answer.getId(), userId, true);
-        Optional<AnswerLike> beforeHate = answerLikeRepository.findByAnswer_IdAndUser_IdAndStateAndAnswer_EnableTrue(answer.getId(), userId, false);
+        Optional<AnswerLike> beforeLike = answerLikeRepository.findByAnswerIdAndUserIdAndStateAndAnswerEnableTrue(answer.getId(), userId, true);
+        Optional<AnswerLike> beforeHate = answerLikeRepository.findByAnswerIdAndUserIdAndStateAndAnswerEnableTrue(answer.getId(), userId, false);
 
         // 이전에 싫어요만 했을 경우
         if (beforeHate.isPresent() && beforeLike.isEmpty()) {
@@ -302,7 +302,7 @@ public class QnaService {
 
     @Transactional
     public Long checkQnaScrap(Long qnaBoardId, Long userId) {
-        QnaBoard qnaBoard = questionRepository.findById(qnaBoardId)
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -312,7 +312,7 @@ public class QnaService {
                 .user(user)
                 .build();
 
-        Optional<QnaScrap> beforeScrap = qnaScrapRepository.findByQnaBoard_EnableTrueAndQnaBoard_IdAndUser_Id(qnaBoardId, userId);
+        Optional<QnaScrap> beforeScrap = qnaScrapRepository.findByQnaBoardEnableTrueAndQnaBoardIdAndUserId(qnaBoardId, userId);
         if (beforeScrap.isPresent()) {
             qnaScrapRepository.delete(beforeScrap.get());
             return 0L;
@@ -335,7 +335,7 @@ public class QnaService {
     }
     // 현재 접속한 사용자의 질문에 대한 스크랩 상태를 알아내는 함수
     private boolean isQuestionScarp(QnaBoard qnaBoard, User user) {
-        Optional<QnaScrap> qnaScrap = qnaScrapRepository.findByQnaBoard_EnableTrueAndQnaBoard_IdAndUser_Id(qnaBoard.getId(), user.getId());
+        Optional<QnaScrap> qnaScrap = qnaScrapRepository.findByQnaBoardEnableTrueAndQnaBoardIdAndUserId(qnaBoard.getId(), user.getId());
         if (qnaScrap.isPresent()) {
             return true;
         } else {
@@ -345,7 +345,7 @@ public class QnaService {
 
     @Transactional
     public Long saveAnswer(CreateAnswerReq createAnswerReq, Long userId) {
-        QnaBoard qnaBoard = questionRepository.findById(createAnswerReq.getQnaBoardId())
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(createAnswerReq.getQnaBoardId())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -366,9 +366,9 @@ public class QnaService {
     public Long adoptedAnswer(Long qnaBoardId, Long answerId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        QnaBoard qnaBoard = questionRepository.findById(qnaBoardId)
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
-        Answer answer = answerRepository.findById(answerId)
+        Answer answer = answerRepository.findByIdAndEnableTrue(answerId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
         if (answerRepository.countAdopted(qnaBoardId).equals(0)) {
@@ -389,7 +389,7 @@ public class QnaService {
             }
         }
 
-        Answer answer = answerRepository.findById(createCommentReq.getAnswerId())
+        Answer answer = answerRepository.findByIdAndEnableTrue(createCommentReq.getAnswerId())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -411,7 +411,7 @@ public class QnaService {
     public Long editQuestion(EditQuestionReq editQuestionReq, Long userId) {
         Category category = categoryRepository.findById(editQuestionReq.getCategoryId())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.CATEGORY_INVALID_CATEGORY_DATA));
-        QnaBoard qnaBoard = questionRepository.findById(editQuestionReq.getId())
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(editQuestionReq.getId())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         //후에 권한 처리
@@ -430,7 +430,7 @@ public class QnaService {
 
     @Transactional
     public Long editAnswer(EditAnswerReq editAnswerReq, Long userId) {
-        Answer answer  = answerRepository.findById(editAnswerReq.getId())
+        Answer answer  = answerRepository.findByIdAndEnableTrue(editAnswerReq.getId())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -448,7 +448,7 @@ public class QnaService {
 
     @Transactional
     public Long disableQuestion(Long qnaBoardId, Long userId) {
-        QnaBoard qnaBoard  = questionRepository.findById(qnaBoardId)
+        QnaBoard qnaBoard  = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
@@ -461,9 +461,9 @@ public class QnaService {
 
     @Transactional
     public Long disableAnswer(Long qnaBoardId, Long answerId, Long userId) {
-        QnaBoard qnaBoard  = questionRepository.findById(qnaBoardId)
+        QnaBoard qnaBoard  = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
-        Answer answer  = answerRepository.findById(answerId)
+        Answer answer  = answerRepository.findByIdAndEnableTrue(answerId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));

@@ -12,6 +12,6 @@ public interface QnaLikeRepository extends JpaRepository<QnaLike, Long> {
     @Query("SELECT ql.state FROM QnaLike ql WHERE ql.qnaBoard.id = :qnaBoardId AND ql.user.id = :userId AND ql.qnaBoard.enable = true")
     Optional<Boolean> findState(@Param("qnaBoardId") Long qnaBoardId, @Param("userId") Long userId);
 
-    Optional<QnaLike> findByUser_IdAndQnaBoard_IdAndState(Long id, Long id1, boolean state);
+    Optional<QnaLike> findByUserIdAndQnaBoardIdAndState(Long id, Long id1, boolean state);
 
 }
