@@ -100,7 +100,7 @@ public class ErrorArchiveController {
     // 에러 아카이브 삭제
     @PatchMapping("/removal")
     public BaseResponse<Boolean>  delete(@RequestBody RemoveErrorArchiveReq removeErrorArchiveReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return new BaseResponse<>(errorArchiveService.delete(removeErrorArchiveReq,customUserDetails.getUserId()));
+        return new BaseResponse<>(errorArchiveService.delete(removeErrorArchiveReq, customUserDetails.getUserId()));
     }
 
 

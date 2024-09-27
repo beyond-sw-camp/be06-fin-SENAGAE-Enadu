@@ -19,6 +19,7 @@ public interface ErrorArchiveReository extends JpaRepository<ErrorArchive, Long>
             @Param("userId") Long userId,
             @Param("state") boolean state);
 
+    Page<ErrorArchive> findByEnableTrue(Pageable pageable);
 
 
     Page<ErrorArchive> findAllByCategoryId(Long categoryId, Pageable pageable);
