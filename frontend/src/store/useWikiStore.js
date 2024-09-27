@@ -23,7 +23,9 @@ axios.interceptors.response.use(
 export const useWikiStore = defineStore("wiki", {
     state: () => ({
         wikiCards: [],
-        totalPages: 0,
+        totalPages: 0,       // 목록 조회에 대한 총 페이지 수
+        searchTotalPages: 0, // 검색 결과에 대한 총 페이지 수
+        isLoading: false,  // 로딩 상태 추가
         wikiRegisterReq: {
             title: '',
             categoryId: '',
@@ -35,6 +37,9 @@ export const useWikiStore = defineStore("wiki", {
         pageSize: 10,
         wikiTitle: '',
         category: '',
+        wikiSearchedCards: [],
+        searchQuery: '',
+        selectedCategory: '',
     }),
 
     actions: {
@@ -177,7 +182,7 @@ export const useWikiStore = defineStore("wiki", {
             console.log(`Fetching page ${page}`);
             const params = {
                 page: page - 1,
-                size: 20,
+                size: 16,
             };
             try {
                 const response = await axios.get(backend + "/wiki/list", {
@@ -206,9 +211,9 @@ export const useWikiStore = defineStore("wiki", {
                 });
 
                 if (response && response.data.isSuccess) {
-        
+
                     this.wikiDetail.checkScrap = !this.wikiDetail.checkScrap;
-                    return response.data.result; 
+                    return response.data.result;
                 } else {
                     throw new Error("스크랩 실패");
                 }
@@ -230,9 +235,9 @@ export const useWikiStore = defineStore("wiki", {
 
                 const response = await axios.post(backend + "/wiki/rollback",
                     { wikiContentId: wikiContentId },
-                    { 
+                    {
                         withCredentials: true,
-                        headers: { "Content-Type": "application/json" } 
+                        headers: { "Content-Type": "application/json" }
                     });
 
                 if (response && response.data && response.data.isSuccess) {
@@ -245,6 +250,23 @@ export const useWikiStore = defineStore("wiki", {
                 console.error("롤백 중 오류 발생:", error);
                 return false;
             }
-        },  
+        },
+        // 위키 검색 메서드
+        async wikiSearch(request) {
+            request.size = 3;  
+            try {
+              const response = await axios.get(backend + "/wiki/search", { params: request });
+              this.wikiCards = response.data.result;
+      
+              this.searchTotalPages = this.wikiCards[0].totalPages || 1;
+              console.log('searchTotalPages:' + this.searchTotalPages);
+
+            } catch (error) {
+              console.error("검색 중 오류 발생:", error);
+              this.wikiCards = [];
+              this.searchTotalPages = 1;
+            }
+        }
     }
 });
+
