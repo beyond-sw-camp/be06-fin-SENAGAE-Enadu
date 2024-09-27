@@ -3,16 +3,16 @@
         <main class="mx-auto mt-2 w-full max-w-7xl px-4 lg:mt-[18px] lg:px-0">
             <div class="flex lg:space-x-10">
                 <div class="w-full min-w-0 flex-auto lg:static lg:max-h-full lg:overflow-visible">
-                    <div class="space-y-10">
-                        <div class="space-y-2">
-                            <h3 class="text-xl font-medium sm:text-3xl sm:leading-10">QnA 등록하기</h3>
+                    <div class="space-y-10" >
+                        <div class="space-y-2" v-if="isLoading">
+                            <h3 class="text-xl font-medium sm:text-3xl sm:leading-10">QnA 수정하기</h3>
                         </div>
-                        <form>
+                        <form v-else>
                             <div class="space-y-12 sm:space-y-14">
                                 <div class="grid grid-cols-1 gap-y-7">
                                     <div class="space-y-1">
                                         <label for="title" class="text-sm font-medium text-gray-700" >제목</label>
-                                        <input type="text" id="title" placeholder="제목을 입력해주세요." v-model="myTitle"
+                                        <input type="text" id="title" v-model="myTitle"
                                             class="block w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-3 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"
                                             name="title">
                                     </div>
@@ -97,21 +97,43 @@ export default {
   name: "QnaRegisterComponent",
   data() {
     return {
+      isLoading: true,
       myTitle: '',
       myText: '',
-      selectedSuperCategory: "",
-      selectedSubCategory: "",
+      selectedSuperCategory: {
+        id: 0,
+        categoryName: ""
+      },
+      selectedSubCategory: {
+        id: 0,
+        categoryName: ""
+      },
       showSuperModal: false,
       showSubModal: false,
       myCategory: 0,
+
+      beforeSuperCategoryName: "",
+      beforeSubCategoryName: "",
     };
   },
   computed: {
     ...mapStores(useQnaStore),
     ...mapStores(useCommonStore),
     isNullOrEmpty() {
-      return (this.myTitle === '' || this.myText === '' || this.selectedSuperCategory === '' || this.selectedSubCategory === '')
+      return (this.myTitle === '' || this.myText === '' || this.selectedSuperCategory === '')
     },
+  },
+  async mounted() {
+    await useQnaStore().getQnaDetail(this.$route.params.id);
+    this.isLoading = false;
+    this.myTitle = useQnaStore().qnaDetail.title;
+    this.myText = useQnaStore().qnaDetail.content;
+
+    this.selectedSuperCategory.id = useQnaStore().qnaDetail.superCategoryId;
+    this.selectedSubCategory.id = useQnaStore().qnaDetail.subCategoryId;
+    this.selectedSuperCategory.categoryName = useQnaStore().qnaDetail.superCategoryName;
+    this.selectedSubCategory.categoryName = useQnaStore().qnaDetail.subCategoryName;
+
   },
   methods: {
     async click() {
@@ -120,7 +142,7 @@ export default {
       }
       else {
         try {
-          await useQnaStore().registerQna(this.myTitle, this.myText, this.myCategory);
+          await useQnaStore().editQna(this.$route.params.id, this.myTitle, this.myText, this.myCategory);
           alert('등록이 완료되었습니다.');
           this.cancel();
         }

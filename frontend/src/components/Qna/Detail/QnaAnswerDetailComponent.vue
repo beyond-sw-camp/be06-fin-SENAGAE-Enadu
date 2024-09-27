@@ -1,99 +1,330 @@
 <template>
-  <div class="content">
-    <div class="question-component qna-background color">
-      <div class="rounded-box p-5 mb-10 md:p-8 bento-card" style="background: #efefef; border: 1px solid #19192c">
-        <div class="mb-10">
-          <div class="flex justify-between">
-            <div class="question-answer mb-5 build-section-card-title">
-              Q.
-              {{ qnaDetail.title }}
+  <div class="rounded-box p-5 mb-10 md:p-8 bento-card" style="background: #f8f9fa; border: 1px solid #19192c">
+    <div class="mb-10">
+      <div class="mantine-2j9uwr">
+        <div class="mantine-1uguyhf">
+          <a
+              class="mantine-Avatar-root mantine-18l6s09"
+          ><img
+              class="mantine-9rx0rd mantine-Avatar-image"
+              :src="qnaAnswer.profileImage"
+          /></a>
+          <div class="mantine-Stack-root mantine-1l47z8p">
+            <div class="mantine-824czz">
+              <a
+                  class="mantine-Text-root mantine-3qdwx9 answer-name-text"
+              >
+                <NicknameComponent :nickname="qnaAnswer.nickname"/>
+              </a
+              >
+              <div class="mantine-Badge-root mantine-11jjpd0">
+                          <span class="mantine-1jlwn9k mantine-Badge-inner"
+                          >{{ qnaAnswer.grade }}</span
+                          >
+              </div>
             </div>
-            <div
-                class="w-16 h-8 transition"
-            >
-              <button class="red-button-size ui inverted red button">edit</button>
-            </div>
+            <p class="mantine-Text-root mantine-1q4x896">
+              {{ formatDateTime(qnaAnswer.createdAt) }}
+            </p>
           </div>
         </div>
-        <div class="" style="font-size: 13px">
-          <div>
-            <v-md-preview :text="qnaDetail.content"/>
-            <aside class="bg-black text-white p-6 rounded-lg w-full max-w-md font-mono">
-              <div class="flex justify-between items-center">
-                <div class="flex space-x-2 text-red-500">
-                  <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                  <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                </div>
-                <p class="text-sm">{{ qnaDetail.superCategoryName }}</p>
-              </div>
-
-              <div class="mt-4">
-                <p class="text-green-400">@RestController</p>
-                <p class="text-green-400">@RequestMapping("/test")</p>
-                <p class="text-white">&nbsp;public class TestJenController {</p>
-                <p class="text-green-400">&nbsp;&nbsp;@GetMapping()</p>
-                <p class="text-white">&nbsp;&nbsp;public String saveTest() {</p>
-                <p class="text-white">&nbsp;&nbsp;&nbsp;return "test";</p>
-                <p class="text-white">&nbsp;&nbsp;}</p>
-                <p class="text-white">}</p>
-              </div>
-            </aside>
+        <div class="adopt-control-component">
+          <div v-if="isAdopted">
+            <AdoptedTagComponent/>
           </div>
-          <div data-v-472a7c05="" class="ans-button-divider">
-            <button data-v-472a7c05="" class="mt-2 text-sm text-blue-500" @click="writeAnswer">
-              {{ isAnswerRegister ? '작성 취소' : '답변 작성' }}
-            </button>
-          </div>
+          <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000" v-bind:adopted="isShowAdopted"
+                                   v-bind:answer="qnaAnswer"/>
         </div>
-        <div v-if="isAnswerRegister">
-          <QnaAnswerRegisterComponent/>
+      </div>
+      <div class="flex justify-between">
+        <div id="answer-title-text" class="question-answer mb-5 build-section-card-title">
+          Answer
+        </div>
+        <div
+            class="w-16 h-8 transition"
+        >
         </div>
       </div>
     </div>
-    <footer></footer>
+    <div>
+      <v-md-preview :text="qnaAnswer.answer"/>
+      <div>
+        <aside class="bg-black text-white p-6 rounded-lg w-full max-w-md font-mono">
+          <div class="flex justify-between items-center">
+            <div class="flex space-x-2 text-red-500">
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            <p class="text-sm">spring</p>
+          </div>
+          <div class="mt-4">
+            <p class="text-green-400">@RestController</p>
+            <p class="text-green-400">@RequestMapping("/test")</p>
+            <p class="text-white">&nbsp;public class TestJenController {</p>
+            <p class="text-green-400">&nbsp;&nbsp;@GetMapping()</p>
+            <p class="text-white">&nbsp;&nbsp;public String saveTest() {</p>
+            <p class="text-white">&nbsp;&nbsp;&nbsp;return "test";</p>
+            <p class="text-white">&nbsp;&nbsp;}</p>
+            <p class="text-white">}</p>
+          </div>
+        </aside>
+      </div>
+      <div class="mt-auto pt-10">
+        <div class="flex flex-col md:flex-row gap-5 justify-start">
+          <a
+              href="https://github.com/bentoml/rag-tutorials"
+              target="_blank"
+              rel="noopener noreferrer"
+          ></a
+          ><a
+            href="https://docs.bentoml.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+        ></a>
+        </div>
+      </div>
+      <div class="qna-detail-top-items">
+        <div class="like-dislike-container">
+          <div class="icons-box">
+            <div class="icons">
+              <label class="btn-label" for="like-checkbox-a">
+                <span class="like-text-content">{{ qnaAnswer.likeCnt }}</span>
+                <input class="input-box" id="like-checkbox-a" type="checkbox" @click="clickAnsLike"
+                       :checked="isCheckedAnsLike"/>
+                <svg
+                    class="svgs"
+                    id="icon-like-solid"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                >
+                  <path
+                      d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+                  ></path>
+                </svg>
+                <svg
+                    class="svgs"
+                    id="icon-like-regular"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                >
+                  <path
+                      d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.1s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16H286.5c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8H384c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32V448c0 17.7 14.3 32 32 32H96c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32H32z"
+                  ></path>
+                </svg>
+                <div class="fireworks">
+                  <div class="checked-like-fx"></div>
+                </div>
+              </label>
+            </div>
+            <div class="icons">
+              <label class="btn-label" for="dislike-checkbox-a">
+                <input
+                    class="input-box"
+                    id="dislike-checkbox-a"
+                    type="checkbox"
+                    @click="clickAnsHate" :checked="isCheckedAnsHate"
+                />
+                <div class="fireworks">
+                  <div class="checked-dislike-fx"></div>
+                </div>
+                <svg
+                    class="svgs"
+                    id="icon-dislike-solid"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                >
+                  <path
+                      d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+                  ></path>
+                </svg>
+                <svg
+                    class="svgs"
+                    id="icon-dislike-regular"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                >
+                  <path
+                      d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.1s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16H286.5c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8H384c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32V448c0 17.7 14.3 32 32 32H96c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32H32z"
+                  ></path>
+                </svg>
+                <span class="dislike-text-content">{{ qnaAnswer.hateCnt }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <br/>
+        <div class="button-divider">
+          <button @click="toggleContent" class="mt-2 text-sm text-blue-500">
+            {{ isContentVisible ? '댓글 숨기기' : '댓글 보기' }}
+          </button>
+          <button @click="writeRipple"
+                  class="mt-2 text-sm text-blue-500">
+            {{ isRegistered ? '작성 취소' : '댓글 작성' }}
+          </button>
+        </div>
+        <div v-show="isRegistered">
+          <QnaCommentRegisterComponent v-bind:answer="qnaAnswer"/>
+        </div>
+
+        <ul v-show="isContentVisible"
+            class="my-3 divide-y divide-gray-500/30 border-y border-gray-500/30 dark:divide-gray-500/70 dark:border-gray-500/70">
+          <div v-if="isLoading"></div>
+          <QnaCommentDetailComponent v-else
+                                     v-for="qnaComment in filteredComments"
+                                     :key="qnaComment.id"
+                                     :qnaComment="qnaComment"
+                                     v-bind:qnaAnswer="qnaAnswer"
+          />
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import {mapStores} from "pinia";
+import {useQnaStore} from "@/store/useQnaStore";
 import {formatDateTime} from "@/utils/FormatDate";
+import QnaCommentDetailComponent from "@/components/Qna/Detail/QnaCommentDetailComponent.vue";
+import QnaCommentRegisterComponent from "@/components/Qna/Register/QnaCommentRegisterComponent.vue";
 import VMdPreview from "@kangc/v-md-editor/lib/preview";
-import QnaAnswerRegisterComponent from "@/components/qna/QnaAnswerRegisterComponent.vue";
+import AdoptedTagComponent from "@/components/Qna/Detail/AdoptedTagComponent.vue"
+import NicknameComponent from "@/components/Common/NicknameComponent.vue";
+import AdditionalInfoComponent from "@/components/Common/AdditionalInfoComponent.vue";
 
 export default {
-  name: "QuestionDetailComponent",
+  name: "QnaAnswerDetailComponent",
   data() {
     return {
-      isAnswerRegister: false,
+      isLoading: true,
+      isRegistered: false,
+      isContentVisible: false,
+      isAdopted: false,
+      cnt: 0,
+
+      isShowAdopted: true,
+
+      isCheckedAnsLike: false,
+      isCheckedAnsHate: false,
     };
   },
-  props: ["qnaDetail"],
-  mounted() {
-    this.isAnswerRegister = false;
-  },
+  props: ["qnaAnswer"],
   methods: {
     formatDateTime,
-    writeAnswer() {
-      this.isAnswerRegister = !this.isAnswerRegister;
+    toggleContent() {
+      this.isContentVisible = !this.isContentVisible;
+    },
+    writeRipple() {
+      this.isRegistered = !this.isRegistered;
+    },
+    checkAdopted() {
+      if (this.qnaAnswer !== undefined) {
+        if (this.qnaAnswer.checkAdopted) {
+          this.isAdopted = true;
+        }
+      } else {
+        this.isAdopted = false;
+      }
+    },
+    showAdopted() {
+      if (this.cnt !== undefined) {
+        if (this.cnt === 1) {
+          this.isShowAdopted = false
+        } else {
+          this.isShowAdopted = true;
+        }
+      }
+    },
+    clickAnsLike() {
+      useQnaStore().answerLike(this.$route.params.id, this.qnaAnswer.id);
+      if (this.qnaAnswer.checkLikeOrHate !== false) {
+        this.isCheckedAnsLike = !this.isCheckedAnsLike;
+      } else {
+        alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
+        window.location.reload();
+      }
+      useQnaStore().getQnaDetail(this.$route.params.id);
+
+    },
+
+    clickAnsHate() {
+      useQnaStore().answerHate(this.$route.params.id, this.qnaAnswer.id);
+      if (this.qnaAnswer.checkLikeOrHate !== true) {
+        this.isCheckedAnsHate = !this.isCheckedAnsHate;
+      } else {
+        alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
+        window.location.reload();
+      }
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
+
+    checking() {
+      if (this.qnaAnswer.checkLikeOrHate === true) {
+        this.isCheckedAnsLike = true;
+        this.isCheckedAnsHate = false
+      } else if (this.qnaAnswer.checkLikeOrHate === false) {
+        this.isCheckedAnsLike = false;
+        this.isCheckedAnsHate = true;
+      } else {
+        this.isCheckedAnsLike = false;
+        this.isCheckedAnsHate = false;
+      }
     },
   },
-  components: {
-    QnaAnswerRegisterComponent,
-    VMdPreview
+  mounted() {
+    this.isLoading = false
+    this.isRegistered = false
+    this.checkAdopted()
+    this.cnt = this.countAdopted;
+    this.showAdopted();
+    this.checking();
   },
-};
+  components: {
+    AdditionalInfoComponent,
+    NicknameComponent,
+    AdoptedTagComponent,
+    VMdPreview,
+    QnaCommentDetailComponent,
+    QnaCommentRegisterComponent,
+  },
+  computed: {
+    ...mapStores(useQnaStore),
+    filteredComments() {
+      return this.qnaAnswer.comments.filter(c => c.superCommentId === null);
+    },
+    countAdopted() {
+      if (Array.isArray(this.qnaStore.qnaAnswers)) {
+        return this.qnaStore.qnaAnswers.filter(answer => answer.checkAdopted).length;
+      }
+      return 0;
+    },
+    checkAnsLike() {
+      return this.qnaAnswer.checkLikeOrHate;
+    },
+  },
+  watch: {
+    checkAnsLike() {
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
+  },
+
+}
+
 </script>
 
 <style scoped>
-.content {
-  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-}
-
-.ans-button-divider {
+.adopt-control-component {
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
-  margin-bottom: 20px;
+
+}
+
+.button-divider {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
 }
 
 .rounded-box {
@@ -311,12 +542,12 @@ img {
   animation: rotate-icon-like 0.7s ease-in-out both;
 }
 
-.like-dislike-container .icons #like-checkbox:checked ~ #icon-like-regular {
+.like-dislike-container .icons #like-checkbox-a:checked ~ #icon-like-regular {
   display: none;
   animation: checked-icon-like 0.5s;
 }
 
-.like-dislike-container .icons #like-checkbox:checked ~ #icon-like-solid {
+.like-dislike-container .icons #like-checkbox-a:checked ~ #icon-like-solid {
   display: block;
   animation: checked-icon-like 0.5s;
 }
@@ -339,13 +570,13 @@ img {
 
 .like-dislike-container
 .icons
-#dislike-checkbox:checked
+#dislike-checkbox-a:checked
 ~ #icon-dislike-regular {
   display: none;
   animation: checked-icon-dislike 0.5s;
 }
 
-.like-dislike-container .icons #dislike-checkbox:checked ~ #icon-dislike-solid {
+.like-dislike-container .icons #dislike-checkbox-a:checked ~ #icon-dislike-solid {
   display: block;
   animation: checked-icon-dislike 0.5s;
 }
@@ -356,7 +587,7 @@ img {
 
 .like-dislike-container
 .icons
-#like-checkbox:checked
+#like-checkbox-a:checked
 ~ .fireworks
 > .checked-like-fx {
   position: absolute;
@@ -380,7 +611,7 @@ img {
 
 .like-dislike-container
 .icons
-#dislike-checkbox:checked
+#dislike-checkbox-a:checked
 ~ .fireworks
 > .checked-dislike-fx {
   position: absolute;
@@ -621,13 +852,14 @@ img {
 /* book mark */
 
 element.style {
-  background: #fff;
+  background: #f8f9fa;
   border: 1px solid #19192c;
 }
 
 .bg-black.text-white.p-6.rounded-lg.w-full.max-w-md.font-mono {
-  max-width: 70rem;
+  width: 700px;
   margin: auto;
+
 }
 
 /* 댓글 */
@@ -1331,7 +1563,7 @@ q:before {
 }
 
 #answer-title-text {
-  margin-top: 4rem;
+  margin-top: 2rem;
 }
 
 #user-profile-image {
