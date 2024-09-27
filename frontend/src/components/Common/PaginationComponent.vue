@@ -16,16 +16,16 @@
 <script>
 export default {
   name: "PaginationComponent",
-    props: {
-        totalPage: {
-            type: Number,
-            required: true
-        },
-        nowPage: {
-            type: Number,
-            default: 1
-        },
+  props: {
+    totalPage: {
+      type: Number,
+      required: true
     },
+    nowPage: {
+      type: Number,
+      default: 1
+    },
+  },
   data() {
     return {
       currentPage: 1,
@@ -58,7 +58,7 @@ export default {
       this.currentPage++;
       if (this.currentPage % 5 === 1) {
         this.pageNumbers = [];
-        for (let page = this.currentPage; page < this.currentPage + 5 ; page++) {
+        for (let page = this.currentPage; page < this.currentPage + 5; page++) {
           if (page > this.totalPage) {
             break;
           }
@@ -70,7 +70,7 @@ export default {
   },
   created() {
     for (let page = 1; page < this.totalPage + 1; page++) {
-      if (page > 5){
+      if (page > 5) {
         break;
       }
       this.pageNumbers.push(page);
@@ -82,30 +82,32 @@ export default {
 </script>
 
 <style>
-.ui.pagination.menu .active.item {
-  border-top: none;
-  border-top-width: initial;
-  border-top-style: none;
-  border-top-color: initial;
-  padding-top: .92857143em;
-  background-color: #e1e8e8;
-  color: rgba(0, 0, 0, .95);
-  -webkit-box-shadow: none;
-  box-shadow: none;
+
+.item {
+  padding: 8px 12px; /* 패딩 조정 */
+  margin: 0; /* 마진 조정 */
+  border: 1px solid #dee2e6; /* 각 li의 테두리 색상 */
+  color: #007bff; /* 기본 텍스트 색상 */
+  text-decoration: none; /* 밑줄 제거 */
+  font-weight: 400; /* 글씨 굵기 조정 */
+  transition: background-color 0.3s, color 0.3s; /* 부드러운 전환 효과 */
+  min-width: 30px; /* 최소 너비 설정 */
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 
-.ui.menu {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  margin: 1rem 0;
-  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  background: #fff;
-  font-weight: 900;
-  border: 1px solid rgba(34, 36, 38, .15);
-  -webkit-box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
-  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
-  border-radius: .28571429rem;
-  min-height: 0px;
+.item:hover {
+  background-color: #e9ecef; /* 호버 시 배경색 */
+  color: #0056b3; /* 호버 시 텍스트 색상 */
+}
+
+.active.item {
+  background-color: #007bff; /* 현재 선택한 페이지 배경색 */
+  color: white; /* 현재 선택한 페이지 텍스트 색상 */
+  border: 1px solid #007bff; /* 현재 선택한 페이지 테두리 색상 */
+}
+
+.item:disabled {
+  color: #6c757d; /* 비활성화된 텍스트 색상 */
+  cursor: not-allowed; /* 비활성화된 커서 */
 }
 </style>

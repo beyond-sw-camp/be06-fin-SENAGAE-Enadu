@@ -70,7 +70,7 @@
 import {mapStores} from "pinia";
 import {useMypageStore} from "@/store/useMypageStore";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
-import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
+import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
 
 export default {
     name: "ScrapListComponent",

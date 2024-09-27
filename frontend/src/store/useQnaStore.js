@@ -225,5 +225,21 @@ export const useQnaStore = defineStore("qna", {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
         },
+
+        async editQna(id, myTitle, myText, myCategoryId) {
+            const data = {
+                id: id, title: myTitle, content: myText, categoryId: myCategoryId
+            };
+
+            try {
+                await axios.patch(backend + "/qna", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
     },
 });

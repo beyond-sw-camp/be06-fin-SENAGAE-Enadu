@@ -57,7 +57,7 @@ import {mapStores} from "pinia";
 import {useMainStore} from "@/store/useMainStore";
 import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";
 import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
-import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
+import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
 import LoadingComponent from "@/components/Common/LoadingComponent.vue";
 

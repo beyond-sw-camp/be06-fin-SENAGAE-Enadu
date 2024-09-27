@@ -30,7 +30,7 @@
 <script>
 import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
-import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
+import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import SearchComponent from "@/components/Common/SearchComponent.vue";
 import TagComponent from "@/components/Common/TagComponent.vue";

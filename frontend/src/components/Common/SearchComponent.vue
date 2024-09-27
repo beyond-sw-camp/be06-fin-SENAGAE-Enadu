@@ -70,7 +70,7 @@ export default {
         categoryName: ''
       },
       searchQuery: '', // 검색어
-      selectedType: '제목+내용',  // 검색 범위
+      selectedType: 'tc',  // 검색 범위
       show_more_category: false,
     };
   },
