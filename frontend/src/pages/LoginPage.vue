@@ -76,14 +76,15 @@
                     this.isLoading = false;
                 }
             },
-            handleSocialLogin(social) {
+            async handleSocialLogin(social) {
                 this.isLoading = true;
-                switch (social) {
-                    case 'github':
-                        window.location.href = "/api/oauth2/authorization/github";
-                        break;
+                try {
+                    await this.userStore.oauthLogin(social);
+                } catch (error) {
+                    console.error('로그인 에러:', error);
+                } finally {
+                    this.isLoading = false;
                 }
-                this.isLoading = false;
             }
         },
         created() {
