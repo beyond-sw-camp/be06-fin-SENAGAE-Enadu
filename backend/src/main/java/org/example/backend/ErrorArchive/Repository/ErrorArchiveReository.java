@@ -39,9 +39,9 @@ public interface ErrorArchiveReository extends JpaRepository<ErrorArchive, Long>
             "OR LOWER(er.content) LIKE CONCAT('%', :keyword,'%')) AND er.category.id = :categoryId")
     Page<ErrorArchive> findAllByKeywordAndCategory(String keyword, Long categoryId, Pageable pageable);
 
-    Page<ErrorArchive> findByUser_IdAndEnableTrue(Long id, Pageable pageable);
+    Page<ErrorArchive> findByUserIdAndEnableTrue(Long id, Pageable pageable);
 
-    Page<ErrorArchive> findByErrorScrapList_User_IdAndEnableTrue(Long id, Pageable pageable);
+    Page<ErrorArchive> findByErrorScrapListUserIdAndEnableTrue(Long id, Pageable pageable);
 
 
 }
