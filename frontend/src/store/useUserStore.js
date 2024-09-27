@@ -43,7 +43,7 @@ export const useUserStore = defineStore('user', {
             }
         },
         async oauthLogin(social) {
-            window.location.href = "/api/oauth2/authorization/" + social;
+            window.location.href = "/social/oauth2/authorization/" + social;
         },
         async logout() {
             try {
