@@ -13,6 +13,8 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       nickname: "",
       title: "",
       content: "",
+      superCategoryId: 0,
+      subCategoryId: 0,
       superCategory: "",
       subCategory: "",
       createAt: "",
@@ -32,7 +34,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     // 에러 아카이브 등록 기능
     async registerErrorArchive(errorarchive) {
       try {
-        const response = await axios.post(backend + "/errorarchive/register", errorarchive, {
+        const response = await axios.post(backend + "/errorarchive", errorarchive, {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
@@ -58,7 +60,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     // 에러 아카이브 수정 기능
     async updateErrorArchive(errorarchive) {
       const userStore = useUserStore();
-      console.log("수정할 에러 아카이브:", errorarchive.id);
+      console.log("수정할 에러 아카이브:",errorarchive);
 
       if (!userStore.isLoggedIn) {
         console.log("로그인이 필요합니다.");
@@ -74,7 +76,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         // 응답 확인
         if (response.data.isSuccess) {
           console.log("에러 아카이브 수정 성공:", response.data.message);
-          alert("수정 완료!!!!");
+          alert("수정이 완료되었습니다.");
           return response.data.result; // 수정된 결과를 반환
         } else {
           throw new Error("수정 실패: " + response.data.message);

@@ -65,7 +65,7 @@
                   <div class="mt-5 flex justify-between gap-x-3 mb-10">
                     <button type="button"
                             class="w-20 rounded-md bg-white px-4 py-2 text-sm font-medium shadow-sm ring-1 ring-gray-500/30 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:ring-gray-500/70 dark:hover:bg-gray-600"
-                            @click="cancelForm">
+                            @click="cancel">
                       취소
                     </button>
                     <div class="relative flex shrink-0 items-center gap-x-3">
@@ -118,9 +118,11 @@ export default {
   data() {
   return {
     selectedSuperCategory: {
+      id: 0,
       categoryName: ""
     },
     selectedSubCategory: {
+      id: 0,
       categoryName: ""
     },
     showSuperModal: false,
@@ -136,18 +138,21 @@ export default {
 },
 async mounted() {
   try {
-    this.isLoading = true; // Start loading
+    this.isLoading = true; // 로딩 시작
     this.errorArchive.id = this.errorarchiveStore.errorArchiveDetail.id;
     this.errorArchive.title = this.errorarchiveStore.errorArchiveDetail.title;
     this.errorArchive.content = this.errorarchiveStore.errorArchiveDetail.content;
+
+    this.selectedSuperCategory.id = this.errorarchiveStore.errorArchiveDetail.superCategoryId;
+    this.selectedSubCategory.id = this.errorarchiveStore.errorArchiveDetail.subCategoryId || null;
     this.selectedSuperCategory.categoryName = this.errorarchiveStore.errorArchiveDetail.superCategory;
     this.selectedSubCategory.categoryName = this.errorarchiveStore.errorArchiveDetail.subCategory;
 
   } catch (error) {
-    console.error('Error fetching error archive data:', error);
+    console.error('에러 아카이브 데이터 로딩 중 오류:', error);
     alert('데이터 로딩 중 오류가 발생했습니다.');
   } finally {
-    this.isLoading = false; // Stop loading
+    this.isLoading = false; // 로딩 종료
   }
 },
   watch: {
@@ -164,15 +169,17 @@ async mounted() {
     async handleSubmit() {
       try { 
         const errorarchiveStore = useErrorArchiveStore();
+        console.log(this.selectedSuperCategory);
+        console.log(this.selectedSubCategory)
+        const categoryId = this.selectedSubCategory.id  == null || this.selectedSubCategory.id  ==  0 ? this.selectedSuperCategory.id : this.selectedSubCategory.id;
         const errorarchive = {
           id: this. errorArchive.id,
           title: this. errorArchive.title,
           content: this. errorArchive.content,
-          categoryId: this.selectedSubCategory.categoryId
+          categoryId: categoryId,
         };
         await errorarchiveStore.updateErrorArchive(errorarchive);
-        alert('수정이 완료되었습니다.');
-        this.$router.push('/errorarchive/list');
+        this.$router.push(`/errorarchive/detail?id=${this.errorArchive.id}`);
       } catch (error) {
         console.error('수정 중 오류 발생:', error);
         alert(`수정 중 오류 발생: ${error.message}`);
@@ -188,7 +195,10 @@ async mounted() {
     },
     handleSuperCategorySelection(category){
       this.selectedSuperCategory = category;
-      this.errorArchive.categoryId = category.id;
+      this.selectedSubCategory = {
+        id: 0,
+        categoryName: ""
+      };
       this.closeSuperCategoryModal();
       this.openSubCategoryModal();
     },
@@ -205,8 +215,14 @@ async mounted() {
     },
     handleSubCategorySelection(category) {
       this.selectedSubCategory = category;
-      this.errorArchive.categoryId = category.id;
       this.closeSubCategoryModal();
+    },
+    cancel() {
+      this.errorArchive.title = '';
+      this.errorArchive.content = '';
+      this.selectedSuperCategory = '';
+      this.selectedSubCategory = '';
+      this.categoryId='';
     },
  }
 }

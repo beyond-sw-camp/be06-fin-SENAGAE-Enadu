@@ -93,8 +93,8 @@
           </div>
         </div>
         <div class="sc-cZMNgc bpMcZw">
-          <a class="sc-dtMgUX gISUXI" href="/tags/LomBok">{{ errorarchiveStore.errorArchiveDetail.superCategory }}</a>
-          <a class="sc-dtMgUX gISUXI" href="/tags/LomBok">{{ errorarchiveStore.errorArchiveDetail.subCategory }}</a>
+          <a class="sc-dtMgUX gISUXI" v-if="errorarchiveStore.errorArchiveDetail.superCategory !== null">{{ errorarchiveStore.errorArchiveDetail.superCategory }}</a>
+          <a class="sc-dtMgUX gISUXI" v-if="errorarchiveStore.errorArchiveDetail.subCategory !== null">{{ errorarchiveStore.errorArchiveDetail.subCategory }}</a>
         </div>
         <div class="sc-jlRLRk iGRQXB">
           <div class="sc-dUbtfd kOYWDF">
