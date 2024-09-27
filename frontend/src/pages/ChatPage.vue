@@ -11,10 +11,21 @@
 <script>
 import ChatNavComponent from "@/components/Chat/ChatNavComponent.vue";
 import ChatComponent from "@/components/Chat/ChatComponent.vue";
+import {mapStores} from "pinia";
+import {useUserStore} from "@/store/useUserStore";
 
 export default {
   name: "ChatPage",
   components: {ChatNavComponent, ChatComponent},
+  computed: {
+    ...mapStores(useUserStore)
+  },
+  mounted(){
+    if(!this.userStore.isLoggedIn) {
+      alert("로그인이 필요한 서비스입니다.");
+      this.$router.push({path: "/login"})
+    }
+  },
   data() {
     return {
       chatKey: 0,
