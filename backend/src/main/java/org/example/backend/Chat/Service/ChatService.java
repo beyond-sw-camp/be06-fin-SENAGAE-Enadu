@@ -72,17 +72,22 @@ public class ChatService {
         }
     }
 
-    public List<GetChatMessageRes> getChatMessageList(Long userId, Long chatRoomId, Integer page, Integer size) {
+    public List<GetChatMessageRes> getChatMessageList(Long userId, Long chatRoomId, Long messageId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID));
         if (!chatRoom.getUser1().getId().equals(userId) && !chatRoom.getUser2().getId().equals(userId)) {
             throw new InvalidChatException(BaseResponseStatus.CHAT_INVALID_CHATROOM_ID);
         }
-
-        List<Chat> chatList = chatRepository.findByChatRoomIdOrderBySendTimeDesc(pageable, chatRoomId).stream().toList();
+        List<Chat> chatList;
+        if (messageId == null || messageId == 0){
+            chatList = chatRepository.findByChatRoomIdOrderBySendTimeDesc(pageable, chatRoomId).stream().toList();
+        } else {
+            chatList = chatRepository.findByChatRoomIdAndIdLessThanOrderBySendTimeDesc(pageable, chatRoomId, messageId).stream().toList();
+        }
         List<GetChatMessageRes> getChatMessageResList = new ArrayList<>();
         for (Chat chat : chatList) {
             GetChatMessageRes getChatMessageRes = GetChatMessageRes.builder()
+                    .chatId(chat.getId())
                     .message(chat.getMessage())
                     .sendTime(chat.getSendTime())
                     .senderId(chat.getUser().getId())
@@ -116,6 +121,9 @@ public class ChatService {
     public StartChatRes startChat(Long userId, StartChatReq startChatReq){
         User recipient = userRepository.findByNickname(startChatReq.getNickname()).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        if (recipient.getId().equals(user.getId())) {
+            throw new InvalidChatException(BaseResponseStatus.CHAT_MY_ID);
+        }
         User user1 = userId < recipient.getId() ? user : recipient;  // 작은 userId가 user1에 들어간다.
         User user2 = userId > recipient.getId() ? user : recipient;
         Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByUser1IdAndUser2Id(user1.getId(), user2.getId());

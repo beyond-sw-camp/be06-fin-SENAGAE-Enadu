@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
     Slice<Chat> findByChatRoomIdOrderBySendTimeDesc(Pageable pageable, Long chatRoomId);
+    Slice<Chat> findByChatRoomIdAndIdLessThanOrderBySendTimeDesc(Pageable pageable, Long chatRoomId, Long messageId);
 
 }

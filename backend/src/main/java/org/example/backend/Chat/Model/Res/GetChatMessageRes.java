@@ -11,4 +11,5 @@ public class GetChatMessageRes {
     private String message;
     private LocalDateTime sendTime;
     private Long senderId;
+    private Long chatId;
 }

@@ -26,8 +26,8 @@ public class ChatController {
 
     @GetMapping("/messageList")
     public BaseResponse<List<GetChatMessageRes>> getChatMessageList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                                    Long chatRoomId, Integer page, Integer size) {
-        return new BaseResponse<>(chatService.getChatMessageList(customUserDetails.getUserId(), chatRoomId, page, size));
+                                                                    Long chatRoomId, Integer page, Integer size, @RequestParam(required = false) Long messageId) {
+        return new BaseResponse<>(chatService.getChatMessageList(customUserDetails.getUserId(), chatRoomId, messageId,page, size));
     }
 
     @PostMapping("/start")
