@@ -70,7 +70,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       const params = {
         sort: sort,
         page: page,
-        size: 15
+        size: 16
       };
       try {
         const response = await axios.get(backend+"/errorarchive/list", { 
@@ -120,5 +120,16 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
       }
     },
+    async searchErrorArchive(request){
+      request.size= 16;
+      const response = await axios.get(backend+"/errorarchive/search", {
+        params: request
+      });
+      if (response.data.result){
+        this.errorarchiveCards  = response.data.result;
+      } else {
+        this.errorarchiveCards = [];
+      }
+    }
   }
 });
