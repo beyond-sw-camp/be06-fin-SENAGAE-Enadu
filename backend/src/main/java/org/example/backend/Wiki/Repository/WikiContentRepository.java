@@ -11,6 +11,6 @@ public interface WikiContentRepository extends JpaRepository<WikiContent, Long> 
 
     Optional<WikiContent> findByWikiIdAndVersion(Long wikiId, Integer version);
     Page<WikiContent> findAllByWikiId(Long wikiId, Pageable pageable);
-    Page<WikiContent> findByUser_Id(Long id, Pageable pageable);
-    Page<WikiContent> findByWikiScrapList_User_Id(Long id, Pageable pageable);
+    Page<WikiContent> findByUserId(Long id, Pageable pageable);
+    Page<WikiContent> findByWikiScrapListUserId(Long id, Pageable pageable);
 }

@@ -84,5 +84,8 @@ public class ErrorArchive {
     public void updateCategory(Category category){
         this.category = category;
     }
+    public void updateEnalbe(Boolean enable){
+        this.enable = enable;
+    }
 }
 

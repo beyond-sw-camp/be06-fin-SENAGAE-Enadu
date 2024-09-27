@@ -106,8 +106,10 @@ public class UserController {
     }
 
     @PatchMapping("/quit")
-    public BaseResponse<String> quit(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody Map<String, String> passwordMap) {
+    public BaseResponse<String> quit(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody Map<String, String> passwordMap, HttpServletResponse response) {
         userService.disableUser(customUserDetails.getUserId(), passwordMap.get("password"));
+        Cookie expiredCookie = jwtUtil.removeCookie();
+        response.addCookie(expiredCookie);
         return new BaseResponse<>();
     }
 }

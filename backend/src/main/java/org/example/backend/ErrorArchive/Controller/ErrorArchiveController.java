@@ -87,7 +87,6 @@ public class ErrorArchiveController {
     // 아카이브 스크랩
     @PostMapping("/scrap")
     public BaseResponse<Boolean> checkScrap(@RequestBody ScrapReq scrapReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        System.out.println(scrapReq.getId());
         Boolean isScrapped = errorArchiveService.checkErrorArchiveScrap(scrapReq.getId(), customUserDetails.getUserId());
         return new BaseResponse<>(isScrapped);
     }
@@ -98,6 +97,12 @@ public class ErrorArchiveController {
                                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return new BaseResponse<>(errorArchiveService.update(getErrorArchiveUpdateReq, customUserDetails.getUserId()));
     }
+    // 에러 아카이브 삭제
+    @PatchMapping("/removal")
+    public BaseResponse<Boolean>  delete(@RequestBody RemoveErrorArchiveReq removeErrorArchiveReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return new BaseResponse<>(errorArchiveService.delete(removeErrorArchiveReq,customUserDetails.getUserId()));
+    }
+
 
 }
 
