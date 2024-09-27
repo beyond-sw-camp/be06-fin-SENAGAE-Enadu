@@ -17,7 +17,7 @@
         </div>
         <div class="" style="font-size: 13px">
           <div>
-            <v-md-preview :text="qnaDetail.content" />
+            <v-md-preview :text="qnaDetail.content"/>
             <aside class="bg-black text-white p-6 rounded-lg w-full max-w-md font-mono">
               <div class="flex justify-between items-center">
                 <div class="flex space-x-2 text-red-500">
@@ -40,44 +40,14 @@
               </div>
             </aside>
           </div>
-          <div class="mt-auto pt-10">
-            <div class="flex flex-col md:flex-row gap-5 justify-start">
-              <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-              ><span class="block px-4 py-2 cta-arrow-btn cta-arrow-verde"
-              ><span class="flex items-center justify-center background-shadow"
-              ><span class="relative inline-block">AI Answer</span
-              ><span class="inline-block h-2 ml-3 button-icon"
-              ><svg
-                  style="
-                            height: 100%;
-                            width: auto;
-                            max-height: 100%;
-                            max-width: 100%;
-                          "
-                  viewBox="0 0 78 72"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-              >
-                          <path
-                              d="M41.7575 4.13232L73.625 35.9998L41.7575 67.8673M4.375 35.9998H72.7325"
-                              stroke="currentColor"
-                              stroke-width="12"
-                              stroke-miterlimit="10"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                          ></path></svg></span></span
-              ><span style="display: block"
-              ><span class="inline-block h-2 ml-3 button-icon"
-              ></span></span></span></a
-              ><a
-                href="https://docs.bentoml.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-            ></a>
-            </div>
+          <div data-v-472a7c05="" class="ans-button-divider">
+            <button data-v-472a7c05="" class="mt-2 text-sm text-blue-500" @click="writeAnswer">
+              {{ isAnswerRegister ? '작성 취소' : '답변 작성' }}
+            </button>
           </div>
+        </div>
+        <div v-if="isAnswerRegister">
+          <QnaAnswerRegisterComponent/>
         </div>
       </div>
     </div>
@@ -88,27 +58,48 @@
 <script>
 import {formatDateTime} from "@/utils/FormatDate";
 import VMdPreview from "@kangc/v-md-editor/lib/preview";
+import QnaAnswerRegisterComponent from "@/components/qna/QnaAnswerRegisterComponent.vue";
 
 export default {
   name: "QuestionDetailComponent",
   data() {
     return {
+      isAnswerRegister: false,
     };
   },
   props: ["qnaDetail"],
+  mounted() {
+    this.isAnswerRegister = false;
+  },
   methods: {
-    formatDateTime
+    formatDateTime,
+    writeAnswer() {
+      this.isAnswerRegister = !this.isAnswerRegister;
+    },
   },
   components: {
+    QnaAnswerRegisterComponent,
     VMdPreview
   },
 };
 </script>
 
 <style scoped>
+.content {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+.ans-button-divider {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .rounded-box {
   border-radius: 20px;
 }
+
 .circle {
   margin-left: 25px;
   margin-bottom: 10px;
@@ -130,6 +121,7 @@ img {
   max-width: 200%;
   height: auto;
 }
+
 /* 원형 이미지 */
 
 .title-text {
@@ -152,6 +144,7 @@ img {
   font-size: 16px;
   font-weight: 600;
 }
+
 .label-custom {
   margin-left: 20px;
 }
@@ -552,6 +545,7 @@ img {
     -71px -318.3333333333px #0073ff;
   }
 }
+
 /* like */
 
 /* book mark */
@@ -623,6 +617,7 @@ img {
     transform: scale(1.1);
   }
 }
+
 /* book mark */
 
 element.style {
@@ -642,6 +637,7 @@ element.style {
   height: 100%;
   display: block;
 }
+
 .mantine-18l6s08 {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
@@ -666,6 +662,7 @@ element.style {
   height: 5rem;
   border: 1px solid #dee2e6;
 }
+
 .mantine-18l6s09 {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
@@ -712,13 +709,16 @@ element.style {
   line-height: 1.5;
   text-underline-position: under;
 }
+
 .mantine-9p81l6:focus {
   outline-offset: 0.125rem;
   outline: 0.125rem solid #212529;
 }
+
 .mantine-9p81l6:focus:not(:focus-visible) {
   outline: 0;
 }
+
 .mantine-1uguyhf {
   display: -webkit-box;
   display: -webkit-flex;
@@ -726,6 +726,7 @@ element.style {
   display: flex;
   gap: 0.5rem;
 }
+
 .mantine-1q4x896 {
   font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
   "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
@@ -740,13 +741,16 @@ element.style {
   line-height: 1.5;
   text-underline-position: under;
 }
+
 .mantine-1q4x896:focus {
   outline-offset: 0.125rem;
   outline: 0.125rem solid #212529;
 }
+
 .mantine-1q4x896:focus:not(:focus-visible) {
   outline: 0;
 }
+
 .mantine-1yjkc96 {
   display: -webkit-box;
   display: -webkit-flex;
@@ -764,6 +768,7 @@ element.style {
   overflow: visible;
   pointer-events: none;
 }
+
 .mantine-1ryt1ht {
   white-space: nowrap;
   height: 100%;
@@ -777,6 +782,7 @@ element.style {
   -ms-flex-align: center;
   align-items: center;
 }
+
 .mantine-19ok7fu {
   display: -webkit-box;
   display: -webkit-flex;
@@ -789,10 +795,12 @@ element.style {
   margin-right: 0.625rem;
   margin-right: 6px;
 }
+
 .mantine-19ok7fu svg {
   width: 14px;
   height: 14px;
 }
+
 .mantine-k7c4r8 {
   -webkit-tap-highlight-color: transparent;
   font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
@@ -839,36 +847,44 @@ element.style {
   color: #212529;
   padding-left: 18px;
 }
+
 .mantine-k7c4r8:focus {
   outline-offset: 0.125rem;
   outline: 0.125rem solid #212529;
 }
+
 .mantine-k7c4r8:focus:not(:focus-visible) {
   outline: 0;
 }
+
 .mantine-k7c4r8:focus {
   outline-offset: 0.125rem;
   outline: 0.125rem solid #212529;
 }
+
 .mantine-k7c4r8:focus:not(:focus-visible) {
   outline: 0;
 }
+
 @media (hover: hover) {
   .mantine-k7c4r8:hover {
     background-color: #f8f9fa;
   }
 }
+
 @media (hover: none) {
   .mantine-k7c4r8:active {
     background-color: #f8f9fa;
   }
 }
+
 .mantine-k7c4r8:active {
   -webkit-transform: translateY(0.0625rem);
   -moz-transform: translateY(0.0625rem);
   -ms-transform: translateY(0.0625rem);
   transform: translateY(0.0625rem);
 }
+
 .mantine-k7c4r8:disabled,
 .mantine-k7c4r8[data-disabled] {
   border-color: transparent;
@@ -878,6 +894,7 @@ element.style {
   background-image: none;
   pointer-events: none;
 }
+
 .mantine-k7c4r8:disabled:active,
 .mantine-k7c4r8[data-disabled]:active {
   -webkit-transform: none;
@@ -885,9 +902,11 @@ element.style {
   -ms-transform: none;
   transform: none;
 }
+
 .mantine-k7c4r8[data-loading] {
   pointer-events: none;
 }
+
 .mantine-k7c4r8[data-loading]::before {
   content: "";
   position: absolute;
@@ -899,6 +918,7 @@ element.style {
   border-radius: 2rem;
   cursor: not-allowed;
 }
+
 .mantine-1qj7q0z {
   position: absolute;
   top: 0;
@@ -919,6 +939,7 @@ element.style {
   width: 2.25rem;
   pointer-events: none;
 }
+
 .mantine-1ttseea {
   display: -webkit-box;
   display: -webkit-flex;
@@ -939,6 +960,7 @@ element.style {
   width: 100%;
   min-width: 0;
 }
+
 .mantine-2j9uwr {
   display: -webkit-box;
   display: -webkit-flex;
@@ -949,6 +971,7 @@ element.style {
   -webkit-justify-content: space-between;
   justify-content: space-between;
 }
+
 .mantine-18l6s08 {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
@@ -970,13 +993,16 @@ element.style {
   height: 2.375rem;
   border: 1px solid #dee2e6;
 }
+
 .mantine-18l6s08:focus {
   outline-offset: 0.125rem;
   outline: 0.125rem solid #212529;
 }
+
 .mantine-18l6s08:focus:not(:focus-visible) {
   outline: 0;
 }
+
 .mantine-1l47z8p {
   display: -webkit-box;
   display: -webkit-flex;
@@ -995,6 +1021,7 @@ element.style {
   justify-content: center;
   gap: 0;
 }
+
 .mantine-824czz {
   display: -webkit-box;
   display: -webkit-flex;
@@ -1002,6 +1029,7 @@ element.style {
   display: flex;
   gap: 0.25rem;
 }
+
 .mantine-3qdwx9 {
   font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
   "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
@@ -1017,13 +1045,16 @@ element.style {
   line-height: 1.5;
   text-underline-position: under;
 }
+
 .mantine-3qdwx9:focus {
   outline-offset: 0.125rem;
   outline: 0.125rem solid #212529;
 }
+
 .mantine-3qdwx9:focus:not(:focus-visible) {
   outline: 0;
 }
+
 .mantine-1jlwn9k {
   white-space: nowrap;
   overflow: hidden;
@@ -1031,6 +1062,7 @@ element.style {
   line-height: 100%;
   letter-spacing: normal;
 }
+
 .mantine-11jjpd0 {
   -webkit-tap-highlight-color: transparent;
   font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
@@ -1070,19 +1102,24 @@ element.style {
   text-transform: none;
   padding: 0 8px;
 }
+
 .mantine-11jjpd0:focus {
   outline-offset: 0.125rem;
   outline: 0.125rem solid #212529;
 }
+
 .mantine-11jjpd0:focus:not(:focus-visible) {
   outline: 0;
 }
+
 .mantine-6va1do {
   margin-top: 0.5rem;
 }
+
 .mantine-12kvhdu {
   margin-top: 0.75rem;
 }
+
 .mantine-1qj7haw {
   box-sizing: border-box;
   display: -webkit-box;
@@ -1106,6 +1143,7 @@ element.style {
   justify-content: flex-start;
   gap: 0.75rem;
 }
+
 .mantine-1qj7haw > * {
   box-sizing: border-box;
   -webkit-box-flex: 0;
@@ -1113,6 +1151,7 @@ element.style {
   -ms-flex-positive: 0;
   flex-grow: 0;
 }
+
 .mantine-17p85na {
   padding-left: 28px;
   position: relative;
@@ -1122,13 +1161,16 @@ element.style {
   display: flex;
   gap: 0.75rem;
 }
+
 .mantine-17p85na:not(.mantine-17p85na:first-of-type) .re-comment-arrow {
   padding-top: 36px;
 }
+
 .mantine-17p85na:not(.mantine-17p85na:first-of-type) .re-comment {
   padding-top: 24px;
   border-top: 1px solid #e9ecef;
 }
+
 .mantine-155ln8z {
   left: 0;
   font-size: 0;
@@ -1136,60 +1178,75 @@ element.style {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
+
 .mantine-5n4x4z {
   width: 100%;
 }
+
 .mantine-11k5015 {
   border-radius: 16px;
   border: 1px solid #e9ecef;
   padding: 1.5rem;
 }
+
 h1 {
   font-size: 2em;
 }
+
 pre {
   font-family: monospace, monospace;
   font-size: 1em;
 }
+
 a {
   background: 0 0;
   text-decoration-skip: objects;
 }
+
 a:active,
 a:hover {
   outline-width: 0;
 }
+
 b {
   font-weight: bolder;
 }
+
 code {
   font-family: monospace, monospace;
   font-size: 1em;
 }
+
 img {
   border-style: none;
   vertical-align: middle;
 }
+
 svg:not(:root) {
   overflow: hidden;
 }
+
 button {
   font-family: sans-serif;
   font-size: 100%;
   line-height: 1.15;
   margin: 0;
 }
+
 button {
   overflow: visible;
 }
+
 button {
   text-transform: none;
 }
+
 [type="reset"],
 [type="submit"],
 button {
   -webkit-appearance: button;
 }
+
 [type="button"]::-moz-focus-inner,
 [type="reset"]::-moz-focus-inner,
 [type="submit"]::-moz-focus-inner,
@@ -1197,27 +1254,32 @@ button::-moz-focus-inner {
   border-style: none;
   padding: 0;
 }
+
 [type="button"]:-moz-focusring,
 [type="reset"]:-moz-focusring,
 [type="submit"]:-moz-focusring,
 button:-moz-focusring {
   outline: 0.0625rem dotted ButtonText;
 }
+
 [type="checkbox"],
 [type="radio"] {
   box-sizing: border-box;
   padding: 0;
 }
+
 [type="number"]::-webkit-inner-spin-button,
 [type="number"]::-webkit-outer-spin-button {
   height: auto;
 }
+
 [type="search"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   -ms-appearance: none;
   appearance: none;
 }
+
 [type="search"]::-webkit-search-cancel-button,
 [type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
@@ -1225,6 +1287,7 @@ button:-moz-focusring {
   -ms-appearance: none;
   appearance: none;
 }
+
 ::-webkit-file-upload-button {
   -webkit-appearance: button;
   -moz-appearance: button;
@@ -1232,17 +1295,21 @@ button:-moz-focusring {
   appearance: button;
   font: inherit;
 }
+
 ::after,
 ::before {
   box-sizing: border-box;
 }
+
 html {
   -webkit-print-color-scheme: light;
   color-scheme: light;
 }
+
 q {
   quotes: none;
 }
+
 q:after,
 q:before {
   content: none;
@@ -1251,6 +1318,7 @@ q:before {
 .answer-name-text {
   font-size: 20px;
 }
+
 /* 댓글 */
 
 .red-button-size {

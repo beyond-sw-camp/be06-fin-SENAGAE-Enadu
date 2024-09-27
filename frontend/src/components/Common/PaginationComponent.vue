@@ -16,7 +16,16 @@
 <script>
 export default {
   name: "PaginationComponent",
-  props: ["totalPage"],
+    props: {
+        totalPage: {
+            type: Number,
+            required: true
+        },
+        nowPage: {
+            type: Number,
+            default: 1
+        },
+    },
   data() {
     return {
       currentPage: 1,
@@ -26,7 +35,7 @@ export default {
   },
   methods: {
     setActivePage(number) {
-      this.currentPage = number
+      this.currentPage = number;
       this.$emit('updatePage', this.currentPage);
     },
     setPrevPage() {
@@ -66,36 +75,54 @@ export default {
       }
       this.pageNumbers.push(page);
     }
+    this.currentPage = this.nowPage;
     this.isLoading = true;
   }
 };
 </script>
 
 <style>
-.ui.pagination.menu .active.item {
-  border-top: none;
-  border-top-width: initial;
-  border-top-style: none;
-  border-top-color: initial;
-  padding-top: .92857143em;
-  background-color: #e1e8e8;
-  color: rgba(0, 0, 0, .95);
-  -webkit-box-shadow: none;
-  box-shadow: none;
+.ui.menu {
+    display: flex;
+    margin: 1rem 0;
+    background: #fff;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    border-radius: 0.28571429rem;
+    padding: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    font-weight: 500;
+    min-height: 0;
+}
+.item {
+    padding: 0.5em 1em;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.8);
+    transition: background-color 0.3s, color 0.3s;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border: 0.2px solid rgba(34, 36, 38, 0.1);
 }
 
-.ui.menu {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  margin: 1rem 0;
-  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  background: #fff;
-  font-weight: 900;
-  border: 1px solid rgba(34, 36, 38, .15);
-  -webkit-box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
-  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
-  border-radius: .28571429rem;
-  min-height: 0px;
+.item:first-child {
+    border-left: none;
+}
+
+.item:hover {
+    background-color: rgba(34, 36, 38, 0.1);
+}
+
+.ui.pagination.menu .active.item {
+    border-top: none;
+    border-top-width: initial;
+    border-top-color: initial;
+    background-color: #e1e8e8;
+    color: rgba(0, 0, 0, .95);
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 </style>

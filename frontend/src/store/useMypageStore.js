@@ -101,6 +101,36 @@ export const useMypageStore = defineStore("mypage", {
                 alert("비밀번호 변경에 실패하였습니다.");
             }
         },
+        async getLogArchiveList(page) {
+            const params = {
+                page: page,
+                size: 15
+            };
+            try {
+                const response = await axios.get(backend + "/mypage/log/archive", {
+                    params: params,
+                    withCredentials: true
+                });
+                this.history.archiveList = response.data.result;
+            } catch (error) {
+                alert("아카이브 목록 불러오는데 실패하였습니다.")
+            }
+        },
+        async getLogWikiList(page) {
+            const params = {
+                page: page,
+                size: 12
+            };
+            try {
+                const response = await axios.get(backend + "/mypage/log/wiki", {
+                    params: params,
+                    withCredentials: true
+                });
+                this.history.wikiList = response.data.result;
+            } catch (error) {
+                alert("위키 목록 불러오는데 실패하였습니다.")
+            }
+        },
         async getLogQuestionList(page) {
             const params = {
                 page: page,
@@ -129,6 +159,36 @@ export const useMypageStore = defineStore("mypage", {
                 this.history.answerList = response.data.result;
             } catch (error) {
                 alert("작성 목록을 불러오는데 실패하였습니다.");
+            }
+        },
+        async getArchiveScrapList(page) {
+            const params = {
+                page: page,
+                size: 15
+            };
+            try {
+                const response = await axios.get(backend + "/mypage/scrap/archive", {
+                    params: params,
+                    withCredentials: true
+                });
+                this.scrap.archiveList = response.data.result;
+            } catch (error) {
+                alert("스크랩 내역을 불러오는데 실패하였습니다.");
+            }
+        },
+        async getWikiScrapList(page) {
+            const params = {
+                page: page,
+                size: 12
+            };
+            try {
+                const response = await axios.get(backend + "/mypage/scrap/wiki", {
+                    params: params,
+                    withCredentials: true
+                });
+                this.scrap.wikiList = response.data.result;
+            } catch (error) {
+                alert("스크랩 내역을 불러오는데 실패하였습니다.");
             }
         },
         async getQnaScrapList(page) {

@@ -46,15 +46,26 @@
         </div>
     </div>
     <div>
+        <LoadingComponent v-if="isLoading" style="margin-top: 30px" />
         <div v-if="activeSection === 'archive'">
-            에러 아카이브 페이지
+            <div class="errorarchive-inner">
+                <div class="errorarchive-list-flex">
+                    <ErrorArchiveCardComponent
+                        v-for="errorarchiveCard in mypageStore.history.archiveList"
+                        :key="errorarchiveCard.id"
+                        v-bind:errorarchiveCard="errorarchiveCard"
+                    />
+                </div>
+            </div>
         </div>
         <div v-if="activeSection === 'wiki'">
-            위키
+            <div class="wiki-list-grid" v-if="!isLoading">
+                <WikiCardComponent v-for="wikiCard in mypageStore.history.wikiList" :key="wikiCard.id" :wikiCard="wikiCard" />
+            </div>
         </div>
         <div v-if="activeSection === 'question'">
             <div class="qna-inner">
-                <div class="qna-list-flex">
+                <div class="qna-list-flex" v-if="!isLoading">
                     <QnaCardComponent
                         v-for="qnaCard in mypageStore.history.questionList"
                         :key="qnaCard.id"
@@ -65,7 +76,7 @@
         </div>
         <div v-if="activeSection === 'answer'">
             <div class="qna-inner">
-                <div class="qna-list-flex">
+                <div class="qna-list-flex" v-if="!isLoading">
                     <QnaCardComponent
                         v-for="qnaCard in mypageStore.history.answerList"
                         :key="qnaCard.id"
@@ -74,8 +85,8 @@
                 </div>
             </div>
         </div>
-        <div class="pagination-container">
-            <pagination-component @updatePage="updatePage" :totalPage="totalPage"/>
+        <div class="pagination-container" v-if="!isLoading && totalPage > 0">
+            <PaginationComponent @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>
         </div>
     </div>
 </template>
@@ -85,13 +96,17 @@ import { mapStores } from "pinia";
 import { useMypageStore } from "@/store/useMypageStore";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
+import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
+import LoadingComponent from "@/components/Common/LoadingComponent.vue";
+import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";
 
 export default {
     name: "HistoryListComponent",
-    components: { PaginationComponent, QnaCardComponent },
+    components: {ErrorArchiveCardComponent, LoadingComponent, WikiCardComponent, PaginationComponent, QnaCardComponent },
     data() {
         return {
-            activeSection: 'question',
+            isLoading: true,
+            activeSection: 'archive',
             page: 0,
             totalPage: 1
         };
@@ -110,10 +125,42 @@ export default {
             this.loadData();
         },
         async loadData() {
-            if (this.activeSection === 'question') {
-                await this.fetchQuestionList();
-            } else if (this.activeSection === 'answer') {
-                await this.fetchAnswerList();
+            this.isLoading = true;
+            try {
+                switch (this.activeSection) {
+                    case 'archive':
+                        await this.fetchArchiveList();
+                        break;
+                    case 'wiki':
+                        await this.fetchWikiList();
+                        break;
+                    case 'question':
+                        await this.fetchQuestionList();
+                        break;
+                    case 'answer':
+                        await this.fetchAnswerList();
+                        break;
+                }
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        async fetchArchiveList() {
+            await this.mypageStore.getLogArchiveList(this.page);
+            const archiveList = this.mypageStore.history.archiveList || [];
+            if (archiveList.length !== 0) {
+                this.totalPage = archiveList[0].totalPage;
+            } else {
+                alert("작성한 아카이브 내역이 없습니다.");
+            }
+        },
+        async fetchWikiList() {
+            await this.mypageStore.getLogWikiList(this.page);
+            const wikiList = this.mypageStore.history.wikiList || [];
+            if (wikiList.length !== 0) {
+                this.totalPage = wikiList[0].totalPage;
+            } else {
+                alert("작성한 위키 내역이 없습니다.");
             }
         },
         async fetchQuestionList() {
@@ -164,6 +211,35 @@ export default {
 
 .bg-white {
     border: 1px solid rgb(107 114 128 / 0.3);
+}
+
+.errorarchive-inner {
+    width: auto;
+    height: max-content;
+    background-color: #fff;
+    margin: 25px;
+}
+
+.errorarchive-list-flex {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-auto-rows: auto;
+    gap: 26px 36px;
+    justify-items: stretch;
+    max-width: 100%;
+    margin: 0 auto
+}
+
+.wiki-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 270px));
+    grid-auto-rows: auto;
+    gap: 0 36px;
+    justify-items: center;
+    justify-content: center;
+    align-content: center;
+    max-width: 100%;
+    margin: 35px 10px;
 }
 
 .qna-inner {

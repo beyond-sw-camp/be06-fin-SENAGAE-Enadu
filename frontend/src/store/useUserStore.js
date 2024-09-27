@@ -74,7 +74,7 @@ export const useUserStore = defineStore('user', {
                 formData.append('profileImg',selectedProfileFile);
 
                 // 요청 보내기
-                const response = await axios.post("http://localhost:8080/user/signup", formData, {
+                const response = await axios.post(backend + "/user/signup", formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -97,14 +97,15 @@ export const useUserStore = defineStore('user', {
         async checkNickname(nickname) {
             try {
               // 서버에 닉네임 중복 여부 확인 요청
-              const response = await axios.get("http://localhost:8080"+"/user/duplicate/nickname", { params : {nickname: nickname }
+              const response = await axios.get(backend +"/user/duplicate/nickname", { params : {nickname: nickname }
               });
               // 서버로부터 받은 응답에 따라 처리
               if(response.data.result === false){
                 alert("중복되는 닉네임입니다.")
               } else {
-                alert("중복되지 않는 닉네임입니다.");
+                alert("사용 가능한 닉네임입니다.");
               }
+              return response.data.result;
             } catch (error) {
               console.error("닉네임 중복 확인 중 오류 발생:", error);
               alert("닉네임 확인 중 문제가 발생했습니다. 다시 시도해주세요");
@@ -112,20 +113,19 @@ export const useUserStore = defineStore('user', {
         },
         async checkEmail(email) {
             // 서버에 이메일 중복 여부 확인 요청
-            const response = await axios.get("http://localhost:8080/user/duplicate/email", {params: {email: email}}
+            const response = await axios.get(backend + "/user/duplicate/email", {params: {email: email}}
             );
-            console.log(response);  // 응답 데이터 확인
-
             // 서버로부터 받은 응답에 따라 처리
-            if (response.data.result == true) {
+            if (response.data.result === true) {
                 alert("사용 가능한 이메일입니다.");
             } else {
                 alert("중복되는 이메일입니다.");
             }
+            return response.data.result;
         },
         async verifyEmail(email, uuid) {
             try {
-                const response = await axios.post(`http://localhost:8080/email/verify`, {
+                const response = await axios.post(backend + "/email/verify", {
                         email,
                         uuid,
                 });
@@ -141,6 +141,28 @@ export const useUserStore = defineStore('user', {
                 console.error('이메일 인증 중 오류 발생:', error);
                 alert('이메일 인증에 실패했습니다.');
             }
-        }
+        },
+        async quitAccount(password) {
+            try {
+                const response = await axios.patch(backend +   '/user/quit',
+                    { password },
+                    { withCredentials: true }
+                );
+                if (response.data.code === 1000 && response.data.isSuccess) {
+                    this.userId = null;
+                    this.isLoggedIn = false;
+                    return true;
+                } else if (response.data.code === 2041) {
+                    alert(response.data.message);
+                } else {
+                    alert(response.data.message || '회원 탈퇴에 실패하였습니다.');
+                    return false;
+                }
+            } catch (error) {
+                alert('회원 탈퇴 중 오류가 발생했습니다.');
+                console.error(error);
+                return false;
+            }
+        },
     },
 });

@@ -71,18 +71,17 @@ export default {
         }
     },
     methods: {
-        loadSubCategories() {
+        async loadSubCategories() {
             this.loading = true;
             const categoryStore = useCategoryStore();
-            categoryStore.loadSubCategories(this.superCategory.id)
-                .then(() => {
-                    this.loading = false;
-                    this.filteredSubCategories = categoryStore.filteredSubCategories;
-                })
-                .catch((error) => {
-                    console.log("error : " + error);
-                    this.loading = false;
-                });
+            try {
+                await categoryStore.loadSubCategories(this.superCategory.id);
+                this.filteredSubCategories = categoryStore.filteredSubCategories;
+            } catch (error) {
+                console.log("error : " + error);
+            } finally {
+                this.loading = false;
+            }
         },
         handleCategorySelect(mySubCategory) {
             this.mySubCategory = mySubCategory;
@@ -98,18 +97,18 @@ export default {
         closeModal() {
             this.$emit('closeSub');
         },
-        createSubCategory() {
-            const newSubCategoryName = prompt("새로운 하위 카테고리 이름을 입력하세요:");
+        async createSubCategory() {
+            const newSubCategoryName = prompt("사용할 새로운 하위 카테고리 이름을 입력하세요.");
             if (newSubCategoryName) {
                 const categoryStore = useCategoryStore();
-                categoryStore.addSubCategory(this.superCategory.id, newSubCategoryName)
-                    .then(() => {
-                        console.log("하위 카테고리 생성 성공");
-                        this.loadSubCategories(); // 하위 카테고리 목록 새로 로딩
-                    })
-                    .catch((error) => {
-                        console.log("하위 카테고리 생성 실패:", error);
-                    });
+                try {
+                    const mySubCategory = await categoryStore.addSubCategory(this.superCategory.id, newSubCategoryName);
+                    alert("생성에 성공하였습니다.");
+                    this.$emit('mySubCategory', mySubCategory);
+                    this.$emit('closeSub');
+                } catch (error) {
+                    alert("카테고리 생성에 실패하였습니다.");
+                }
             }
         }
     },

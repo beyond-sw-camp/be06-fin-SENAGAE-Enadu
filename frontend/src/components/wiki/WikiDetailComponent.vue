@@ -20,9 +20,10 @@
                                 @click="goToVersionList">
                                 이전 버전 위키
                             </button>
-                            <div class="bookmark-checkbox">
+
+                            <div class="bookmark-checkbox" v-if="isLoggedIn">
                                 <input type="checkbox" id="bookmark-toggle" :checked="wikiDetail.checkScrap"
-                                    class="bookmark-checkbox__input">
+                                    class="bookmark-checkbox__input" @change="toggleScrap" />
                                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                                     <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
                                         <path class="bookmark-checkbox__icon-back"
@@ -36,7 +37,7 @@
                 </div>
 
                 <div class="sc-cZMNgc bpMcZw">
-                    <a class="sc-dtMgUX gISUXI" href="/tags/LomBok">{{ wikiDetail.category }}</a>
+                    <a class="sc-dtMgUX gISUXI">{{ wikiDetail.category }}</a>
                 </div>
 
                 <div class="sc-jlRLRk iGRQXB">
@@ -80,8 +81,8 @@ export default {
     data() {
         return {
             id: '',
-            userGrade: 'GUEST', 
-            titles: [], 
+            userGrade: 'GUEST',
+            titles: [],
             isLoading: true,
         };
     },
@@ -94,18 +95,21 @@ export default {
         canEditWiki() {
             return this.userGrade !== '뉴비' && this.userGrade !== 'GUEST' && this.userStore.isLoggedIn;
         },
+        isLoggedIn() {
+            return this.userStore.isLoggedIn;
+        }
     },
     watch: {
         'userStore.isLoggedIn'(newValue) {
             if (!newValue) {
-                this.userGrade = 'GUEST'; 
+                this.userGrade = 'GUEST';
             }
         }
     },
     async mounted() {
         this.id = this.$route.query.id || this.$route.params.id;
         if (this.id) {
-            await this.fetchWikiDetail(); 
+            await this.fetchWikiDetail();
         }
         this.isLoading = false;
         this.$nextTick(() => {
@@ -133,6 +137,18 @@ export default {
                 this.userGrade = this.wikiStore.wikiDetail.userGrade || 'GUEST';
             } catch (error) {
                 console.error('Wiki Detail Fetch Error:', error);
+            }
+        },
+        async toggleScrap() {
+            try {
+                const wikiContentId = this.wikiDetail.wikiContentId;
+
+                if (!wikiContentId) {
+                    throw new Error('Invalid wikiContentId');
+                }
+                await this.wikiStore.scrapWiki(wikiContentId);
+            } catch (error) {
+                console.error('Error toggling scrap:', error);
             }
         },
         goToEditPage() {
@@ -201,11 +217,6 @@ v-md-preview p {
 .sc-egiyK {
     color: #2689d2;
     text-decoration: none;
-    cursor: pointer;
-}
-
-.sc-egiyK:hover {
-    text-decoration: underline;
 }
 
 v-md-preview {
@@ -214,25 +225,6 @@ v-md-preview {
     word-break: keep-all;
     overflow-wrap: break-word;
     color: var(--text1);
-}
-
-.thumbnail-image {
-    width: 100%;
-    max-width: 600px;
-    margin-top: 20px;
-}
-
-.scrap-btn {
-    margin-top: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-}
-
-.scrap-btn:hover {
-    background-color: #0056b3;
 }
 
 body[data-theme="light"] {

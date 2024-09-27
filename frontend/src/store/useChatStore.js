@@ -38,7 +38,7 @@ export const useChatStore = defineStore("chat", {
             const startChatReq = {
                 nickname: nickname,
             }
-            const res = await axios.post(`${backend}/chat/start`, startChatReq, {withCredentials: true});
+            const res = await axios.post(backend + "/chat/start", startChatReq, {withCredentials: true});
             this.selectedChatRoom = res.data.result;
         },
         async getChatRoomList() {
@@ -68,17 +68,19 @@ export const useChatStore = defineStore("chat", {
                 withCredentials: true
             });
             this.chatMessageList = res.data.result;
-            for (let idx=0; idx < this.chatRoomList.length; idx++){
-                if (this.chatRoomList[idx].chatRoomId === this.selectedChatRoom.chatRoomId) {
-                    this.chatRoomList[idx].lastMessage = this.chatMessageList[0].message;
-                    this.chatRoomList[idx].lastMessageDay = this.chatMessageList[0].sendTime;
+            if (this.chatMessageList.length !== 0){
+                for (let idx=0; idx < this.chatRoomList.length; idx++){
+                    if (this.chatRoomList[idx].chatRoomId === this.selectedChatRoom.chatRoomId) {
+                        this.chatRoomList[idx].lastMessage = this.chatMessageList[0].message;
+                        this.chatRoomList[idx].lastMessageDay = this.chatMessageList[0].sendTime;
+                    }
                 }
             }
             this.connect();
 
         },
         connect() {
-            const serverUrl = "http://localhost:8080/ws/chat";
+            const serverUrl = backend +"/ws/chat";
             let socket = new SockJS(serverUrl, null, {withCredentials: true});
             this.stompClient = Stomp.over(socket);
             console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverUrl}`)
@@ -148,7 +150,7 @@ export const useChatStore = defineStore("chat", {
         },
         updateChatRoomData(chatRoomId, message, sendTime) {
             for (const chatRoom of this.chatRoomList) {
-                if (chatRoom.chatRoomId == chatRoomId) {
+                if (chatRoom.chatRoomId === chatRoomId) {
                     chatRoom.lastMessage = message;
                     chatRoom.lastMessageDay = sendTime
                 }
