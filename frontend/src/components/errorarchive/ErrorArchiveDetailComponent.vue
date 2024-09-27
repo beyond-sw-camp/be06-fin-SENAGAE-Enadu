@@ -4,10 +4,18 @@
     <div class="sc-dPiLbb sc-bBHHxi kTIDXm">
       <div class="sc-TBWPX dXONqK sc-jQrDum fiOuRZ">
         <div class="head-wrapper">
-          <h1>{{ errorarchiveStore.errorArchiveDetail.title }}</h1>
+          <div class="header-container" style="display: flex; align-items: center; justify-content: space-between;">
+          <div class="errorarchive-title"><h1>{{ errorarchiveStore.errorArchiveDetail.title }}</h1></div>
+          <div v-if="isAuthor" class="button-group">
+              <button @click="editErrorArchive">수정</button>
+              <button @click="handleSubmit">삭제</button>
+          </div>
+          </div>
           <div class="sc-fvxzrP jGdQwA" style="display: flex; justify-content: space-between;">
-            <button v-if="isAuthor" @click="editErrorArchive">수정하기</button>
+           
             <div class="information">
+              <div class="sc-fbyfCU eYeYLy" style="margin-right: auto;"></div>
+                
               <img class="profile" :src="errorarchiveStore.errorArchiveDetail.profileImg">
               <span class="username"><NicknameComponent :nickname="errorarchiveStore.errorArchiveDetail.nickname"/>
                 </span>
@@ -27,6 +35,8 @@
                   </svg>
                 </label>
               </div>
+  
+
               <div class="icons-box">
                 <div class="icons">
                   <label class="btn-label" for="like-checkbox">
@@ -114,7 +124,7 @@
           <v-md-preview ref="preview" :text="errorarchiveStore.errorArchiveDetail.content"/>
         </div>
       </div>
-    </div>
+      </div>
   </div>
 </template>
 <script>
@@ -178,6 +188,21 @@ export default {
     }
   },
   methods: {
+    async handleSubmit() {
+    try { 
+      const errorarchiveStore = useErrorArchiveStore();
+      if (!confirm("정말로 삭제하시겠습니까?")) {
+        return; 
+      }
+      
+      await errorarchiveStore.deleteErrorArchive(this.errorarchiveStore.errorArchiveDetail.id);
+      alert("삭제되었습니다."); 
+      this.$router.push('/errorarchive/list');
+    } catch (error) {
+      console.error('삭제 중 오류 발생:', error);
+      alert(`삭제 중 오류 발생: ${error.message}`);
+    }
+  },
     async getErrorArchiveDetail() {
       await this.errorarchiveStore.getErrorArchiveDetail(this.id);
       this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap;
@@ -221,7 +246,7 @@ export default {
     },
     editErrorArchive() {
       this.$router.push({ name: 'ErrorArchiveUpdate', query: { id: this.id }});
-    }
+    },
   },
   async mounted() {
     this.id = this.$route.query.id;
@@ -247,6 +272,18 @@ export default {
 </script>
 
 <style scoped>
+.button-group {
+  display:flex;
+  gap: 10px;
+  margin-left: auto;
+  color: #8a8ea0
+}
+.header-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
 .sc-fvxzrP {
   display: flex;
   align-items: center; /* 세로 중앙 정렬 */
@@ -291,7 +328,6 @@ v-md-preview p {
 }
 
 .sc-egiyK {
-  color: #;
   text-decoration: none;
   cursor: pointer;
 }

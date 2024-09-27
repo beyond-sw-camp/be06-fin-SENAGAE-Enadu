@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { useUserStore } from '@/store/useUserStore';
+
 
 
 const backend = "/api";
@@ -34,7 +34,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     // 에러 아카이브 등록 기능
     async registerErrorArchive(errorarchive) {
       try {
-        const response = await axios.post(backend + "/errorarchive", errorarchive, {
+        const response = await axios.post(backend + "/errorarchive", errorarchive ,{
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
@@ -59,14 +59,6 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     },
     // 에러 아카이브 수정 기능
     async updateErrorArchive(errorarchive) {
-      const userStore = useUserStore();
-      console.log("수정할 에러 아카이브:",errorarchive);
-
-      if (!userStore.isLoggedIn) {
-        console.log("로그인이 필요합니다.");
-        return false;
-      }
-      
       try {
         const response = await axios.patch(backend+"/errorarchive", errorarchive, {
           headers: { 'Content-Type': 'application/json' },
@@ -85,6 +77,30 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         console.error("에러 아카이브 수정 중 오류 발생:", error);
         if (error.response) {
           console.error("응답 데이터:", error.response.data); // 응답 데이터 확인
+        }
+        throw error;
+      }
+    },
+    async deleteErrorArchive(id) {
+      try {
+        const response = await axios.patch(`${backend}/errorarchive/removal`,{id:id} , {
+          withCredentials: true,
+        });
+    
+        // 응답 확인
+        if (response.data.isSuccess) {
+          console.log("에러 아카이브 삭제 성공:", response.data.message);
+          alert("삭제가 완료되었습니다.");
+        
+          return response.data.result; // 삭제된 결과를 반환
+        } else {
+          throw new Error("삭제 실패: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("에러 아카이브 삭제 중 오류 발생:", error);
+        if (error.response) {
+          console.error("응답 데이터:", error.response.data);
+          alert(`Error: ${error.response.data.message}`);
         }
         throw error;
       }
