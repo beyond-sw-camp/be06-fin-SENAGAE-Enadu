@@ -112,4 +112,8 @@ public class QnaBoard {
     public void updateCategory(Category category) {
         this.category = category;
     }
+
+    public void disable() {
+        this.enable = false;
+    }
 }

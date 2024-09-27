@@ -73,4 +73,13 @@ public class AnswerController {
         return new BaseResponse<>(id);
     }
 
+    @PatchMapping("/removal")
+    public BaseResponse<Long> disableAnswer(@RequestBody Map<String,Long> requestBody, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long qnaBoardId = requestBody.get("qnaBoardId");
+        Long answerId = requestBody.get("answerId");
+
+        Long id = qnaService.disableAnswer(qnaBoardId, answerId, customUserDetails.getUserId());
+        return new BaseResponse<>(id);
+    }
+
 }

@@ -98,5 +98,8 @@ public class Answer {
         this.content = content;
     }
 
+    public void disable() {
+        this.enable = false;
+    }
 
 }
