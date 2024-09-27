@@ -78,6 +78,10 @@ pipeline {
                                         remoteDirectory: "/home/test"
                                     ),
                                     sshTransfer(
+                                        sourceFiles: "cicd/back/backend-oauth-service.yaml",
+                                        remoteDirectory: "/home/test"
+                                    ),
+                                    sshTransfer(
                                         sourceFiles: "cicd/back/backend.sh",
                                         remoteDirectory: "/home/test",
                                         execCommand: '''
