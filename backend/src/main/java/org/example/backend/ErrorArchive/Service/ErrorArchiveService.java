@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.Category.Repository.CategoryRepository;
-import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorLike;
@@ -69,7 +68,7 @@ public class ErrorArchiveService {
         } else {
             throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_INVALID_SEARCH_TYPE);
         }
-        Page<ErrorArchive> errorArchivePage = errorArchiveReository.findAll(pageable);
+        Page<ErrorArchive> errorArchivePage = errorArchiveReository.findByEnableTrue(pageable);
         return errorArchivePage.getContent().stream().map
                         (errorArchive -> ListErrorArchiveRes.builder()
                                 .id(errorArchive.getId())
