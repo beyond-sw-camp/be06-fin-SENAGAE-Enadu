@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.Config.Filter.JwtFilter;
 import org.example.backend.Config.Filter.LoginFilter;
 import org.example.backend.Exception.CustomAuthenticationEntryPoint;
-import org.example.backend.Exception.CustomAuthenticationFailureHandler;
+import org.example.backend.Security.OAuth2LoginFailureHandler;
 import org.example.backend.Security.OAuth2LoginSuccessHandler;
 import org.example.backend.Util.JwtUtil;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +28,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
@@ -46,7 +47,7 @@ public class SecurityConfig {
                 oauth2
                         .loginPage("/login")
                         .successHandler(oAuth2LoginSuccessHandler)
-                        .failureHandler(new CustomAuthenticationFailureHandler())
+                        .failureHandler(oAuth2LoginFailureHandler)
                         .permitAll()
         );
 
