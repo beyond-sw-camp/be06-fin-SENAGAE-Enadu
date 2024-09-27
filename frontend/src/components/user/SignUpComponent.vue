@@ -25,7 +25,7 @@
       <div class="half-form">
         <input type="text" placeholder="닉네임" v-model="userInfo.nickname" @input="validateNickname"/>
         <button type="button" class="check-button" @click="checkNickname">중복 확인</button>
-
+      </div>
       <p class="explanation">프로필 이미지</p>
       <div class="half-form">
         <div class="profile-preview">
