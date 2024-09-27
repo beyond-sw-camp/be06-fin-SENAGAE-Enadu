@@ -43,12 +43,7 @@ export const useUserStore = defineStore('user', {
             }
         },
         async oauthLogin(social) {
-            try {
-                window.location.href = "/api/oauth2/authorization/" + social;
-            } catch (error) {
-                console.error('OAuth 요청 중 오류 발생:', error);
-                alert('로그인 요청에 실패했습니다. 다시 시도해 주세요.');
-            }
+            window.location.href = "/api/oauth2/authorization/" + social;
         },
         async logout() {
             try {
