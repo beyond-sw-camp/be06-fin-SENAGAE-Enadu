@@ -40,7 +40,7 @@ const router = createRouter({
     { path: "/errorarchive", component: ErrorArchiveRegisterPage },
     { path: "/errorarchive/register", component: ErrorArchiveRegisterPage },
     { path: "/errorarchive/list", component: ErrorArchiveListPage },
-    { path: "/errorarchive/update", component: ErrorArchiveUpdatePage },
+    { path: "/errorarchive/update", name:"ErrorArchiveUpdate", component: ErrorArchiveUpdatePage },
     { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
     { path: "/point", component: PointPage, children: [
         { path: "info", component: PointInfoComponent },

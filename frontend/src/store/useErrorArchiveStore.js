@@ -89,7 +89,35 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         throw error;
       }
     },
+    async deleteErrorArchive(errorarchive){
+      const userStore = useUserStore();
+      console.log("수정할 에러 아카이브:",errorarchive);
+      if (!userStore.isLoggedIn) {
+        console.log("로그인이 필요합니다.");
+        return false;
+      }
+      try {
+        const response = await axios.patch(backend+"/errorarchive/removal", errorarchive, {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        });
     
+        // 응답 확인
+        if (response.data.isSuccess) {
+          console.log("에러 아카이브 삭제 성공:", response.data.message);
+          alert("삭제가 완료되었습니다.");
+          return response.data.result; // 수정된 결과를 반환
+        } else {
+          throw new Error("삭제 실패: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("에러 아카이브 삭제 중 오류 발생:", error);
+        if (error.response) {
+          console.error("응답 데이터:", error.response.data); // 응답 데이터 확인
+        }
+        throw error;
+      }
+    },
     // 에러 아카이브 상세 조회
     async getErrorArchiveDetail(id) {
       try {
