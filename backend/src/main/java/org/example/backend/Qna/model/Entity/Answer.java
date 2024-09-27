@@ -94,4 +94,9 @@ public class Answer {
         this.adopted = adopted;
     }
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+
 }

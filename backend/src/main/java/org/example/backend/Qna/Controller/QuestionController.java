@@ -7,6 +7,7 @@ import org.example.backend.Qna.Service.QnaService;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
 import org.example.backend.Qna.model.req.CreateQuestionReq;
+import org.example.backend.Qna.model.req.EditQuestionReq;
 import org.example.backend.Qna.model.req.GetQnaListReq;
 import org.example.backend.Qna.model.req.GetQnaSearchReq;
 import org.example.backend.Security.CustomUserDetails;
@@ -74,4 +75,9 @@ public class QuestionController {
         return new BaseResponse<>(qnaListRes);
     }
 
+    @PatchMapping()
+    public BaseResponse<Long> editQuestion(@RequestBody EditQuestionReq editQuestionReq, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long id = qnaService.editQuestion(editQuestionReq, customUserDetails.getUserId());
+        return new BaseResponse<>(id);
+    }
 }

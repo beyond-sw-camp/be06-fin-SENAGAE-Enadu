@@ -102,4 +102,14 @@ public class QnaBoard {
     public void decreaseAnswerCount() {
         this.answerCount--;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+    public void updateContent(String content) {
+        this.content = content;
+    }
+    public void updateCategory(Category category) {
+        this.category = category;
+    }
 }

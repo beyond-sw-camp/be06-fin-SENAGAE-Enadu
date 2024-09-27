@@ -13,10 +13,7 @@ import org.example.backend.Qna.model.Res.GetAnswerCommentDetailListRes;
 import org.example.backend.Qna.model.Res.GetAnswerDetailListRes;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
-import org.example.backend.Qna.model.req.CreateAnswerReq;
-import org.example.backend.Qna.model.req.CreateCommentReq;
-import org.example.backend.Qna.model.req.CreateQuestionReq;
-import org.example.backend.Qna.model.req.GetQnaListReq;
+import org.example.backend.Qna.model.req.*;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.User.Repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -399,5 +396,44 @@ public class QnaService {
         answerCommentRepository.save(answerComment);
         answer.increaseCommentCount();
         return answerComment.getId();
+    }
+
+    @Transactional
+    public Long editQuestion(EditQuestionReq editQuestionReq, Long userId) {
+        Category category = categoryRepository.findById(editQuestionReq.getCategoryId())
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.CATEGORY_INVALID_CATEGORY_DATA));
+        QnaBoard qnaBoard = questionRepository.findById(editQuestionReq.getId())
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        //후에 권한 처리
+        if(qnaBoard.getAnswerList().isEmpty()){
+            qnaBoard.updateTitle(editQuestionReq.getTitle());
+            qnaBoard.updateContent(editQuestionReq.getContent());
+            qnaBoard.updateCategory(category);
+        }
+        else {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_ANSWERED_EDIT);
+        }
+
+        questionRepository.save(qnaBoard);
+        return qnaBoard.getId();
+    }
+
+    @Transactional
+    public Long editAnswer(EditAnswerReq editAnswerReq, Long userId) {
+        Answer answer  = answerRepository.findById(editAnswerReq.getId())
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        //후에 권한 처리
+
+        if(!answer.isAdopted()) {
+            answer.updateContent(editAnswerReq.getContent());
+        }
+        else {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_ADOPTED_EDIT);
+        }
+        answerRepository.save(answer);
+        return answer.getId();
     }
 }

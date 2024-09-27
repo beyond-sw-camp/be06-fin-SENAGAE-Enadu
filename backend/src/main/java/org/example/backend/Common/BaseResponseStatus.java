@@ -69,9 +69,11 @@ public enum BaseResponseStatus {
     QNA_QUESTION_NOT_FOUND(false, 7101, "해당 질문이 존재하지 않습니다."),
     QNA_INVALID_QUESTION_FORMAT(false, 7102, "잘못된 형식의 질문입니다."),
     QNA_ALREADY_ADOPTED(false, 7103, "해당 질문은 이미 채택된 답변이 존재합니다."),
+    QNA_ANSWERED_EDIT(false, 7104, "답변이 작성된 질문글은 수정할 수 없습니다."),
     // - QnA 답변 에러
     QNA_ANSWER_NOT_FOUND(false, 7201, "해당 답변이 존재하지 않습니다."),
     QNA_INVALID_ANSWER_FORMAT(false, 7202, "잘못된 형식의 답변입니다."),
+    QNA_ADOPTED_EDIT(false, 7203, "이미 채택된 경우 답변을 수정할 수 없습니다."),
 
 
 
