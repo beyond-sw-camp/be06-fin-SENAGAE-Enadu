@@ -64,7 +64,7 @@
                 try {
                     const signupSuccess = await this.userStore.signup(userInfo, selectedProfileFile);
                     if (signupSuccess) {
-                        alert('회원가입 성공');
+                        alert('이메일 인증을 해주세요');
                         this.$router.push('/login?mode=login');
                     } else {
                         alert('회원가입 실패');
