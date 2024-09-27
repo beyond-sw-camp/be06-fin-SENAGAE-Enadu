@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { useUserStore } from '@/store/useUserStore';
+
+
 const backend = "/api";
 
 export const useErrorArchiveStore = defineStore('errorarchive', {
@@ -10,6 +13,8 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       nickname: "",
       title: "",
       content: "",
+      superCategoryId: 0,
+      subCategoryId: 0,
       superCategory: "",
       subCategory: "",
       createAt: "",
@@ -26,6 +31,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     errorarchiveCards: [],
   }),
   actions: {
+    // 에러 아카이브 등록 기능
     async registerErrorArchive(errorarchive) {
       try {
         const response = await axios.post(backend + "/errorarchive", errorarchive, {
@@ -51,14 +57,50 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         throw error;
       }
     },
+    // 에러 아카이브 수정 기능
+    async updateErrorArchive(errorarchive) {
+      const userStore = useUserStore();
+      console.log("수정할 에러 아카이브:",errorarchive);
+
+      if (!userStore.isLoggedIn) {
+        console.log("로그인이 필요합니다.");
+        return false;
+      }
+      
+      try {
+        const response = await axios.patch(backend+"/errorarchive", errorarchive, {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        });
+    
+        // 응답 확인
+        if (response.data.isSuccess) {
+          console.log("에러 아카이브 수정 성공:", response.data.message);
+          alert("수정이 완료되었습니다.");
+          return response.data.result; // 수정된 결과를 반환
+        } else {
+          throw new Error("수정 실패: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("에러 아카이브 수정 중 오류 발생:", error);
+        if (error.response) {
+          console.error("응답 데이터:", error.response.data); // 응답 데이터 확인
+        }
+        throw error;
+      }
+    },
+    
+    // 에러 아카이브 상세 조회
     async getErrorArchiveDetail(id) {
       try {
         const response = await axios.get(backend + "/errorarchive/detail", {
           params: { id: id },
           withCredentials: true,
         });
+        console.log('응답 데이터:'+response.data);
         if (response && response.data) {
           this.errorArchiveDetail = response.data.result;
+          console.log('상세 조회 결과:', this.errorArchiveDetail);
         } else {
           throw new Error("에러아카이브 상세 조회 실패");
         }

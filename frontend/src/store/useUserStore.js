@@ -27,12 +27,12 @@ export const useUserStore = defineStore('user', {
 
                 this.userId = response.data.userId;
                 this.isLoggedIn = true;
+                console.log("로그인 성공, 사용자 ID:", this.userId);
                 return true;
 
             } catch (error) {
                 if (error.response) {
                     console.error("서버 응답 에러:", error.response.data);
-                    console.error("상태 코드:", error.response.status);
                 } else if (error.request) {
                     console.error("응답 없음:", error.request);
                 } else {
