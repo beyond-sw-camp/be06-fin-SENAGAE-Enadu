@@ -8,7 +8,7 @@
           <div class="errorarchive-title"><h1>{{ errorarchiveStore.errorArchiveDetail.title }}</h1></div>
           <div v-if="isAuthor" class="button-group">
               <button @click="editErrorArchive">수정</button>
-              <button @click="deleteErrorArchive">삭제</button>
+              <button @click="handleSubmit">삭제</button>
           </div>
           </div>
           <div class="sc-fvxzrP jGdQwA" style="display: flex; justify-content: space-between;">
@@ -188,6 +188,21 @@ export default {
     }
   },
   methods: {
+    async handleSubmit() {
+    try { 
+      const errorarchiveStore = useErrorArchiveStore();
+      if (!confirm("정말로 삭제하시겠습니까?")) {
+        return; 
+      }
+      
+      await errorarchiveStore.deleteErrorArchive(this.errorarchiveStore.errorArchiveDetail.id);
+      alert("삭제되었습니다."); 
+      this.$router.push('/errorarchive/list');
+    } catch (error) {
+      console.error('삭제 중 오류 발생:', error);
+      alert(`삭제 중 오류 발생: ${error.message}`);
+    }
+  },
     async getErrorArchiveDetail() {
       await this.errorarchiveStore.getErrorArchiveDetail(this.id);
       this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap;
@@ -232,11 +247,6 @@ export default {
     editErrorArchive() {
       this.$router.push({ name: 'ErrorArchiveUpdate', query: { id: this.id }});
     },
-    deleteErrorArchive() {
-      confirm("정말로 수정하시겠습니까?");
-      console.log('삭제되었습니다.');
-      this.$router.push('/errorarchive/list');
-    }
   },
   async mounted() {
     this.id = this.$route.query.id;
@@ -318,7 +328,6 @@ v-md-preview p {
 }
 
 .sc-egiyK {
-  color: #;
   text-decoration: none;
   cursor: pointer;
 }
