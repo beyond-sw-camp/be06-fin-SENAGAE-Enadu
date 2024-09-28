@@ -98,11 +98,11 @@ export default {
         alert("채팅방이 선택되지 않았습니다.");
         this.content=""
         return;
-      } else if (this.content === ""){
+      } else if (this.content.trim() === ""){
         alert("채팅 메세지를 입력해주세요.");
         return;
       }
-      this.chatStore.sendMessage(this.content);
+      this.chatStore.sendMessage(this.content.trim());
       this.content=""
       this.autoResize()
     },
@@ -585,7 +585,7 @@ img {
 }
 
 .chat_input {
-  overflow-y: auto;
+  overflow-y: hidden ;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
