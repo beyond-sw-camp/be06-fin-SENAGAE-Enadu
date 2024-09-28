@@ -35,6 +35,9 @@ export default {
 
   methods: {
     async selected() {
+      if (this.chatRoom.chatRoomId === this.chatStore.selectedChatRoom.chatRoomId) {
+        return;
+      }
       this.isSelected = true
       this.chatStore.disconnect();
       this.chatStore.selectedChatRoom = {
