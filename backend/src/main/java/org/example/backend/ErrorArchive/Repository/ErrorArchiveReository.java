@@ -18,7 +18,7 @@ public interface ErrorArchiveReository extends JpaRepository<ErrorArchive, Long>
             @Param("errorArchiveId") Long errorArchiveId,
             @Param("userId") Long userId,
             @Param("state") boolean state);
-
+    @Query("SELECT ea FROM ErrorArchive  ea JOIN FETCH ea.user JOIN FETCH ea.category WHERE ea.enable = true")
     Page<ErrorArchive> findByEnableTrue(Pageable pageable);
 
 
