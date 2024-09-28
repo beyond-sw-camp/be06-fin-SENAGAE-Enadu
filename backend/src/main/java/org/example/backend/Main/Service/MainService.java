@@ -32,9 +32,9 @@ public class MainService {
         Pageable wikiPageable = PageRequest.of(0, wikiSize, Sort.by(Sort.Direction.DESC, "latestWiki.createdAt"));
         Pageable qnaPageable = PageRequest.of(0, qnaSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<ErrorArchive> errorArchivePage = errorArchiveReository.findAll(errorArchivePageable);
+        Page<ErrorArchive> errorArchivePage = errorArchiveReository.findByEnableTrue(errorArchivePageable);
         Page<Wiki> wikiPage = wikiRepository.findAll(wikiPageable);
-        Page<QnaBoard> qnaBoardPage = questionRepository.findAll(qnaPageable);
+        Page<QnaBoard> qnaBoardPage = questionRepository.findByEnableTrue(qnaPageable);
 
         List<ListErrorArchiveRes> listErrorArchiveResList = errorArchivePage.getContent().stream().map
                         (errorArchive -> ListErrorArchiveRes.builder()
