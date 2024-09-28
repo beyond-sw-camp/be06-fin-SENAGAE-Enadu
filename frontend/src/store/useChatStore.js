@@ -33,6 +33,7 @@ export const useChatStore = defineStore("chat", {
             }
         ],
         stompClient: null,
+        isLoading: false,
     }),
     actions: {
         async startChat(nickname) {
