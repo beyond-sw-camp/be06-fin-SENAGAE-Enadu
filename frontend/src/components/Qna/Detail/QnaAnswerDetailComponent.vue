@@ -32,8 +32,12 @@
           <div v-if="isAdopted">
             <AdoptedTagComponent/>
           </div>
-          <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000" v-bind:adopted="isShowAdopted"
-                                   v-bind:answer="qnaAnswer"/>
+          <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000"
+                                   v-bind:adopted="isShowAdopted"
+                                   v-bind:edited="isShowEdited"
+                                   v-bind:detail="qnaAnswer"
+                                   @clickEdit="handleEditUpdate"
+          />
         </div>
       </div>
       <div class="flex justify-between">
@@ -163,6 +167,9 @@
             {{ isRegistered ? '작성 취소' : '댓글 작성' }}
           </button>
         </div>
+        <div v-show="isEdited">
+          <QnaAnswerEditComponent v-bind:answer="qnaAnswer"/>
+        </div>
         <div v-show="isRegistered">
           <QnaCommentRegisterComponent v-bind:answer="qnaAnswer"/>
         </div>
@@ -192,6 +199,7 @@ import VMdPreview from "@kangc/v-md-editor/lib/preview";
 import AdoptedTagComponent from "@/components/Qna/Detail/AdoptedTagComponent.vue"
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 import AdditionalInfoComponent from "@/components/Common/AdditionalInfoComponent.vue";
+import QnaAnswerEditComponent from "@/components/Qna/Refactor/QnaAnswerEditComponent.vue";
 
 export default {
   name: "QnaAnswerDetailComponent",
@@ -201,9 +209,11 @@ export default {
       isRegistered: false,
       isContentVisible: false,
       isAdopted: false,
+      isEdited: false,
       cnt: 0,
 
       isShowAdopted: true,
+      isShowEdited: false,
 
       isCheckedAnsLike: false,
       isCheckedAnsHate: false,
@@ -271,6 +281,9 @@ export default {
         this.isCheckedAnsHate = false;
       }
     },
+    handleEditUpdate(newIsEdit) {
+      this.isEdited = newIsEdit;
+    }
   },
   mounted() {
     this.isLoading = false
@@ -279,6 +292,7 @@ export default {
     this.cnt = this.countAdopted;
     this.showAdopted();
     this.checking();
+    this.isEdited = false;
   },
   components: {
     AdditionalInfoComponent,
@@ -287,6 +301,7 @@ export default {
     VMdPreview,
     QnaCommentDetailComponent,
     QnaCommentRegisterComponent,
+    QnaAnswerEditComponent,
   },
   computed: {
     ...mapStores(useQnaStore),
@@ -302,15 +317,20 @@ export default {
     checkAnsLike() {
       return this.qnaAnswer.checkLikeOrHate;
     },
+    checkAnsContent() {
+      return this.qnaAnswer.answer;
+    },
   },
   watch: {
     checkAnsLike() {
       useQnaStore().getQnaDetail(this.$route.params.id);
     },
+    checkAnsContent() {
+      this.isEdited = false;
+      useQnaStore().getQnaDetail(this.$route.params.id);
+    },
   },
-
 }
-
 </script>
 
 <style scoped>

@@ -129,11 +129,12 @@ export default {
     this.myTitle = useQnaStore().qnaDetail.title;
     this.myText = useQnaStore().qnaDetail.content;
 
+
     this.selectedSuperCategory.id = useQnaStore().qnaDetail.superCategoryId;
     this.selectedSubCategory.id = useQnaStore().qnaDetail.subCategoryId;
     this.selectedSuperCategory.categoryName = useQnaStore().qnaDetail.superCategoryName;
     this.selectedSubCategory.categoryName = useQnaStore().qnaDetail.subCategoryName;
-
+    this.myCategory = this.selectedSubCategory.id;
   },
   methods: {
     async click() {
@@ -143,7 +144,9 @@ export default {
       else {
         try {
           await useQnaStore().editQna(this.$route.params.id, this.myTitle, this.myText, this.myCategory);
+          await useQnaStore().getQnaDetail(this.$route.params.id);
           alert('등록이 완료되었습니다.');
+          this.$router.push('/qna/detail/'+this.$route.params.id);
           this.cancel();
         }
         catch (error){

@@ -121,7 +121,9 @@ export default {
       else {
         try {
           await useQnaStore().registerQna(this.myTitle, this.myText, this.myCategory);
+          await useQnaStore().getQnaDetail(this.$route.params.id);
           alert('등록이 완료되었습니다.');
+          this.$router.push('/qna/list/');
           this.cancel();
         }
         catch (error){

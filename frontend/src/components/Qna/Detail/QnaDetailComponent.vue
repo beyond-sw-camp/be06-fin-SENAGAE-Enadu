@@ -11,7 +11,12 @@
             <div
                 class="w-16 h-8 transition"
             >
-              <button class="red-button-size ui inverted red button">edit</button>
+              <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000"
+                                       v-bind:adopted=false
+                                       v-bind:detail="qnaDetail"
+                                       v-bind:isQuestion = true
+                                       @clickEdit="handleEditUpdate"
+              />
             </div>
           </div>
         </div>
@@ -59,6 +64,7 @@
 import {formatDateTime} from "@/utils/FormatDate";
 import VMdPreview from "@kangc/v-md-editor/lib/preview";
 import QnaAnswerRegisterComponent from "@/components/Qna/Register/QnaAnswerRegisterComponent.vue";
+import AdditionalInfoComponent from "@/components/Common/AdditionalInfoComponent.vue";
 
 export default {
   name: "QuestionDetailComponent",
@@ -76,8 +82,14 @@ export default {
     writeAnswer() {
       this.isAnswerRegister = !this.isAnswerRegister;
     },
+    handleEditUpdate(newIsEdit) {
+      if(newIsEdit){
+        this.$router.push('/qna/edit/'+this.$route.params.id);
+      }
+    }
   },
   components: {
+    AdditionalInfoComponent,
     QnaAnswerRegisterComponent,
     VMdPreview
   },
