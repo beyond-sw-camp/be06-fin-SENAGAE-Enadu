@@ -130,7 +130,7 @@ export default {
       this.selectedPageAndSort.page = 1;
 
       const request = {
-        keyword:  this.$route.query.keyword,
+        keyword:  this.$route.query.keyword.trim(),
         categoryId: this.$route.query.selectedSubCategoryId != 0 ? this.$route.query.selectedSubCategoryId : this.$route.query.selectedCategory,
         type: this.$route.query.type,
         sort: this.selectedPageAndSort.sort,
