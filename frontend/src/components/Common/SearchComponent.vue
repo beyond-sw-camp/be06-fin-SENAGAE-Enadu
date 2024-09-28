@@ -114,10 +114,14 @@ export default {
       this.handleMoreCategory();
     },
     searchData() {
+      if (this.searchQuery.trim() === "" && this.selectedCategory === ""){
+        alert("검색어 혹은 카테고리를 선택해주세요.");
+        return;
+      }
       switch(this.$route.path){
         case "/errorarchive/list": {
           const request = {
-            keyword: this.searchQuery,
+            keyword: this.searchQuery.trim(),
             selectedCategory: this.selectedCategory,
             selectedSubCategoryId: this.selectedSubCategory.id,
             selectedSubCategoryName: this.selectedSubCategory.categoryName,
