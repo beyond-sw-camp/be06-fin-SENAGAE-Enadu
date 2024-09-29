@@ -43,6 +43,8 @@ public enum BaseResponseStatus {
     WIKI_CONTENT_DUPLICATION_FAIL(false, 5004,"중복되는 위키입니다."),
     WIKI_NOT_FOUND_DETAIL(false,5005,"위키 조회를 실패했습니다."),
     WIKI_PERMISSION_DENIED(false, 5006,"수정 권한이 없습니다."),
+    WIKI_SEARCH_EMPTY_REQUEST(false, 5007, "검색 요청이 비어 있습니다."),
+    WIKI_INVALID_SEARCH_TYPE(false, 5008, "존재하지 않은 타입의 검색 방식 입니다."),
 
     // 에러 아카이브 기능 - 6000
 
