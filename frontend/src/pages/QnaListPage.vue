@@ -6,24 +6,27 @@
                        @checkLike="handleCheckLike"
                        @search="handleSearch"
       />
-      <div class="qna-list-flex" v-show="!isSearched">
-        <QnaCardComponent
-            v-for="qnaCard in qnaStore.qnaCards"
-            :key="qnaCard.id"
-            v-bind:qnaCard="qnaCard"
-        />
-      </div>
-      <div class="qna-list-flex" v-show="isSearched">
-        <QnaCardComponent
-            v-for="qnaCard in qnaStore.qnaSearchedCards"
-            :key="qnaCard.id"
-            v-bind:qnaCard="qnaCard"
-        />
+      <div v-if="isLoading"></div>
+      <div v-else>
+        <div class="qna-list-flex" v-show="!isSearched">
+          <QnaCardComponent
+              v-for="qnaCard in qnaStore.qnaCards"
+              :key="qnaCard.id"
+              v-bind:qnaCard="qnaCard"
+          />
+        </div>
+        <div class="qna-list-flex" v-show="isSearched">
+          <QnaCardComponent
+              v-for="qnaCard in qnaStore.qnaSearchedCards"
+              :key="qnaCard.id"
+              v-bind:qnaCard="qnaCard"
+          />
+        </div>
       </div>
     </div>
   </div>
   <div class="qna-bottom">
-    <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage + 1"/>
+    <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage + 1" :totalPage="totalPages"/>
   </div>
 </template>
 
@@ -39,27 +42,39 @@ export default {
   name: "QnaListPage",
   data() {
     return {
+      isLoading: true,
       selectedSort: null,
       selectedPage: 0,
-      isSearched : false,
+      isSearched: false,
       selectedSubCategory: "",
       searchQuery: "",
       selectedType: "",
+      totalPages: 1,
     };
   },
   computed: {
     ...mapStores(useQnaStore),
+    qnaCards() {
+      return this.qnaStore.qnaCards;
+    },
+    qnaSearchedCards() {
+      return this.qnaStore.qnaSearchedCards;
+    },
   },
   mounted() {
     this.selectedSort = "latest";
     this.selectedPage = 1;
+    this.isSearched = false;
+    this.checking();
   },
   watch: {
     selectedSort() {
       this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
+      this.isLoading=false;
     },
     selectedPage() {
       this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
+      this.isLoading=false;
     },
   },
   methods: {
@@ -82,8 +97,24 @@ export default {
         this.selectedType = selectedType;
 
         useQnaStore().qnaSearch(this.selectedType, this.searchQuery, this.selectedSubCategory, this.selectedSort, this.selectedPage);
+        this.isLoading=false;
       }
-    }
+    },
+    checking() {
+      if (!this.isSearched) {
+        if (this.qnaStore.qnaCards.length > 0) {
+          this.totalPages = this.qnaStore.totalPage || 1;
+        } else {
+          this.totalPages = 1;
+        }
+      } else {
+        if (this.qnaStore.qnaSearchedCards.length > 0) {
+          this.totalPages = this.qnaStore.searchedTotalPage || 1;
+        } else {
+          this.totalPages = 1;
+        }
+      }
+    },
   },
   components: {
     TagComponent,
