@@ -58,7 +58,7 @@ export const useQnaStore = defineStore("qna", {
 
             try {
                 const res = await axios.get(backend + "/qna/list", {
-                    params: params, withCredentials: true
+                    params: params
                 });
                 this.qnaCards = res.data.result;
             } catch (error) {
@@ -66,7 +66,7 @@ export const useQnaStore = defineStore("qna", {
             }
         }, async getQnaDetail(id) {
             try {
-                let res = await axios.get(backend + "/qna/detail?qnaBoardId=" + id, {withCredentials: true});
+                let res = await axios.get(backend + "/qna/detail?qnaBoardId=" + id);
                 this.qnaDetail = res.data.result;
                 this.qnaAnswers = res.data.result.answers;
             } catch (error) {
