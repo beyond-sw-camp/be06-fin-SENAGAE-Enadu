@@ -393,6 +393,10 @@ public class QnaService {
         Answer answer = answerRepository.findByIdAndEnableTrue(answerId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
+        if (user != qnaBoard.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NOT_QUESTIONER);
+        }
+
         if (answerRepository.countAdopted(qnaBoardId).equals(0)) {
             answer.adoptedAnswer(true);
             return answer.getId();
@@ -436,7 +440,11 @@ public class QnaService {
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(editQuestionReq.getId())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        //후에 권한 처리
+
+        if (user != qnaBoard.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
+
         if(qnaBoard.getAnswerList().isEmpty()){
             qnaBoard.updateTitle(editQuestionReq.getTitle());
             qnaBoard.updateContent(editQuestionReq.getContent());
@@ -456,7 +464,10 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        //후에 권한 처리
+
+        if (user != answer.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
 
         if(!answer.isAdopted()) {
             answer.updateContent(editAnswerReq.getContent());
@@ -474,7 +485,10 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        //후에 권한 처리
+
+        if (user != qnaBoard.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
 
         qnaBoard.disable();
         questionRepository.save(qnaBoard);
@@ -489,7 +503,10 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        //후에 권한 처리
+
+        if (user != answer.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
 
         qnaBoard.decreaseAnswerCount();
         questionRepository.save(qnaBoard);
