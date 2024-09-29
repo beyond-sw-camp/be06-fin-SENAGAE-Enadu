@@ -21,8 +21,8 @@
       <div class="show-more-box">
         <div class="show-more-header">
           <h3>모든 하위 카테고리</h3>
-          <button type="button" class="e-close-show-more" style="margin-left:auto" @click="cancelSelectSubCategory">선택 취소</button>
-          <button type="button" class="e-close-show-more" style="margin-left:10px" @click="handleMoreCategory">닫기</button>
+          <button type="button" class="e-close-show-more" style="margin-left:auto" @click="handleMoreCategory">닫기</button>
+          <button type="button" class="e-close-show-more" style="margin-left:10px" @click="cancelSelectSubCategory">선택 취소</button>
         </div>
         <div class="show-more-list">
           <ul>

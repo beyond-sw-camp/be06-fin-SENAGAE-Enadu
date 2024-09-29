@@ -66,7 +66,7 @@ export default {
   },
   watch: {
     '$route.query': {
-      immediate: true,
+      immediate: false,
       handler(newQuery) {
         if (Object.keys(newQuery).length !== 0) {
           this.searchErrorArchiveList();
