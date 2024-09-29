@@ -118,6 +118,7 @@ public class QnaService {
 
     public List<GetAnswerDetailListRes> getAnswerDetails(List<Answer> answers, User user) {
         return answers.stream()
+                .filter(answer -> answer.isEnable())
                 .map(answer -> GetAnswerDetailListRes.builder()
                         .id(answer.getId())
                         .userId(answer.getUser().getId())
@@ -165,8 +166,8 @@ public class QnaService {
                 .state(true)
                 .build();
 
-        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(qnaBoard.getId(), userId, true);
-        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(qnaBoard.getId(), userId, false);
+        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(userId, qnaBoard.getId(),true);
+        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(userId, qnaBoard.getId(), false);
 
         // 이전에 좋아요만 했을 경우
         if (beforeLike.isPresent() && beforeHate.isEmpty()) {
@@ -201,8 +202,8 @@ public class QnaService {
                 .state(false)
                 .build();
 
-        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(qnaBoard.getId(), userId, true);
-        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(qnaBoard.getId(), userId, false);
+        Optional<QnaLike> beforeLike = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(userId, qnaBoard.getId(), true);
+        Optional<QnaLike> beforeHate = qnaLikeRepository.findByUserIdAndQnaBoardIdAndState(userId, qnaBoard.getId(), false);
 
         // 이전에 싫어요만 했을 경우
         if (beforeHate.isPresent() && beforeLike.isEmpty()) {

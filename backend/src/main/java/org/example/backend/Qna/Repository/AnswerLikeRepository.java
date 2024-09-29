@@ -12,7 +12,7 @@ public interface AnswerLikeRepository extends JpaRepository<AnswerLike, Long> {
     @Query("SELECT al.state FROM AnswerLike al WHERE al.answer.id = :answerId AND al.user.id = :userId AND al.answer.enable = TRUE")
     Optional<Boolean> findState(@Param("answerId") Long answerId, @Param("userId") Long userId);
 
-    Optional<AnswerLike> findByAnswerIdAndUserIdAndStateAndAnswerEnableTrue(Long id, Long id1, boolean state);
+    Optional<AnswerLike> findByAnswerIdAndUserIdAndStateAndAnswerEnableTrue(Long answerId, Long userId, boolean state);
 
 
 }
