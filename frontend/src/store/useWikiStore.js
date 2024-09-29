@@ -23,9 +23,9 @@ axios.interceptors.response.use(
 export const useWikiStore = defineStore("wiki", {
     state: () => ({
         wikiCards: [],
-        totalPages: 0,       // 목록 조회에 대한 총 페이지 수
-        searchTotalPages: 0, // 검색 결과에 대한 총 페이지 수
-        isLoading: false,  // 로딩 상태 추가
+        totalPages: 0,  
+        searchTotalPages: 0, 
+        isLoading: false,
         wikiRegisterReq: {
             title: '',
             categoryId: '',
@@ -37,9 +37,6 @@ export const useWikiStore = defineStore("wiki", {
         pageSize: 10,
         wikiTitle: '',
         category: '',
-        wikiSearchedCards: [],
-        searchQuery: '',
-        selectedCategory: '',
     }),
 
     actions: {
@@ -251,9 +248,10 @@ export const useWikiStore = defineStore("wiki", {
                 return false;
             }
         },
+        
         // 위키 검색 메서드
         async wikiSearch(request) {
-            request.size = 3;  
+            request.size = 16;  
             try {
               const response = await axios.get(backend + "/wiki/search", { params: request });
               this.wikiCards = response.data.result;

@@ -4,7 +4,6 @@
     <div class="wiki-inner">
       <SearchComponent2 @search="handleSearch" />
 
-      <!-- 작성하기 버튼 추가 -->
       <div class="create-wiki-btn-container">
         <button @click="navigateToWikiRegister" class="create-wiki-btn">작성하기</button>
       </div>
@@ -23,7 +22,6 @@
     </div>
 
     <div class="pagination-container"  v-if="!isLoading && totalPage > 0">
-      <!-- PaginationComponent에 totalPage 값 전달 -->
       <PaginationComponent 
         :totalPage="totalPage"
         :nowPage="selectedPage"
@@ -63,37 +61,32 @@ export default {
   },
   methods: {
  handleSearch(searchParams) {
-    this.isSearchMode = true; // 검색 모드로 설정
-    this.selectedPage = 1; // 첫 페이지로 초기화
+    this.isSearchMode = true; 
+    this.selectedPage = 1; 
     this.isLoading = true;
-
-    // 검색을 위한 파라미터 설정
     this.searchParams = searchParams;
     this.wikiStore.wikiSearch(this.searchParams).then(() => {
-      this.totalPage = this.wikiStore.searchTotalPages; // 검색 결과의 전체 페이지 수
+      this.totalPage = this.wikiStore.searchTotalPages;
       this.isLoading = false;
     });
   },
 
-  // 위키 목록 불러오기 (검색 모드가 아닐 때 사용)
   async fetchWikiList(page) {
-    this.isSearchMode = false; // 목록 조회 모드로 설정
+    this.isSearchMode = false; 
     this.isLoading = true;
 
     await this.wikiStore.fetchWikiList(page);
-    this.totalPage = this.wikiStore.totalPages; // 목록의 전체 페이지 수
+    this.totalPage = this.wikiStore.totalPages; 
     this.isLoading = false;
   },
 
-  // 페이지 업데이트 처리
   handlePageUpdate(newPage) {
     if (newPage !== this.selectedPage) {
       this.selectedPage = newPage;
       this.isLoading = true;
       
-      // 검색 모드와 일반 목록 모드 구분
       if (this.isSearchMode) {
-        this.searchParams.page = newPage - 1; // 0부터 시작
+        this.searchParams.page = newPage - 1;
         this.wikiStore.wikiSearch(this.searchParams).then(() => {
           this.isLoading = false;
         });
@@ -103,7 +96,6 @@ export default {
     }
   },
 
-  // 작성 페이지로 이동
   navigateToWikiRegister() {
     this.$router.push("/wiki/register");
   }
