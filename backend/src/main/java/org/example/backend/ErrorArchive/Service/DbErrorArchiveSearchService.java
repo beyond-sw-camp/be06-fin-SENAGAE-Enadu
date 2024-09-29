@@ -93,9 +93,6 @@ public class DbErrorArchiveSearchService implements ErrorArchiveSearchService {
     private static List<ListErrorArchiveRes> getListErrorArchiveRes(Page<ErrorArchive> errorArchivePage) {
         List<ListErrorArchiveRes> errorArchiveResList = new ArrayList<>();
         for (ErrorArchive errorArchive : errorArchivePage) {
-            if (!errorArchive.isEnable()){
-                continue;
-            }
             User user = errorArchive.getUser();
             Category category = errorArchive.getCategory();
             errorArchiveResList.add(ListErrorArchiveRes.builder()
