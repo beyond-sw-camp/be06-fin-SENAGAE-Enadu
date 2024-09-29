@@ -1,9 +1,12 @@
 <template>
-  <div class="custom-container" style="text-align:center;">
+  <TagComponent style="margin-bottom:0; padding: 50px;" :tagTitle="'포인트 정보'" :tagSubTitle="'포인트 정보를 확인하세요'"/>
+  <div class="custom-container" style="text-align:center; margin-top: 0;">
     <router-view v-show="isLoading" />
-    <div v-if="!isLoading"></div>
-    <PaginationComponent v-else style="margin-top: 20px;" @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>
+    <div class="pagination-container" v-if="isLoading">
+      <PaginationComponent @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>
+    </div>
   </div>
+
 
 </template>
 
@@ -12,10 +15,11 @@
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import {mapStores} from "pinia";
 import {usePointStore} from "@/store/usePointStore";
+import TagComponent from "@/components/Common/TagComponent.vue";
 
 export default {
   name: "PointPage" ,
-  components: {PaginationComponent},
+  components: {TagComponent, PaginationComponent},
   computed: {
     ...mapStores(usePointStore),
   },
@@ -67,6 +71,11 @@ export default {
 </script>
 
 <style scoped>
+.pagination-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
 
 </style>
 
