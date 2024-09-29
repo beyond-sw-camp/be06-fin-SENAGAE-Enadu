@@ -88,8 +88,14 @@ public class QnaService {
     }
 
     public GetQuestionDetailRes getQuestionDetail(Integer qnaBoardId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        User user;
+        if (userId != null){
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        }
+        else {
+            user = null;
+        }
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId.longValue())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
 
@@ -332,16 +338,25 @@ public class QnaService {
     // 현재 접속한 사용자의 좋아요/싫어요/선택 X 상태를 알아내는 함수
     //userID-qnaBoardId를 활용해서 해당 사용자가 답변글에 어떤 상태를 표시했는지 나타내는 함수
     public Boolean isQuestionLikeORHate(QnaBoard qnaBoard, User user) {
+        if (user == null){
+            return null;
+        }
         Optional<Boolean> state = qnaLikeRepository.findState(qnaBoard.getId(), user.getId());
         return state.orElse(null);
     }
     // userID-qnaBoardId를 활용해서 해당 사용자가 답변글에 어떤 상태를 표시했는지 나타내는 함수
     public Boolean isAnswerLikeORHate(Answer answer, User user) {
+        if (user == null){
+            return null;
+        }
         Optional<Boolean> state = answerLikeRepository.findState(answer.getId(), user.getId());
         return state.orElse(null);
     }
     // 현재 접속한 사용자의 질문에 대한 스크랩 상태를 알아내는 함수
-    private boolean isQuestionScarp(QnaBoard qnaBoard, User user) {
+    private Boolean isQuestionScarp(QnaBoard qnaBoard, User user) {
+        if (user == null){
+            return null;
+        }
         Optional<QnaScrap> qnaScrap = qnaScrapRepository.findByQnaBoardEnableTrueAndQnaBoardIdAndUserId(qnaBoard.getId(), user.getId());
         if (qnaScrap.isPresent()) {
             return true;

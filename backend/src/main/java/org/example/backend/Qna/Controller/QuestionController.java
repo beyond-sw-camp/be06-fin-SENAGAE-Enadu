@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,10 +42,17 @@ public class QuestionController {
 
     //qna 상세 조회
     @GetMapping("/detail")
-    public BaseResponse<GetQuestionDetailRes> getQnaDetail(Integer qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId, customUserDetails.getUserId());
-        return new BaseResponse<>(questionDetailRes);
+    public BaseResponse<GetQuestionDetailRes> getQnaDetail(Integer qnaBoardId, @AuthenticationPrincipal Optional<CustomUserDetails> customUserDetails) {
+        Long userId;
+        if (customUserDetails != null) {
+            userId = customUserDetails.get().getUserId();
+        }
+        else {
+            userId = null;
+        }
+        GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId, userId);
 
+        return new BaseResponse<>(questionDetailRes);
     }
 
     //qna 질문 좋아요
