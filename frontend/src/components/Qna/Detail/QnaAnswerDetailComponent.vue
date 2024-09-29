@@ -34,7 +34,6 @@
           </div>
           <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000"
                                    v-bind:adopted="isShowAdopted"
-                                   v-bind:edited="isShowEdited"
                                    v-bind:detail="qnaAnswer"
                                    @clickEdit="handleEditUpdate"
           />

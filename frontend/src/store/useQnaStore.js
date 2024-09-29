@@ -256,5 +256,37 @@ export const useQnaStore = defineStore("qna", {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
         },
+        async deleteQuestion(id) {
+            const data = {
+                qnaBoardId: id
+            };
+
+            try {
+                await axios.patch(backend + "/qna/removal", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+
+        async deleteAnswer(qnauBoardId, answerId) {
+            const data = {
+                qnaBoardId: qnauBoardId,
+                answerId: answerId
+            };
+
+            try {
+                await axios.patch(backend + "/ans/removal", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
     },
 });
