@@ -44,5 +44,9 @@ public interface ErrorArchiveReository extends JpaRepository<ErrorArchive, Long>
 
     Page<ErrorArchive> findByErrorScrapListUserIdAndEnableTrue(Long id, Pageable pageable);
 
+    @Query("SELECT ea FROM ErrorArchive ea JOIN FETCH ea.user u JOIN FETCH ea.category c WHERE ea.id = :id")
+    Optional<ErrorArchive> findByIdWithUserAndCategory(@Param("id") Long id);
+
+
 
 }

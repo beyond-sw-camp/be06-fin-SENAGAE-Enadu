@@ -11,7 +11,10 @@ import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,8 +38,10 @@ public class ErrorArchiveController {
     // 아카이브 등록
     @PostMapping()
     public BaseResponse<RegisterErrorArchiveRes> register(
-            @RequestBody RegisterErrorArchiveReq registerErrorArchiveReq,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+            @RequestBody RegisterErrorArchiveReq registerErrorArchiveReq) {
+        // spring security에서 인증된 사용자 정보 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         RegisterErrorArchiveRes registerErrorArchiveRes = errorArchiveService.register(registerErrorArchiveReq, customUserDetails);
         return new BaseResponse<>(registerErrorArchiveRes);
 
