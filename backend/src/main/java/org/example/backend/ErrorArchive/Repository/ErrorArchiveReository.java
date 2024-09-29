@@ -38,8 +38,8 @@ public interface ErrorArchiveReository extends JpaRepository<ErrorArchive, Long>
     Page<ErrorArchive> findAllByContentIsContainingIgnoreCase(String keyword, Pageable pageable);
 
     @Query("SELECT er FROM ErrorArchive  er JOIN FETCH er.user JOIN FETCH er.category  JOIN FETCH er.category.superCategory " +
-            "WHERE LOWER(er.title) LIKE CONCAT('%', :keyword,'%') " +
-            "OR LOWER(er.content) LIKE CONCAT('%', :keyword,'%')")
+            "WHERE (LOWER(er.title) LIKE CONCAT('%', :keyword,'%') " +
+            "OR LOWER(er.content) LIKE CONCAT('%', :keyword,'%')) AND er.enable = true")
     Page<ErrorArchive> findAllByKeyword(String keyword, Pageable pageable); // 메서드명 줄이기 위해 query 사용
 
     @Query("SELECT er FROM ErrorArchive er JOIN FETCH er.user " +
