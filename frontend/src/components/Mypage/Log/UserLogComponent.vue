@@ -3,25 +3,15 @@
         <div class="mx-5 mb-5 mt-6 sm:mx-6">
             <div class="flex items-center justify-center">
                 <img class="h-10 w-10 rounded-full border border-gray-500/30 sm:h-16 sm:w-16" alt="프로필 사진"
-                     :src="mypageStore.userInfo.profileImg">
+                     :src="userLogStore.userInfo.profileImg">
                 <div class="ml-3.5 mr-2 flex flex-1 flex-col sm:ml-5 sm:text-2xl">
                     <div class="flex items-center gap-x-2">
-                        <span class="line-clamp-1 w-fit break-all pl-0.5 font-bold">
-                            {{ mypageStore.userInfo.nickname }}
-                        </span>
+                        <span class="line-clamp-1 w-fit break-all pl-0.5 font-bold">{{ userLogStore.userInfo.nickname }}</span>
                         <div class="flex items-center text-sm sm:text-base">
-                            <span>{{ mypageStore.userInfo.grade }}</span>
+                            <span>{{ userLogStore.userInfo.grade }}</span>
                         </div>
                     </div>
                 </div>
-                <router-link :to="{ path: '/mypage/history' }"
-                             class="inline-flex justify-center rounded-md border border-white-500/30 bg-white px-4 py-2 text-sm font-medium text-black-700 hover:border-white-500/70 focus:outline-none dark:bg-white-700 dark:text-black-300 mr-2">
-                    작성 내역
-                </router-link>
-                <router-link :to="{ path: '/mypage/info' }"
-                             class="inline-flex justify-center rounded-md border border-white-500/30 bg-white px-4 py-2 text-sm font-medium text-black-700 hover:border-white-500/70 focus:outline-none dark:bg-white-700 dark:text-black-300">
-                    회원 정보 조회
-                </router-link>
             </div>
         </div>
         <div class="relative flex gap-x-6 border-t border-gray-500/30 px-6 sm:gap-x-8 dark:border-gray-500/70">
@@ -35,10 +25,15 @@
                 <span class="hover:no-underline">위키</span>
                 <span :class="getUnderlineClass('wiki')" aria-hidden="true"></span>
             </button>
-            <button @click="setActiveSection('qna')"
-                    :class="getButtonClass('qna')">
-                <span class="hover:no-underline">QnA</span>
-                <span :class="getUnderlineClass('qna')" aria-hidden="true"></span>
+            <button @click="setActiveSection('question')"
+                    :class="getButtonClass('question')">
+                <span class="hover:no-underline">질문</span>
+                <span :class="getUnderlineClass('question')" aria-hidden="true"></span>
+            </button>
+            <button @click="setActiveSection('answer')"
+                    :class="getButtonClass('answer')">
+                <span class="hover:no-underline">답변</span>
+                <span :class="getUnderlineClass('answer')" aria-hidden="true"></span>
             </button>
         </div>
     </div>
@@ -48,7 +43,7 @@
             <div class="errorarchive-inner">
                 <div class="errorarchive-list-flex">
                     <ErrorArchiveCardComponent
-                        v-for="errorarchiveCard in mypageStore.scrap.archiveList"
+                        v-for="errorarchiveCard in userLogStore.history.archiveList"
                         :key="errorarchiveCard.id"
                         v-bind:errorarchiveCard="errorarchiveCard"
                     />
@@ -57,14 +52,25 @@
         </div>
         <div v-if="activeSection === 'wiki'">
             <div class="wiki-list-grid" v-if="!isLoading">
-                <WikiCardComponent v-for="wikiCard in mypageStore.scrap.wikiList" :key="wikiCard.id" :wikiCard="wikiCard" />
+                <WikiCardComponent v-for="wikiCard in userLogStore.history.wikiList" :key="wikiCard.id" :wikiCard="wikiCard" />
             </div>
         </div>
-        <div v-if="activeSection === 'qna'">
+        <div v-if="activeSection === 'question'">
             <div class="qna-inner">
-                <div class="qna-list-flex">
+                <div class="qna-list-flex" v-if="!isLoading">
                     <QnaCardComponent
-                        v-for="qnaCard in mypageStore.scrap.qnaList"
+                        v-for="qnaCard in userLogStore.history.questionList"
+                        :key="qnaCard.id"
+                        :qnaCard="qnaCard"
+                    />
+                </div>
+            </div>
+        </div>
+        <div v-if="activeSection === 'answer'">
+            <div class="qna-inner">
+                <div class="qna-list-flex" v-if="!isLoading">
+                    <QnaCardComponent
+                        v-for="qnaCard in userLogStore.history.answerList"
                         :key="qnaCard.id"
                         :qnaCard="qnaCard"
                     />
@@ -78,29 +84,40 @@
 </template>
 
 <script>
-import {mapStores} from "pinia";
-import {useMypageStore} from "@/store/useMypageStore";
-import PaginationComponent from "@/components/Common/PaginationComponent.vue";
+import { mapStores } from "pinia";
+import { useUserLogStore } from "@/store/useUserLogStore";
 import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
+import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import LoadingComponent from "@/components/Common/LoadingComponent.vue";
 import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";
 
 export default {
-    name: "ScrapListComponent",
-    components: {ErrorArchiveCardComponent, LoadingComponent, WikiCardComponent, QnaCardComponent, PaginationComponent},
+    name: "UserLogComponent",
+    components: {ErrorArchiveCardComponent, LoadingComponent, WikiCardComponent, PaginationComponent, QnaCardComponent },
     data() {
         return {
             isLoading: true,
-            activeSection: 'qna',
+            activeSection: 'archive',
             page: 0,
             totalPage: 1
         };
     },
     computed: {
-        ...mapStores(useMypageStore)
+        ...mapStores(useUserLogStore),
+        nickname() {
+            return this.$route.params.nickname
+        }
     },
     methods: {
+        async fetchUserInfoAndLoadData() {
+            try {
+                await this.userLogStore.fetchUserInfo(this.nickname);
+                await this.loadData();
+            } catch (error) {
+                console.error("데이터 로딩 중 에러:", error);
+            }
+        },
         setActiveSection(section) {
             this.activeSection = section;
             this.page = 0;
@@ -120,8 +137,11 @@ export default {
                     case 'wiki':
                         await this.fetchWikiList();
                         break;
-                    case 'qna':
-                        await this.fetchQnaList();
+                    case 'question':
+                        await this.fetchQuestionList();
+                        break;
+                    case 'answer':
+                        await this.fetchAnswerList();
                         break;
                 }
             } finally {
@@ -129,30 +149,39 @@ export default {
             }
         },
         async fetchArchiveList() {
-            await this.mypageStore.getArchiveScrapList(this.page);
-            const archiveList = this.mypageStore.scrap.archiveList || [];
+            await this.userLogStore.getLogArchiveList(this.page);
+            const archiveList = this.userLogStore.history.archiveList || [];
             if (archiveList.length !== 0) {
                 this.totalPage = archiveList[0].totalPage;
             } else {
-                alert("스크랩한 아카이브가 없습니다.");
+                alert("작성한 아카이브 내역이 없습니다.");
             }
         },
         async fetchWikiList() {
-            await this.mypageStore.getWikiScrapList(this.page);
-            const wikiList = this.mypageStore.scrap.wikiList || [];
+            await this.userLogStore.getLogWikiList(this.page);
+            const wikiList = this.userLogStore.history.wikiList || [];
             if (wikiList.length !== 0) {
-                this.totalPage = wikiList[0].totalPages;
+                this.totalPage = wikiList[0].totalPage;
             } else {
-                alert("스크랩한 위키가 없습니다.");
+                alert("작성한 위키 내역이 없습니다.");
             }
         },
-        async fetchQnaList() {
-            await this.mypageStore.getQnaScrapList(this.page);
-            const qnaList = this.mypageStore.scrap.qnaList || [];
-            if (qnaList.length !== 0) {
-                this.totalPage = qnaList[0].totalPage;
+        async fetchQuestionList() {
+            await this.userLogStore.getLogQuestionList(this.page);
+            const questionList = this.userLogStore.history.questionList || [];
+            if (questionList.length !== 0) {
+                this.totalPage = questionList[0].totalPage;
             } else {
-                alert("스크랩한 QnA가 없습니다.");
+                alert("작성한 질문 내역이 없습니다.");
+            }
+        },
+        async fetchAnswerList() {
+            await this.userLogStore.getLogAnswerList(this.page);
+            const answerList = this.userLogStore.history.answerList || [];
+            if (answerList.length !== 0) {
+                this.totalPage = answerList[0].totalPage;
+            } else {
+                alert("작성한 답변 내역이 없습니다.");
             }
         },
         getButtonClass(section) {
@@ -167,9 +196,8 @@ export default {
         }
     },
     mounted() {
-        this.$emit("sub-title", "스크랩 목록");
-        this.mypageStore.fetchUserInfo();
-        this.loadData();
+        this.$emit("sub-title", "작성 내역");
+        this.fetchUserInfoAndLoadData();
     }
 };
 </script>
@@ -181,10 +209,6 @@ export default {
 
 .border-gray-500\/30 {
     border-top: 1px solid rgb(107 114 128 / 0.3);
-}
-
-.bg-white {
-    border: 1px solid rgb(107 114 128 / 0.3);
 }
 
 .errorarchive-inner {
@@ -204,13 +228,6 @@ export default {
     margin: 0 auto
 }
 
-.qna-inner {
-    width: auto;
-    height: max-content;
-    background-color: #fff;
-    margin: 25px;
-}
-
 .wiki-list-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 270px));
@@ -221,6 +238,13 @@ export default {
     align-content: center;
     max-width: 100%;
     margin: 35px 10px;
+}
+
+.qna-inner {
+    width: auto;
+    height: max-content;
+    background-color: #fff;
+    margin: 25px;
 }
 
 .qna-list-flex {

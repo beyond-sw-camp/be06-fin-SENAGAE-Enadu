@@ -27,12 +27,12 @@ export const useUserStore = defineStore('user', {
 
                 this.userId = response.data.userId;
                 this.isLoggedIn = true;
+                console.log("로그인 성공, 사용자 ID:", this.userId);
                 return true;
 
             } catch (error) {
                 if (error.response) {
                     console.error("서버 응답 에러:", error.response.data);
-                    console.error("상태 코드:", error.response.status);
                 } else if (error.request) {
                     console.error("응답 없음:", error.request);
                 } else {
@@ -41,6 +41,9 @@ export const useUserStore = defineStore('user', {
                 console.error("전체 에러 객체:", error);
                 return false;
             }
+        },
+        async oauthLogin(social) {
+            window.location.href = "/social/oauth2/authorization/" + social;
         },
         async logout() {
             try {
@@ -103,7 +106,7 @@ export const useUserStore = defineStore('user', {
               if(response.data.result === false){
                 alert("중복되는 닉네임입니다.")
               } else {
-                alert("중복되지 않는 닉네임입니다.");
+                alert("사용 가능한 닉네임입니다.");
               }
               return response.data.result;
             } catch (error) {
@@ -141,6 +144,28 @@ export const useUserStore = defineStore('user', {
                 console.error('이메일 인증 중 오류 발생:', error);
                 alert('이메일 인증에 실패했습니다.');
             }
-        }
+        },
+        async quitAccount(password) {
+            try {
+                const response = await axios.patch(backend +   '/user/quit',
+                    { password },
+                    { withCredentials: true }
+                );
+                if (response.data.code === 1000 && response.data.isSuccess) {
+                    this.userId = null;
+                    this.isLoggedIn = false;
+                    return true;
+                } else if (response.data.code === 2041) {
+                    alert(response.data.message);
+                } else {
+                    alert(response.data.message || '회원 탈퇴에 실패하였습니다.');
+                    return false;
+                }
+            } catch (error) {
+                alert('회원 탈퇴 중 오류가 발생했습니다.');
+                console.error(error);
+                return false;
+            }
+        },
     },
 });

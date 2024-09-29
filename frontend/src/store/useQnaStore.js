@@ -29,7 +29,6 @@ export const useQnaStore = defineStore("qna", {
         qnaSearchedCards: [],
     }),
 
-
     actions: {
         async registerQna(myTitle, myText, myCategory) {
             const data = {
