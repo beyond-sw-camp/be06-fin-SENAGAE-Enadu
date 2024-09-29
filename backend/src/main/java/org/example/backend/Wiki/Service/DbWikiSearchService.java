@@ -43,7 +43,7 @@ public class DbWikiSearchService implements WikiSearchService {
 
         Long categoryId = getWikiSearchReq.getCategoryId();
         String type = getWikiSearchReq.getType();
-        String keyword = getWikiSearchReq.getKeyword().toLowerCase().strip(); // 소문자로 변환, 문자열의 공백 삭제, keyword는 적어도 ''이므로 메서드에서 오류가 안남
+        String keyword = getWikiSearchReq.getKeyword().toLowerCase().replaceAll("\\s", "");
 
         if (categoryId == null || categoryId == 0) { // 검색어로만 검색
             wikiPage = SearchByKeyword(getWikiSearchReq.getType(), keyword, pageable);
@@ -56,7 +56,7 @@ public class DbWikiSearchService implements WikiSearchService {
 }
 
 private void ValidateSearchReq(GetWikiSearchReq getWikiSearchReq) { // 유효성 확인 메서드
-String keyword = getWikiSearchReq.getKeyword().strip().toLowerCase();
+    String keyword = getWikiSearchReq.getKeyword().toLowerCase().replaceAll("\\s", "");
     if ((keyword.isEmpty()) // 검색어 && 카테고리 선택 X
             && (getWikiSearchReq.getCategoryId() == null || getWikiSearchReq.getCategoryId() == 0)) {
         throw new InvalidWikiException(BaseResponseStatus.WIKI_SEARCH_EMPTY_REQUEST);
