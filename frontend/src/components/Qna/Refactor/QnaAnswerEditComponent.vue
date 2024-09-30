@@ -54,7 +54,7 @@ export default {
   methods: {
     async click() {
       if (!this.myAnswer) {
-        alert('모든 필드를 올바르게 입력해 주세요!');
+        alert('모든 필드를 올바르게 입력해 주세요.');
       } else {
         try {
           await useQnaStore().editAnswer(this.answer.id, this.myAnswer);
