@@ -57,9 +57,23 @@ public interface ErrorArchiveReository extends JpaRepository<ErrorArchive, Long>
             "OR LOWER(er.content) LIKE CONCAT('%', :keyword,'%')) AND er.category.id = :categoryId AND er.enable")
     Page<ErrorArchive> findAllByKeywordAndCategory(String keyword, Long categoryId, Pageable pageable);
 
-    Page<ErrorArchive> findByUserIdAndEnableTrue(Long id, Pageable pageable);
+//    Page<ErrorArchive> findByUserIdAndEnableTrue(Long id, Pageable pageable);
 
-    Page<ErrorArchive> findByErrorScrapListUserIdAndEnableTrue(Long id, Pageable pageable);
+//    Page<ErrorArchive> findByErrorScrapListUserIdAndEnableTrue(Long id, Pageable pageable);
 
+    @Query("SELECT ea FROM ErrorArchive ea " +
+            "JOIN FETCH ea.category c " +
+            "LEFT JOIN FETCH c.superCategory sc " +
+            "JOIN FETCH ea.user u " +
+            "WHERE ea.user.id = :userId AND ea.enable = true")
+    Page<ErrorArchive> findByUserIdAndEnableTrueWithFetch(@Param("userId") Long userId, Pageable pageable);
+
+    @Query("SELECT DISTINCT e FROM ErrorArchive e " +
+            "JOIN FETCH e.errorScrapList es " +
+            "JOIN FETCH e.category c " +
+            "LEFT JOIN FETCH c.superCategory sc " +
+            "JOIN FETCH e.user u " +
+            "WHERE es.user.id = :userId AND e.enable = true")
+    Page<ErrorArchive> findByErrorScrapListUserIdAndEnableTrueWithFetch(@Param("userId") Long userId, Pageable pageable);
 
 }

@@ -59,14 +59,16 @@ public class MypageService {
     public List<GetUserQnaListRes> getUserQnaList(Long id, Integer page, Integer size, String type) {
         userRepository.findByIdAndEnableTrue(id).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<QnaBoard> qnaBoardPage = null;
-        if (type.equals("question")) {
-            qnaBoardPage = questionRepository.findByUserIdAndEnableTrue(id, pageable);
-        } else if (type.equals("answer")) {
-            qnaBoardPage = questionRepository.findByUserAnswerListUserIdAndEnableTrue(id, pageable);
-        } else if (type.equals("scrap")) {
-            qnaBoardPage = questionRepository.findByQnaScrapListUserIdAndEnableTrue(id, pageable);
-        }
+        Page<QnaBoard> qnaBoardPage = switch (type) {
+            case "question" -> questionRepository.findByUserIdAndEnableTrueWithFetch(id, pageable); // 1 + n => 1개
+
+            case "answer" ->
+                    questionRepository.findByUserAnswerListUserIdAndEnableTrueWithFetch(id, pageable); // 1 + n => 1개
+
+            case "scrap" -> questionRepository.findByQnaScrapListUserIdAndEnableTrueWithFetch(id, pageable); // 2 + n => 1개
+            default -> null;
+
+        };
         if (qnaBoardPage.isEmpty()) {
             return null;
         }
@@ -98,9 +100,9 @@ public class MypageService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<WikiContent> contentsPage = null;
         if (type.equals("log")) {
-            contentsPage = contentRepository.findByUserId(id, pageable);
+            contentsPage = contentRepository.findByUserIdWithFetch(id, pageable); // 3 => 2개
         } else if (type.equals("scrap")) {
-            contentsPage = contentRepository.findByWikiScrapListUserId(id, pageable);
+            contentsPage = contentRepository.findByWikiScrapListUserIdWithWikiAndCategory(id, pageable); // 2 + n => 1개
         }
         if (contentsPage.isEmpty()) {
             return null;
@@ -126,9 +128,9 @@ public class MypageService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<ErrorArchive> contentsPage = null;
         if (type.equals("log")) {
-            contentsPage = errorArchiveReository.findByUserIdAndEnableTrue(id, pageable);
+            contentsPage = errorArchiveReository.findByUserIdAndEnableTrueWithFetch(id, pageable); // 3 => 2개
         } else if (type.equals("scrap")) {
-            contentsPage = errorArchiveReository.findByErrorScrapListUserIdAndEnableTrue(id, pageable);
+            contentsPage = errorArchiveReository.findByErrorScrapListUserIdAndEnableTrueWithFetch(id, pageable); // 2 + n => 1개
         }
         if (contentsPage.isEmpty()) {
             return null;
