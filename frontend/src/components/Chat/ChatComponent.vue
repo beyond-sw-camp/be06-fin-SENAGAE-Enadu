@@ -11,8 +11,8 @@
           </div>
         </div>
       </header>
-      <section class="chat_area _chatWindow" aria-hidden="false">
-        <div class="chat_reverse">
+      <section class="chat_area _chatWindow"  aria-hidden="false" >
+        <div class="chat_reverse" ref="scrollContainer">
           <ul class="group_message_balloon" style="visibility: visible;">
             <li v-if="isLoading"></li>
             <ChatMessageComponent v-else v-for="(chatMessage, idx) in chatStore.chatMessageList" :key="`${idx}-${chatMessage.sendTime}`"
@@ -59,7 +59,6 @@
 import ChatMessageComponent from "@/components/Chat/ChatMessageComponent.vue";
 import {mapStores} from "pinia";
 import {useChatStore} from "@/store/useChatStore";
-
 export default {
   name: "ChatComponent",
   components: {ChatMessageComponent},
@@ -71,11 +70,19 @@ export default {
       isLoading: true,
       page: 0,
       content: "",
+      canPage: true,
+      loadPaging: false,
+      initLastMessageId: 0,
     }
   },
   methods: {
     async getChatMessageList() {
       await this.chatStore.getChatMessageList(this.page);
+      if (this.chatStore.chatMessageList.length === 0){
+        this.initLastMessageId = null
+      } else {
+        this.initLastMessageId = this.chatStore.chatMessageList[0].chatId;
+      }
       this.isLoading = false;
     },
     autoResize() {
@@ -91,11 +98,11 @@ export default {
         alert("채팅방이 선택되지 않았습니다.");
         this.content=""
         return;
-      } else if (this.content === ""){
+      } else if (this.content.trim() === ""){
         alert("채팅 메세지를 입력해주세요.");
         return;
       }
-      this.chatStore.sendMessage(this.content);
+      this.chatStore.sendMessage(this.content.trim());
       this.content=""
       this.autoResize()
     },
@@ -107,10 +114,23 @@ export default {
         }
       }
     },
+    async handleScroll(e) {
+      const element = this.$refs.scrollContainer;
+      if (this.canPage && Math.abs(element.scrollTop) + Math.abs(e.target.clientHeight) > element.scrollHeight * 0.9 && !this.loadingPage) {
+        this.loadingPage = true;
+        this.page ++;
+        this.canPage = await this.chatStore.getChatMessageHistory(this.page, this.initLastMessageId);
+        this.loadingPage = false;
+      }
+    }
   },
   mounted() {
     this.getChatMessageList();
-  }
+    this.$refs.scrollContainer.addEventListener('scroll', this.handleScroll);
+  },
+  beforeUnmount() {
+    this.$refs.scrollContainer.removeEventListener('scroll', this.handleScroll);
+  },
 }
 </script>
 
@@ -565,7 +585,7 @@ img {
 }
 
 .chat_input {
-  overflow-y: auto;
+  overflow-y: hidden ;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
