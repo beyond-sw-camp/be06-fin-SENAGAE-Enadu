@@ -72,6 +72,8 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-height: 200px; /* 원하는 최대 높이 설정 */
+  overflow: hidden; /* 내용이 넘치면 숨김 */
   background: #fff;
   box-shadow: 5px 5px 7px 0 rgba(0, 0, 0, 0.08);
   transition: box-shadow .25s ease-in, transform .25s ease-in;
@@ -135,6 +137,9 @@ export default {
   line-height: 1.5;
   word-break: break-word;
   color: #212529;
+  overflow: hidden; /* 내용이 넘치면 숨김 */
+  text-overflow: ellipsis; /* 생략 부호 추가 */
+  white-space: nowrap; /* 한 줄로 표시 */
 }
 
 .PostCard_footer__9J5Wd {
