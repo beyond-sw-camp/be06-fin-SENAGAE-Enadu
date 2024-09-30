@@ -108,8 +108,8 @@ export default {
 .item:disabled {
   color: #6c757d; /* 비활성화된 텍스트 색상 */
   cursor: not-allowed; /* 비활성화된 커서 */
-=======
-.ui.menu {
+
+  .ui.menu {
     display: flex;
     margin: 1rem 0;
     background: #fff;
@@ -121,35 +121,6 @@ export default {
     display: flex;
     font-weight: 500;
     min-height: 0;
-}
-.item {
-    padding: 0.5em 1em;
-    cursor: pointer;
-    color: rgba(0, 0, 0, 0.8);
-    transition: background-color 0.3s, color 0.3s;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    border: 0.2px solid rgba(34, 36, 38, 0.1);
-}
-
-.item:first-child {
-    border-left: none;
-}
-
-.item:hover {
-    background-color: rgba(34, 36, 38, 0.1);
-}
-
-.ui.pagination.menu .active.item {
-    border-top: none;
-    border-top-width: initial;
-    border-top-color: initial;
-    background-color: #e1e8e8;
-    color: rgba(0, 0, 0, .95);
-    -webkit-box-shadow: none;
-    box-shadow: none;
+  }
 }
 </style>

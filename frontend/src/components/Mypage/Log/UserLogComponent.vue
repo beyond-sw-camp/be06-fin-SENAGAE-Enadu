@@ -86,7 +86,7 @@
 <script>
 import { mapStores } from "pinia";
 import { useUserLogStore } from "@/store/useUserLogStore";
-import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
+import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import LoadingComponent from "@/components/Common/LoadingComponent.vue";
