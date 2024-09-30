@@ -3,6 +3,7 @@ package org.example.backend.Wiki.Repository;
 import org.example.backend.Wiki.Model.Entity.Wiki;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,6 +24,7 @@ public interface WikiRepository extends JpaRepository<Wiki, Long> {
             "JOIN w.latestWiki lw " +
             "WHERE LOWER(w.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(lw.content) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @EntityGraph(attributePaths = {"latestWiki", "category"})
     Page<Wiki> findAllByKeyword(String keyword, Pageable pageable); // tc타입 검색
 
     // keyword + category 검색
