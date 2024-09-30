@@ -22,21 +22,38 @@ public interface ErrorArchiveReository extends JpaRepository<ErrorArchive, Long>
     Page<ErrorArchive> findByEnableTrue(Pageable pageable);
 
 
+    @Query("SELECT er FROM ErrorArchive er JOIN FETCH er.user " +
+            "WHERE er.category.id = :categoryId " +
+            "AND er.enable = true")
     Page<ErrorArchive> findAllByCategoryId(Long categoryId, Pageable pageable);
 
+    @Query("SELECT er FROM ErrorArchive er JOIN FETCH er.user JOIN FETCH er.category  JOIN FETCH er.category.superCategory " +
+            "WHERE (LOWER(er.title) LIKE CONCAT('%', LOWER(:keyword), '%')) " +
+            "AND er.enable = true")
     Page<ErrorArchive> findAllByTitleIsContainingIgnoreCase(String keyword, Pageable pageable);
 
+    @Query("SELECT er FROM ErrorArchive er JOIN FETCH er.user JOIN FETCH er.category  JOIN FETCH er.category.superCategory " +
+            "WHERE (LOWER(er.content) LIKE CONCAT('%', LOWER(:keyword), '%')) " +
+            "AND er.enable = true")
     Page<ErrorArchive> findAllByContentIsContainingIgnoreCase(String keyword, Pageable pageable);
 
-    @Query("SELECT er FROM ErrorArchive  er WHERE LOWER(er.title) LIKE CONCAT('%', :keyword,'%') " +
-            "OR LOWER(er.content) LIKE CONCAT('%', :keyword,'%')")
+    @Query("SELECT er FROM ErrorArchive  er JOIN FETCH er.user JOIN FETCH er.category  JOIN FETCH er.category.superCategory " +
+            "WHERE (LOWER(er.title) LIKE CONCAT('%', :keyword,'%') " +
+            "OR LOWER(er.content) LIKE CONCAT('%', :keyword,'%')) AND er.enable = true")
     Page<ErrorArchive> findAllByKeyword(String keyword, Pageable pageable); // 메서드명 줄이기 위해 query 사용
 
+    @Query("SELECT er FROM ErrorArchive er JOIN FETCH er.user " +
+            "WHERE (LOWER(er.title) LIKE CONCAT('%', LOWER(:keyword), '%')) " +
+            "AND er.category.id = :categoryId AND er.enable = true")
     Page<ErrorArchive> findAllByTitleIsContainingIgnoreCaseAndCategoryId(String keyword, Long categoryId, Pageable pageable);
 
+    @Query("SELECT er FROM ErrorArchive er JOIN FETCH er.user " +
+            "WHERE (LOWER(er.content) LIKE CONCAT('%', LOWER(:keyword), '%')) " +
+            "AND er.category.id = :categoryId AND er.enable = true")
     Page<ErrorArchive> findAllByContentIsContainingIgnoreCaseAndCategoryId(String keyword, Long categoryId, Pageable pageable);
 
-    @Query("SELECT er FROM ErrorArchive er JOIN FETCH er.user WHERE (LOWER(er.title) LIKE CONCAT('%', :keyword,'%') " +
+    @Query("SELECT er FROM ErrorArchive er JOIN FETCH er.user " +
+            "WHERE (LOWER(er.title) LIKE CONCAT('%', :keyword,'%') " +
             "OR LOWER(er.content) LIKE CONCAT('%', :keyword,'%')) AND er.category.id = :categoryId AND er.enable")
     Page<ErrorArchive> findAllByKeywordAndCategory(String keyword, Long categoryId, Pageable pageable);
 
