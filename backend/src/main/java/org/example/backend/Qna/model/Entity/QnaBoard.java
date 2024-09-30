@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.backend.Category.Model.Entity.Category;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
+import org.example.backend.Qna.model.Res.BeforeDeleteSpaceRes;
 import org.example.backend.User.Model.Entity.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -115,5 +116,20 @@ public class QnaBoard {
 
     public void disable() {
         this.enable = false;
+    }
+
+    public BeforeDeleteSpaceRes deleteSpace() {
+        BeforeDeleteSpaceRes before = BeforeDeleteSpaceRes.builder()
+                .title(this.title)
+                .content(this.content)
+                .build();
+        this.title = title != null ? title.replaceAll("\\s+", "") : null;
+        this.content = content != null ? content.replaceAll("\\s+", "") : null;
+        return before;
+    }
+
+    public void BackupSpace(BeforeDeleteSpaceRes beforeDeleteSpaceRes) {
+        this.title = beforeDeleteSpaceRes.getTitle();
+        this.content = beforeDeleteSpaceRes.getContent();
     }
 }
