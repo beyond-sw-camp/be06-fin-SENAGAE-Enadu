@@ -59,7 +59,7 @@ public class PointService {
         for (User user : userOrderByPointDescPage) {
             getPointRankResList.add(GetPointRankRes.builder()
                     .point(user.getPoint())
-                    .rank(rank++)
+                    .rank(userRepository.countByPointGreaterThan(user.getPoint())+1)
                     .grade(user.getGrade())
                     .profileImg(user.getProfileImg())
                     .totalPage(userOrderByPointDescPage.getTotalPages())
