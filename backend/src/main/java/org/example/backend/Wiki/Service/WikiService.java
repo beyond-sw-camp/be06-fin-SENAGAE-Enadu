@@ -164,7 +164,6 @@ public class WikiService {
 
     }
 
-
     // 위키 이전버전 상세 조회
     public GetWikiVersionDetailRes versionDetail(Long wikiContentId, Long userId){
 
@@ -210,7 +209,6 @@ public class WikiService {
                 .collect(Collectors.toList());
     }
 
-  
     // 위키 스크랩
     @Transactional
     public WikiScrapRes scrap(WikiScrapReq wikiScrapReq, Long userId) {
