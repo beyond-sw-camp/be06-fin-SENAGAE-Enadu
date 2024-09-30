@@ -1,7 +1,7 @@
 <template>
   <div class="dropdown"  @click.stop="showDropdown">{{ nickname }}
     <ul class="dropdown-menu" v-if="isDropdownVisible">
-      <router-link :to="{ path: '/' }"><li><i class="fas fa-user"></i> 회원 정보</li></router-link>
+      <router-link :to="{ path: `/user/log/${nickname}` }"><li><i class="fas fa-user"></i> 유저 로그 </li></router-link>
       <li  @click="startChat"><i class="fas fa-comments"></i> 1:1 채팅</li>
     </ul>
   </div>

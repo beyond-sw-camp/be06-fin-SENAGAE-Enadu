@@ -51,28 +51,6 @@
     </div>
     <div>
       <v-md-preview :text="qnaAnswer.answer"/>
-      <div>
-        <aside class="bg-black text-white p-6 rounded-lg w-full max-w-md font-mono">
-          <div class="flex justify-between items-center">
-            <div class="flex space-x-2 text-red-500">
-              <div class="w-3 h-3 rounded-full bg-red-500"></div>
-              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <div class="w-3 h-3 rounded-full bg-green-500"></div>
-            </div>
-            <p class="text-sm">spring</p>
-          </div>
-          <div class="mt-4">
-            <p class="text-green-400">@RestController</p>
-            <p class="text-green-400">@RequestMapping("/test")</p>
-            <p class="text-white">&nbsp;public class TestJenController {</p>
-            <p class="text-green-400">&nbsp;&nbsp;@GetMapping()</p>
-            <p class="text-white">&nbsp;&nbsp;public String saveTest() {</p>
-            <p class="text-white">&nbsp;&nbsp;&nbsp;return "test";</p>
-            <p class="text-white">&nbsp;&nbsp;}</p>
-            <p class="text-white">}</p>
-          </div>
-        </aside>
-      </div>
       <div class="mt-auto pt-10">
         <div class="flex flex-col md:flex-row gap-5 justify-start">
           <a

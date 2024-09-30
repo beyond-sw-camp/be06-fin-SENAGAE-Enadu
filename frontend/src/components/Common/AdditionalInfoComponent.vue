@@ -83,12 +83,14 @@ export default {
       if (confirm("삭제한 게시글은 되돌릴 수 없습니다 정말 삭제하시겠습니까")) {
         if (this.isQuestion === true) {
           useQnaStore().deleteQuestion(this.$route.params.id);
+          alert("해당 글이 제거되었습니다.");
+          this.$router.push('/qna/list');
         } else {
           useQnaStore().deleteAnswer(this.$route.params.id, this.detail.id);
+          alert("해당 글이 제거되었습니다.");
+          useQnaStore().getQnaDetail(this.$route.params.id);
+          window.location.reload();
         }
-        alert("해당 글이 제거되었습니다.");
-        useQnaStore().getQnaDetail(this.$route.params.id);
-        window.location.reload();
       } else {
         alert("삭제가 취소되었습니다.");
       }

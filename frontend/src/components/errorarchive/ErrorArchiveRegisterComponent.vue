@@ -58,7 +58,7 @@
                 <div class="mt-5 flex justify-between gap-x-3 mb-10">
                   <button type="button"
                           class="w-20 rounded-md bg-white px-4 py-2 text-sm font-medium shadow-sm ring-1 ring-gray-500/30 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:ring-gray-500/70 dark:hover:bg-gray-600"
-                          @click="cancelForm">
+                          @click="cancel">
                     취소
                   </button>
                   <div class="relative flex shrink-0 items-center gap-x-3">
@@ -106,7 +106,7 @@ export default {
     SubCategoryModal,
   },
   computed: {
-    ...mapStores(useErrorArchiveStore), // 어떤 저장소랑 연결시켜 주겠다.
+    ...mapStores(useErrorArchiveStore), 
     ...mapStores(useCommonStore)
   },
   data () {
@@ -127,13 +127,15 @@ export default {
       if (!this.errorArchive.title || !this.errorArchive.content || !this.selectedSuperCategory) {
         alert('모든 필드를 올바르게 입력해 주세요.');
         return;
-      }
-      // subcategory null인지 확인해서 어떤거를 erroArchive 안에 넣어줄지 판별해서 id 넣어주기
+      }    
       try { 
-        const errorArchiveStore = useErrorArchiveStore(); // Use your store
-        await errorArchiveStore. registerErrorArchive(this.errorArchive);
+        const errorArchiveStore = useErrorArchiveStore(); 
+        await errorArchiveStore.registerErrorArchive(this.errorArchive);
+        if (this.selectedSuperCategory === null) {
+          this.selectedSuperCategory = this.selectedSubCategory; // 하위 카테고리 ID를 상위 카테고리 ID로 설정
+        }
         alert('등록이 완료되었습니다.');
-        // 목록페이지, 상세페이지 보통은 보여주는데 일단은 임시로 '/''
+        this.$router.push('/errorarchive/list');
       } catch (error) {
         console.error('등록 중 오류 발생:', error);
         alert(`등록 중 오류 발생: ${error.message}`);
@@ -169,6 +171,13 @@ export default {
       this.selectedSubCategory = category;
       this.errorArchive.categoryId = category.id;
       this.closeSubCategoryModal();
+    },
+    cancel() {
+      this.errorArchive.title = '';
+      this.errorArchive.content = '';
+      this.selectedSuperCategory = '';
+      this.selectedSubCategory = '';
+      this.categoryId='';
     },
  }
 }

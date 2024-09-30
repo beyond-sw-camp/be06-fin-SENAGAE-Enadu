@@ -5,7 +5,7 @@
 
 <script>
 import { useUserStore } from '@/store/useUserStore';
-import { useRouter, useRoute } from 'vue-router';
+import {mapStores} from "pinia";
 
 export default {
     name: 'OAuthLoginPage',
@@ -14,24 +14,24 @@ export default {
             userId: null 
         };
     },
+    computed: {
+        ...mapStores(useUserStore)
+    },
     created() {
         this.loginSuccess();
     },
     methods: {
         loginSuccess() {
-            const userStore = useUserStore();
-            const router = useRouter();
-            const route = useRoute();
-
-            this.userId = route.query.userId;
-
+            this.userId = this.$route.query.userId || null;
             if (this.userId) {
-                userStore.setUserLoggedIn(this.userId);
-                router.push('/');
+                this.userStore.setUserLoggedIn(Number(this.userId));
+                alert('로그인에 성공했습니다.')
+                this.$router.push('/');
             } else {
-                console.error('userId가 쿼리 파라미터에 없습니다.');
+                alert('소셜 로그인에 실패했습니다.');
+                this.$router.push('/login?mode=login');
             }
-        }
+        },
     }
 }
 </script>

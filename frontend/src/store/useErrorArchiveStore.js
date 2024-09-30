@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+
+
+
 const backend = "/api";
 
 export const useErrorArchiveStore = defineStore('errorarchive', {
@@ -10,6 +13,8 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       nickname: "",
       title: "",
       content: "",
+      superCategoryId: 0,
+      subCategoryId: 0,
       superCategory: "",
       subCategory: "",
       createAt: "",
@@ -26,9 +31,10 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     errorarchiveCards: [],
   }),
   actions: {
+    // 에러 아카이브 등록 기능
     async registerErrorArchive(errorarchive) {
       try {
-        const response = await axios.post(backend + "/errorarchive", errorarchive, {
+        const response = await axios.post(backend + "/errorarchive", errorarchive ,{
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
@@ -51,14 +57,66 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         throw error;
       }
     },
+    // 에러 아카이브 수정 기능
+    async updateErrorArchive(errorarchive) {
+      try {
+        const response = await axios.patch(backend+"/errorarchive", errorarchive, {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        });
+    
+        // 응답 확인
+        if (response.data.isSuccess) {
+          console.log("에러 아카이브 수정 성공:", response.data.message);
+          alert("수정이 완료되었습니다.");
+          return response.data.result; // 수정된 결과를 반환
+        } else {
+          throw new Error("수정 실패: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("에러 아카이브 수정 중 오류 발생:", error);
+        if (error.response) {
+          console.error("응답 데이터:", error.response.data); // 응답 데이터 확인
+        }
+        throw error;
+      }
+    },
+    async deleteErrorArchive(id) {
+      try {
+        const response = await axios.patch(`${backend}/errorarchive/removal`,{id:id} , {
+          withCredentials: true,
+        });
+    
+        // 응답 확인
+        if (response.data.isSuccess) {
+          console.log("에러 아카이브 삭제 성공:", response.data.message);
+          alert("삭제가 완료되었습니다.");
+        
+          return response.data.result; // 삭제된 결과를 반환
+        } else {
+          throw new Error("삭제 실패: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("에러 아카이브 삭제 중 오류 발생:", error);
+        if (error.response) {
+          console.error("응답 데이터:", error.response.data);
+          alert(`Error: ${error.response.data.message}`);
+        }
+        throw error;
+      }
+    },
+    
+    // 에러 아카이브 상세 조회
     async getErrorArchiveDetail(id) {
       try {
         const response = await axios.get(backend + "/errorarchive/detail", {
           params: { id: id },
           withCredentials: true,
         });
+        console.log('응답 데이터:'+response.data);
         if (response && response.data) {
           this.errorArchiveDetail = response.data.result;
+          console.log('상세 조회 결과:', this.errorArchiveDetail);
         } else {
           throw new Error("에러아카이브 상세 조회 실패");
         }
@@ -70,7 +128,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       const params = {
         sort: sort,
         page: page,
-        size: 15
+        size: 16
       };
       try {
         const response = await axios.get(backend+"/errorarchive/list", { 
@@ -120,5 +178,16 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
       }
     },
+    async searchErrorArchive(request){
+      request.size= 16;
+      const response = await axios.get(backend+"/errorarchive/search", {
+        params: request
+      });
+      if (response.data.result){
+        this.errorarchiveCards  = response.data.result;
+      } else {
+        this.errorarchiveCards = [];
+      }
+    }
   }
 });

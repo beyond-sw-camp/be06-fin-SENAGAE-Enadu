@@ -6,27 +6,26 @@
                        @checkLike="handleCheckLike"
                        @search="handleSearch"
       />
-      <div v-if="isLoading"></div>
-      <div v-else>
-        <div class="qna-list-flex" v-show="!isSearched">
-          <QnaCardComponent
-              v-for="qnaCard in qnaStore.qnaCards"
-              :key="qnaCard.id"
-              v-bind:qnaCard="qnaCard"
-          />
-        </div>
-        <div class="qna-list-flex" v-show="isSearched">
-          <QnaCardComponent
-              v-for="qnaCard in qnaStore.qnaSearchedCards"
-              :key="qnaCard.id"
-              v-bind:qnaCard="qnaCard"
-          />
-        </div>
+      <div class="qna-list-flex" v-show="!isSearched">
+        <QnaCardComponent
+            v-for="qnaCard in qnaStore.qnaCards"
+            :key="qnaCard.id"
+            v-bind:qnaCard="qnaCard"
+            @click="goToDetail(qnaCard.id)"
+        />
+      </div>
+      <div class="qna-list-flex" v-show="isSearched">
+        <QnaCardComponent
+            v-for="qnaCard in qnaStore.qnaSearchedCards"
+            :key="qnaCard.id"
+            v-bind:qnaCard="qnaCard"
+            @click="goToDetail(qnaCard.id)"
+        />
       </div>
     </div>
   </div>
   <div class="qna-bottom">
-    <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage + 1" :totalPage="totalPages"/>
+    <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage + 1"/>
   </div>
 </template>
 
@@ -97,32 +96,37 @@ export default {
         this.selectedType = selectedType;
 
         useQnaStore().qnaSearch(this.selectedType, this.searchQuery, this.selectedSubCategory, this.selectedSort, this.selectedPage);
-        this.isLoading=false;
+        this.isLoading = false;
       }
     },
-    checking() {
-      if (!this.isSearched) {
-        if (this.qnaStore.qnaCards.length > 0) {
-          this.totalPages = this.qnaStore.totalPage || 1;
-        } else {
-          this.totalPages = 1;
-        }
+    goToDetail(id) {
+      this.$router.push('/qna/detail/' + id);
+    },
+  },
+  checking() {
+    if (!this.isSearched) {
+      if (this.qnaStore.qnaCards.length > 0) {
+        this.totalPages = this.qnaStore.totalPage || 1;
       } else {
-        if (this.qnaStore.qnaSearchedCards.length > 0) {
-          this.totalPages = this.qnaStore.searchedTotalPage || 1;
-        } else {
-          this.totalPages = 1;
-        }
+        this.totalPages = 1;
       }
-    },
+    } else {
+      if (this.qnaStore.qnaSearchedCards.length > 0) {
+        this.totalPages = this.qnaStore.searchedTotalPage || 1;
+      } else {
+        this.totalPages = 1;
+      }
+    }
   },
   components: {
     TagComponent,
     QnaCardComponent,
     PaginationComponent,
     SearchComponent,
-  },
-};
+  }
+  ,
+}
+;
 </script>
 
 

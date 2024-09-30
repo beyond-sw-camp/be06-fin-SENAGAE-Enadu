@@ -82,7 +82,6 @@ export default {
 </script>
 
 <style>
-
 .item {
   padding: 8px 12px; /* 패딩 조정 */
   margin: 0; /* 마진 조정 */
@@ -109,5 +108,19 @@ export default {
 .item:disabled {
   color: #6c757d; /* 비활성화된 텍스트 색상 */
   cursor: not-allowed; /* 비활성화된 커서 */
+
+  .ui.menu {
+    display: flex;
+    margin: 1rem 0;
+    background: #fff;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    border-radius: 0.28571429rem;
+    padding: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    font-weight: 500;
+    min-height: 0;
+  }
 }
 </style>

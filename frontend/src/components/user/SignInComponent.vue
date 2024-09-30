@@ -42,7 +42,7 @@
         this.$emit('login', this.user);
       },
       githubLogin() {
-        window.location.href = "/api/oauth2/authorization/github"
+        this.$emit('social', "github");
       }
     }
   };
