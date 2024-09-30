@@ -59,7 +59,6 @@ export default {
   },
   props: ["adopted", "detail", "isQuestion"],
   mounted() {
-    console.log(this.adopted)
     this.showEditAndDelete();
     this.isOpen = false;
     this.question = false;
@@ -96,7 +95,6 @@ export default {
     },
     showEditAndDelete() {
       if (this.detail.userId === useUserStore().$state.userId) {
-        console.log(this.detail.userId);
         if (this.isQuestion === true) {
           if (this.detail.answers.length === 0) {
             this.editedAndDelete = true;
@@ -104,7 +102,6 @@ export default {
             this.editedAndDelete = false;
           }
         } else {
-          console.log(this.detail.checkAdopted);
           if (!this.detail.checkAdopted) {
             this.editedAndDelete = true;
           } else {

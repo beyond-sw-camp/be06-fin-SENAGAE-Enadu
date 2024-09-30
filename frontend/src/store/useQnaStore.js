@@ -19,7 +19,7 @@ axios.interceptors.response.use(
 export const useQnaStore = defineStore("qna", {
     state: () => ({
         qnaCards: [],
-        qnaDetail: [],
+        qnaDetail: {},
         qnaAnswers: [],
         checkQnaLike: 0,
         checkQnaHate: 0,
@@ -27,6 +27,12 @@ export const useQnaStore = defineStore("qna", {
         checkAnsLike: 0,
         checkAnsHate: 0,
         qnaSearchedCards: [],
+        ansState: {
+            likeCnt:0,
+            hateCnt:0,
+            checkLikeOrHate:null,
+        },
+        qnaState: {},
     }),
 
 
@@ -61,13 +67,13 @@ export const useQnaStore = defineStore("qna", {
                     params: params
                 });
                 this.qnaCards = res.data.result;
-                this.totalPage=this.qnaCards[0].totalPage;
+                this.totalPage = this.qnaCards[0].totalPage;
             } catch (error) {
                 alert("질문 목록 데이터 요청 중 에러가 발생했습니다.");
             }
         }, async getQnaDetail(id) {
             try {
-                let res = await axios.get(backend + "/qna/detail?qnaBoardId=" + id);
+                let res = await axios.get(backend + "/qna/detail?qnaBoardId=" + id, {withCredentials: true});
                 this.qnaDetail = res.data.result;
                 this.qnaAnswers = res.data.result.answers;
             } catch (error) {
@@ -127,7 +133,7 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                const res= await axios.post(backend + "/qna/like", data, {
+                const res = await axios.post(backend + "/qna/like", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
@@ -143,7 +149,7 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                const res= await axios.post(backend + "/qna/hate", data, {
+                const res = await axios.post(backend + "/qna/hate", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
@@ -159,7 +165,7 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                const res= await axios.post(backend + "/qna/scrap", data, {
+                const res = await axios.post(backend + "/qna/scrap", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
@@ -169,6 +175,17 @@ export const useQnaStore = defineStore("qna", {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
         },
+
+        async questionState(qnaBoardId) {
+            try {
+                const res = await axios.get(backend + "/qna/state?qnaBoardId=" + qnaBoardId,
+                    {withCredentials: true});
+                this.qnaState = res.data.result;
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+
         async answerLike(qnaBoardId, answerId) {
             const data = {
                 qnaBoardId: qnaBoardId,
@@ -176,7 +193,7 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                const res= await axios.post(backend + "/ans/like", data, {
+                const res = await axios.post(backend + "/ans/like", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
@@ -193,7 +210,7 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                const res= await axios.post(backend + "/ans/hate", data, {
+                const res = await axios.post(backend + "/ans/hate", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
@@ -203,13 +220,25 @@ export const useQnaStore = defineStore("qna", {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
         },
+
+        async answerState(answerId) {
+            try {
+                const res = await axios.get(backend + "/ans/state?answerId=" + answerId,
+                    {withCredentials: true});
+                this.ansState = res.data.result;
+                console.log(this.ansState);
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+
         async qnaSearch(type, keyword, category, sort, page) {
             const params = {
                 type: type,
                 keyword: keyword,
                 categoryId: category.id,
                 sort: sort,
-                page: page-1,
+                page: page - 1,
                 size: 15,
             };
 
