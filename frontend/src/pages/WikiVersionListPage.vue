@@ -156,13 +156,11 @@ table th {
     position: relative;
     display: flex;
     justify-content: center;
-    /* 페이지네이션을 중앙에 고정 */
-    margin-bottom: 10px;
+    margin-bottom: 50px;
 }
 
 .rollback-button {
     color: #e81f1f;
-    /* 어두운 빨간색 */
     border: none;
     background-color: transparent;
     cursor: pointer;
