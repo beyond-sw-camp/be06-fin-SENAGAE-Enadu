@@ -7,10 +7,10 @@ module.exports = defineConfig({
         changeOrigin: true,
         pathRewrite: { "^/api": ""}
       },
-      '/social': {
+      "/social": {
         target: "http://localhost:8080",
         changeOrigin: true,
-        pathRewrite: { "^/social": ""}
+        pathRewrite: {"^/social": ""}
       }
     }
   },
