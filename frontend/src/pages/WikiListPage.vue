@@ -1,6 +1,6 @@
 <template>
-  <div class="custom-container">
-    <TagComponent :tagTitle="'WIKI'" :tagSubTitle="'당신의 위키를 만들어보세요'" />
+  <TagComponent :tagTitle="'WIKI'" :tagSubTitle="'당신의 위키를 만들어보세요'" />
+  <div class="custom-container" style="margin-top: 0;">
     <div class="wiki-inner">
       <WikiSearchComponent  @search="handleSearch" />
 

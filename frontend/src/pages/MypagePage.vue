@@ -1,17 +1,17 @@
 <template>
-    <div class="custom-container">
-        <div class="qna-top">
-            <p id="main-title">Mypage</p>
-            <p id="sub-title">{{ subTitle }}</p>
-        </div>
+  <TagComponent :tagTitle="'Mypage'" :tagSubTitle="subTitle"/>
+  <div class="custom-container" style="margin-top: 0;">
         <router-view @sub-title="handleSubTitleEvent"/>
     </div>
 </template>
 
 <script>
 
+import TagComponent from "@/components/Common/TagComponent.vue";
+
 export default {
     name: "MypagePage",
+  components: {TagComponent},
     data() {
         return {
             subTitle: ""
@@ -26,13 +26,4 @@ export default {
 </script>
 
 <style scoped>
-#main-title {
-    text-align: center;
-    font-size: 35px;
-}
-
-#sub-title {
-    text-align: center;
-    font-size: 25px;
-}
 </style>

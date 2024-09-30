@@ -1,6 +1,6 @@
 <template>
-  <TagComponent style="margin-bottom:0; padding: 50px;" :tagTitle="'포인트 정보'" :tagSubTitle="'포인트 정보를 확인하세요'"/>
-  <div class="custom-container" style="text-align:center; margin-top: 0;">
+  <TagComponent :tagTitle="'포인트 정보'" :tagSubTitle="'포인트 정보를 확인하세요'"/>
+  <div class="custom-container" style="margin-top: 0;">
     <router-view v-show="isLoading" />
     <div class="pagination-container" v-if="isLoading">
       <PaginationComponent @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>

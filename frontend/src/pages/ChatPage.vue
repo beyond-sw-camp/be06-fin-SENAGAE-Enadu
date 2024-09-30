@@ -1,6 +1,6 @@
 <template>
-  <TagComponent style="margin-bottom: 0; padding: 30px;" :tagTitle="'채팅'" :tagSubTitle="'빠르게 궁금증을 해결해보세요'"/>
-  <div class="custom-container" style="margin-top:0">
+  <TagComponent :tagTitle="'채팅'" :tagSubTitle="'빠르게 궁금증을 해결해보세요'"/>
+  <div class="custom-container" style="margin-top: 0; padding-top: 0;">
     <div id="chat-container">
       <LoadingComponent v-if="!chatStore.isLoading" style="z-index: 1000;"/>
       <ChatNavComponent @loading="loading" @reload-chatRoom="reloadChatRoom"/>

@@ -1,6 +1,6 @@
 <template>
-  <div class="custom-container">
-    <router-link to="/errorarchive/list"><TagComponent :tagTitle="'에러 아카이브'" :tagSubTitle="'당신의 에러 해결 방법을 공유해주세요'"/></router-link>
+  <router-link to="/errorarchive/list"><TagComponent :tagTitle="'에러 아카이브'" :tagSubTitle="'당신의 에러 해결 방법을 공유해주세요'"/></router-link>
+  <div class="custom-container" style="margin-top: 0; padding-top: 0;">
     <div class="errorarchive-inner">
       <div v-if="isLoading && isLoading2"></div>
       <SearchComponent v-else @checkLatest="handleCheckLatest"

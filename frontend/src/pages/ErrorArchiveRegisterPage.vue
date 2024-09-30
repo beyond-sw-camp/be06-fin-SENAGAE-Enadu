@@ -47,7 +47,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .custom-container {
     width: 75%;
     max-width: 1400px;

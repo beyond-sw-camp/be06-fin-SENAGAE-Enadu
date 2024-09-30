@@ -1,6 +1,6 @@
 <template>
-  <div class="custom-container">
-    <TagComponent :tagTitle="'QnA'" :tagSubTitle="'당신의 에러를 해결해보세요'"/>
+  <TagComponent :tagTitle="'QnA'" :tagSubTitle="'당신의 에러를 해결해보세요'"/>
+  <div class="custom-container" style="margin-top: 0; padding-top: 0;">
     <div class="qna-inner">
       <SearchComponent @checkLatest="handleCheckLatest"
                        @checkLike="handleCheckLike"

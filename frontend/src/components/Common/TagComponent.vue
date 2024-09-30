@@ -17,11 +17,12 @@ export default {
 <style scoped>
 .tag-box {
   width: 100%;
-  margin-bottom: 40px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  display: inline-flex
+  display: inline-flex;
+  margin-bottom:0;
+  padding: 50px;
 }
 
 .tag-sub-box {
