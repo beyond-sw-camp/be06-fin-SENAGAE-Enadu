@@ -25,6 +25,8 @@ import WikiVersionDetailPage from '@/pages/WikiVersionDetailPage.vue';
 import WikiListPage from "@/pages/WikiListPage.vue";
 import MainPage from "@/pages/MainPage.vue";
 import QnaEditComponent from "@/components/Qna/Refactor/QnaEditComponent.vue";
+import UserLogPage from "@/pages/UserLogPage.vue";
+import ErrorArchiveUpdatePage from "@/pages/ErrorArchiveUpdatePage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -39,6 +41,7 @@ const router = createRouter({
         {path: "/errorarchive", component: ErrorArchiveRegisterPage},
         {path: "/errorarchive/register", component: ErrorArchiveRegisterPage},
         {path: "/errorarchive/list", component: ErrorArchiveListPage},
+        {path: "/errorarchive/update", name:"ErrorArchiveUpdate", component: ErrorArchiveUpdatePage },
         {path: "/oauth", component: OAuthLoginPage, meta: {showHeader: false}},
         {
             path: "/point", component: PointPage, children: [
@@ -60,6 +63,7 @@ const router = createRouter({
                 {path: "scrap", component: ScrapListComponent}
             ]
         },
+        {path: "/user/log/:nickname", component: UserLogPage },
         {path: "/errorarchive/detail", component: ErrorArchiveDetailPage},
         {path: "/", component: MainPage},
     ]

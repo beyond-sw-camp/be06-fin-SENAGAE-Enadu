@@ -4,13 +4,13 @@
     <div class="top-bar">
       <div :class="!$route. path.startsWith('/wiki') ? 'separator' : ''">
       <select v-model="selectedCategory" @change="getSubCategory" class="category-dropdown">
-        <option disabled value="">카테고리 선택</option>
+        <option value="">카테고리 선택</option>
         <option v-for="(super_category, idx) in categoryStore.superCategories" :key=idx :value="super_category.id">{{ super_category.categoryName }}</option>
       </select>
       </div>
       <!-- 탭 네비게이션 -->
       <div v-show="!$route.path.startsWith('/wiki')" class="tabs">
-        <div :class="selectedSubCategory.id !== 0 ? 'tab active': ''">{{selectedSubCategory.id !== 0 ? selectedSubCategory.categoryName:''}}</div>
+        <div :class="selectedSubCategory.id != 0 ? 'tab active': ''">{{selectedSubCategory.id !== 0 ? selectedSubCategory.categoryName:''}}</div>
         <div class="tab" @click="handleMoreCategory">
           모든 하위 카테고리 보기
           <i data-v-55f5a47e="" class="fas fa-caret-down"></i>
@@ -36,17 +36,16 @@
       <!-- 검색창 -->
     <div style="display:flex; flex-direction: row; justify-content: center; width: 100%">
       <SortTypeComponent v-show="!$route.path.startsWith('/wiki')" style="margin-bottom: 0" @checkLatest="handleCheckLatest" @checkLike="handleCheckLike"/>
-      <div style="display:flex" class="search-bar">
-        <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery">
-        <button @click="searchData"><i class="fas fa-search"></i></button>
-      </div>
-
-      <!-- 두 번째 드롭다운 -->
       <select style="display:flex;" v-model="selectedType" class="type-dropdown">
         <option value="tc">제목+내용</option>
         <option value="t">제목</option>
         <option value="c">내용</option>
       </select>
+      <div style="display:flex" class="search-bar">
+        <input type="text" placeholder="검색어를 입력하세요" v-model="searchQuery" @keydown.enter="searchData">
+        <button @click="searchData"><i class="fas fa-search"></i></button>
+      </div>
+      <button @click="moveToPostPage" class="create-btn">작성하기</button>
     </div>
 
     <!-- 콘텐츠 영역 -->
@@ -60,6 +59,7 @@
 import SortTypeComponent from "@/components/Common/SortTypeComponent.vue";
 import {mapStores} from "pinia";
 import {useCategoryStore} from "@/store/useCategoryStore";
+import {useUserStore} from "@/store/useUserStore";
 
 export default {
   data() {
@@ -72,15 +72,19 @@ export default {
       searchQuery: '', // 검색어
       selectedType: 'tc',  // 검색 범위
       show_more_category: false,
+      sort: "latest",
     };
   },
   computed:{
     ...mapStores(useCategoryStore),
+    ...mapStores(useUserStore),
+
   },
   methods: {
     selectCategory(subCategory) {
       this.selectedSubCategory = subCategory; // 탭 선택
     },
+    
     handleMoreCategory(){
       this.show_more_category = !this.show_more_category;
     },
@@ -109,16 +113,55 @@ export default {
       };
       this.handleMoreCategory();
     },
-    searchData(){
-      this.$emit("search", {
-        selectedSubCategory: this.selectedSubCategory,
-        searchQuery: this.searchQuery,
-        selectedType: this.selectedType
-      });
+    searchData() {
+      if (this.searchQuery.trim() === "" && this.selectedCategory === ""){
+        alert("검색어 혹은 카테고리를 선택해주세요.");
+        return;
+      }
+      switch(this.$route.path){
+        case "/errorarchive/list": {
+          const request = {
+            keyword: this.searchQuery.trim(),
+            selectedCategory: this.selectedCategory,
+            selectedSubCategoryId: this.selectedSubCategory.id,
+            selectedSubCategoryName: this.selectedSubCategory.categoryName,
+            type: this.selectedType,
+          };
+          this.$router.push({
+            path: this.$route.path,  // 현재 경로 유지
+            query: request
+          });
+          break;
+        }
+        case "/qna/list":
+          this.$emit("search", {
+            selectedSubCategory: this.selectedSubCategory,
+            searchQuery: this.searchQuery,
+            selectedType: this.selectedType
+          });
+      }
     },
+    moveToPostPage(){
+      if(!this.userStore.isLoggedIn){
+        alert("로그인이 필요합니다.");
+        this.$router.push({path: "/login"})
+        return;
+      }
+      if (this.$route.path.includes("qna")){
+        this.$router.push({path: "/qna/register"})
+      } else if (this.$route.path.includes("errorarchive")){
+        this.$router.push({path: "/errorarchive/register"})
+
+      }
+    }
   },
-  mounted() {
-    this.getSuperCategory();
+  async mounted() {
+    await this.getSuperCategory();
+    this.selectedCategory = this.$route.query.selectedCategory || '';
+    this.searchQuery = this.$route.query.keyword || "";
+    this.selectedType = this.$route.query.type || "tc";
+    this.selectedSubCategory.id = this.$route.query.selectedSubCategoryId || 0;
+    this.selectedSubCategory.categoryName = this.$route.query.selectedSubCategoryName || "";
   },
   components: {
     SortTypeComponent
@@ -154,6 +197,7 @@ export default {
   margin-right: 20px;
   font-size: 16px;
   border: 1px solid #cfcfcf;
+  margin-left: auto;
 }
 
 .tabs {
@@ -190,7 +234,7 @@ export default {
   padding: 8px;
   border-radius: 25px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-left: auto;
+  //margin-left: auto;
   margin-right: 30px;
   border: 1px solid var(--main-color);
 }
@@ -323,5 +367,18 @@ export default {
 .pagination-bullet-active{
   color: #00c471;
   box-shadow: inset 0 0 0 2px #00c471;
+}
+
+.create-btn {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.875rem;
+  margin-top: 0.875rem;
+  color: #2689d2;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
 }
 </style>

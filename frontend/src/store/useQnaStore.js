@@ -30,7 +30,6 @@ export const useQnaStore = defineStore("qna", {
         registered: 0,
     }),
 
-
     actions: {
         async registerQna(myTitle, myText, myCategory) {
             const data = {

@@ -30,7 +30,7 @@ export default {
                const result =  await userStore.verifyEmail(email, uuid); // UserStore의 verifyEmail 메소드 호출
                 
                 if (result) {
-                    alert('이메일 인증에 성공했습니다!');
+                    alert('이메일 인증에 성공했습니다!\n회원가입에 성공했습니다!');
                 }
             } catch (error) {
                 alert('이메일 인증에 실패했습니다.');
