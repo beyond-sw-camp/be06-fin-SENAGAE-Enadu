@@ -1,29 +1,19 @@
 <template>
   <div class="wiki-card">
-      <router-link :to="computedLink" class="wiki-card-link">
+    <router-link :to="computedLink" class="wiki-card-link">
       <div class="wiki-card-image-wrapper">
-        <img
-          v-if="wikiCard.thumbnail"
-          :src="wikiCard.thumbnail"
-          alt="Wiki Thumbnail"
-          class="wiki-card-image"
-        />
-        <img
-          v-else
-          src="/path-to-default-thumbnail.png"
-          alt="Default Thumbnail"
-          class="wiki-card-image"
-        />
+        <img v-if="wikiCard.thumbnail" :src="wikiCard.thumbnail" alt="Wiki Thumbnail" class="wiki-card-image" />
+        <img v-else src="/path-to-default-thumbnail.png" alt="Default Thumbnail" class="wiki-card-image" />
       </div>
       <div class="wiki-card-content">
         <h3 class="wiki-card-title">"{{ wikiCard.title }}"</h3>
         <p class="wiki-card-description">{{ truncatedContent }}</p>
         <div class="wiki-card-category">
           {{ wikiCard.category }}
-            <div class="wiki-link-underline"></div>
+          <div class="wiki-link-underline"></div>
         </div>
       </div>
-      </router-link>
+    </router-link>
   </div>
 </template>
 
@@ -59,12 +49,14 @@ export default {
   width: 100%;
   max-width: 270px;
   min-width: 200px;
-  height: 90%;
+  height: 394px;
   border-radius: 20px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: box-shadow 0.3s ease;
+  margin-bottom: 30px;
+
 }
 
 .wiki-card-link {
@@ -109,8 +101,10 @@ export default {
   color: #666;
   margin-bottom: 15px;
   line-height: 1.4;
-  flex-grow: 1; 
+  flex-grow: 1;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wiki-card-category {
@@ -123,13 +117,13 @@ export default {
 }
 
 .wiki-card .wiki-link-underline {
-    width: 0;
-    height: 1px;
-    background-color: #999;
-    transition: .3s ease-out;
+  width: 0;
+  height: 1px;
+  background-color: #999;
+  transition: .3s ease-out;
 }
 
 .wiki-card:hover .wiki-link-underline {
-    width: 100%;
+  width: 100%;
 }
 </style>
