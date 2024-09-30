@@ -3,6 +3,8 @@ package org.example.backend.Qna.Controller;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Qna.Service.QnaService;
+import org.example.backend.Qna.model.Res.GetAnswerStateRes;
+import org.example.backend.Qna.model.Res.GetQuestionStateRes;
 import org.example.backend.Qna.model.req.*;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,6 +50,12 @@ public class AnswerController {
 
         Long id = qnaService.checkAnswerHate(qnaBoardId, answerId, customUserDetails.getUserId());
         return new BaseResponse<>(id);
+    }
+
+    @GetMapping("/state")
+    public BaseResponse<GetAnswerStateRes> getAnswerState(Long answerId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        GetAnswerStateRes ansStateRes = qnaService.getAnswerState(answerId, customUserDetails.getUserId());
+        return new BaseResponse<>(ansStateRes);
     }
 
     //qna 답변 채택

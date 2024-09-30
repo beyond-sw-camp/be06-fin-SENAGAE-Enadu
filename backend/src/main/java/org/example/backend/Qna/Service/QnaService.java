@@ -9,10 +9,7 @@ import org.example.backend.Exception.custom.InvalidQnaException;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Qna.Repository.*;
 import org.example.backend.Qna.model.Entity.*;
-import org.example.backend.Qna.model.Res.GetAnswerCommentDetailListRes;
-import org.example.backend.Qna.model.Res.GetAnswerDetailListRes;
-import org.example.backend.Qna.model.Res.GetQnaListRes;
-import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.Res.*;
 import org.example.backend.Qna.model.req.*;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.User.Repository.UserRepository;
@@ -157,6 +154,49 @@ public class QnaService {
                         .createdAt(answerComment.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public GetQuestionStateRes getQuestionState(Long qnaBoardId, Long userId) {
+        User user;
+        if (userId != null) {
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        } else {
+            user = null;
+        }
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId.longValue())
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
+
+        return GetQuestionStateRes.builder()
+                .id(qnaBoard.getId())
+                .userId(qnaBoard.getUser().getId())
+                .likeCnt(qnaBoard.getLikeCount())
+                .hateCnt(qnaBoard.getHateCount())
+                .checkLikeOrHate(isQuestionLikeORHate(qnaBoard, user))
+                .checkScrap(isQuestionScarp(qnaBoard, user))
+                .build();
+    }
+
+    public GetAnswerStateRes getAnswerState(Long answerId, Long userId) {
+        User user;
+        if (userId != null) {
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        } else {
+            user = null;
+        }
+       Answer answer = answerRepository.findByIdAndEnableTrue(answerId)
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
+
+        System.out.print(isAnswerLikeORHate(answer, user));
+
+        return GetAnswerStateRes.builder()
+                .id(answer.getId())
+                .userId(answer.getUser().getId())
+                .likeCnt(answer.getLikeCount())
+                .hateCnt(answer.getHateCount())
+                .checkLikeOrHate(isAnswerLikeORHate(answer, user))
+                .build();
     }
 
     @Transactional
