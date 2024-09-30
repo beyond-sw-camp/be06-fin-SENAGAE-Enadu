@@ -2,7 +2,7 @@
   <div class="custom-container">
     <TagComponent :tagTitle="'WIKI'" :tagSubTitle="'당신의 위키를 만들어보세요'" />
     <div class="wiki-inner">
-      <SearchComponent2 @search="handleSearch" />
+      <WikiSearchComponent  @search="handleSearch" />
 
       <div class="create-wiki-btn-container">
         <button @click="navigateToWikiRegister" class="create-wiki-btn">작성하기</button>
@@ -35,7 +35,7 @@
 import { useWikiStore } from "@/store/useWikiStore";
 import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
-import SearchComponent2 from "@/components/Common/SearchComponent2.vue";
+import WikiSearchComponent  from "@/components/Common/WikiSearchComponent .vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
 import { mapStores } from "pinia";
 
@@ -44,7 +44,7 @@ export default {
   components: {
     WikiCardComponent,
     PaginationComponent,
-    SearchComponent2,
+    WikiSearchComponent ,
     TagComponent,
   },
   data() {
