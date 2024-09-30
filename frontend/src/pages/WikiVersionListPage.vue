@@ -5,8 +5,11 @@
             <span class="category-badge"> category : {{ category }}</span>
         </p>
 
+        <!-- 페이지네이션과 롤백 문구 -->
         <div class="pagination-container" v-if="!isLoading">
             <PaginationComponent :totalPage="totalPages" :nowPage="page + 1" @updatePage="handlePageUpdate" />
+            <!-- 롤백 안내 문구 -->
+            <span class="rollback-info" style="right: 40px;">버전 롤백은 <strong class="bold-text">견습</strong>부터 가능합니다. </span>
         </div>
 
         <table v-if="!isLoading">
@@ -90,6 +93,14 @@ export default {
 </script>
   
 <style scoped>
+.rollback-info {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    font-size: 14px;
+    color: #555;
+}
+
 .title {
     font-size: 2.5rem;
     font-weight: bold;
@@ -142,14 +153,16 @@ table th {
 }
 
 .pagination-container {
-    margin-top: 20px;
-    margin-bottom: 10px;
+    position: relative;
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* 페이지네이션을 중앙에 고정 */
+    margin-bottom: 10px;
 }
+
 .rollback-button {
-    color: #e81f1f; /* 어두운 빨간색 */
+    color: #e81f1f;
+    /* 어두운 빨간색 */
     border: none;
     background-color: transparent;
     cursor: pointer;
