@@ -27,6 +27,7 @@ export const useQnaStore = defineStore("qna", {
         checkAnsLike: 0,
         checkAnsHate: 0,
         qnaSearchedCards: [],
+        registered: 0,
     }),
 
 
@@ -39,11 +40,13 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                await axios.post(backend + "/qna", data, {
+                const res = await axios.post(backend + "/qna", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
+                this.registered = res.data.result;
+                console.log(this.registered);
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
