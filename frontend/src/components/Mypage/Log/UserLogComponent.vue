@@ -125,7 +125,11 @@ export default {
         },
         updatePage(page) {
             this.page = page - 1;
+            if (page % 5 === 0 || page % 5 === 1) {
+              this.isLoading = true;
+            }
             this.loadData();
+            this.isLoading = false;
         },
         async loadData() {
             this.isLoading = true;

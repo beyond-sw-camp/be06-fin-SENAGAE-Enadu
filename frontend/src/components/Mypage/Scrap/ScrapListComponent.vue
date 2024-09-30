@@ -108,7 +108,11 @@ export default {
         },
         updatePage(page) {
             this.page = page - 1;
+            if (page % 5 === 0 || page % 5 === 1) {
+              this.isLoading = true;
+            }
             this.loadData();
+            this.isLoading = false;
         },
         async loadData() {
             this.isLoading = true;
@@ -141,7 +145,7 @@ export default {
             await this.mypageStore.getWikiScrapList(this.page);
             const wikiList = this.mypageStore.scrap.wikiList || [];
             if (wikiList.length !== 0) {
-                this.totalPage = wikiList[0].totalPages;
+                this.totalPage = wikiList[0].totalPage;
             } else {
                 alert("스크랩한 위키가 없습니다.");
             }
