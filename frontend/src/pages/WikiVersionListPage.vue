@@ -73,7 +73,7 @@ export default {
                 const success = await this.rollbackWikiVersion(wikiContentId);
                 if (success) {
                     alert('롤백 성공 !');
-                    window.location.reload();
+                    await this.fetchWikiVersionList(this.$route.query.id, this.selectedPage - 1);
                 }
             } catch (error) {
                 console.error('롤백 중 오류 발생 :', error);
