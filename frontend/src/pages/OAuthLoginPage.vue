@@ -24,7 +24,7 @@ export default {
         loginSuccess() {
             this.userId = this.$route.query.userId || null;
             if (this.userId) {
-                this.userStore.setUserLoggedIn(this.userId);
+                this.userStore.setUserLoggedIn(Number(this.userId));
                 alert('로그인에 성공했습니다.')
                 this.$router.push('/');
             } else {

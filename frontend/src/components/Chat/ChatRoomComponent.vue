@@ -35,6 +35,15 @@ export default {
 
   methods: {
     async selected() {
+      if (this.chatRoom.chatRoomId === this.chatStore.selectedChatRoom.chatRoomId) {
+        return;
+      }
+      while (!this.chatStore.stompClient.connected){
+        this.chatStore.isLoading = false;
+        console.log(this.chatStore.isLoading);
+        await this.pauseForOneSecond();
+      }
+      this.chatStore.isLoading = true;
       this.isSelected = true
       this.chatStore.disconnect();
       this.chatStore.selectedChatRoom = {
@@ -63,6 +72,12 @@ export default {
         // 오늘이 아니면 날짜만 표시
         return inputDate.toLocaleDateString().replace(/\.$/, '')
       }
+    },
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    async pauseForOneSecond() {
+      await this.sleep(500); // 1초 대기
     },
   },
   mounted() {

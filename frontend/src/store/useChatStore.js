@@ -28,10 +28,12 @@ export const useChatStore = defineStore("chat", {
             {
                 message: "",
                 sendTime: "",
-                senderId: 0
+                senderId: 0,
+                chatId: 0,
             }
         ],
         stompClient: null,
+        isLoading: false,
     }),
     actions: {
         async startChat(nickname) {
@@ -39,7 +41,19 @@ export const useChatStore = defineStore("chat", {
                 nickname: nickname,
             }
             const res = await axios.post(backend + "/chat/start", startChatReq, {withCredentials: true});
-            this.selectedChatRoom = res.data.result;
+            if (!res.data.isSuccess){
+                if (this.chatRoomList.length !== 0){
+                    this.selectedChatRoom = {
+                        chatRoomId: this.chatRoomList[0].chatRoomId,
+                        recipientNickname: this.chatRoomList[0].recipientNickname,
+                        recipientProfile:this.chatRoomList[0].recipientProfile,
+                        recipientId: this.chatRoomList[0].recipientId
+                    }
+                }
+                alert("자신과 채팅할 수 없습니다.");
+            } else {
+                this.selectedChatRoom = res.data.result;
+            }
         },
         async getChatRoomList() {
             const res = await axios.get(backend + "/chat/chatRoomList", {withCredentials: true})
@@ -53,6 +67,29 @@ export const useChatStore = defineStore("chat", {
                 recipientProfile: this.chatRoomList[0].recipientProfile,
                 recipientId: this.chatRoomList[0].recipientId
             }
+        },
+        async getChatMessageHistory(page, initMessageId) {
+            if (this.chatRoomList.length === 0) {
+                this.chatMessageList = [];
+                return;
+            }
+            const res = await axios.get(backend + "/chat/messageList", {
+                params: {
+                    chatRoomId: this.selectedChatRoom.chatRoomId,
+                    page: page,
+                    size: 20,
+                    messageId: initMessageId
+                },
+                withCredentials: true
+            });
+
+            if (page === 0){
+                this.chatMessageList = [];
+            }
+            this.chatMessageList = this.chatMessageList.concat(res.data.result);
+
+            return res.data.result.length !== 0;
+
         },
         async getChatMessageList(page) {
             if (this.chatRoomList.length === 0) {
@@ -77,7 +114,6 @@ export const useChatStore = defineStore("chat", {
                 }
             }
             this.connect();
-
         },
         connect() {
             const serverUrl = backend +"/ws/chat";
