@@ -48,8 +48,8 @@ export default {
   flex-direction: column;
   width: 100%;
   max-width: 270px;
-  min-width: 270px;
-  height: 450px;
+  min-width: 200px;
+  height: 394px;
   border-radius: 20px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -103,11 +103,8 @@ export default {
   line-height: 1.4;
   flex-grow: 1;
   overflow: hidden;
-  /* 내용이 넘치면 숨김 */
   text-overflow: ellipsis;
-  /* 말줄임표(...) 처리 */
   white-space: nowrap;
-  /* 한 줄로 고정 */
 }
 
 .wiki-card-category {
