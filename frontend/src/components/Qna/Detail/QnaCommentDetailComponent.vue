@@ -53,7 +53,7 @@
 
 <script>
 import {formatDateTime} from "@/utils/FormatDate";
-import QnaCommentRegisterComponent from "@/components/qna/QnaCommentRegisterComponent.vue";
+import QnaCommentRegisterComponent from "@/components/Qna/Register/QnaCommentRegisterComponent.vue";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 
 export default {

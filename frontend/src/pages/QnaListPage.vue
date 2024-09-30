@@ -11,6 +11,7 @@
             v-for="qnaCard in qnaStore.qnaCards"
             :key="qnaCard.id"
             v-bind:qnaCard="qnaCard"
+            @click="goToDetail(qnaCard.id)"
         />
       </div>
       <div class="qna-list-flex" v-show="isSearched">
@@ -18,6 +19,7 @@
             v-for="qnaCard in qnaStore.qnaSearchedCards"
             :key="qnaCard.id"
             v-bind:qnaCard="qnaCard"
+            @click="goToDetail(qnaCard.id)"
         />
       </div>
     </div>
@@ -30,7 +32,7 @@
 <script>
 import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
-import QnaCardComponent from "@/components/qna/QnaListCardComponent.vue";
+import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import SearchComponent from "@/components/Common/SearchComponent.vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
@@ -83,7 +85,10 @@ export default {
 
         useQnaStore().qnaSearch(this.selectedType, this.searchQuery, this.selectedSubCategory, this.selectedSort, this.selectedPage);
       }
-    }
+    },
+    goToDetail(id) {
+      this.$router.push('/qna/detail/'+id);
+    },
   },
   components: {
     TagComponent,

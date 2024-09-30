@@ -27,6 +27,7 @@ export const useQnaStore = defineStore("qna", {
         checkAnsLike: 0,
         checkAnsHate: 0,
         qnaSearchedCards: [],
+        registered: 0,
     }),
 
     actions: {
@@ -38,11 +39,13 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                await axios.post(backend + "/qna", data, {
+                const res = await axios.post(backend + "/qna", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
+                this.registered = res.data.result;
+                console.log(this.registered);
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
@@ -219,7 +222,70 @@ export const useQnaStore = defineStore("qna", {
                     },
                 });
                 this.qnaSearchedCards = res.data.result;
-                console.log(res.data.result);
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+
+        async editQna(id, myTitle, myText, myCategoryId) {
+            const data = {
+                id: id, title: myTitle, content: myText, categoryId: myCategoryId
+            };
+
+            try {
+                await axios.patch(backend + "/qna", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+
+        async editAnswer(id, myText) {
+            const data = {
+                id: id, content: myText
+            };
+
+            try {
+                await axios.patch(backend + "/ans", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+        async deleteQuestion(id) {
+            const data = {
+                qnaBoardId: id
+            };
+
+            try {
+                await axios.patch(backend + "/qna/removal", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
+            } catch (error) {
+                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+            }
+        },
+
+        async deleteAnswer(qnauBoardId, answerId) {
+            const data = {
+                qnaBoardId: qnauBoardId,
+                answerId: answerId
+            };
+
+            try {
+                await axios.patch(backend + "/ans/removal", data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                });
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }

@@ -1,7 +1,7 @@
 <template>
   <div class="c-opinion__write">
     <fieldset>
-      <legend>댓글 입력</legend>
+      <legend>답변 입력</legend>
       <div class="c-opinion__write-form">
         <div class="space-y-1">
           <label for="text" class="ans-register-head text-gray-700 dark:text-gray-300">답변 등록하기</label>

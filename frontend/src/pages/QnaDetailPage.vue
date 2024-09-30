@@ -14,9 +14,9 @@
 <script>
 import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
-import QnaDetailComponent from "@/components/qna/QnaDetailComponent.vue";
-import QnaDetailHeader from "@/components/qna/QnaDetailHeaderComponent.vue";
-import QnaAnswerDetailComponent from "@/components/qna/QnaAnswerDetailComponent.vue";
+import QnaDetailComponent from "@/components/Qna/Detail/QnaDetailComponent.vue";
+import QnaDetailHeader from "@/components/Qna/Detail/QnaDetailHeaderComponent.vue";
+import QnaAnswerDetailComponent from "@/components/Qna/Detail/QnaAnswerDetailComponent.vue";
 
 export default {
   name: "QnaDetailPage",
