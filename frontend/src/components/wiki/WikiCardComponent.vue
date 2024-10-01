@@ -52,11 +52,10 @@ export default {
   height: 394px;
   border-radius: 20px;
   background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   transition: box-shadow 0.3s ease;
   margin-bottom: 30px;
-
 }
 
 .wiki-card-link {
@@ -67,7 +66,7 @@ export default {
 }
 
 .wiki-card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow:  2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .wiki-card-image-wrapper {

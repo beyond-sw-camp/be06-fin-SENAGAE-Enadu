@@ -129,6 +129,10 @@ export default {
 </script>
 
 <style scoped>
+.category-search-modal-body {
+    position: relative;
+    z-index: 10;
+}
     .modal-background {
         position: fixed;
         top: 0;

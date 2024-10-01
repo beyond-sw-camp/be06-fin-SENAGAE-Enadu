@@ -1,4 +1,5 @@
 <template>
+<router-link :to="`/qna/detail/${qnaCard.id}`">
   <div class="card">
     <div class="mantine-2j9uwr">
       <div class="mantine-1uguyhf">
@@ -69,6 +70,7 @@
       </div>
     </div>
   </div>
+</router-link>
 </template>
 
 <script>
@@ -99,7 +101,7 @@ export default {
     z-index: 5;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    width: 300px;
+    width: 250px;
     min-height: 170px;
     display: flex;
     flex-direction: column;
@@ -107,6 +109,10 @@ export default {
     justify-content: space-between;
     overflow: hidden;
     cursor: pointer;
+}
+
+.card:hover {
+    box-shadow:  2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .qna-category-highlow {

@@ -253,7 +253,7 @@ export default {
 
 .qna-list-flex {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     grid-auto-rows: auto;
     gap: 26px 36px;
     justify-items: stretch;

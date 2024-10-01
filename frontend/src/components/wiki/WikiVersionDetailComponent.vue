@@ -771,6 +771,7 @@ textarea {
 .kOYWDF {
     position: absolute;
     left: 100%;
+    margin: -120px -50px;
 }
 
 /* @media (max-width: 1440px) {

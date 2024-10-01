@@ -139,6 +139,7 @@ export default {
                 this.totalPage = archiveList[0].totalPage;
             } else {
                 alert("스크랩한 아카이브가 없습니다.");
+                this.totalPage = 0;
             }
         },
         async fetchWikiList() {
@@ -148,6 +149,7 @@ export default {
                 this.totalPage = wikiList[0].totalPage;
             } else {
                 alert("스크랩한 위키가 없습니다.");
+                this.totalPage = 0;
             }
         },
         async fetchQnaList() {
@@ -157,6 +159,7 @@ export default {
                 this.totalPage = qnaList[0].totalPage;
             } else {
                 alert("스크랩한 QnA가 없습니다.");
+                this.totalPage = 0;
             }
         },
         getButtonClass(section) {
@@ -229,7 +232,7 @@ export default {
 
 .qna-list-flex {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     grid-auto-rows: auto;
     gap: 26px 36px;
     justify-items: stretch;

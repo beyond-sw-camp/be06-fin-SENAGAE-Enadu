@@ -13,7 +13,7 @@
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
                             <button v-if="canEditWiki && wikiDetail.title" @click="goToEditPage"
-                                class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#f4c2c2">
+                                class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#ec7979">
                                 수정
                             </button>
                             <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color:#42a5f5"
@@ -26,9 +26,8 @@
                                     class="bookmark-checkbox__input" @change="toggleScrap" />
                                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                                     <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
-                                        <path class="bookmark-checkbox__icon-back"
-                                            d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                                        <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5"></path>
+                                        <path class="bookmark-checkbox__icon-back" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5" stroke="#767676"></path>
+                                        <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5" stroke="#767676"></path>
                                     </svg>
                                 </label>
                             </div>
@@ -37,7 +36,7 @@
                 </div>
 
                 <div class="sc-cZMNgc bpMcZw">
-                    <a class="sc-dtMgUX gISUXI">{{ wikiDetail.category }}</a>
+                    <CategoryComponent :category=wikiDetail.category />
                 </div>
 
                 <div class="sc-jlRLRk iGRQXB">
@@ -71,6 +70,7 @@ import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/style/preview.css';
 import hljs from 'highlight.js';
+import CategoryComponent from "@/components/Common/CategoryComponent.vue";
 
 VMdPreview.use(githubTheme, {
     Hljs: hljs,
@@ -174,6 +174,7 @@ export default {
         },
     },
     components: {
+        CategoryComponent,
         VMdPreview,
     },
 };
@@ -215,7 +216,7 @@ v-md-preview p {
 }
 
 .sc-egiyK {
-    color: #2689d2;
+    color: #888;
     text-decoration: none;
 }
 
@@ -779,6 +780,7 @@ textarea {
 .kOYWDF {
     position: absolute;
     left: 100%;
+    margin: -120px -50px;
 }
 
 /* @media (max-width: 1440px) {
@@ -1636,7 +1638,6 @@ body[data-theme="light"] {
 }
 
 .bookmark-checkbox__icon-back {
-    stroke: #333;
     transition: transform 0.3s;
 }
 

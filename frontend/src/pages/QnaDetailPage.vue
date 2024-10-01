@@ -62,4 +62,8 @@ export default {
 </script>
 
 <style>
+.custom-container {
+  width: 62%;
+  max-width: 1000px;
+}
 </style>

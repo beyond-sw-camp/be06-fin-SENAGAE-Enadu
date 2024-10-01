@@ -34,7 +34,7 @@
       </div>
     </div>
       <!-- 검색창 -->
-    <div style="display:flex; flex-direction: row; justify-content: center; width: 100%">
+    <div style="display:flex; flex-direction: row; justify-content: center; width: 100%; height: 40px;">
       <SortTypeComponent v-show="!$route.path.startsWith('/wiki')" style="margin-bottom: 0" @checkLatest="handleCheckLatest" @checkLike="handleCheckLike"/>
       <select style="display:flex;" v-model="selectedType" class="type-dropdown">
         <option value="tc">제목+내용</option>
@@ -213,6 +213,10 @@ export default {
   background-color: #fff;
   border: 1px solid #cfcfcf;
   transition: background-color 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
 }
 
 .tab.active {
@@ -229,7 +233,7 @@ export default {
 
 .search-bar {
   display: flex;
-  width: 450px;
+  width: 30%;
   align-items: center;
   background-color: #fafcfc;
   padding: 8px;
@@ -245,7 +249,7 @@ export default {
   outline: none;
   background: none;
   padding: 7px;
-  width: 300px;
+  width: 100%;
   font-size: 16px;
   height: 32.5px !important;
 }
@@ -374,12 +378,16 @@ export default {
   height: 100%;
   display: inline-flex;
   align-items: center;
-  margin-right: 0.875rem;
-  margin-top: 0.875rem;
+  margin-right: 0.875em;
   color: #2689d2;
   text-decoration: none;
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
+}
+
+i{
+    margin-left: 10px;
+    padding-right: 0;
 }
 </style>

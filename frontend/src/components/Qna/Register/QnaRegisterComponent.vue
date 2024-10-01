@@ -1,4 +1,5 @@
 <template>
+    <div class="custom-container">
     <div id="__next">
         <main class="mx-auto mt-2 w-full max-w-7xl px-4 lg:mt-[18px] lg:px-0">
             <div class="flex lg:space-x-10">
@@ -83,6 +84,7 @@
               @closeSub="closeSubCategoryModal"
           />
         </main>
+    </div>
     </div>
 </template>
 
