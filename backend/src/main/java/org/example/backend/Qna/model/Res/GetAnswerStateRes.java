@@ -14,5 +14,4 @@ public class GetAnswerStateRes {
     private Integer likeCnt;
     private Integer hateCnt;
     private Boolean checkLikeOrHate;
-    private Boolean checkAdopted;
 }

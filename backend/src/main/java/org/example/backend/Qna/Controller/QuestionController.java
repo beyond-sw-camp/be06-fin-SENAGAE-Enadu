@@ -58,23 +58,23 @@ public class QuestionController {
 
     //qna 질문 좋아요
     @PostMapping("/like")
-    public BaseResponse<Long> checkQnaLike(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkQnaLike(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
-        return new BaseResponse<>(id);
+    public BaseResponse<GetQuestionStateRes> checkQnaLike(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        GetQuestionStateRes qnaStateRes = qnaService.checkQnaLike(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
+        return new BaseResponse<>(qnaStateRes);
     }
 
     //qna 질문 싫어요
     @PostMapping("/hate")
-    public BaseResponse<Long> checkQnaHate(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkQnaHate(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
-        return new BaseResponse<>(id);
+    public BaseResponse<GetQuestionStateRes> checkQnaHate(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        GetQuestionStateRes qnaStateRes = qnaService.checkQnaHate(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
+        return new BaseResponse<>(qnaStateRes);
     }
 
     //qna 스크랩
     @PostMapping("/scrap")
-    public BaseResponse<Long> checkScrap(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long id = qnaService.checkQnaScrap(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
-        return new BaseResponse<>(id);
+    public BaseResponse<GetQuestionStateRes> checkScrap(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        GetQuestionStateRes qnaStateRes = qnaService.checkQnaScrap(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
+        return new BaseResponse<>(qnaStateRes);
     }
 
     @GetMapping("/state")

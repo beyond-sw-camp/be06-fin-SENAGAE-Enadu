@@ -29,4 +29,8 @@ public class AnswerLike {
     @Column(name = "state", nullable = false)
     private boolean state;
 
+    public void changeState() {
+        this.state = !this.state;
+    }
+
 }
