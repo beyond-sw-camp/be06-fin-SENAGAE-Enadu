@@ -47,7 +47,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         if (response.data && response.data.isSuccess) {
           // 응답 데이터가 성공적으로 반환된 경우의 처리
           console.log('API 호출 성공:', response.data.message);
-          
+          return response.data.result;
         } else {
           console.error('응답 데이터에 isSuccess가 없거나 실패한 경우:', response.data);
           throw new Error('응답 데이터에 isSuccess가 없거나 실패한 경우.');

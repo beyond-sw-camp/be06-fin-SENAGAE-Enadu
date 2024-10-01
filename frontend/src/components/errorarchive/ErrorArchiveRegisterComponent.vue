@@ -130,12 +130,12 @@ export default {
       }    
       try { 
         const errorArchiveStore = useErrorArchiveStore(); 
-        await errorArchiveStore.registerErrorArchive(this.errorArchive);
+        const id = await errorArchiveStore.registerErrorArchive(this.errorArchive);
         if (this.selectedSuperCategory === null) {
           this.selectedSuperCategory = this.selectedSubCategory; // 하위 카테고리 ID를 상위 카테고리 ID로 설정
         }
         alert('등록이 완료되었습니다.');
-        this.$router.push('/errorarchive/list');
+        this.$router.push('/errorarchive/detail?id='+id);
       } catch (error) {
         console.error('등록 중 오류 발생:', error);
         alert(`등록 중 오류 발생: ${error.message}`);
