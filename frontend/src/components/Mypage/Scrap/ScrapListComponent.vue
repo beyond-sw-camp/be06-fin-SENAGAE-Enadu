@@ -92,7 +92,7 @@ export default {
     data() {
         return {
             isLoading: true,
-            activeSection: 'qna',
+            activeSection: 'archive',
             page: 0,
             totalPage: 1
         };

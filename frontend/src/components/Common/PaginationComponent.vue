@@ -83,34 +83,7 @@ export default {
 </script>
 
 <style>
-.item {
-  padding: 8px 12px; /* 패딩 조정 */
-  margin: 0; /* 마진 조정 */
-  border: 1px solid #dee2e6; /* 각 li의 테두리 색상 */
-  color: #007bff; /* 기본 텍스트 색상 */
-  text-decoration: none; /* 밑줄 제거 */
-  font-weight: 400; /* 글씨 굵기 조정 */
-  transition: background-color 0.3s, color 0.3s; /* 부드러운 전환 효과 */
-  min-width: 30px; /* 최소 너비 설정 */
-  text-align: center; /* 텍스트 중앙 정렬 */
-}
-
-.item:hover {
-  background-color: #e9ecef; /* 호버 시 배경색 */
-  color: #0056b3; /* 호버 시 텍스트 색상 */
-}
-
-.active.item {
-  background-color: #007bff; /* 현재 선택한 페이지 배경색 */
-  color: white; /* 현재 선택한 페이지 텍스트 색상 */
-  border: 1px solid #007bff; /* 현재 선택한 페이지 테두리 색상 */
-}
-
-.item:disabled {
-  color: #6c757d; /* 비활성화된 텍스트 색상 */
-  cursor: not-allowed; /* 비활성화된 커서 */
-
-  .ui.menu {
+.ui.menu {
     display: flex;
     margin: 1rem 0;
     background: #fff;
@@ -122,6 +95,32 @@ export default {
     display: flex;
     font-weight: 500;
     min-height: 0;
-  }
+}
+.item {
+    padding: 0.5em 1em;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.8);
+    transition: background-color 0.3s, color 0.3s;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border: 0.2px solid rgba(34, 36, 38, 0.1);
+}
+.item:first-child {
+    border-left: none;
+}
+.item:hover {
+    background-color: rgba(34, 36, 38, 0.1);
+}
+.ui.pagination.menu .active.item {
+    border-top: none;
+    border-top-width: initial;
+    border-top-color: initial;
+    background-color: #e1e8e8;
+    color: rgba(0, 0, 0, .95);
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 </style>

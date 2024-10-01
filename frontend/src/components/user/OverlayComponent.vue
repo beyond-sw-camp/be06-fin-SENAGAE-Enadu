@@ -2,13 +2,19 @@
     <div class="overlay-container" :class="{ active: !signIn }">
         <div class="overlay" :class="{ active: !signIn }">
             <div class="left-overlay-panel" :class="{ 'is-visible': !signIn }" v-show="true">
+                <router-link :to="{ path: '/' }">
+                    <img src="https://enadu.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/10/01/d748841a-001b-4798-9a07-be7fa5c85f43" alt="Enadu" style="width: 170px; height: auto;"/>
+                </router-link>
                 <h1 class="title">에나두랑 함께하기</h1>
                 <p class="paragraph">
-                    개발자를 위한 통합 플랫폼 에나두는 <br>개발자에게 어쩌구 저쩌구한 경험을 줄 수 있습니다.
+                    개발자를 위한 통합 플랫폼 에나두는 <br>개발자에게 지식 공유, 그리고 문제 해결을 돕는<br>풍부한 경험을 제공합니다.
                 </p>
                 <button class="ghost-button" @click="$emit('toggleSignIn', true)">로그인</button>
             </div>
             <div class="right-overlay-panel" :class="{ 'is-visible': signIn }" v-show="true">
+                <router-link :to="{ path: '/' }">
+                    <img src="https://enadu.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/10/01/d748841a-001b-4798-9a07-be7fa5c85f43" alt="Enadu" style="width: 170px; height: auto;"/>
+                </router-link>
                 <h1 class="title">모든 오류를 모아서 <br/>한 곳에, <i>에나두</i></h1>
                 <p class="paragraph">에나두 계정이 없으신가요?</p>
                 <button class="ghost-button" @click="$emit('toggleSignIn', false)">회원가입</button>
@@ -85,7 +91,7 @@
   font-size: 18px;
   font-weight: 400;
   line-height: 25px;
-  margin: 20px 0 30px;
+  margin-bottom: 30px;
   padding: 20px;
 }
 
