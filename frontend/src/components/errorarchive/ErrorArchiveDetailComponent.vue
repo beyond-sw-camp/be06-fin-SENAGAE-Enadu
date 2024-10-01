@@ -1,15 +1,18 @@
+
 <template>
   <div v-if="isLoading"></div>
   <div id="root" v-else>
     <div class="sc-dPiLbb sc-bBHHxi kTIDXm">
-      <div class="sc-TBWPX dXONqK sc-jQrDum fiOuRZ">
+    <div class="sc-TBWPX dXONqK sc-jQrDum fiOuRZ">
         <div class="head-wrapper">
-          <div class="header-container" style="display: flex; align-items: center; justify-content: space-between;">
-          <div class="errorarchive-title"><h1>{{ errorarchiveStore.errorArchiveDetail.title }}</h1></div>
+                <div class="header-container" :class="{ 'long-title': isLongTitle, 'short-title': !isLongTitle }">
+          <div class="errorarchive-title">
+              <h1>{{ errorarchiveStore.errorArchiveDetail.title }}</h1>
+          </div>
           <div v-if="isAuthor" class="button-group">
               <button @click="editErrorArchive">수정</button>
               <button @click="handleSubmit">삭제</button>
-          </div>
+           </div>
           </div>
           <div class="sc-fvxzrP jGdQwA" style="display: flex; justify-content: space-between;">
            
@@ -161,6 +164,9 @@ export default {
     // 로그인한 사용자 ID와 작성자 ID를 비교하여 isAuthor 값을 설정
     isAuthor() {
       return this.userStore.userId === this.errorarchiveStore.errorArchiveDetail.authorId; // userId와 authorId 비교
+    },
+    isLongTitle() {
+        return this.errorarchiveStore.errorArchiveDetail.title.length > 15; // 제목의 길이에 따라 조정
     }
   },
   watch: {
@@ -272,25 +278,36 @@ export default {
 </script>
 
 <style scoped>
+.errorarchive-title {
+    flex: 1; /* 제목이 가능한 많은 공간을 차지하도록 */
+    margin-right: 20px; /* 버튼 그룹과의 간격 */
+}
 .button-group {
   display:flex;
   gap: 10px;
-  margin-left: auto;
   color: #8a8ea0
 }
 .header-container {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px; /* 버튼과 제목 간 기본 간격 */
 }
 .sc-fvxzrP {
   display: flex;
   align-items: center; /* 세로 중앙 정렬 */
   justify-content: space-between; /* 양 끝 정렬 */
 }
+/* 제목이 짧을 때의 마진을 조정 */
+.header-container.short-title .errorarchive-title {
+    margin-bottom: 10px; /* 제목이 짧을 때 버튼과의 간격 추가 */
+    margin-right: 400px;
+}
 
-
+/* 제목이 길 때만 추가 마진을 적용하는 클래스 */
+.header-container.long-title .button-group {
+    margin-top: 10px; /* 제목이 길어질 때 버튼 위쪽 간격 */
+}
 .profile {
   border-radius: 50%;
   width: 25px;
