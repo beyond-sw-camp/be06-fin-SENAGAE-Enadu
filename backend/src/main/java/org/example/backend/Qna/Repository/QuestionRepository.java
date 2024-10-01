@@ -14,18 +14,17 @@ public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
 
     Page<QnaBoard> findByEnableTrue(Pageable pageable);
 
-
     // type이 tc일 때 검색 쿼리문
-    @Query("SELECT q FROM QnaBoard q WHERE (q.title LIKE CONCAT('%', :keyword, '%') OR q.content LIKE CONCAT('%', :keyword, '%')) AND (:categoryId IS NULL OR q.category.id = :categoryId) AND q.enable = true")
-    Page<QnaBoard> findByTC(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, Pageable pageable);
+    @Query("SELECT q FROM QnaBoard q WHERE (q.title LIKE CONCAT('%', :keyword, '%') OR q.content LIKE CONCAT('%', :keyword, '%')) AND (q.category.id = :categoryId OR :notChosenCategory = true)  AND q.enable = true")
+    Page<QnaBoard> findByTC(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, @Param("notChosenCategory") boolean notChosenCategory, Pageable pageable);
 
     // type이 t일 때 검색 쿼리문
-    @Query("SELECT q FROM QnaBoard q WHERE q.title LIKE CONCAT('%', :keyword, '%') AND (:categoryId IS NULL OR q.category.id = :categoryId) AND q.enable = true")
-    Page<QnaBoard> findByT(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, Pageable pageable);
+    @Query("SELECT q FROM QnaBoard q WHERE q.title LIKE CONCAT('%', :keyword, '%') AND (q.category.id = :categoryId OR :notChosenCategory = true)  AND q.enable = true")
+    Page<QnaBoard> findByT(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, @Param("notChosenCategory") boolean notChosenCategory, Pageable pageable);
 
     // type이 c일때 검색 쿼리문
-    @Query("SELECT q FROM QnaBoard q WHERE q.content LIKE CONCAT('%', :keyword, '%') AND (:categoryId IS NULL OR q.category.id = :categoryId) AND q.enable = true")
-    Page<QnaBoard> findByC(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, Pageable pageable);
+    @Query("SELECT q FROM QnaBoard q WHERE q.content LIKE CONCAT('%', :keyword, '%') AND (q.category.id = :categoryId OR :notChosenCategory = true) AND q.enable = true")
+    Page<QnaBoard> findByC(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, @Param("notChosenCategory") boolean notChosenCategory, Pageable pageable);
 
 //    Page<QnaBoard> findByUserIdAndEnableTrue(Long userId, Pageable pageable);
 //    Page<QnaBoard> findByUserAnswerListUserIdAndEnableTrue(Long id, Pageable pageable);

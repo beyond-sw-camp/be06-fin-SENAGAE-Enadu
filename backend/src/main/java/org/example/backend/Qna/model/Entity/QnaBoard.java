@@ -98,7 +98,7 @@ public class QnaBoard {
     public void increaseAnswerCount() {
         this.answerCount++;
     }
-  
+
     public void decreaseAnswerCount() {
         this.answerCount--;
     }
@@ -106,9 +106,11 @@ public class QnaBoard {
     public void updateTitle(String title) {
         this.title = title;
     }
+
     public void updateContent(String content) {
         this.content = content;
     }
+
     public void updateCategory(Category category) {
         this.category = category;
     }
