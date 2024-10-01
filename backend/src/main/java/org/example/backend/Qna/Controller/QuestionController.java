@@ -6,6 +6,7 @@ import org.example.backend.Qna.Service.BasicQnaSearchService;
 import org.example.backend.Qna.Service.QnaService;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.Res.GetQuestionStateRes;
 import org.example.backend.Qna.model.req.CreateQuestionReq;
 import org.example.backend.Qna.model.req.EditQuestionReq;
 import org.example.backend.Qna.model.req.GetQnaListReq;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,9 +44,16 @@ public class QuestionController {
     //qna 상세 조회
     @GetMapping("/detail")
     public BaseResponse<GetQuestionDetailRes> getQnaDetail(Integer qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId, customUserDetails.getUserId());
-        return new BaseResponse<>(questionDetailRes);
+        Long userId;
+        if (customUserDetails != null) {
+            userId = customUserDetails.getUserId();
+        }
+        else {
+            userId = null;
+        }
+        GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId, userId);
 
+        return new BaseResponse<>(questionDetailRes);
     }
 
     //qna 질문 좋아요
@@ -66,6 +75,12 @@ public class QuestionController {
     public BaseResponse<Long> checkScrap(@RequestBody Map<String,Long> qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long id = qnaService.checkQnaScrap(qnaBoardId.get("qnaBoardId"), customUserDetails.getUserId());
         return new BaseResponse<>(id);
+    }
+
+    @GetMapping("/state")
+    public BaseResponse<GetQuestionStateRes> getQuestionState(Long qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        GetQuestionStateRes qnaStateRes = qnaService.getQuestionState(qnaBoardId, customUserDetails.getUserId());
+        return new BaseResponse<>(qnaStateRes);
     }
 
     //qna 검색

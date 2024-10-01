@@ -9,10 +9,7 @@ import org.example.backend.Exception.custom.InvalidQnaException;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.Qna.Repository.*;
 import org.example.backend.Qna.model.Entity.*;
-import org.example.backend.Qna.model.Res.GetAnswerCommentDetailListRes;
-import org.example.backend.Qna.model.Res.GetAnswerDetailListRes;
-import org.example.backend.Qna.model.Res.GetQnaListRes;
-import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.Res.*;
 import org.example.backend.Qna.model.req.*;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.User.Repository.UserRepository;
@@ -88,8 +85,14 @@ public class QnaService {
     }
 
     public GetQuestionDetailRes getQuestionDetail(Integer qnaBoardId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        User user;
+        if (userId != null){
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        }
+        else {
+            user = null;
+        }
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId.longValue())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
 
@@ -151,6 +154,49 @@ public class QnaService {
                         .createdAt(answerComment.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public GetQuestionStateRes getQuestionState(Long qnaBoardId, Long userId) {
+        User user;
+        if (userId != null) {
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        } else {
+            user = null;
+        }
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId.longValue())
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
+
+        return GetQuestionStateRes.builder()
+                .id(qnaBoard.getId())
+                .userId(qnaBoard.getUser().getId())
+                .likeCnt(qnaBoard.getLikeCount())
+                .hateCnt(qnaBoard.getHateCount())
+                .checkLikeOrHate(isQuestionLikeORHate(qnaBoard, user))
+                .checkScrap(isQuestionScarp(qnaBoard, user))
+                .build();
+    }
+
+    public GetAnswerStateRes getAnswerState(Long answerId, Long userId) {
+        User user;
+        if (userId != null) {
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        } else {
+            user = null;
+        }
+       Answer answer = answerRepository.findByIdAndEnableTrue(answerId)
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
+
+        System.out.print(isAnswerLikeORHate(answer, user));
+
+        return GetAnswerStateRes.builder()
+                .id(answer.getId())
+                .userId(answer.getUser().getId())
+                .likeCnt(answer.getLikeCount())
+                .hateCnt(answer.getHateCount())
+                .checkLikeOrHate(isAnswerLikeORHate(answer, user))
+                .build();
     }
 
     @Transactional
@@ -332,16 +378,25 @@ public class QnaService {
     // 현재 접속한 사용자의 좋아요/싫어요/선택 X 상태를 알아내는 함수
     //userID-qnaBoardId를 활용해서 해당 사용자가 답변글에 어떤 상태를 표시했는지 나타내는 함수
     public Boolean isQuestionLikeORHate(QnaBoard qnaBoard, User user) {
+        if (user == null){
+            return null;
+        }
         Optional<Boolean> state = qnaLikeRepository.findState(qnaBoard.getId(), user.getId());
         return state.orElse(null);
     }
     // userID-qnaBoardId를 활용해서 해당 사용자가 답변글에 어떤 상태를 표시했는지 나타내는 함수
     public Boolean isAnswerLikeORHate(Answer answer, User user) {
+        if (user == null){
+            return null;
+        }
         Optional<Boolean> state = answerLikeRepository.findState(answer.getId(), user.getId());
         return state.orElse(null);
     }
     // 현재 접속한 사용자의 질문에 대한 스크랩 상태를 알아내는 함수
-    private boolean isQuestionScarp(QnaBoard qnaBoard, User user) {
+    private Boolean isQuestionScarp(QnaBoard qnaBoard, User user) {
+        if (user == null){
+            return null;
+        }
         Optional<QnaScrap> qnaScrap = qnaScrapRepository.findByQnaBoardEnableTrueAndQnaBoardIdAndUserId(qnaBoard.getId(), user.getId());
         if (qnaScrap.isPresent()) {
             return true;
@@ -377,6 +432,10 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         Answer answer = answerRepository.findByIdAndEnableTrue(answerId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
+
+        if (user != qnaBoard.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NOT_QUESTIONER);
+        }
 
         if (answerRepository.countAdopted(qnaBoardId).equals(0)) {
             answer.adoptedAnswer(true);
@@ -421,7 +480,11 @@ public class QnaService {
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(editQuestionReq.getId())
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        //후에 권한 처리
+
+        if (user != qnaBoard.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
+
         if(qnaBoard.getAnswerList().isEmpty()){
             qnaBoard.updateTitle(editQuestionReq.getTitle());
             qnaBoard.updateContent(editQuestionReq.getContent());
@@ -441,7 +504,10 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        //후에 권한 처리
+
+        if (user != answer.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
 
         if(!answer.isAdopted()) {
             answer.updateContent(editAnswerReq.getContent());
@@ -459,7 +525,10 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        //후에 권한 처리
+
+        if (user != qnaBoard.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
 
         qnaBoard.disable();
         questionRepository.save(qnaBoard);
@@ -474,7 +543,10 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_ANSWER_NOT_FOUND));
 
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
-        //후에 권한 처리
+
+        if (user != answer.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
 
         qnaBoard.decreaseAnswerCount();
         questionRepository.save(qnaBoard);
