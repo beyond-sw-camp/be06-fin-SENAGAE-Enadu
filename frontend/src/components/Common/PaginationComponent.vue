@@ -69,6 +69,7 @@ export default {
     },
   },
   created() {
+    console.log(this.totalPage);
     for (let page = 1; page < this.totalPage + 1; page++) {
       if (page > 5) {
         break;

@@ -132,6 +132,7 @@ export default {
     async clickLike() {
       if (!useUserStore().isLoggedIn) {
         alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
+        window.location.reload();
       } else {
         if (this.isCheckedHate === true) {
           this.isCheckedLike = !this.isCheckedLike;
@@ -151,6 +152,7 @@ export default {
     async clickHate() {
       if (!useUserStore().isLoggedIn) {
         alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
+        window.location.reload();
       } else {
         if (this.isCheckedLike === true) {
           this.isCheckedHate = !this.isCheckedHate;
@@ -161,7 +163,7 @@ export default {
         await useQnaStore().questionHate(this.$route.params.id);
         await useQnaStore().questionState(this.$route.params.id);
         console.log("hate" + useQnaStore().qnaState.checkLikeOrHate);
-        this.isCheckedAnsHate = !this.isCheckedAnsHate;
+        this.isCheckedHate = !this.isCheckedHate;
         this.qnaHateCnt = useQnaStore().qnaState.hateCnt;
         this.isReLoading = false;
       }
@@ -179,8 +181,8 @@ export default {
     },
     checking() {
       console.log("id" + this.qnaDetail.id);
-      this.ansLikeCnt = this.qnaDetail.likeCnt;
-      this.ansHateCnt = this.qnaDetail.hateCnt;
+      this.qnaLikeCnt = this.qnaDetail.likeCnt;
+      this.qnaHateCnt = this.qnaDetail.hateCnt;
 
       console.log("checkingScrap" + this.qnaDetail.checkScrap);
       this.isCheckedScrap = this.qnaDetail.checkScrap;
@@ -213,6 +215,41 @@ export default {
 </script>
 
 <style scoped>
+/* 카테고리 태그*/
+.label-custom {
+  margin: 20px 0; /* 상하 여백 */
+}
+
+.ui.tag.labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* 태그 간의 간격 */
+}
+
+.ui.label {
+  background-color: #007bff; /* 기본 배경색 */
+  color: white; /* 글자색 */
+  padding: 8px 12px; /* 패딩 */
+  border-radius: 20px; /* 둥근 모서리 */
+  font-size: 14px; /* 글자 크기 */
+  font-weight: 500; /* 글자 두께 */
+  text-decoration: none; /* 밑줄 제거 */
+  transition: background-color 0.3s, transform 0.3s; /* 부드러운 전환 효과 */
+}
+
+.ui.label:hover {
+  background-color: #0056b3; /* 호버 시 배경색 변경 */
+  transform: scale(1.05); /* 호버 시 크기 증가 */
+}
+
+.test.ui.label {
+  background-color: #1EBDE5FF; /* superCategoryName 태그의 배경색 */
+}
+
+.test.ui.label:hover {
+  background-color: #1EBDE5FF; /* superCategoryName 태그 호버 시 색상 */
+}
+/* 카테고리 태그*/
 .qna-detail-top-title {
   display: flex;
   align-items: center;

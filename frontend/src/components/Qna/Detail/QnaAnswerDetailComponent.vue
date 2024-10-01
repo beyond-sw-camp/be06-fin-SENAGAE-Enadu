@@ -237,6 +237,7 @@ export default {
     async clickAnsLike() {
       if (!useUserStore().isLoggedIn) {
         alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
+        window.location.reload();
       } else {
         if (this.isCheckedAnsHate === true){
           this.isCheckedAnsLike = !this.isCheckedAnsLike;
@@ -257,6 +258,7 @@ export default {
     async clickAnsHate() {
       if (!useUserStore().isLoggedIn) {
         alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
+        window.location.reload();
       } else {
         if (this.isCheckedAnsLike === true) {
           this.isCheckedAnsHate = !this.isCheckedAnsHate;
@@ -1596,7 +1598,7 @@ q:before {
 }
 
 #answer-title-text {
-  margin-top: 2rem;
+  margin-top: 3rem;
 }
 
 #user-profile-image {

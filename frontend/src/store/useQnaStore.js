@@ -34,6 +34,7 @@ export const useQnaStore = defineStore("qna", {
         },
         qnaState: {},
         registered: 0,
+        totalPage:0
     }),
 
 
@@ -62,7 +63,7 @@ export const useQnaStore = defineStore("qna", {
             const params = {
                 sort: sort,
                 page: page,
-                size: 15
+                size: 12
             };
 
             try {
@@ -71,6 +72,7 @@ export const useQnaStore = defineStore("qna", {
                 });
                 this.qnaCards = res.data.result;
                 this.totalPage = this.qnaCards[0].totalPage;
+                console.log("a"+this.totalPage);
             } catch (error) {
                 alert("질문 목록 데이터 요청 중 에러가 발생했습니다.");
             }

@@ -175,15 +175,16 @@ i {
 }
 
 .search-bar {
+    width: 480px;
     display: flex;
     align-items: center;
     background-color: #fafcfc;
     padding: 8px;
     border-radius: 25px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-left: auto;
-    margin-right: 30px;
+    margin-right: 20px;
     border: 1px solid var(--main-color);
+    justify-content: space-between;
 }
 
 .search-bar input {
