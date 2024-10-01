@@ -56,7 +56,9 @@ export default {
           await useQnaStore().registerAnswer(this.$route.params.id, this.myAnswer);
           await useQnaStore().getQnaDetail(this.$route.params.id);
           alert('등록이 완료되었습니다.');
+          this.$emit('answer-registered', true);
           this.cancel();
+
         } catch (error) {
           alert('등록 중 오류 발생');
         }

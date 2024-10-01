@@ -53,7 +53,7 @@
           </div>
         </div>
         <div v-if="isAnswerRegister">
-          <QnaAnswerRegisterComponent/>
+          <QnaAnswerRegisterComponent @answer-registered="handleAnswerRegistered"/>
         </div>
       </div>
     </div>
@@ -87,14 +87,19 @@ export default {
       if (newIsEdit) {
         this.$router.push('/qna/edit/' + this.$route.params.id);
       }
-    }
+    },
+    handleAnswerRegistered(success) {
+      if (success) {
+        this.isAnswerRegister = false;
+      }
+    },
   },
   components: {
     AdditionalInfoComponent,
     QnaAnswerRegisterComponent,
     VMdPreview
   },
-};
+}
 </script>
 
 <style scoped>
@@ -102,7 +107,7 @@ export default {
   font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
-.v-md-area{
+.v-md-area {
   background: #fefeff;
   border-radius: 20px;
 }
