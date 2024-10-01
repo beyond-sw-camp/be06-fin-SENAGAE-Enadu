@@ -72,15 +72,17 @@ export default {
         await useQnaStore().getQnaDetail(this.$route.params.id);
         this.requestUpdate();
         this.commentClear();
-          alert('등록이 완료되었습니다.');
+        alert('등록이 완료되었습니다.');
+        this.$emit('comment-registered', true);
+        this.$emit('recomment-registered', true);
       }
     },
     requestUpdate() {
       this.$emit('requestUpdate');
     },
-    commentClear(){
-      this.myComment="";
-    }
+    commentClear() {
+      this.myComment = "";
+    },
   },
 }
 </script>

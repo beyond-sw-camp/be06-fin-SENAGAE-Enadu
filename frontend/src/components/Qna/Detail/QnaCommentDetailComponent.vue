@@ -1,4 +1,6 @@
 <template>
+  <div
+      class="my-3 divide-y divide-gray-500/30 border-y border-gray-500/30 dark:divide-gray-500/70 dark:border-gray-500/70"></div>
   <li id="reply-1917142" class="pb-0.5 pt-1.5 sm:pb-1 sm:pt-2.5" :class="{'recomment': !isTopComment}">
     <div class="flex items-center text-xs sm:text-sm">
       <div class="flex flex-1 items-center gap-x-2">
@@ -8,7 +10,9 @@
         <div class="flex flex-col gap-x-1 sm:flex-row sm:items-center">
           <div class="flex items-center gap-x-1 text-gray-700 dark:text-gray-300"><a
               class="font-medium text-gray-900"
-          ><NicknameComponent :nickname="qnaComment.nickname"/><span>·</span> <span
+          >
+            <NicknameComponent :nickname="qnaComment.nickname"/>
+            <span>·</span> <span
               class="rounded-md bg-sky-500/20 px-1.5 py-0.5 text-xs">{{ qnaComment.grade }}</span></a></div>
           <div class="flex items-center gap-x-1"><span class="hidden sm:inline">·</span><a
               class="text-gray-700"
@@ -38,7 +42,8 @@
       </button>
     </div>
     <div v-if="isRegistered">
-      <QnaCommentRegisterComponent v-bind:answer="qnaAnswer" v-bind:comment="qnaComment" @requestUpdate="updateComment"/>
+      <QnaCommentRegisterComponent v-bind:answer="qnaAnswer" v-bind:comment="qnaComment"
+                                   @requestUpdate="updateComment" @recomment-registered="handleRecommentRegistered"/>
     </div>
     <div v-if="isContentVisible">
       <div v-if="isLoading"></div>
@@ -78,7 +83,7 @@ export default {
     writeRipple() {
       this.isRegistered = !this.isRegistered;
     },
-    updateComment(){
+    updateComment() {
       if (this.qnaAnswer !== undefined) {
         this.myComments = this.qnaAnswer.comments
         this.isSuperNull = true;
@@ -86,7 +91,13 @@ export default {
         this.myComments = [];
         this.isTopComment = false;
       }
-    }
+    },
+    handleRecommentRegistered(success) {
+      if (success) {
+        this.isRegistered = false;
+        this.isContentVisible = true;
+      }
+    },
   },
   mounted() {
     this.isLoading = false

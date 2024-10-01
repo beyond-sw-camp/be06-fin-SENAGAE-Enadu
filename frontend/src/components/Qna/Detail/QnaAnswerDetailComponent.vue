@@ -156,11 +156,10 @@
           <QnaAnswerEditComponent v-bind:answer="qnaAnswer"/>
         </div>
         <div v-show="isRegistered">
-          <QnaCommentRegisterComponent v-bind:answer="qnaAnswer"/>
+          <QnaCommentRegisterComponent v-bind:answer="qnaAnswer" @comment-registered="handleCommentRegistered"/>
         </div>
 
-        <ul v-show="isContentVisible"
-            class="my-3 divide-y divide-gray-500/30 border-y border-gray-500/30 dark:divide-gray-500/70 dark:border-gray-500/70">
+        <ul v-show="isContentVisible">
           <div v-if="isLoading"></div>
           <QnaCommentDetailComponent v-else
                                      v-for="qnaComment in filteredComments"
@@ -168,6 +167,9 @@
                                      :qnaComment="qnaComment"
                                      v-bind:qnaAnswer="qnaAnswer"
           />
+          <div
+              class="my-3 divide-y divide-gray-500/30 border-y border-gray-500/30 dark:divide-gray-500/70 dark:border-gray-500/70"></div>
+
         </ul>
       </div>
     </div>
@@ -295,7 +297,13 @@ export default {
     },
     handleEditUpdate(newIsEdit) {
       this.isEdited = newIsEdit;
-    }
+    },
+    handleCommentRegistered(success) {
+      if (success) {
+        this.isRegistered = false;
+        this.isContentVisible = true;
+      }
+    },
   },
   mounted() {
     console.log(this.qnaAnswer);
