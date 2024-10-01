@@ -285,10 +285,13 @@ img {
 }
 
 .title-text {
-  font-family: auto;
   margin-left: 50px;
-  font-size: 43px;
-  font-weight: 900
+  font-size: 50px;
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 80%;
 }
 
 .username-text {

@@ -257,7 +257,6 @@ export const useQnaStore = defineStore("qna", {
                 this.qnaSearchedCards = res.data.result;
                 this.searchedTotalPage = this.qnaSearchedCard[0].totalPage;
             } catch (error) {
-                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
         },
 

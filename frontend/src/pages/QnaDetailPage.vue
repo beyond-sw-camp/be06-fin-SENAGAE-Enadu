@@ -1,5 +1,5 @@
 <template>
-  <div class="inner">
+  <div class="custom-container">
     <div v-if="isLoading"></div>
     <div v-else>
       <QnaDetailHeader v-bind:qnaDetail=qnaStore.qnaDetail />
@@ -62,12 +62,4 @@ export default {
 </script>
 
 <style>
-.inner {
-  width: auto;
-  display: grid;
-  align-content: center;
-  align-items: center;
-  background-color: #ffffff;
-  margin: 50px 500px;
-}
 </style>
