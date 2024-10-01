@@ -56,6 +56,10 @@ public class SecurityConfig {
                         .requestMatchers("/chat/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/qna").authenticated()
                         .requestMatchers("/point/**").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/wiki").authenticated()
+                        .requestMatchers(HttpMethod.PATCH,"/wiki/update").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/wiki/scrap").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/wiki/rollback").authenticated()
                         .anyRequest().permitAll()
         );
 
@@ -76,7 +80,6 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:8084");
         config.addAllowedOrigin("http://localhost:8085");
         config.addAllowedOrigin("https://www.enadu.kro.kr");
-        config.addAllowedOriginPattern("*");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
