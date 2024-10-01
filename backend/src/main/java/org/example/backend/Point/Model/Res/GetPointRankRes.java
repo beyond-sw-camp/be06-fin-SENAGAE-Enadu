@@ -8,7 +8,6 @@ import lombok.Getter;
 public class GetPointRankRes {
     private Integer point;
     private Integer rank;
-    private Long userId;
     private String nickname;
     private String profileImg;
     private String grade;

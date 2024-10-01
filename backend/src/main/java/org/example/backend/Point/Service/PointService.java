@@ -47,6 +47,7 @@ public class PointService {
     public GetMyRankRes getMyRank(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         return GetMyRankRes.builder()
+                .grade(user.getGrade())
                 .point(user.getPoint())
                 .rank(userRepository.countByPointGreaterThan(user.getPoint()) + 1).build();
     }
@@ -66,7 +67,6 @@ public class PointService {
                     .nickname(user.getNickname())
                     .gradeImg(UserGradeIconManager.getGradeIcon(user.getGrade()))
                     .build());
-
         }
         return getPointRankResList;
     }
