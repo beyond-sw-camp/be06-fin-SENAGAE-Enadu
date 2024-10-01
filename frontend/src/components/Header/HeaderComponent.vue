@@ -1,7 +1,9 @@
 <template>
     <header>
         <div class="logo">
-            <router-link :to="{ path: '/' }"><h1>Enadu</h1></router-link>
+            <router-link :to="{ path: '/' }">
+                <img src="https://enadu.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/10/01/5e09b855-a36d-4fa5-a66a-afb505ba26b9" alt="Enadu" style="width: 120px; height: auto;"/>
+            </router-link>
         </div>
         <nav class="navigation">
             <ul>

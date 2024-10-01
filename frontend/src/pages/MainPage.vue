@@ -1,5 +1,10 @@
 <template>
-  <TagComponent :tagTitle="'ENADU'" :tagSubTitle="'에러의 모든 것'"/>
+    <div class="tag-box">
+        <div class="tag-sub-box">
+            <img class="tag-title" src="https://enadu.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/10/01/5e09b855-a36d-4fa5-a66a-afb505ba26b9" alt="Enadu"/>
+            <div class="tag-sub-title">에러의 모든 것</div>
+        </div>
+    </div>
   <div class ="custom-container" style="margin-top: 0;">
     <LoadingComponent v-if="isLoading" />
     <div v-else class="subject-container">
@@ -57,12 +62,11 @@ import {useMainStore} from "@/store/useMainStore";
 import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";
 import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
-import TagComponent from "@/components/Common/TagComponent.vue";
 import LoadingComponent from "@/components/Common/LoadingComponent.vue";
 
 export default {
   name: "MainPage",
-  components: {LoadingComponent, TagComponent, QnaCardComponent, WikiCardComponent, ErrorArchiveCardComponent},
+  components: {LoadingComponent, QnaCardComponent, WikiCardComponent, ErrorArchiveCardComponent},
   computed: {
     ...mapStores(useMainStore),
   },
@@ -85,6 +89,29 @@ export default {
 
 
 <style scoped>
+.tag-title {
+    align-self: stretch;
+    text-align: center;
+    color: #1E1E1E;
+    font-size: 40px;
+    font-family: Inter;
+    font-weight: 700;
+    word-wrap: break-word;
+    width: auto;
+    height: 100px;
+    display: block;
+    margin: 20px auto;
+}
+.tag-sub-title {
+    align-self: stretch;
+    text-align: center;
+    color: #757575;
+    font-size: 25px;
+    font-family: Inter;
+    font-weight: 400;
+    word-wrap: break-word
+}
+
 .subject-container {
   margin-bottom: 70px;
 }
