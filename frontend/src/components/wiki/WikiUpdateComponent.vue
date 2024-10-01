@@ -12,17 +12,17 @@
                 <div class="grid grid-cols-1 gap-y-7">
                   
                   <div class="space-y-1">
-                    <label for="title" class="text-sm font-medium text-gray-700">제목</label>
-                    <input type="text" v-model="updatedTitle" class="form-control" readonly />
+                    <label for="title" class="text-sm font-medium text-gray-700" style="font-size: 1rem;">제목</label>
+                    <input type="text" v-model="updatedTitle" class="form-control circular-input" readonly style="pointer-events: none;padding-left: 15px;" />
                   </div>
 
                   <div class="space-y-1">
-                    <label for="category" class="text-sm font-medium text-gray-700">카테고리</label>
-                    <input type="text" v-model="updatedCategory" class="form-control" readonly />
+                    <label for="category" class="text-sm font-medium text-gray-700" style="font-size: 1rem;">카테고리</label>
+                    <input type="text" v-model="updatedCategory" class="form-control circular-input" readonly style="pointer-events: none;padding-left: 15px;" />
                   </div>
 
                   <div class="space-y-1">
-                    <label for="content" class="text-sm font-medium text-gray-700">내용</label>
+                    <label for="content" class="text-sm font-medium text-gray-700" style="font-size: 1rem;">내용</label>
                     <v-md-editor v-model="updatedContent" :disabled-menus="[]" height="400px" @upload-image="commonStore.imageUpload"></v-md-editor>
                   </div>
 
@@ -143,4 +143,5 @@ export default {
 #rowGapZero {
   row-gap: 0;
 }
+
 </style>
