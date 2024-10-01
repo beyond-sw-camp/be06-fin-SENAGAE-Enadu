@@ -16,10 +16,11 @@ export const useMainStore = defineStore('main', {
             const request = {
                 errorArchiveSize: 5,
                 wikiSize: 4,
-                qnaSize: 5
+                qnaSize: 4,
             }
             try {
-                const response= await axios.get(backend+'/main', request,{
+                const response= await axios.get(backend+'/main',{
+                    params: request,
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true
                 });

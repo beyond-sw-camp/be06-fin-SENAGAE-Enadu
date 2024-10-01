@@ -229,14 +229,15 @@ export default {
 
 .search-bar {
   display: flex;
+  width: 450px;
   align-items: center;
   background-color: #fafcfc;
   padding: 8px;
   border-radius: 25px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  //margin-left: auto;
   margin-right: 30px;
   border: 1px solid var(--main-color);
+  justify-content: space-between;
 }
 
 .search-bar input {

@@ -23,9 +23,9 @@
         />
       </div>
     </div>
-  </div>
-  <div class="qna-bottom">
-    <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage + 1"/>
+    <div v-if="!isLoading" class="qna-bottom">
+      <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage" :totalPage="totalPages"/>
+    </div>
   </div>
 </template>
 
@@ -41,27 +41,41 @@ export default {
   name: "QnaListPage",
   data() {
     return {
+      isLoading: true,
       selectedSort: null,
       selectedPage: 0,
-      isSearched : false,
+      isSearched: false,
       selectedSubCategory: "",
       searchQuery: "",
       selectedType: "",
+      totalPages: 1,
     };
   },
   computed: {
     ...mapStores(useQnaStore),
+    qnaCards() {
+      return this.qnaStore.qnaCards;
+    },
+    qnaSearchedCards() {
+      return this.qnaStore.qnaSearchedCards;
+    },
   },
   mounted() {
     this.selectedSort = "latest";
     this.selectedPage = 1;
+    this.isSearched = false;
+    this.checking();
   },
   watch: {
-    selectedSort() {
-      this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
+    async selectedSort() {
+      await this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
+      this.totalPages = useQnaStore().totalPage || 1;
+      this.isLoading = false;
     },
-    selectedPage() {
-      this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
+    async selectedPage() {
+      await this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
+      this.totalPages = useQnaStore().totalPage || 1;
+      this.isLoading = false;
     },
   },
   methods: {
@@ -74,20 +88,41 @@ export default {
     handlePageUpdate(newPage) {
       this.selectedPage = newPage;
     },
-    handleSearch(data) {
+    async handleSearch(data) {
       if (data !== null) {
-        this.isSearched = true
+        this.isSearched = true;
+        this.isLoading = true;
 
         const {selectedSubCategory, searchQuery, selectedType} = data;
         this.selectedSubCategory = selectedSubCategory;
         this.searchQuery = searchQuery;
         this.selectedType = selectedType;
 
-        useQnaStore().qnaSearch(this.selectedType, this.searchQuery, this.selectedSubCategory, this.selectedSort, this.selectedPage);
+        await useQnaStore().qnaSearch(this.selectedType, this.searchQuery, this.selectedSubCategory, this.selectedSort, this.selectedPage);
+        this.totalPages = useQnaStore().searchedTotalPage || 1;
+        this.isLoading = false;
       }
     },
     goToDetail(id) {
-      this.$router.push('/qna/detail/'+id);
+      this.$router.push('/qna/detail/' + id);
+    },
+    checking() {
+      console.log("back"+useQnaStore().totalPage);
+      if (!this.isSearched) {
+        if (useQnaStore().qnaCards.length > 0) {
+          this.totalPages = useQnaStore().totalPage || 1;
+        } else {
+          this.totalPages = 1;
+        }
+        console.log(this.totalPages);
+      } else {
+        if (useQnaStore().qnaSearchedCards.length > 0) {
+          this.totalPages = useQnaStore().searchedTotalPage || 1;
+        } else {
+          this.totalPages = 1;
+        }
+        console.log(this.totalPages);
+      }
     },
   },
   components: {
@@ -95,22 +130,16 @@ export default {
     QnaCardComponent,
     PaginationComponent,
     SearchComponent,
-  },
-};
+  }
+  ,
+}
+;
 </script>
 
 
 <style>
-.qna-top {
-  //height: 320px;
-  //display: grid;
-  padding-bottom: 50px;
-  align-content: center;
-  align-items: center;
-  //background-color: #e1e8e8;
-}
-
 .qna-bottom {
+  margin-top: 40px;
   height: 70px;
   display: grid;
   background-color: #ffffff;
@@ -130,9 +159,9 @@ export default {
 
 .qna-list-flex {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   grid-auto-rows: auto;
-  gap: 26px 36px;
+  gap: 50px 30px;
   justify-items: stretch;
   max-width: 100%;
   margin: 0 auto

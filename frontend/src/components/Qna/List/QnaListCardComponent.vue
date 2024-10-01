@@ -93,20 +93,20 @@ export default {
 <style scoped>
 /* QnA card */
 .card {
-  position: relative;
-  background-color: #ffffff;
-  padding: 1em;
-  z-index: 5;
-  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  width: 100%;
-  min-height: 150px;
-  display: flex;
-  flex-direction: column;
-  transition: 200ms ease-in-out;
-  justify-content: space-between;
-  overflow: hidden;
-  cursor: pointer;
+    position: relative;
+    background-color: #fff3f35e;
+    padding: 1em;
+    z-index: 5;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    width: 300px;
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    transition: 200ms ease-in-out;
+    justify-content: space-between;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .qna-category-highlow {
@@ -521,35 +521,6 @@ button:-moz-focusring {
   box-sizing: border-box;
 }
 
-html {
-  -webkit-print-color-scheme: light;
-  color-scheme: light;
-}
-
-a,
-b,
-code,
-div,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-img,
-label,
-p,
-pre,
-q,
-s,
-span {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 11px;
-  vertical-align: baseline;
-}
-
 q {
   quotes: none;
 }
@@ -566,8 +537,8 @@ q:before {
 /* 댓글 */
 
 .qna-title {
-  text-align: left;
-  font-size: 16px;
+  text-align: center;
+  font-size: 20px;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;

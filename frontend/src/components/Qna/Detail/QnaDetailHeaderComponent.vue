@@ -19,7 +19,8 @@
       <div class="icons-box">
         <div class="icons">
           <label class="btn-label" for="like-checkbox">
-            <span class="like-text-content">{{ qnaDetail.likeCnt }}</span>
+            <div v-if="isReLoading"></div>
+            <span v-else class="like-text-content">{{ qnaLikeCnt !== null ? qnaLikeCnt : 0 }}</span>
             <input class="input-box" id="like-checkbox" type="checkbox" @click="clickLike" :checked="isCheckedLike"/>
             <svg
                 class="svgs"
@@ -77,7 +78,8 @@
                   d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.1s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16H286.5c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8H384c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32V448c0 17.7 14.3 32 32 32H96c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32H32z"
               ></path>
             </svg>
-            <span class="dislike-text-content">{{ qnaDetail.hateCnt }}</span>
+            <div v-if="isReLoading"></div>
+            <span v-else class="dislike-text-content">{{ qnaHateCnt !== null ? qnaHateCnt : 0 }}</span>
           </label>
         </div>
       </div>
@@ -107,11 +109,17 @@ import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
 import {formatDateTime} from "@/utils/FormatDate";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
+import {useUserStore} from "@/store/useUserStore";
 
 export default {
   name: "QnaDetailHeaderComponent",
   data() {
     return {
+      isReLoading: true,
+
+      qnaLikeCnt: 0,
+      qnaHateCnt: 0,
+
       isCheckedLike: false,
       isCheckedHate: false,
       isCheckedScrap: false,
@@ -121,37 +129,65 @@ export default {
   methods: {
     formatDateTime,
 
-    clickLike() {
-      useQnaStore().questionLike(this.$route.params.id);
-      if (this.qnaDetail.checkLikeOrHate !== false) {
+    async clickLike() {
+      if (!useUserStore().isLoggedIn) {
+        alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
+        window.location.reload();
+      } else {
+        if (this.isCheckedHate === true) {
+          this.isCheckedLike = !this.isCheckedLike;
+          alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
+          window.location.reload();
+        }
+        this.isReLoading = true;
+        await useQnaStore().questionLike(this.$route.params.id);
+        await useQnaStore().questionState(this.$route.params.id);
+        console.log("like" + useQnaStore().qnaState.checkLikeOrHate);
         this.isCheckedLike = !this.isCheckedLike;
-      } else {
-        alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
-        window.location.reload();
+        this.qnaLikeCnt = useQnaStore().qnaState.likeCnt;
+        this.isReLoading = false;
       }
-      useQnaStore().getQnaDetail(this.$route.params.id);
-
     },
 
-    clickHate() {
-      useQnaStore().questionHate(this.$route.params.id);
-      if (this.qnaDetail.checkLikeOrHate !== true) {
+    async clickHate() {
+      if (!useUserStore().isLoggedIn) {
+        alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
+        window.location.reload();
+      } else {
+        if (this.isCheckedLike === true) {
+          this.isCheckedHate = !this.isCheckedHate;
+          alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
+          window.location.reload();
+        }
+        this.isReLoading = true;
+        await useQnaStore().questionHate(this.$route.params.id);
+        await useQnaStore().questionState(this.$route.params.id);
+        console.log("hate" + useQnaStore().qnaState.checkLikeOrHate);
         this.isCheckedHate = !this.isCheckedHate;
-      } else {
-        alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
-        window.location.reload();
+        this.qnaHateCnt = useQnaStore().qnaState.hateCnt;
+        this.isReLoading = false;
       }
-      useQnaStore().getQnaDetail(this.$route.params.id);
     },
 
-    clickScrap() {
-      useQnaStore().questionScrap(this.$route.params.id);
-      this.isCheckedScrap = !this.isCheckedScrap;
-      useQnaStore().getQnaDetail(this.$route.params.id);
+    async clickScrap() {
+      if (!useUserStore().isLoggedIn) {
+        alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
+      } else {
+        await useQnaStore().questionScrap(this.$route.params.id);
+        await useQnaStore().questionState(this.$route.params.id);
+        console.log("scrap" + useQnaStore().qnaState.checkScrap);
+        this.isCheckedScrap = !this.isCheckedScrap;
+      }
     },
-
-    //초기 세팅
     checking() {
+      console.log("id" + this.qnaDetail.id);
+      this.qnaLikeCnt = this.qnaDetail.likeCnt;
+      this.qnaHateCnt = this.qnaDetail.hateCnt;
+
+      console.log("checkingScrap" + this.qnaDetail.checkScrap);
+      this.isCheckedScrap = this.qnaDetail.checkScrap;
+
+      console.log("checking" + this.qnaDetail.checkLikeOrHate);
       if (this.qnaDetail.checkLikeOrHate === true) {
         this.isCheckedLike = true;
         this.isCheckedHate = false
@@ -163,13 +199,11 @@ export default {
         this.isCheckedHate = false;
       }
     },
-    checkingScrap() {
-      this.isCheckedScrap = this.qnaDetail.checkScrap === true;
-    }
   },
   mounted() {
+    console.log(this.qnaDetail);
+    this.isReLoading = false;
     this.checking();
-    this.checkingScrap();
   },
   components: {
     NicknameComponent
@@ -181,6 +215,41 @@ export default {
 </script>
 
 <style scoped>
+/* 카테고리 태그*/
+.label-custom {
+  margin: 20px 0; /* 상하 여백 */
+}
+
+.ui.tag.labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* 태그 간의 간격 */
+}
+
+.ui.label {
+  background-color: #007bff; /* 기본 배경색 */
+  color: white; /* 글자색 */
+  padding: 8px 12px; /* 패딩 */
+  border-radius: 20px; /* 둥근 모서리 */
+  font-size: 14px; /* 글자 크기 */
+  font-weight: 500; /* 글자 두께 */
+  text-decoration: none; /* 밑줄 제거 */
+  transition: background-color 0.3s, transform 0.3s; /* 부드러운 전환 효과 */
+}
+
+.ui.label:hover {
+  background-color: #0056b3; /* 호버 시 배경색 변경 */
+  transform: scale(1.05); /* 호버 시 크기 증가 */
+}
+
+.test.ui.label {
+  background-color: #1EBDE5FF; /* superCategoryName 태그의 배경색 */
+}
+
+.test.ui.label:hover {
+  background-color: #1EBDE5FF; /* superCategoryName 태그 호버 시 색상 */
+}
+/* 카테고리 태그*/
 .qna-detail-top-title {
   display: flex;
   align-items: center;

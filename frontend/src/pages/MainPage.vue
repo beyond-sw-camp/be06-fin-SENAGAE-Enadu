@@ -103,9 +103,9 @@ export default {
 
 .qna-list-flex {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   grid-auto-rows: auto;
-  gap: 26px 36px;
+  gap: 50px 30px;
   justify-items: stretch;
   max-width: 100%;
   margin: 0 auto
