@@ -68,7 +68,7 @@
         </div>
       </div>
 
-      <div class="qna-detail-top-items">
+      <div class="qna-detail-top-items" v-if="isLoggedIn">
         <div class="like-dislike-container">
           <div class="icons-box">
             <div class="icons">
@@ -299,6 +299,7 @@ export default {
   },
   mounted() {
     console.log(this.qnaAnswer);
+    this.isLoggedIn = useUserStore().isLoggedIn;
     this.isLoading = false;
     this.isReLoading = false;
     this.isRegistered = false;
