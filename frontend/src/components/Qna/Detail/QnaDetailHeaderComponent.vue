@@ -16,6 +16,23 @@
   </div>
   <div class="qna-detail-top-items" v-if="isLoggedIn">
     <div class="like-dislike-container">
+      <div class="bookmark-checkbox">
+        <input
+            type="checkbox"
+            id="bookmark-toggle"
+            class="bookmark-checkbox__input"
+            @click="clickScrap" :checked="isCheckedScrap"
+        />
+        <label for="bookmark-toggle" class="bookmark-checkbox__label">
+          <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
+            <path
+                class="bookmark-checkbox__icon-back"
+                d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
+            ></path>
+            <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5"></path>
+          </svg>
+        </label>
+      </div>
       <div class="icons-box">
         <div class="icons">
           <label class="btn-label" for="like-checkbox">
@@ -82,23 +99,6 @@
             <span v-else class="dislike-text-content">{{ qnaHateCnt !== null ? qnaHateCnt : 0 }}</span>
           </label>
         </div>
-      </div>
-      <div class="bookmark-checkbox">
-        <input
-            type="checkbox"
-            id="bookmark-toggle"
-            class="bookmark-checkbox__input"
-            @click="clickScrap" :checked="isCheckedScrap"
-        />
-        <label for="bookmark-toggle" class="bookmark-checkbox__label">
-          <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
-            <path
-                class="bookmark-checkbox__icon-back"
-                d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
-            ></path>
-            <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5"></path>
-          </svg>
-        </label>
       </div>
     </div>
   </div>
@@ -348,7 +348,8 @@ img {
 }
 
 .like-dislike-container .icons-box {
-  display: flex
+  display: flex;
+  margin-left: 12px;
 }
 
 .like-dislike-container .icons {
