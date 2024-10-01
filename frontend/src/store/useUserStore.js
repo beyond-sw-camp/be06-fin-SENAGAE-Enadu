@@ -167,5 +167,24 @@ export const useUserStore = defineStore('user', {
                 return false;
             }
         },
+        async socialQuit() {
+            try {
+                const response = await axios.patch('/social/user/oauth/quit',
+                    {withCredentials: true}
+                );
+                if (response.data.code === 1000 && response.data.isSuccess) {
+                    this.userId = null;
+                    this.isLoggedIn = false;
+                    return true;
+                } else {
+                    alert(response.data.message || '회원 탈퇴에 실패하였습니다.');
+                    return false;
+                }
+            } catch (error) {
+                alert('회원 탈퇴 중 오류가 발생했습니다.');
+                console.error(error);
+                return false;
+            }
+        }
     },
 });

@@ -67,7 +67,7 @@
                         </span>
                     </div>
                 </div>
-                <div v-show="!mypageStore.userInfo.isSocialUser" class="quit_button mt-4">
+                <div class="quit_button mt-4">
                     <div class="quit_button_text" @click="confirmQuit">
                         회원 탈퇴
                     </div>
@@ -198,7 +198,11 @@ export default {
         },
         confirmQuit() {
             if (window.confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
-                this.quitAccount();
+                if (this.mypageStore.userInfo.isSocialUser) {
+                    this.socialQuitAccount();
+                } else {
+                    this.quitAccount();
+                }
             }
         },
         async quitAccount() {
@@ -222,6 +226,21 @@ export default {
                 alert("회원 탈퇴 중 오류가 발생했습니다.");
             }
         },
+        async socialQuitAccount() {
+            try {
+                const quitSuccess = await this.userStore.socialQuit();
+                if (quitSuccess) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    this.$router.push("/").then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    alert("회원 탈퇴에 실패하였습니다.");
+                }
+            } catch (error) {
+                alert("회원 탈퇴 중 오류가 발생했습니다.");
+            }
+        }
     },
     watch: {
         'mypageStore.userInfo.nickname'(newNickname) {
