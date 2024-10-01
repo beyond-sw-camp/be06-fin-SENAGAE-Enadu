@@ -14,7 +14,7 @@
       <a class="ui label">{{ qnaDetail.subCategoryName }}</a>
     </div>
   </div>
-  <div class="qna-detail-top-items">
+  <div class="qna-detail-top-items" v-if="isLoggedIn">
     <div class="like-dislike-container">
       <div class="icons-box">
         <div class="icons">
@@ -115,6 +115,7 @@ export default {
   name: "QnaDetailHeaderComponent",
   data() {
     return {
+      isLoggedIn: false,
       isReLoading: true,
 
       qnaLikeCnt: 0,
@@ -202,6 +203,7 @@ export default {
   },
   mounted() {
     console.log(this.qnaDetail);
+    this.isLoggedIn = useUserStore().isLoggedIn;
     this.isReLoading = false;
     this.checking();
   },
