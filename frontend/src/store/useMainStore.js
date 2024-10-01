@@ -19,7 +19,8 @@ export const useMainStore = defineStore('main', {
                 qnaSize: 4,
             }
             try {
-                const response= await axios.get(backend+'/main', request,{
+                const response= await axios.get(backend+'/main',{
+                    params: request,
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true
                 });
