@@ -32,6 +32,12 @@ public class UserController {
     public BaseResponse<String> signup(
             @RequestPart UserSignupReq userSignupReq,
             @RequestPart(required=false) MultipartFile profileImg) {
+        if (userSignupReq.getNickname() == null || userSignupReq.getNickname().isBlank() ||
+                userSignupReq.getEmail() == null || userSignupReq.getEmail().isBlank() ||
+                userSignupReq.getPassword() == null || userSignupReq.getPassword().isBlank()) {
+
+            return new BaseResponse<>(BaseResponseStatus.USER_INVALID_INPUT);
+        }
         String profileImgUrl;
         if(profileImg == null || profileImg.isEmpty()){
             profileImgUrl = "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6";
@@ -39,24 +45,23 @@ public class UserController {
             profileImgUrl = cloudFileUploadService.uploadImg(profileImg);
         }
 
-        // 이메일 중복 확인
         if (!userService.checkDuplicateEmail(userSignupReq.getEmail())){
             return new BaseResponse<>(BaseResponseStatus.USER_DUPLICATE_EMAIL);
         }
-        // 닉네임 중복 확인
         if(!userService.checkDuplicateNickname(userSignupReq.getNickname())){
             return new BaseResponse<>(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
         }
-        userService.signup(userSignupReq, profileImgUrl);
+
         System.out.println("회원가입 완료: " + userSignupReq.getEmail());
 
-        // 이메일 인증 메일 발송
         try {
             emailVerifyService.sendEmail(userSignupReq.getEmail());
             System.out.println("이메일 발송 성공: " + userSignupReq.getEmail());
         } catch (Exception e) {
             System.err.println("이메일 발송 실패: " + e.getMessage());
         }
+
+        userService.signup(userSignupReq, profileImgUrl);
         return new BaseResponse<>();
     }
 
