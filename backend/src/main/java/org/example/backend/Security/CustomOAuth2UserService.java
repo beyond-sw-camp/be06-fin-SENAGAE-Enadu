@@ -35,13 +35,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 //        String userNameAttributeName = userRequest.getClientRegistration()
 //                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 //        추후 다른 소셜 로그인 추가할 때 사용
+        String accessToken = userRequest.getAccessToken().getTokenValue();
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
         String email = (String) attributes.get("email");
 
         if (email == null) {
-            email = fetchEmailFromGitHub(userRequest.getAccessToken().getTokenValue());
+            email = fetchEmailFromGitHub(accessToken);
             if (email == null) {
                 throw new OAuth2AuthenticationException("No Email in GitHub");
             }
@@ -54,6 +55,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             User user = existingUser.get();
             if (user.getType().equals("InApp")) {
                 throw new OAuth2AuthenticationException("Type Error");
+            } else if (!user.getEnable()) {
+                throw new OAuth2AuthenticationException("Disabled User");
             }
             userId = user.getId();
         } else { // 회원가입 안 된 유저
@@ -72,7 +75,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userId = resultUser.getId();
         }
 
-        return new CustomOAuth2User(oAuth2User, userId, email);
+        return new CustomOAuth2User(oAuth2User, userId, email, accessToken);
     }
 
     private String fetchEmailFromGitHub(String accessToken) {

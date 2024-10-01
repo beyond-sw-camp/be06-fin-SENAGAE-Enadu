@@ -1,20 +1,22 @@
 package org.example.backend.User.Service;
 
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidEmailException;
 import org.example.backend.Exception.custom.InvalidUserException;
 import org.example.backend.User.Model.Entity.User;
 import org.example.backend.User.Model.Req.UpdateUserPasswordReq;
 import org.example.backend.User.Model.Req.UserSignupReq;
-import org.example.backend.User.Model.Res.GetUserInfoRes;
 import org.example.backend.User.Repository.UserRepository;
+import org.example.backend.Util.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.client.RestTemplate;
 
 
 @Service
@@ -22,6 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    @Value("${spring.security.oauth2.client.registration.github.client-id}")
+    private String CLIENT_ID;
+    @Value("${spring.security.oauth2.client.registration.github.client-secret}")
+    private String CLIENT_SECRET;
 
     public void signup(UserSignupReq userSignupReq, String profileImg ) {
         User user = User.builder()
@@ -112,4 +119,37 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void disableSocialUser(Long userId, String token) {
+        User user = userRepository.findByIdAndEnableTrue(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+
+        String accessToken = jwtUtil.getAccessToken(token);
+        if (accessToken == null) {
+            throw new InvalidUserException(BaseResponseStatus.USER_ACCESS_TOKEN_NOT_FOUND);
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        String deleteUrl = "https://api.github.com/applications/" + CLIENT_ID + "/grant";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(CLIENT_ID, CLIENT_SECRET);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("access_token", accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
+
+        ResponseEntity<Object> response = restTemplate.exchange(
+                deleteUrl,
+                HttpMethod.DELETE,
+                entity,
+                Object.class
+        );
+        if (response.getStatusCode().is2xxSuccessful()) {
+            user.updateEnable(false);
+            userRepository.save(user);
+        } else {
+            throw new InvalidUserException(BaseResponseStatus.USER_FAIL);
+        }
+    }
 }

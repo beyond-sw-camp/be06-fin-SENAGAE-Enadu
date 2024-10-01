@@ -112,4 +112,12 @@ public class UserController {
         response.addCookie(expiredCookie);
         return new BaseResponse<>();
     }
+
+    @PatchMapping("/oauth/quit")
+    public BaseResponse<String> oauthQuit(@AuthenticationPrincipal CustomUserDetails customUserDetails, @CookieValue(value = "ATOKEN", required = false) String jwtToken, HttpServletResponse response) {
+        userService.disableSocialUser(customUserDetails.getUserId(), jwtToken);
+        Cookie expiredCookie = jwtUtil.removeCookie();
+        response.addCookie(expiredCookie);
+        return new BaseResponse<>();
+    }
 }
