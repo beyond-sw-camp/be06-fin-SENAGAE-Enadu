@@ -156,6 +156,7 @@ export default {
                 this.totalPage = archiveList[0].totalPage;
             } else {
                 alert("작성한 아카이브 내역이 없습니다.");
+                this.totalPage = 0;
             }
         },
         async fetchWikiList() {
@@ -165,6 +166,7 @@ export default {
                 this.totalPage = wikiList[0].totalPage;
             } else {
                 alert("작성한 위키 내역이 없습니다.");
+                this.totalPage = 0;
             }
         },
         async fetchQuestionList() {
@@ -174,6 +176,7 @@ export default {
                 this.totalPage = questionList[0].totalPage;
             } else {
                 alert("작성한 질문 내역이 없습니다.");
+                this.totalPage = 0;
             }
         },
         async fetchAnswerList() {
@@ -183,6 +186,7 @@ export default {
                 this.totalPage = answerList[0].totalPage;
             } else {
                 alert("작성한 답변 내역이 없습니다.");
+                this.totalPage = 0;
             }
         },
         getButtonClass(section) {
@@ -255,12 +259,12 @@ export default {
 
 .qna-list-flex {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     grid-auto-rows: auto;
     gap: 26px 36px;
     justify-items: stretch;
     max-width: 100%;
-    margin: 0 auto;
+    margin: 0 auto
 }
 
 .pagination-container {

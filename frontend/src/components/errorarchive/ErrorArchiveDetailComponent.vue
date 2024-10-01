@@ -9,16 +9,12 @@
           <div class="errorarchive-title">
               <h1>{{ errorarchiveStore.errorArchiveDetail.title }}</h1>
           </div>
-          <div v-if="isAuthor" class="button-group">
-              <button @click="editErrorArchive">수정</button>
-              <button @click="handleSubmit">삭제</button>
-           </div>
           </div>
           <div class="sc-fvxzrP jGdQwA" style="display: flex; justify-content: space-between;">
-           
+
             <div class="information">
               <div class="sc-fbyfCU eYeYLy" style="margin-right: auto;"></div>
-                
+
               <img class="profile" :src="errorarchiveStore.errorArchiveDetail.profileImg">
               <span class="username"><NicknameComponent :nickname="errorarchiveStore.errorArchiveDetail.nickname"/>
                 </span>
@@ -31,14 +27,13 @@
                 <input type="checkbox" id="bookmark-toggle" :checked="checkScrap" @click="clickScrap"
                        class="bookmark-checkbox__input">
                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
-                  <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
-                    <path class="bookmark-checkbox__icon-back"
-                          d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                    <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5"></path>
-                  </svg>
+                    <svg data-v-00557fae="" class="bookmark-checkbox__icon" viewBox="0 0 24 24">
+                        <path data-v-00557fae="" class="bookmark-checkbox__icon-back" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5" stroke="#767676"></path>
+                        <path data-v-00557fae="" class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5" stroke="#767676"></path>
+                    </svg>
                 </label>
               </div>
-  
+
 
               <div class="icons-box">
                 <div class="icons">
@@ -105,9 +100,15 @@
             </div>
           </div>
         </div>
-        <div class="sc-cZMNgc bpMcZw">
-          <a class="sc-dtMgUX gISUXI" v-if="errorarchiveStore.errorArchiveDetail.superCategory !== null">{{ errorarchiveStore.errorArchiveDetail.superCategory }}</a>
-          <a class="sc-dtMgUX gISUXI" v-if="errorarchiveStore.errorArchiveDetail.subCategory !== null">{{ errorarchiveStore.errorArchiveDetail.subCategory }}</a>
+        <div class="category-edit-div">
+            <div class="sc-cZMNgc bpMcZw">
+                <CategoryComponent v-if="errorarchiveStore.errorArchiveDetail.superCategory !== null" :category=errorarchiveStore.errorArchiveDetail.superCategory />
+                <CategoryComponent v-if="errorarchiveStore.errorArchiveDetail.subCategory !== null" :category=errorarchiveStore.errorArchiveDetail.subCategory :is-sub="true" />
+            </div>
+            <div v-if="isAuthor" class="button-group">
+                <button class="edit-btn" @click="editErrorArchive">수정</button>
+                <button class="edit-btn" @click="handleSubmit">삭제</button>
+            </div>
         </div>
         <div class="sc-jlRLRk iGRQXB">
           <div class="sc-dUbtfd kOYWDF">
@@ -139,12 +140,13 @@ import {mapStores} from "pinia";
 import {useErrorArchiveStore} from "@/store/useErrorArchiveStore";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 import {useUserStore} from "@/store/useUserStore";
+import CategoryComponent from "@/components/Common/CategoryComponent.vue";
 VMdPreview.use(githubTheme, {
   Hljs: hljs,
 });
 export default {
   name: "ErrorArchiveDetailComponent",
-  components: {NicknameComponent},
+  components: {CategoryComponent, NicknameComponent},
   data() {
     return {
       id: 0,
@@ -195,14 +197,14 @@ export default {
   },
   methods: {
     async handleSubmit() {
-    try { 
+    try {
       const errorarchiveStore = useErrorArchiveStore();
       if (!confirm("정말로 삭제하시겠습니까?")) {
-        return; 
+        return;
       }
-      
+
       await errorarchiveStore.deleteErrorArchive(this.errorarchiveStore.errorArchiveDetail.id);
-      alert("삭제되었습니다."); 
+      alert("삭제되었습니다.");
       this.$router.push('/errorarchive/list');
     } catch (error) {
       console.error('삭제 중 오류 발생:', error);
@@ -291,7 +293,6 @@ export default {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 20px; /* 버튼과 제목 간 기본 간격 */
 }
 .sc-fvxzrP {
   display: flex;
@@ -300,7 +301,6 @@ export default {
 }
 /* 제목이 짧을 때의 마진을 조정 */
 .header-container.short-title .errorarchive-title {
-    margin-bottom: 10px; /* 제목이 짧을 때 버튼과의 간격 추가 */
     margin-right: 400px;
 }
 
@@ -310,10 +310,10 @@ export default {
 }
 .profile {
   border-radius: 50%;
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
   display: inline-block;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 v-md-preview {
   font-size: 1.125rem;
@@ -739,6 +739,10 @@ body[data-theme="light"] {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
+.information {
+    display: flex;
+    align-items: center;
+}
 
 .eYeYLy {
   display: flex;
@@ -803,6 +807,7 @@ textarea {
   margin-top: 0.875rem;
   margin-bottom: -0.875rem;
   min-height: 0.875rem;
+  display: flex;
 }
 
 .grade {
@@ -937,6 +942,7 @@ textarea {
 .kOYWDF {
   position: absolute;
   left: 100%;
+  margin: -120px -50px;
 }
 
 /* @media (max-width: 1440px) {
@@ -2028,7 +2034,6 @@ body[data-theme="light"] {
 }
 
 .bookmark-checkbox__icon-back {
-  stroke: #333;
   transition: transform 0.3s;
 }
 
@@ -2071,5 +2076,12 @@ body[data-theme="light"] {
   100% {
     transform: scale(1.1);
   }
+}
+.category-edit-div {
+    display: flex;
+    justify-content: space-between;
+}
+.edit-btn {
+    margin-right: 8px;
 }
 </style>

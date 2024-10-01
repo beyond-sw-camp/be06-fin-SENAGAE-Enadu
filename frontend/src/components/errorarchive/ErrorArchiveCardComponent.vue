@@ -6,8 +6,6 @@
         <a class="PostCard_userInfo__Cu1X5" :href="'/@' + errorarchiveCard.nickname + '/posts'">
           <img
             loading="lazy"
-            width="40"
-            height="40"
             decoding="async"
             :src="errorarchiveCard.profileImg"
             alt="Profile Image"
@@ -65,29 +63,27 @@ export default {
 </script>
 
 <style scoped>
-/* 기존 스타일 유지 */
 .PostCard_block__FTMsy {
-  /* border-left: 1.5px solid #8d8d8d; */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-height: 200px; /* 원하는 최대 높이 설정 */
-  overflow: hidden; /* 내용이 넘치면 숨김 */
+  max-height: 200px;
+  overflow: hidden;
   background: #fff;
-  box-shadow: 5px 5px 7px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
   transition: box-shadow .25s ease-in, transform .25s ease-in;
+  border-radius: 15px;
 }
 
 .PostCard_block__FTMsy:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .header {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  padding: 1rem 0.8rem;
 }
 
 .user-info {
@@ -104,8 +100,8 @@ export default {
 .PostCard_avatar {
   object-fit: cover;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
 }
 
 .details {
@@ -126,20 +122,34 @@ export default {
 .PostCard_content__W3lPm {
   box-sizing: inherit;
   margin: 0;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   display: flex;
   flex-direction: column;
 }
 
 .PostCard_title {
   font-size: 1rem;
-  margin: 0 0 .25rem;
+  font-weight: 600;
   line-height: 1.5;
   word-break: break-word;
   color: #212529;
   overflow: hidden; /* 내용이 넘치면 숨김 */
   text-overflow: ellipsis; /* 생략 부호 추가 */
   white-space: nowrap; /* 한 줄로 표시 */
+}
+
+.PostCard_categories {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: var(--main-color);
+    font-size: 0.8em;
+    font-weight: 500;
+    text-align: right;
+    margin-left: auto;
+    white-space: nowrap;
+    max-width: 150px;
+    padding: 8px;
 }
 
 .PostCard_footer__9J5Wd {

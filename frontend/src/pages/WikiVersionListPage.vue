@@ -8,7 +8,6 @@
         <!-- 페이지네이션과 롤백 문구 -->
         <div class="pagination-container" v-if="!isLoading">
             <PaginationComponent :totalPage="totalPages" :nowPage="page + 1" @updatePage="handlePageUpdate" />
-            <!-- 롤백 안내 문구 -->
             <span class="rollback-info" style="right: 40px;">버전 롤백은 <strong class="bold-text">견습</strong>부터 가능합니다. </span>
         </div>
 
@@ -156,7 +155,7 @@ table th {
     position: relative;
     display: flex;
     justify-content: center;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
 }
 
 .rollback-button {

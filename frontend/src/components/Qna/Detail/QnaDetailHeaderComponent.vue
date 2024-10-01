@@ -9,9 +9,8 @@
   <span class="datetime-text">{{ formatDateTime(qnaDetail.createdAt) }}</span>
   <div class="label-custom">
     <div class="ui tag labels">
-      <br/>
-      <a class="test ui label"> {{ qnaDetail.superCategoryName }} </a>
-      <a class="ui label">{{ qnaDetail.subCategoryName }}</a>
+        <CategoryComponent v-if="qnaDetail.superCategoryName !== null" :category=qnaDetail.superCategoryName />
+        <CategoryComponent v-if="qnaDetail.subCategoryName !== null" :category=qnaDetail.subCategoryName :is-sub="true" />
     </div>
   </div>
   <div class="qna-detail-top-items" v-if="isLoggedIn">
@@ -24,13 +23,10 @@
             @click="clickScrap" :checked="isCheckedScrap"
         />
         <label for="bookmark-toggle" class="bookmark-checkbox__label">
-          <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
-            <path
-                class="bookmark-checkbox__icon-back"
-                d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
-            ></path>
-            <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5"></path>
-          </svg>
+            <svg data-v-00557fae="" class="bookmark-checkbox__icon" viewBox="0 0 24 24">
+                <path data-v-00557fae="" class="bookmark-checkbox__icon-back" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5" stroke="#767676"></path>
+                <path data-v-00557fae="" class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5" stroke="#767676"></path>
+            </svg>
         </label>
       </div>
       <div class="icons-box">
@@ -110,6 +106,7 @@ import {useQnaStore} from "@/store/useQnaStore";
 import {formatDateTime} from "@/utils/FormatDate";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 import {useUserStore} from "@/store/useUserStore";
+import CategoryComponent from "@/components/Common/CategoryComponent.vue";
 
 export default {
   name: "QnaDetailHeaderComponent",
@@ -208,6 +205,7 @@ export default {
     this.checking();
   },
   components: {
+      CategoryComponent,
     NicknameComponent
   },
   computed: {
@@ -268,7 +266,6 @@ export default {
   margin-left: 25px;
   margin-bottom: 10px;
   width: 120px;
-  height: 120px;
   overflow: hidden;
   border-radius: 100%;
   display: flex;
@@ -277,12 +274,10 @@ export default {
 }
 
 .circle img {
-  width: 200%;
   height: auto
 }
 
 img {
-  max-width: 200%;
   height: auto
 }
 
@@ -601,7 +596,6 @@ img {
 }
 
 .bookmark-checkbox__icon-back {
-  stroke: #333;
   transition: transform .3s
 }
 
@@ -710,7 +704,4 @@ svg:not(:root) {
   box-sizing: border-box
 }
 
-#user-profile-image {
-  max-width: 200%
-}
 </style>

@@ -1,13 +1,14 @@
 <template>
+    <div class="custom-container">
     <div id="__next">
         <main class="mx-auto mt-2 w-full max-w-7xl px-4 lg:mt-[18px] lg:px-0">
             <div class="flex lg:space-x-10">
                 <div class="w-full min-w-0 flex-auto lg:static lg:max-h-full lg:overflow-visible">
                     <div class="space-y-10" >
-                        <div class="space-y-2" v-if="isLoading">
+                        <div class="space-y-2">
                             <h3 class="text-xl font-medium sm:text-3xl sm:leading-10">QnA 수정하기</h3>
                         </div>
-                        <form v-else>
+                        <form>
                             <div class="space-y-12 sm:space-y-14">
                                 <div class="grid grid-cols-1 gap-y-7">
                                     <div class="space-y-1">
@@ -83,6 +84,7 @@
               @closeSub="closeSubCategoryModal"
           />
         </main>
+    </div>
     </div>
 </template>
 

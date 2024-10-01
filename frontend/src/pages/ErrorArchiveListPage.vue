@@ -15,11 +15,12 @@
         />
       </div>
     </div>
-  </div>
+
   <div class="errorarchive-bottom">
     <div v-if="isLoading && isLoading2"></div>
     <PaginationComponent v-else @updatePage="handlePageUpdate" :nowPage="selectedPageAndSort.page" :totalPage="totalPage"/>
   </div>
+</div>
 </template>
 
 <script>
@@ -194,11 +195,9 @@ export default {
 }
 
 .errorarchive-bottom {
-  height: 70px;
-  display: grid;
-  background-color: #ffffff;
-  justify-content: center;
-  align-content: space-around;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 
