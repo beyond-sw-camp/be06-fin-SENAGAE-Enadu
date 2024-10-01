@@ -23,8 +23,8 @@ axios.interceptors.response.use(
 export const useWikiStore = defineStore("wiki", {
     state: () => ({
         wikiCards: [],
-        totalPages: 0,  
-        searchTotalPages: 0, 
+        totalPages: 0,
+        searchTotalPages: 0,
         isLoading: false,
         wikiRegisterReq: {
             title: '',
@@ -148,11 +148,11 @@ export const useWikiStore = defineStore("wiki", {
                     params: { id: wikiId, page: page, size: this.pageSize },
                     withCredentials: true,
                 });
-        
+
                 if (response.data.isSuccess) {
                     // 최신 버전을 제외한 나머지 버전들만 필터링
                     const filteredVersions = response.data.result.filter(version => version.version !== this.wikiDetail.version);
-                    
+
                     this.wikiVersions = filteredVersions;
                     this.totalPages = filteredVersions[0]?.totalPages || 1;
                 }
@@ -225,10 +225,12 @@ export const useWikiStore = defineStore("wiki", {
         // 위키 롤백 기능
         async rollbackWikiVersion(wikiContentId) {
             const userStore = useUserStore();
-            if (!userStore.isLoggedIn) {
-                console.log("로그인이 필요합니다.");
+
+            if (!userStore.isLoggedIn || this.wikiDetail.userGrade === '뉴비') {
+                alert("롤백 권한이 없습니다.");
                 return false;
             }
+
             try {
                 const confirmRollback = confirm('이 버전으로 되돌리시겠습니까?');
                 if (!confirmRollback) return false;
@@ -251,21 +253,21 @@ export const useWikiStore = defineStore("wiki", {
                 return false;
             }
         },
-        
+
         // 위키 검색 메서드
         async wikiSearch(request) {
-            request.size = 16;  
+            request.size = 16;
             try {
-              const response = await axios.get(backend + "/wiki/search", { params: request });
-              this.wikiCards = response.data.result;
-      
-              this.searchTotalPages = this.wikiCards[0].totalPages || 1;
-              console.log('searchTotalPages:' + this.searchTotalPages);
+                const response = await axios.get(backend + "/wiki/search", { params: request });
+                this.wikiCards = response.data.result;
+
+                this.searchTotalPages = this.wikiCards[0].totalPages || 1;
+                console.log('searchTotalPages:' + this.searchTotalPages);
 
             } catch (error) {
-              console.error("검색 중 오류 발생:", error);
-              this.wikiCards = [];
-              this.searchTotalPages = 1;
+                console.error("검색 중 오류 발생:", error);
+                this.wikiCards = [];
+                this.searchTotalPages = 1;
             }
         }
     }

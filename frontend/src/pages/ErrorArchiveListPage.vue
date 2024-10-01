@@ -112,6 +112,10 @@ export default {
     },
     handlePageUpdate(newPage) {
       this.selectedPageAndSort.page = newPage;
+      if (newPage % 5 === 0 || newPage % 5 === 1) {
+        this.isLoading2 = true;
+      }
+      this.isLoading2 = false;
     },
     async getErrorArchiveList() {
       this.isLoading = true;
