@@ -6,6 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class GetMyRankRes {
+    private String grade;
     private Integer point;
     private Integer rank;
 }
