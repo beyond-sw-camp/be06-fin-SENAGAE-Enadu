@@ -1,7 +1,6 @@
 <template>
-  <div class ="custom-container">
-    <TagComponent :tagTitle="'ENADU'" :tagSubTitle="'에러의 모든 것'"/>
-
+  <TagComponent :tagTitle="'ENADU'" :tagSubTitle="'에러의 모든 것'"/>
+  <div class ="custom-container" style="margin-top: 0;">
     <LoadingComponent v-if="isLoading" />
     <div v-else class="subject-container">
       <div class="subject-box">
@@ -86,13 +85,6 @@ export default {
 
 
 <style scoped>
-.custom-container {
-  width: 75%;
-  max-width: 1400px;
-  margin: 30px auto;
-  padding: 30px;
-  border-radius: 10px;
-}
 .subject-container {
   margin-bottom: 70px;
 }
