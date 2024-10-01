@@ -104,7 +104,7 @@ export const useUserStore = defineStore('user', {
               });
               // 서버로부터 받은 응답에 따라 처리
               if(response.data.result === false){
-                alert("중복되는 닉네임입니다.")
+                alert("이미 사용 중인 닉네임입니다.")
               } else {
                 alert("사용 가능한 닉네임입니다.");
               }
@@ -122,7 +122,7 @@ export const useUserStore = defineStore('user', {
             if (response.data.result === true) {
                 alert("사용 가능한 이메일입니다.");
             } else {
-                alert("중복되는 이메일입니다.");
+                alert("이미 사용 중인 이메일입니다.");
             }
             return response.data.result;
         },
