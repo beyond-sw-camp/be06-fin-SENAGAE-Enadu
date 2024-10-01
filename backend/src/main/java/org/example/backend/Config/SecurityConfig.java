@@ -7,6 +7,7 @@ import org.example.backend.Exception.CustomAuthenticationEntryPoint;
 import org.example.backend.Security.OAuth2LoginFailureHandler;
 import org.example.backend.Security.OAuth2LoginSuccessHandler;
 import org.example.backend.Util.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,6 +31,9 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    @Value("${frontend.url}")
+    private String FRONT_URL;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http.csrf(csrf -> csrf.disable());
@@ -53,13 +57,16 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((auth) ->
                 auth
+                        .requestMatchers("/user/signup").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/email/verify").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/mypage/log/**").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/**").authenticated()
                         .requestMatchers("/chat/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/qna").authenticated()
                         .requestMatchers("/point/**").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/wiki").authenticated()
-                        .requestMatchers(HttpMethod.PATCH,"/wiki/update").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/wiki/scrap").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/wiki/rollback").authenticated()
+                        .requestMatchers("/mypage/**").authenticated()
                         .anyRequest().permitAll()
         );
 
@@ -74,12 +81,7 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:8081");
-        config.addAllowedOrigin("http://localhost:8082");
-        config.addAllowedOrigin("http://localhost:8083");
-        config.addAllowedOrigin("http://localhost:8084");
-        config.addAllowedOrigin("http://localhost:8085");
-        config.addAllowedOrigin("https://www.enadu.kro.kr");
+        config.addAllowedOrigin(FRONT_URL);
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
