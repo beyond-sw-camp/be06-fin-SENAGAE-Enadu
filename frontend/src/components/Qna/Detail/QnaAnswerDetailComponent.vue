@@ -75,7 +75,7 @@
               <label class="btn-label" :for="`like-checkbox-a-${qnaAnswer.id}`">
                 <div v-if="isReLoading"></div>
                 <span v-else class="like-text-content">{{ ansLikeCnt !== null ? ansLikeCnt : 0 }}</span>
-                <input class="input-box like-dislike-inputBox"
+                <input class="input-box like-inputBox"
                        :id="`like-checkbox-a-${qnaAnswer.id}`"
                        type="checkbox" @click="clickAnsLike"
                        :checked="isCheckedAnsLike"/>
@@ -107,7 +107,7 @@
             <div class="icons">
               <label class="btn-label" :for="`dislike-checkbox-a-${qnaAnswer.id}`">
                 <input
-                    class="input-box like-dislike-inputBox"
+                    class="input-box dislike-inputBox"
                     :id="`dislike-checkbox-a-${qnaAnswer.id}`"
                     type="checkbox"
                     @click="clickAnsHate"
@@ -156,11 +156,10 @@
           <QnaAnswerEditComponent v-bind:answer="qnaAnswer"/>
         </div>
         <div v-show="isRegistered">
-          <QnaCommentRegisterComponent v-bind:answer="qnaAnswer"/>
+          <QnaCommentRegisterComponent v-bind:answer="qnaAnswer" @comment-registered="handleCommentRegistered"/>
         </div>
 
-        <ul v-show="isContentVisible"
-            class="my-3 divide-y divide-gray-500/30 border-y border-gray-500/30 dark:divide-gray-500/70 dark:border-gray-500/70">
+        <ul v-show="isContentVisible">
           <div v-if="isLoading"></div>
           <QnaCommentDetailComponent v-else
                                      v-for="qnaComment in filteredComments"
@@ -168,6 +167,9 @@
                                      :qnaComment="qnaComment"
                                      v-bind:qnaAnswer="qnaAnswer"
           />
+          <div
+              class="my-3 divide-y divide-gray-500/30 border-y border-gray-500/30 dark:divide-gray-500/70 dark:border-gray-500/70"></div>
+
         </ul>
       </div>
     </div>
@@ -295,7 +297,13 @@ export default {
     },
     handleEditUpdate(newIsEdit) {
       this.isEdited = newIsEdit;
-    }
+    },
+    handleCommentRegistered(success) {
+      if (success) {
+        this.isRegistered = false;
+        this.isContentVisible = true;
+      }
+    },
   },
   mounted() {
     console.log(this.qnaAnswer);
@@ -582,12 +590,12 @@ img {
   animation: rotate-icon-like 0.7s ease-in-out both;
 }
 
-.like-dislike-container .icons .like-dislike-inputBox:checked #like-checkbox-a:checked ~ #icon-like-regular {
+.like-dislike-container .icons .like-inputBox:checked ~ #icon-like-regular {
   display: none;
   animation: checked-icon-like 0.5s;
 }
 
-.like-dislike-container .icons .like-dislike-inputBox #like-checkbox-a:checked ~ #icon-like-solid {
+.like-dislike-container .icons .like-inputBox:checked ~ #icon-like-solid {
   display: block;
   animation: checked-icon-like 0.5s;
 }
@@ -610,14 +618,13 @@ img {
 
 .like-dislike-container
 .icons
-.like-dislike-inputBox:checked
-#dislike-checkbox-a:checked
+.dislike-inputBox:checked
 ~ #icon-dislike-regular {
   display: none;
   animation: checked-icon-dislike 0.5s;
 }
 
-.like-dislike-container .icons .like-dislike-inputBox:checked #dislike-checkbox-a:checked ~ #icon-dislike-solid {
+.like-dislike-container .icons .dislike-inputBox:checked ~ #icon-dislike-solid {
   display: block;
   animation: checked-icon-dislike 0.5s;
 }
@@ -628,8 +635,7 @@ img {
 
 .like-dislike-container
 .icons
-.like-dislike-inputBox:checked
-#like-checkbox-a:checked
+.like-inputBox:checked
 ~ .fireworks
 > .checked-like-fx {
   position: absolute;
@@ -637,15 +643,7 @@ img {
   height: 10px;
   right: 40px;
   border-radius: 50%;
-  box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;
+  box-shadow: 0 0 #fff;
   animation: 1s fireworks-bang ease-out forwards,
   1s fireworks-gravity ease-in forwards, 5s fireworks-position linear forwards;
   animation-duration: 1.25s, 1.25s, 6.25s;
@@ -653,8 +651,7 @@ img {
 
 .like-dislike-container
 .icons
-.like-dislike-inputBox:checked
-#dislike-checkbox-a:checked
+.dislike-inputBox:checked
 ~ .fireworks
 > .checked-dislike-fx {
   position: absolute;
@@ -662,15 +659,7 @@ img {
   height: 10px;
   left: 40px;
   border-radius: 50%;
-  box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff,
-  0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;
+  box-shadow: 0 0 #fff;
   animation: 1s fireworks-bang ease-out forwards,
   1s fireworks-gravity ease-in forwards, 5s fireworks-position linear forwards;
   animation-duration: 1.25s, 1.25s, 6.25s;
