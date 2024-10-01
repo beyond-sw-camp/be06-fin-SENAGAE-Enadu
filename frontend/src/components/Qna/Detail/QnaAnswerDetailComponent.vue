@@ -50,7 +50,9 @@
       </div>
     </div>
     <div>
-      <v-md-preview :text="qnaAnswer.answer"/>
+      <div class="v-md-area">
+        <v-md-preview :text="qnaAnswer.answer"/>
+      </div>
       <div class="mt-auto pt-10">
         <div class="flex flex-col md:flex-row gap-5 justify-start">
           <a
@@ -135,7 +137,7 @@
                   ></path>
                 </svg>
                 <div v-if="isReLoading"></div>
-                <span v-else class="dislike-text-content">{{ ansHateCnt !== null ? ansHateCnt : 0  }}</span>
+                <span v-else class="dislike-text-content">{{ ansHateCnt !== null ? ansHateCnt : 0 }}</span>
               </label>
             </div>
           </div>
@@ -190,7 +192,7 @@ export default {
   data() {
     return {
       isLoading: true,
-      isReLoading:true,
+      isReLoading: true,
       isRegistered: false,
       isContentVisible: false,
       isAdopted: false,
@@ -239,7 +241,7 @@ export default {
         alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
         window.location.reload();
       } else {
-        if (this.isCheckedAnsHate === true){
+        if (this.isCheckedAnsHate === true) {
           this.isCheckedAnsLike = !this.isCheckedAnsLike;
           alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
           window.location.reload();
@@ -247,7 +249,7 @@ export default {
         this.isReLoading = true;
         await useQnaStore().answerLike(this.$route.params.id, this.qnaAnswer.id);
         await useQnaStore().answerState(this.qnaAnswer.id);
-        console.log("like"+useQnaStore().ansState.checkLikeOrHate);
+        console.log("like" + useQnaStore().ansState.checkLikeOrHate);
         this.isCheckedAnsLike = !this.isCheckedAnsLike;
         this.ansLikeCnt = useQnaStore().ansState.likeCnt;
         this.isReLoading = false;
@@ -276,10 +278,10 @@ export default {
     },
 
     checking() {
-      console.log("id"+this.qnaAnswer.id);
+      console.log("id" + this.qnaAnswer.id);
       this.ansLikeCnt = this.qnaAnswer.likeCnt;
       this.ansHateCnt = this.qnaAnswer.hateCnt;
-      console.log("checking"+this.qnaAnswer.checkLikeOrHate);
+      console.log("checking" + this.qnaAnswer.checkLikeOrHate);
       if (this.qnaAnswer.checkLikeOrHate === true) {
         this.isCheckedAnsLike = true;
         this.isCheckedAnsHate = false
@@ -346,6 +348,11 @@ export default {
 </script>
 
 <style scoped>
+.v-md-area{
+  background: #fefeff;
+  border-radius: 20px;
+}
+
 .adopt-control-component {
   display: flex;
   justify-content: flex-end;
