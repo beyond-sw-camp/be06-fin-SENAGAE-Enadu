@@ -32,7 +32,12 @@ export const useQnaStore = defineStore("qna", {
             hateCnt:0,
             checkLikeOrHate:null,
         },
-        qnaState: {},
+        qnaState: {
+            likeCnt:0,
+            hateCnt:0,
+            checkLikeOrHate:null,
+            checkScrap:null,
+        },
         registered: 0,
         totalPage:0
     }),
@@ -143,7 +148,7 @@ export const useQnaStore = defineStore("qna", {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
-                this.checkQnaLike = res.data.result;
+                this.qnaState = res.data.result;
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
@@ -159,7 +164,7 @@ export const useQnaStore = defineStore("qna", {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
-                this.checkQnaHate = res.data.result;
+                this.qnaState = res.data.result;
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
@@ -175,7 +180,7 @@ export const useQnaStore = defineStore("qna", {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
-                this.checkScrap = res.data.result;
+                this.qnaState = res.data.result;
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
@@ -203,7 +208,7 @@ export const useQnaStore = defineStore("qna", {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
-                this.checkAnsLike = res.data.result;
+                this.ansState = res.data.result;
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
@@ -220,7 +225,7 @@ export const useQnaStore = defineStore("qna", {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
-                this.checkAnsHate = res.data.result;
+                this.ansState = res.data.result;
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }
@@ -231,7 +236,6 @@ export const useQnaStore = defineStore("qna", {
                 const res = await axios.get(backend + "/ans/state?answerId=" + answerId,
                     {withCredentials: true});
                 this.ansState = res.data.result;
-                console.log(this.ansState);
             } catch (error) {
                 alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
             }

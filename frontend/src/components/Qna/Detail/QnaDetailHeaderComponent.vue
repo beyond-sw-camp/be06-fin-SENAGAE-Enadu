@@ -9,8 +9,8 @@
   <span class="datetime-text">{{ formatDateTime(qnaDetail.createdAt) }}</span>
   <div class="label-custom">
     <div class="ui tag labels">
-        <CategoryComponent v-if="qnaDetail.superCategoryName !== null" :category=qnaDetail.superCategoryName />
-        <CategoryComponent v-if="qnaDetail.subCategoryName !== null" :category=qnaDetail.subCategoryName :is-sub="true" />
+      <CategoryComponent v-if="qnaDetail.superCategoryName !== null" :category=qnaDetail.superCategoryName />
+      <CategoryComponent v-if="qnaDetail.subCategoryName !== null" :category=qnaDetail.subCategoryName :is-sub="true"/>
     </div>
   </div>
   <div class="qna-detail-top-items" v-if="isLoggedIn">
@@ -23,10 +23,12 @@
             @click="clickScrap" :checked="isCheckedScrap"
         />
         <label for="bookmark-toggle" class="bookmark-checkbox__label">
-            <svg data-v-00557fae="" class="bookmark-checkbox__icon" viewBox="0 0 24 24">
-                <path data-v-00557fae="" class="bookmark-checkbox__icon-back" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5" stroke="#767676"></path>
-                <path data-v-00557fae="" class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5" stroke="#767676"></path>
-            </svg>
+          <svg data-v-00557fae="" class="bookmark-checkbox__icon" viewBox="0 0 24 24">
+            <path data-v-00557fae="" class="bookmark-checkbox__icon-back"
+                  d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5" stroke="#767676"></path>
+            <path data-v-00557fae="" class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5"
+                  stroke="#767676"></path>
+          </svg>
         </label>
       </div>
       <div class="icons-box">
@@ -131,18 +133,17 @@ export default {
       if (!useUserStore().isLoggedIn) {
         alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
         window.location.reload();
-      } else {
+      }
+      else {
         if (this.isCheckedHate === true) {
-          this.isCheckedLike = !this.isCheckedLike;
-          alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
-          window.location.reload();
+          this.isCheckedHate = !this.isCheckedHate;
         }
         this.isReLoading = true;
         await useQnaStore().questionLike(this.$route.params.id);
-        await useQnaStore().questionState(this.$route.params.id);
         console.log("like" + useQnaStore().qnaState.checkLikeOrHate);
         this.isCheckedLike = !this.isCheckedLike;
         this.qnaLikeCnt = useQnaStore().qnaState.likeCnt;
+        this.qnaHateCnt = useQnaStore().qnaState.hateCnt;
         this.isReLoading = false;
       }
     },
@@ -153,15 +154,13 @@ export default {
         window.location.reload();
       } else {
         if (this.isCheckedLike === true) {
-          this.isCheckedHate = !this.isCheckedHate;
-          alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
-          window.location.reload();
+          this.isCheckedLike = !this.isCheckedLike;
         }
         this.isReLoading = true;
         await useQnaStore().questionHate(this.$route.params.id);
-        await useQnaStore().questionState(this.$route.params.id);
         console.log("hate" + useQnaStore().qnaState.checkLikeOrHate);
         this.isCheckedHate = !this.isCheckedHate;
+        this.qnaLikeCnt = useQnaStore().qnaState.likeCnt;
         this.qnaHateCnt = useQnaStore().qnaState.hateCnt;
         this.isReLoading = false;
       }
@@ -172,7 +171,6 @@ export default {
         alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
       } else {
         await useQnaStore().questionScrap(this.$route.params.id);
-        await useQnaStore().questionState(this.$route.params.id);
         console.log("scrap" + useQnaStore().qnaState.checkScrap);
         this.isCheckedScrap = !this.isCheckedScrap;
       }
@@ -205,7 +203,7 @@ export default {
     this.checking();
   },
   components: {
-      CategoryComponent,
+    CategoryComponent,
     NicknameComponent
   },
   computed: {
@@ -249,6 +247,7 @@ export default {
 .test.ui.label:hover {
   background-color: #1EBDE5FF; /* superCategoryName 태그 호버 시 색상 */
 }
+
 /* 카테고리 태그*/
 .qna-detail-top-title {
   display: flex;

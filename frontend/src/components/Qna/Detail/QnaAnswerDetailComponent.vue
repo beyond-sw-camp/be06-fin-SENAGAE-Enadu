@@ -244,16 +244,14 @@ export default {
         window.location.reload();
       } else {
         if (this.isCheckedAnsHate === true) {
-          this.isCheckedAnsLike = !this.isCheckedAnsLike;
-          alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
-          window.location.reload();
+          this.isCheckedAnsHate = !this.isCheckedAnsHate;
         }
         this.isReLoading = true;
         await useQnaStore().answerLike(this.$route.params.id, this.qnaAnswer.id);
-        await useQnaStore().answerState(this.qnaAnswer.id);
         console.log("like" + useQnaStore().ansState.checkLikeOrHate);
         this.isCheckedAnsLike = !this.isCheckedAnsLike;
         this.ansLikeCnt = useQnaStore().ansState.likeCnt;
+        this.ansHateCnt = useQnaStore().ansState.hateCnt;
         this.isReLoading = false;
       }
 
@@ -265,15 +263,13 @@ export default {
         window.location.reload();
       } else {
         if (this.isCheckedAnsLike === true) {
-          this.isCheckedAnsHate = !this.isCheckedAnsHate;
-          alert("좋아요와 싫어요는 동시에 입력할 수 없습니다.");
-          window.location.reload();
+          this.isCheckedAnsLike = !this.isCheckedAnsLike;
         }
         this.isReLoading = true;
         await useQnaStore().answerHate(this.$route.params.id, this.qnaAnswer.id);
-        await useQnaStore().answerState(this.qnaAnswer.id);
         console.log("hate" + useQnaStore().ansState.checkLikeOrHate);
         this.isCheckedAnsHate = !this.isCheckedAnsHate;
+        this.ansLikeCnt = useQnaStore().ansState.likeCnt;
         this.ansHateCnt = useQnaStore().ansState.hateCnt;
         this.isReLoading = false;
       }
