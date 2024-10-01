@@ -98,7 +98,6 @@ export default {
 }
 .subject {
   font-size: 25px;
-
 }
 
 .qna-list-flex {
