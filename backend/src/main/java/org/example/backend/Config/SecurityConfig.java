@@ -67,7 +67,6 @@ public class SecurityConfig {
                         .requestMatchers("/chat/**").authenticated()
                         .requestMatchers("/point/**").authenticated()
                         .requestMatchers("/mypage/**").authenticated()
-                        .anyRequest().permitAll()
                         .requestMatchers(HttpMethod.POST,"/errorarchive").authenticated()
                         .requestMatchers(HttpMethod.PATCH,"/errorarchive").authenticated()
                         .requestMatchers(HttpMethod.POST,"/errorarchive/like").authenticated()
