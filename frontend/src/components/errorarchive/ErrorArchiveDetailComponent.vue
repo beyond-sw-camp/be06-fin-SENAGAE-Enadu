@@ -20,7 +20,7 @@
                 </span>
               <span class="separator">·</span>
               <span style="font-size:16px">{{ lastModifiedDate }}</span>
-              <span style="font-size:16px" class="grade">{{ errorarchiveStore.errorArchiveDetail.grade }}</span>
+              <span style="font-size:16px" :class="['grade', dynamicClass]">{{ errorarchiveStore.errorArchiveDetail.grade }}</span>
             </div>
             <div class="sc-fbyfCU eYeYLy" v-show="userStore.isLoggedIn">
               <div class="bookmark-checkbox">
@@ -169,7 +169,23 @@ export default {
     },
     isLongTitle() {
         return this.errorarchiveStore.errorArchiveDetail.title.length > 15; // 제목의 길이에 따라 조정
-    }
+    },
+      dynamicClass() {
+          switch (this.errorarchiveStore.errorArchiveDetail.grade) {
+              case '뉴비':
+                  return 'newbie';
+              case '견습':
+                  return 'apprentice';
+              case '프로':
+                  return 'pro';
+              case '마스터':
+                  return 'master';
+              case '신':
+                  return 'god';
+              default:
+                  return '';
+          }
+      }
   },
   watch: {
     selectedLike(newVal, oldVal) {
@@ -811,7 +827,6 @@ textarea {
 }
 
 .grade {
-  background: #F8F9FA;
   padding-left: 1rem;
   padding-right: 1rem;
   height: 2rem;
@@ -819,7 +834,6 @@ textarea {
   display: inline-flex;
   -webkit-box-align: center;
   align-items: center;
-  color: #FF6B6B;
   text-decoration: none;
   font-weight: 700;
   font-size: 1rem;
