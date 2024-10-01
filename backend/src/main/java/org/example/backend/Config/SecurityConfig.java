@@ -68,6 +68,13 @@ public class SecurityConfig {
                         .requestMatchers("/point/**").authenticated()
                         .requestMatchers("/mypage/**").authenticated()
                         .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST,"/errorarchive").authenticated()
+                        .requestMatchers(HttpMethod.PATCH,"/errorarchive").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/errorarchive/like").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/errorarchive/scrap").authenticated()
+                        .requestMatchers(HttpMethod.PATCH,"/errorarchive/removal").authenticated()
+                        .anyRequest().permitAll()
+
         );
 
         http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)); // 인가되지 않은 사용자가 요청을 보냈을 때 처리하는 handler
