@@ -179,6 +179,8 @@ export default {
   font-size: 0.875rem;
   color: #212529;
 }
-
+.PostCard_categories > span {
+    margin-right: 5px;
+}
 
 </style>
