@@ -1,5 +1,5 @@
 <template>
-    <div class="tag-box">
+    <div class="tag-box" style="background-color: rgb(245,245,245)">
         <div class="tag-sub-box">
             <img class="tag-title"
                  src="https://enadu.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/10/01/5e09b855-a36d-4fa5-a66a-afb505ba26b9"
@@ -93,6 +93,24 @@ export default {
 
 
 <style scoped>
+.tag-box {
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  display: inline-flex;
+  padding-bottom:20px;
+  background-color: rgb(245,245,245)
+}
+
+.tag-sub-box {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  display: flex
+}
+
 .tag-title {
     align-self: stretch;
     text-align: center;
