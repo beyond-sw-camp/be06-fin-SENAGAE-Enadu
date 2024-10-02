@@ -23,6 +23,7 @@ export default {
   display: inline-flex;
   margin-bottom:0;
   padding: 50px;
+  background-color: rgb(245,245,245)
 }
 
 .tag-sub-box {
