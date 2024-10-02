@@ -2,7 +2,7 @@
   <tr>
     <td><strong>{{ pointRanking.rank }}</strong></td>
     <td>
-      <img :src="pointRanking.gradeImg" alt="user2" class="user-icon">
+      <p :class="gradeClass">{{ pointRanking.grade }}</p>
       <img :src="pointRanking.profileImg" alt="user2" class="user-icon">
       <span class="username">{{ pointRanking.nickname }}</span>
     </td>
@@ -14,7 +14,25 @@
 <script>
 export default {
   name: "PointRankingUserComponent",
-  props: ["pointRanking"]
+  props: ["pointRanking"],
+    computed: {
+        gradeClass() {
+            switch (this.pointRanking.grade) {
+                case '뉴비':
+                    return 'grade newbie';
+                case '견습':
+                    return 'grade apprentice';
+                case '프로':
+                    return 'grade pro';
+                case '마스터':
+                    return 'grade master';
+                case '신':
+                    return 'grade god';
+                default:
+                    return 'grade';
+            }
+        }
+    }
 }
 </script>
 
@@ -63,6 +81,17 @@ export default {
 
 .rating.negative {
   color: #e53935;
+}
+
+.ranking-table td:nth-child(1) {
+    text-align: center;
+}
+
+.grade {
+    font-weight: bold;
+    margin-right: 10px;
+    width: 50px;
+    text-align: center;
 }
 
 </style>
