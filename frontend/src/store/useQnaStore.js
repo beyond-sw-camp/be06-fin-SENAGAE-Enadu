@@ -60,7 +60,7 @@ export const useQnaStore = defineStore("qna", {
                 this.registered = res.data.result;
                 console.log(this.registered);
             } catch (error) {
-                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+                return false;
             }
         },
 
@@ -87,7 +87,7 @@ export const useQnaStore = defineStore("qna", {
                 this.qnaDetail = res.data.result;
                 this.qnaAnswers = res.data.result.answers;
             } catch (error) {
-                alert("질문 상세 데이터 요청 중 에러가 발생했습니다.");
+                return false;
             }
         },
         async registerComment(answerId, superCommentId, myComment) {
@@ -134,7 +134,7 @@ export const useQnaStore = defineStore("qna", {
                     }, withCredentials: true
                 });
             } catch (error) {
-                alert("서버에 등록하는 과정에서 문제가 발생했습니다.")
+                return false;
             }
         },
         async questionLike(qnaBoardId) {
