@@ -14,9 +14,9 @@ export const useMainStore = defineStore('main', {
     actions: {
         async getMainPageInfo() {
             const request = {
-                errorArchiveSize: 5,
+                errorArchiveSize: 8,
                 wikiSize: 4,
-                qnaSize: 4,
+                qnaSize: 8,
             }
             try {
                 const response= await axios.get(backend+'/main',{
