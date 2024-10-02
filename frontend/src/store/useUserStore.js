@@ -104,7 +104,7 @@ export const useUserStore = defineStore('user', {
               });
               // 서버로부터 받은 응답에 따라 처리
               if(response.data.result === false){
-                alert("중복되는 닉네임입니다.")
+                alert("이미 사용 중인 닉네임입니다.")
               } else {
                 alert("사용 가능한 닉네임입니다.");
               }
@@ -122,7 +122,7 @@ export const useUserStore = defineStore('user', {
             if (response.data.result === true) {
                 alert("사용 가능한 이메일입니다.");
             } else {
-                alert("중복되는 이메일입니다.");
+                alert("이미 사용 중인 이메일입니다.");
             }
             return response.data.result;
         },
@@ -167,5 +167,24 @@ export const useUserStore = defineStore('user', {
                 return false;
             }
         },
+        async socialQuit() {
+            try {
+                const response = await axios.patch('/social/user/oauth/quit',
+                    {withCredentials: true}
+                );
+                if (response.data.code === 1000 && response.data.isSuccess) {
+                    this.userId = null;
+                    this.isLoggedIn = false;
+                    return true;
+                } else {
+                    alert(response.data.message || '회원 탈퇴에 실패하였습니다.');
+                    return false;
+                }
+            } catch (error) {
+                alert('회원 탈퇴 중 오류가 발생했습니다.');
+                console.error(error);
+                return false;
+            }
+        }
     },
 });

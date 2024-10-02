@@ -8,7 +8,6 @@
         <input type="email" placeholder="sample@gmail.com" v-model="userInfo.email" @input="validateEmail" />
         <button type="button" class="check-button" @click="checkEmail">중복 확인</button>
       </div>
-      
       <p class="explanation">비밀번호</p>
       <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="userInfo.password" @input="validatePassword" />
 
@@ -40,9 +39,9 @@
 </template>
 
 <script>
-import { useUserStore } from '@/store/useUserStore';
+import {useUserStore} from '@/store/useUserStore';
 
-  export default {
+export default {
     name: "SignUpComponent",
     props: {
       signIn: Boolean,
@@ -57,18 +56,45 @@ import { useUserStore } from '@/store/useUserStore';
         },
         imgUrl: "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6",
         selectedProfileFile: null,
-        emailAvailable: false, // 이메일 중복 확인 상태
-        nicknameAvailable: false, // 닉네임 중복 확인 상태
+        emailAvailable: false,
+        nicknameAvailable: false,
       };
     },
     methods: {
-      signup() {
-        if (this.userInfo.password !== this.userInfo.confirmPassword) {
-          alert("비밀번호가 일치하지 않습니다.");
-          return;
-        }
-        this.$emit('signup', this.userInfo, this.selectedProfileFile || null);
-      },
+        signup() {
+            if (!this.userInfo.email || !this.userInfo.email.trim()) {
+                alert("이메일을 입력해주세요.");
+                return;
+            }
+            if (!this.userInfo.password || !this.userInfo.password.trim()) {
+                alert("비밀번호를 입력해주세요.");
+                return;
+            }
+            if (!this.userInfo.confirmPassword || !this.userInfo.confirmPassword.trim()) {
+                alert("비밀번호 확인을 입력해주세요.");
+                return;
+            }
+            if (!this.userInfo.nickname || !this.userInfo.nickname.trim()) {
+                alert("닉네임을 입력해주세요.");
+                return;
+            }
+
+            if (this.userInfo.password !== this.userInfo.confirmPassword) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            if (!this.emailAvailable) {
+                alert("이메일 중복 확인을 해주세요.");
+                return;
+            }
+            if (!this.nicknameAvailable) {
+                alert("닉네임 중복 확인을 해주세요.");
+                return;
+            }
+
+            this.$emit('signup', this.userInfo, this.selectedProfileFile || null);
+        },
       handleProfileImageUpload(event) {
         const file = event.target.files[0];
         if (file) {
@@ -78,29 +104,23 @@ import { useUserStore } from '@/store/useUserStore';
       },
       async checkEmail() {
         const userStore = useUserStore();
-        const isAvailable = await userStore.checkEmail(this.userInfo.email);
-        this.emailAvailable = isAvailable; // 서버 응답에 따라 상태 업데이트
+          this.emailAvailable = await userStore.checkEmail(this.userInfo.email);
       },
       async checkNickname() {
         const userStore = useUserStore();
-        const isAvailable = await userStore.checkNickname(this.userInfo.nickname);
-        this.nicknameAvailable = isAvailable; // 서버 응답에 따라 상태 업데이트
-    },
-      resetAvailability() {
-      this.emailAvailable = false;
-      this.nicknameAvailable = false;
+          this.nicknameAvailable = await userStore.checkNickname(this.userInfo.nickname);
     },
     watch: {
-      'userInfo.email'(newValue) {
-        if (newValue) {
-          this.resetAvailability();
+        'userInfo.email'(newValue) {
+            if (newValue) {
+                this.emailAvailable = false;
+            }
+        },
+        'userInfo.nickname'(newValue) {
+            if (newValue) {
+                this.nicknameAvailable = false;
+            }
         }
-      },
-      'userInfo.nickname'(newValue) {
-        if (newValue) {
-          this.resetAvailability();
-        }
-    },
    },
    validateEmail() {
       if (this.userInfo.email.includes(" ")) {
@@ -178,7 +198,7 @@ input {
   padding: 12px 15px;
   margin-bottom: 20px;
   width: 100%;
-  box-shadow: 4px 4px 8px 0px rgba(82, 82, 82, 0.25);
+  box-shadow: 4px 4px 8px 0 rgba(82, 82, 82, 0.25);
 }
 
 button {
@@ -241,6 +261,6 @@ input[type="file"] {
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>
