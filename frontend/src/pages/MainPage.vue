@@ -8,18 +8,19 @@
         </div>
     </div>
     <div class="custom-container" style="margin-top: 0;">
-        <LoadingComponent v-if="isLoading"/>
+
+        <div v-if="isLoading" style="text-align:center;"></div>
         <div v-else class="subject-container">
             <div class="subject-box">
-                <router-link to="/qna/list" class="subject">QnA</router-link>
-                <router-link to="/qna/list" class="show-all-button">더 보기</router-link>
+                <router-link to="/errorarchive/list" class="subject">에러 아카이브</router-link>
+                <router-link to="/errorarchive/list" class="show-all-button">더 보기</router-link>
             </div>
-            <div class="qna-inner">
-                <div class="qna-list-flex">
-                    <QnaCardComponent
-                        v-for="qnaCard in mainStore.mainPageInfo.qnaListResList"
-                        :key="qnaCard.id"
-                        v-bind:qnaCard="qnaCard"
+            <div class="errorarchive-inner">
+                <div class="errorarchive-list-flex">
+                    <ErrorArchiveCardComponent
+                        v-for="errorarchiveCard in mainStore.mainPageInfo.errorArchiveListResList"
+                        :key="errorarchiveCard.id"
+                        v-bind:errorarchiveCard="errorarchiveCard"
                     />
                 </div>
             </div>
@@ -37,18 +38,18 @@
             </div>
         </div>
 
-        <div v-if="isLoading" style="text-align:center;"></div>
+        <LoadingComponent v-if="isLoading"/>
         <div v-else class="subject-container">
             <div class="subject-box">
-                <router-link to="/errorarchive/list" class="subject">에러 아카이브</router-link>
-                <router-link to="/errorarchive/list" class="show-all-button">더 보기</router-link>
+                <router-link to="/qna/list" class="subject">QnA</router-link>
+                <router-link to="/qna/list" class="show-all-button">더 보기</router-link>
             </div>
-            <div class="errorarchive-inner">
-                <div class="errorarchive-list-flex">
-                    <ErrorArchiveCardComponent
-                        v-for="errorarchiveCard in mainStore.mainPageInfo.errorArchiveListResList"
-                        :key="errorarchiveCard.id"
-                        v-bind:errorarchiveCard="errorarchiveCard"
+            <div class="qna-inner">
+                <div class="qna-list-flex">
+                    <QnaCardComponent
+                        v-for="qnaCard in mainStore.mainPageInfo.qnaListResList"
+                        :key="qnaCard.id"
+                        v-bind:qnaCard="qnaCard"
                     />
                 </div>
             </div>
