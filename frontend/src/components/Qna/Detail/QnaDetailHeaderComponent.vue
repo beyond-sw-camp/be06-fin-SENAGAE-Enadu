@@ -1,7 +1,7 @@
 <template>
   <div class="qna-detail-top-title">
     <div class="circle">
-      <img id="user-profile-image" :src="qnaDetail.profileImage" alt="Profile Image"/>
+      <img class="h-24 w-24 rounded-full border border-gray-500/3 sm:h-28 sm:w-28" :src="qnaDetail.profileImage" alt="Profile Image"/>
     </div>
     <span class="title-text">{{ qnaDetail.title }}</span>
   </div>
@@ -300,14 +300,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center
-}
-
-.circle img {
-  height: auto
-}
-
-img {
-  height: auto
 }
 
 .title-text {
