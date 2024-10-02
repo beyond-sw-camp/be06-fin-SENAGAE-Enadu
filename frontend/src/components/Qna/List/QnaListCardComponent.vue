@@ -14,10 +14,8 @@
             <a class="mantine-Text-root mantine-3qdwx9">{{
                 qnaCard.nickname
               }}</a>
-            <div class="mantine-Badge-root mantine-11jjpd0">
-              <span class="mantine-1jlwn9k mantine-Badge-inner">{{
-                  qnaCard.grade
-                }}</span>
+            <div :class="['mantine-Badge-root mantine-11jjpd0', dynamicClass]">
+              {{ qnaCard.grade }}
             </div>
           </div>
           <p class="mantine-Text-root mantine-1q4x896">
@@ -89,6 +87,24 @@ export default {
   },
   components: {
   },
+  computed: {
+      dynamicClass() {
+          switch (this.qnaCard.grade) {
+              case '뉴비':
+                  return 'newbie';
+              case '견습':
+                  return 'apprentice';
+              case '프로':
+                  return 'pro';
+              case '마스터':
+                  return 'master';
+              case '신':
+                  return 'god';
+              default:
+                  return '';
+          }
+      }
+  }
 };
 </script>
 
@@ -366,14 +382,12 @@ export default {
 
 .mantine-11jjpd0 {
   -webkit-tap-highlight-color: transparent;
-  font-size: 0.6875rem;
-  height: 1.25rem;
-  line-height: calc(1.25rem - 0.125rem);
+  font-size: 0.8rem;
+  padding-top: 5px;
   -webkit-text-decoration: none;
   text-decoration: none;
   padding: 0 calc(1rem / 1.5);
   box-sizing: border-box;
-  //display: -webkit-inline-box;
   display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -393,8 +407,6 @@ export default {
   cursor: inherit;
   text-overflow: ellipsis;
   overflow: hidden;
-  background: rgba(229, 249, 241, 1);
-  color: #00894f;
   border: 0.0625rem solid transparent;
   text-transform: none;
   padding: 0 8px;

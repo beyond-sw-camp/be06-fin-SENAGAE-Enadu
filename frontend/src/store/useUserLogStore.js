@@ -16,9 +16,6 @@ export const useUserLogStore = defineStore("userLog", {
     actions: {
         async fetchUserInfo(nickname) {
             try {
-                if (Object.keys(this.userInfo).length !== 0) {
-                    return;
-                }
                 const response = await axios.get(backend + "/mypage/log/info",
                     {
                     params: { nickname: nickname },

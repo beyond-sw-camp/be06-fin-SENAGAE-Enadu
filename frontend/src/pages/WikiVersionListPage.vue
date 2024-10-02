@@ -2,7 +2,7 @@
     <div class="custom-container">
         <h1 class="title">WIKI : {{ wikiTitle }}</h1>
         <p class="category">
-            <span class="category-badge"> category : {{ category }}</span>
+            <CategoryComponent :category=category />
         </p>
 
         <!-- 페이지네이션과 롤백 문구 -->
@@ -28,7 +28,9 @@
                             Version {{ version.version }}
                         </a>
                     </td>
-                    <td>{{ version.nickname }}</td>
+                    <td>
+                        <NicknameComponent :nickname=version.nickname />
+                    </td>
                     <td>
                         <button @click="rollbackVersion(version.wikiContentId)" class="rollback-button">
                             이 버전으로 되돌리기
@@ -44,10 +46,12 @@
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import { useWikiStore } from "@/store/useWikiStore";
 import { mapState, mapActions } from "pinia";
+import CategoryComponent from "@/components/Common/CategoryComponent.vue";
+import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 
 export default {
     name: "WikiVersionListPage",
-    components: { PaginationComponent },
+    components: {NicknameComponent, CategoryComponent, PaginationComponent },
     computed: {
         ...mapState(useWikiStore, ["wikiVersions", "wikiTitle", "category", "currentPage", "totalPages"]),
     },

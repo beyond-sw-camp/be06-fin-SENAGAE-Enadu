@@ -10,7 +10,7 @@
                             {{ mypageStore.userInfo.nickname }}
                         </span>
                         <div class="flex items-center text-sm sm:text-base">
-                            <span>{{ mypageStore.userInfo.grade }}</span>
+                            <span :class="dynamicClass">{{ mypageStore.userInfo.grade }}</span>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,23 @@ export default {
         };
     },
     computed: {
-        ...mapStores(useMypageStore)
+        ...mapStores(useMypageStore),
+        dynamicClass() {
+            switch (this.mypageStore.userInfo.grade) {
+                case '뉴비':
+                    return 'newbie';
+                case '견습':
+                    return 'apprentice';
+                case '프로':
+                    return 'pro';
+                case '마스터':
+                    return 'master';
+                case '신':
+                    return 'god';
+                default:
+                    return '';
+            }
+        }
     },
     methods: {
         setActiveSection(section) {

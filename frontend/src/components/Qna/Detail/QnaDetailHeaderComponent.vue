@@ -7,6 +7,7 @@
   </div>
   <span class="username-text"><NicknameComponent :nickname="qnaDetail.nickname"/></span>
   <span class="datetime-text">{{ formatDateTime(qnaDetail.createdAt) }}</span>
+  <span :class="['grade', dynamicClass]">{{ qnaDetail.grade }}</span>
   <div class="label-custom">
     <div class="ui tag labels">
       <CategoryComponent v-if="qnaDetail.superCategoryName !== null" :category=qnaDetail.superCategoryName />
@@ -207,7 +208,23 @@ export default {
     NicknameComponent
   },
   computed: {
-    ...mapStores(useQnaStore),
+      ...mapStores(useQnaStore),
+      dynamicClass() {
+          switch (this.qnaDetail.grade) {
+              case '뉴비':
+                  return 'newbie';
+              case '견습':
+                  return 'apprentice';
+              case '프로':
+                  return 'pro';
+              case '마스터':
+                  return 'master';
+              case '신':
+                  return 'god';
+              default:
+                  return '';
+          }
+      }
   },
 };
 </script>
@@ -246,6 +263,19 @@ export default {
 
 .test.ui.label:hover {
   background-color: #1EBDE5FF; /* superCategoryName 태그 호버 시 색상 */
+}
+
+.grade {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: 2rem;
+    border-radius: 1rem;
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
 }
 
 /* 카테고리 태그*/
