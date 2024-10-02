@@ -36,6 +36,7 @@
                                    v-bind:adopted="isShowAdopted"
                                    v-bind:detail="qnaAnswer"
                                    @clickEdit="handleEditUpdate"
+                                   @clickAdopt="handleAdoptUpdate"
           />
         </div>
       </div>
@@ -293,6 +294,10 @@ export default {
     },
     handleEditUpdate(newIsEdit) {
       this.isEdited = newIsEdit;
+    },
+    handleAdoptUpdate(newIsEdit) {
+      this.isAdopted = false;
+      this.isAdopted = newIsEdit;
     },
     handleCommentRegistered(success) {
       if (success) {

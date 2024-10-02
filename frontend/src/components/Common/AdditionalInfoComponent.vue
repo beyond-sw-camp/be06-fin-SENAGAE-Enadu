@@ -13,10 +13,9 @@
       </button>
     </div>
     <div
-        class="absolute right-0 mt-2 w-[152px] origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none md:mt-4 dark:border dark:border-gray-700 dark:bg-gray-800"
+        class="absolute right-0 mt-2 w-[152px] origin-top-right rounded-md bg-white shadow-lg ring-black ring-opacity-5 focus:outline-none md:mt-4 dark:border dark:border-gray-700 dark:bg-gray-800"
         aria-labelledby="headlessui-menu-button-:r1:" id="headlessui-menu-items-:r5:" role="menu" tabindex="0"
         v-show="isOpen">
-      <div class="py-1" role="none">
         <button v-if="question"
                 class="text-blue-500 block px-4 py-2 text-sm" id="headlessui-menu-item-:r6:" role="menuitem"
                 tabindex="-1" data-headlessui-state="" @click="doQuestion">다른 질문하기
@@ -37,7 +36,6 @@
                 @click="doDeleting">
           삭제하기
         </button>
-      </div>
     </div>
   </div>
 </template>
@@ -55,6 +53,7 @@ export default {
       editedAndDelete: false,
       question: false,
       isEdit: false,
+      isAdopted: false,
     }
   },
   props: ["adopted", "detail", "isQuestion"],
@@ -71,9 +70,14 @@ export default {
     doAdopting() {
       useQnaStore().adoptAnswer(this.$route.params.id, this.detail.id);
       useQnaStore().getQnaDetail(this.$route.params.id);
+      alert("해당 답변이 채택되었습니다.");
+      this.isAdopted = true;
+      this.isOpen = false;
+      this.$emit("clickAdopt", this.isAdopted);
     },
     doEditing() {
-      this.isEdit = true
+      this.isEdit = true;
+      this.isOpen = false;
       this.$emit("clickEdit", this.isEdit);
     },
     doQuestion() {
