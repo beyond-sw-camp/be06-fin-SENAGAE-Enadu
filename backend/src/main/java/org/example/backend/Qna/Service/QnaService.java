@@ -200,7 +200,7 @@ public class QnaService {
     }
 
     @Transactional
-    public Long checkQnaLike(Long qnaBoardId, Long userId) {
+    public GetQuestionStateRes checkQnaLike(Long qnaBoardId, Long userId) {
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
@@ -220,23 +220,34 @@ public class QnaService {
             qnaLikeRepository.delete(beforeLike.get());
             qnaBoard.decreaseLikeCount();
             questionRepository.save(qnaBoard);
-            return 0L;
         }
         // 이전에 싫어요만 했을 경우
         else if (beforeLike.isEmpty() && beforeHate.isPresent()) {
-            throw new InvalidQnaException(BaseResponseStatus.QNA_CONFLICT_LIKE_DISLIKE);
+            beforeHate.get().changeState();
+            qnaBoard.decreaseHateCount();
+            qnaBoard.increaseLikeCount();
+            qnaLikeRepository.save(beforeHate.get());
+            questionRepository.save(qnaBoard);
         }
         // 둘 다 체크하는 것은 이전 검사로 불가능하므로, 둘 다 없는 경우
         else {
             qnaLikeRepository.save(qnaLike);
             qnaBoard.increaseLikeCount();
             questionRepository.save(qnaBoard);
-            return qnaLike.getId();
         }
+
+        return GetQuestionStateRes.builder()
+                .id(qnaBoard.getId())
+                .userId(qnaBoard.getUser().getId())
+                .likeCnt(qnaBoard.getLikeCount())
+                .hateCnt(qnaBoard.getHateCount())
+                .checkLikeOrHate(isQuestionLikeORHate(qnaBoard, user))
+                .checkScrap(isQuestionScarp(qnaBoard, user))
+                .build();
     }
 
     @Transactional
-    public Long checkQnaHate(Long qnaBoardId, Long userId) {
+    public GetQuestionStateRes checkQnaHate(Long qnaBoardId, Long userId) {
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
@@ -256,23 +267,33 @@ public class QnaService {
             qnaLikeRepository.delete(beforeHate.get());
             qnaBoard.decreaseHateCount();
             questionRepository.save(qnaBoard);
-            return 0L;
         }
         // 이전에 좋아요만 했을 경우
         else if (beforeHate.isEmpty() && beforeLike.isPresent()) {
-            throw new InvalidQnaException(BaseResponseStatus.QNA_CONFLICT_LIKE_DISLIKE);
+            beforeLike.get().changeState();
+            qnaBoard.decreaseLikeCount();
+            qnaBoard.increaseHateCount();
+            qnaLikeRepository.save(beforeLike.get());
+            questionRepository.save(qnaBoard);
         }
         // 둘 다 체크하는 것은 이전 검사로 불가능하므로, 둘 다 없는 경우
         else {
             qnaLikeRepository.save(qnaLike);
             qnaBoard.increaseHateCount();
             questionRepository.save(qnaBoard);
-            return qnaLike.getId();
         }
+        return GetQuestionStateRes.builder()
+                .id(qnaBoard.getId())
+                .userId(qnaBoard.getUser().getId())
+                .likeCnt(qnaBoard.getLikeCount())
+                .hateCnt(qnaBoard.getHateCount())
+                .checkLikeOrHate(isQuestionLikeORHate(qnaBoard, user))
+                .checkScrap(isQuestionScarp(qnaBoard, user))
+                .build();
     }
 
     @Transactional
-    public Long checkAnswerLike(Long qnaBoardId, Long answerId, Long userId) {
+    public GetAnswerStateRes checkAnswerLike(Long qnaBoardId, Long answerId, Long userId) {
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
@@ -297,23 +318,36 @@ public class QnaService {
             answerLikeRepository.delete(beforeLike.get());
             answer.decreaseLikeCount();
             answerRepository.save(answer);
-            return 0L;
         }
         // 이전에 싫어요만 했을 경우
         else if (beforeLike.isEmpty() && beforeHate.isPresent()) {
-            throw new InvalidQnaException(BaseResponseStatus.QNA_CONFLICT_LIKE_DISLIKE);
+            beforeHate.get().changeState();
+            answer.decreaseHateCount();
+            answer.increaseLikeCount();
+            answerLikeRepository.save(beforeHate.get());
+            answerRepository.save(answer);
+
         }
         // 둘 다 체크하는 것은 이전 검사로 불가능하므로, 둘 다 없는 경우
         else {
             answerLikeRepository.save(answerLike);
             answer.increaseLikeCount();
             answerRepository.save(answer);
-            return answerLike.getId();
         }
+
+        Optional<Answer> newAns = answerRepository.findByIdAndEnableTrue(answerId);
+
+        return GetAnswerStateRes.builder()
+                .id(newAns.get().getId())
+                .userId(newAns.get().getUser().getId())
+                .likeCnt(newAns.get().getLikeCount())
+                .hateCnt(newAns.get().getHateCount())
+                .checkLikeOrHate(isAnswerLikeORHate(newAns.get(), user))
+                .build();
     }
 
     @Transactional
-    public Long checkAnswerHate(Long qnaBoardId, Long answerId, Long userId) {
+    public GetAnswerStateRes checkAnswerHate(Long qnaBoardId, Long answerId, Long userId) {
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
@@ -338,23 +372,35 @@ public class QnaService {
             answerLikeRepository.delete(beforeHate.get());
             answer.decreaseHateCount();
             answerRepository.save(answer);
-            return 0L;
         }
         // 이전에 좋아요만 했을 경우
         else if (beforeHate.isEmpty() && beforeLike.isPresent()) {
-            throw new InvalidQnaException(BaseResponseStatus.QNA_CONFLICT_LIKE_DISLIKE);
+            beforeLike.get().changeState();
+            answer.decreaseLikeCount();
+            answer.increaseHateCount();
+            answerLikeRepository.save(beforeLike.get());
+            answerRepository.save(answer);
         }
         // 둘 다 체크하는 것은 이전 검사로 불가능하므로, 둘 다 없는 경우
         else {
             answerLikeRepository.save(answerLike);
             answer.increaseHateCount();
             answerRepository.save(answer);
-            return answerLike.getId();
         }
+
+        Optional<Answer> newAns = answerRepository.findByIdAndEnableTrue(answerId);
+
+        return GetAnswerStateRes.builder()
+                .id(newAns.get().getId())
+                .userId(newAns.get().getUser().getId())
+                .likeCnt(newAns.get().getLikeCount())
+                .hateCnt(newAns.get().getHateCount())
+                .checkLikeOrHate(isAnswerLikeORHate(newAns.get(), user))
+                .build();
     }
 
     @Transactional
-    public Long checkQnaScrap(Long qnaBoardId, Long userId) {
+    public GetQuestionStateRes checkQnaScrap(Long qnaBoardId, Long userId) {
         QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId)
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         User user = userRepository.findById(userId)
@@ -368,11 +414,17 @@ public class QnaService {
         Optional<QnaScrap> beforeScrap = qnaScrapRepository.findByQnaBoardEnableTrueAndQnaBoardIdAndUserId(qnaBoardId, userId);
         if (beforeScrap.isPresent()) {
             qnaScrapRepository.delete(beforeScrap.get());
-            return 0L;
         } else {
             qnaScrapRepository.save(qnaScrap);
-            return qnaScrap.getId();
         }
+        return GetQuestionStateRes.builder()
+                .id(qnaBoard.getId())
+                .userId(qnaBoard.getUser().getId())
+                .likeCnt(qnaBoard.getLikeCount())
+                .hateCnt(qnaBoard.getHateCount())
+                .checkLikeOrHate(isQuestionLikeORHate(qnaBoard, user))
+                .checkScrap(isQuestionScarp(qnaBoard, user))
+                .build();
     }
 
     // 현재 접속한 사용자의 좋아요/싫어요/선택 X 상태를 알아내는 함수

@@ -34,22 +34,22 @@ public class AnswerController {
 
     //qna 답변 좋아요
     @PostMapping("/like")
-    public BaseResponse<Long> checkAnsLike(@RequestBody Map<String, Long> requestBody, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public BaseResponse<GetAnswerStateRes> checkAnsLike(@RequestBody Map<String, Long> requestBody, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long qnaBoardId = requestBody.get("qnaBoardId");
         Long answerId = requestBody.get("answerId");
 
-        Long id = qnaService.checkAnswerLike(qnaBoardId, answerId, customUserDetails.getUserId());
-        return new BaseResponse<>(id);
+        GetAnswerStateRes answerStateRes = qnaService.checkAnswerLike(qnaBoardId, answerId, customUserDetails.getUserId());
+        return new BaseResponse<>(answerStateRes);
     }
 
     //qna 답변 싫어요
     @PostMapping("/hate")
-    public BaseResponse<Long> checkAnsHate(@RequestBody Map<String, Long> requestBody, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public BaseResponse<GetAnswerStateRes> checkAnsHate(@RequestBody Map<String, Long> requestBody, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long qnaBoardId = requestBody.get("qnaBoardId");
         Long answerId = requestBody.get("answerId");
 
-        Long id = qnaService.checkAnswerHate(qnaBoardId, answerId, customUserDetails.getUserId());
-        return new BaseResponse<>(id);
+        GetAnswerStateRes answerStateRes = qnaService.checkAnswerHate(qnaBoardId, answerId, customUserDetails.getUserId());
+        return new BaseResponse<>(answerStateRes);
     }
 
     @GetMapping("/state")
