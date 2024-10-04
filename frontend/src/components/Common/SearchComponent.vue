@@ -370,8 +370,8 @@ export default {
 }
 
 .pagination-bullet-active{
-  color: #00c471;
-  box-shadow: inset 0 0 0 2px #00c471;
+  color: var(--main-color);
+  box-shadow: inset 0 0 0 2px var(--main-color);
 }
 
 .create-btn {
