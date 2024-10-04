@@ -66,24 +66,36 @@ export default {
                 alert("이메일을 입력해주세요.");
                 return;
             }
+            if (!this.isValidEmail(this.userInfo.email) || this.userInfo.email.includes(" ")) {
+              alert('올바른 이메일 형식이 아닙니다.');
+              this.userInfo.email = this.userInfo.email.trim();
+              return;
+            }
             if (!this.userInfo.password || !this.userInfo.password.trim()) {
                 alert("비밀번호를 입력해주세요.");
                 return;
+            }
+            if (this.userInfo.password.length < 8) {
+              alert("비밀번호는 8자 이상이어야 합니다.");
+              this.userInfo.password = "";
             }
             if (!this.userInfo.confirmPassword || !this.userInfo.confirmPassword.trim()) {
                 alert("비밀번호 확인을 입력해주세요.");
                 return;
             }
+            if (this.userInfo.password.includes(" ") || this.userInfo.confirmPassword.includes(" ")) {
+              alert("비밀번호에 공백이 포함되었습니다.");
+              this.userInfo.password = this.userInfo.password.trim();
+              this.userInfo.confirmPassword = this.userInfo.confirmPassword.trim();
+            }
             if (!this.userInfo.nickname || !this.userInfo.nickname.trim()) {
                 alert("닉네임을 입력해주세요.");
                 return;
             }
-
             if (this.userInfo.password !== this.userInfo.confirmPassword) {
                 alert("비밀번호가 일치하지 않습니다.");
                 return;
             }
-
             if (!this.emailAvailable) {
                 alert("이메일 중복 확인을 해주세요.");
                 return;
@@ -92,7 +104,6 @@ export default {
                 alert("닉네임 중복 확인을 해주세요.");
                 return;
             }
-
             this.$emit('signup', this.userInfo, this.selectedProfileFile || null);
         },
       handleProfileImageUpload(event) {
