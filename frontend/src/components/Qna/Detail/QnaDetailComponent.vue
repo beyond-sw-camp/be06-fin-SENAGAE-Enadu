@@ -47,7 +47,7 @@
             <!--          </div>-->
           </div>
           <div data-v-472a7c05="" class="ans-button-divider">
-            <button v-if="isLoggedIn" data-v-472a7c05="" class="mt-2 text-sm text-blue-500" @click="writeAnswer">
+            <button v-if="isLoggedIn && !qnaOwner" data-v-472a7c05="" class="mt-2 text-sm text-blue-500" @click="writeAnswer">
               {{ isAnswerRegister ? '작성 취소' : '답변 작성' }}
             </button>
           </div>
@@ -74,12 +74,14 @@ export default {
     return {
       isLoggedIn: false,
       isAnswerRegister: false,
+      qnaOwner: false,
     };
   },
   props: ["qnaDetail"],
   mounted() {
     this.isAnswerRegister = false;
     this.isLoggedIn = useUserStore().isLoggedIn;
+    this.isQnaOwner();
   },
   methods: {
     formatDateTime,
@@ -94,6 +96,11 @@ export default {
     handleAnswerRegistered(success) {
       if (success) {
         this.isAnswerRegister = false;
+      }
+    },
+    isQnaOwner() {
+      if(this.qnaDetail.userId === useUserStore().userId) {
+        this.qnaOwner = true;
       }
     },
   },

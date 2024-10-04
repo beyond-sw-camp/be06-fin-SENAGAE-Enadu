@@ -19,27 +19,37 @@ axios.interceptors.response.use(
 export const useQnaStore = defineStore("qna", {
     state: () => ({
         qnaCards: [],
-        qnaDetail: {},
-        qnaAnswers: [],
+        qnaSearchedCards: [],
+        qnaDetail: {
+            likeCnt: 0,
+            hateCnt: 0,
+        },
+        qnaAnswers: [
+        ],
+
         checkQnaLike: 0,
         checkQnaHate: 0,
         checkScrap: 0,
         checkAnsLike: 0,
         checkAnsHate: 0,
-        qnaSearchedCards: [],
-        ansState: {
-            likeCnt:0,
-            hateCnt:0,
-            checkLikeOrHate:null,
-        },
+
+        registeredQnaId: 0,
+        AdoptedAnswerId: 0,
+
         qnaState: {
-            likeCnt:0,
-            hateCnt:0,
-            checkLikeOrHate:null,
-            checkScrap:null,
+            likeCnt: 0,
+            hateCnt: 0,
+            checkLikeOrHate: null,
+            checkScrap: null,
         },
-        registered: 0,
-        totalPage:0
+
+        ansState: {
+            likeCnt: 0,
+            hateCnt: 0,
+            checkLikeOrHate: null,
+        },
+
+        totalPage: 0
     }),
 
 
@@ -57,8 +67,7 @@ export const useQnaStore = defineStore("qna", {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
-                this.registered = res.data.result;
-                console.log(this.registered);
+                this.registeredQnaId = res.data.result;
             } catch (error) {
                 return false;
             }
@@ -77,7 +86,6 @@ export const useQnaStore = defineStore("qna", {
                 });
                 this.qnaCards = res.data.result;
                 this.totalPage = this.qnaCards[0].totalPage;
-                console.log("a"+this.totalPage);
             } catch (error) {
                 alert("질문 목록 데이터 요청 중 에러가 발생했습니다.");
             }
@@ -86,6 +94,7 @@ export const useQnaStore = defineStore("qna", {
                 let res = await axios.get(backend + "/qna/detail?qnaBoardId=" + id, {withCredentials: true});
                 this.qnaDetail = res.data.result;
                 this.qnaAnswers = res.data.result.answers;
+                this.adoptedAnswerId = res.data.result.adoptedAnswerId;
             } catch (error) {
                 return false;
             }
@@ -128,11 +137,14 @@ export const useQnaStore = defineStore("qna", {
             };
 
             try {
-                await axios.post(backend + "/ans/adopted", data, {
+                const response = await axios.post(backend + "/ans/adopted", data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
+                if (response.data.isSuccess) {
+                    this.isAdopted = true;
+                }
             } catch (error) {
                 return false;
             }
