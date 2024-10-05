@@ -32,36 +32,46 @@ public class UserController {
     public BaseResponse<String> signup(
             @RequestPart UserSignupReq userSignupReq,
             @RequestPart(required=false) MultipartFile profileImg) {
-        if (userSignupReq.getNickname() == null || userSignupReq.getNickname().isBlank() ||
-                userSignupReq.getEmail() == null || userSignupReq.getEmail().isBlank() ||
-                userSignupReq.getPassword() == null || userSignupReq.getPassword().isBlank()) {
 
-            return new BaseResponse<>(BaseResponseStatus.USER_INVALID_INPUT);
+        String email = userSignupReq.getEmail().trim();
+        String password = userSignupReq.getPassword().trim();
+        String nickname = userSignupReq.getNickname();
+
+        if (email.isBlank() || password.isBlank() || nickname.isBlank()) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_INPUT);
         }
+
+        String emailPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        if (!email.matches(emailPattern)) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_EMAIL_FORMAT);
+        }
+
+        if (password.length() < 8 || password.contains(" ")) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_PASSWORD);
+        }
+
         String profileImgUrl;
-        if(profileImg == null || profileImg.isEmpty()){
+        if (profileImg == null || profileImg.isEmpty()){
             profileImgUrl = "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6";
         } else {
             profileImgUrl = cloudFileUploadService.uploadImg(profileImg);
         }
 
-        if (!userService.checkDuplicateEmail(userSignupReq.getEmail())){
-            return new BaseResponse<>(BaseResponseStatus.USER_DUPLICATE_EMAIL);
-        }
-        if(!userService.checkDuplicateNickname(userSignupReq.getNickname())){
-            return new BaseResponse<>(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
+        if (!userService.checkDuplicateEmail(email)) {
+            throw new InvalidUserException(BaseResponseStatus.USER_DUPLICATE_EMAIL);
         }
 
-        System.out.println("회원가입 완료: " + userSignupReq.getEmail());
+        if (!userService.checkDuplicateNickname(nickname)) {
+            throw new InvalidUserException(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
+        }
 
         try {
-            emailVerifyService.sendEmail(userSignupReq.getEmail());
-            System.out.println("이메일 발송 성공: " + userSignupReq.getEmail());
+            userService.signup(userSignupReq, profileImgUrl);
+            emailVerifyService.sendEmail(email);
         } catch (Exception e) {
-            System.err.println("이메일 발송 실패: " + e.getMessage());
+            throw new InvalidUserException(BaseResponseStatus.USER_EMAIL_SEND_FAILED);
         }
 
-        userService.signup(userSignupReq, profileImgUrl);
         return new BaseResponse<>();
     }
 

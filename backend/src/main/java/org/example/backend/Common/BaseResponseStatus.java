@@ -25,12 +25,14 @@ public enum BaseResponseStatus {
     USER_DUPLICATE_EMAIL(false,2032,"이미 있는 이메일입니다"),
     USER_PASSWORDS_DO_NOT_MATCH(false,2041, "비밀번호가 일치하지 않습니다."),
     USER_NEW_PASSWORDS_DO_NOT_MATCH(false, 2042, "새로운 비밀번호와 비밀번호 확인이 일치하지 않습니다"),
+    USER_INVALID_PASSWORD(false, 2043 , "잘못된 비밀번호 형식입니다."),
     USER_ACCESS_TOKEN_NOT_FOUND(false, 2051, "소셜 토큰을 찾을 수 없습니다."),
     USER_INVALID_INPUT(false,2100, "필수 값이 비어있습니다."),
 
 
     // 이메일 인증 실패
-    USER_EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다"),
+    USER_EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다."),
+    USER_EMAIL_SEND_FAILED(false, 2600, "이메일 전송에 실패했습니다."),
 
 
     // 마이페이지 기능 - 3000
