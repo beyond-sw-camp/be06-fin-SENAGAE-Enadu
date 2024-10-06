@@ -10,8 +10,10 @@ public enum PointDescriptionEnum {
     POINT_ERRORARCHIVE_WRITE("에러 게시판 작성", 30),
     POINT_QNA_ANSWER_WRITE("질문 글 답변 작성", 20),
     POINT_QNA_ANSWER_ACCEPT("본인 답변 채택", 50),
-    POINT_RECOMMEND("에러/답변 추천 10 이상", 10),
-    POINT_DISRECOMMEND("에러/답변 추천 5 이상", -5);
+    POINT_ERRORARCHIVE_RECOMMEND("에러아카이브 추천 10 이상", 10),
+    POINT_ERRORARCHIVE_RECOMMEND_CANCEL("에러아카이브 추천 10 이상 취소", -10),
+    POINT_ERRORARCHIVE_DISRECOMMEND("에러아카이브 비추천 5 이상", -5),
+    POINT_ERRORARCHIVE_DISRECOMMEND_CANCEL("에러아카이브 비추천 5 이상 취소", 5);
 
 
     private final String description;

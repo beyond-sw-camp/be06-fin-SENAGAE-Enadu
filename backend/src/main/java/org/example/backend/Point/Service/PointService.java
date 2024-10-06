@@ -56,7 +56,6 @@ public class PointService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "point"));
         Page<User> userOrderByPointDescPage = userRepository.findAll(pageable);
         List<GetPointRankRes> getPointRankResList = new ArrayList<>();
-        int rank = page * size + 1;
         for (User user : userOrderByPointDescPage) {
             getPointRankResList.add(GetPointRankRes.builder()
                     .point(user.getPoint())
