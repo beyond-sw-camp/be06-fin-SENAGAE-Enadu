@@ -34,7 +34,7 @@ public class PointAop {
         pointService.givePoint((Long) args[1], PointDescriptionEnum.POINT_QNA_WRITE);
     }
 
-    // 위키 작성
+    // 위키 작성/수정
     @AfterReturning("execution(* org.example.backend.Wiki.Service.WikiService.register(..)) || " +
             "execution(* org.example.backend.Wiki.Service.WikiService.update(..))")
     public void givePointAfterSuccessWikiRegisterAndUpdate(JoinPoint joinPoint) {
@@ -153,7 +153,4 @@ public class PointAop {
         beforeLikeCount.remove();
         beforeHateCount.remove();
     }
-
-
-    //todo -  추천 10 이상, 비추천 5이상
 }
