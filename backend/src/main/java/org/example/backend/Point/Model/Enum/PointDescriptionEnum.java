@@ -13,8 +13,11 @@ public enum PointDescriptionEnum {
     POINT_ERRORARCHIVE_RECOMMEND("에러아카이브 추천 10 이상", 10),
     POINT_ERRORARCHIVE_RECOMMEND_CANCEL("에러아카이브 추천 10 이상 취소", -10),
     POINT_ERRORARCHIVE_DISRECOMMEND("에러아카이브 비추천 5 이상", -5),
-    POINT_ERRORARCHIVE_DISRECOMMEND_CANCEL("에러아카이브 비추천 5 이상 취소", 5);
-
+    POINT_ERRORARCHIVE_DISRECOMMEND_CANCEL("에러아카이브 비추천 5 이상 취소", 5),
+    POINT_ANSWER_RECOMMEND("답변 추천 10 이상", 10),
+    POINT_ANSWER_RECOMMEND_CANCEL("답변 추천 10 이상 취소", -10),
+    POINT_ANSWER_DISRECOMMEND("답변 비추천 5 이상", -5),
+    POINT_ANSWER_DISRECOMMEND_CANCEL("답변 비추천 5 이상 취소", 5);
 
     private final String description;
     private final int value;
