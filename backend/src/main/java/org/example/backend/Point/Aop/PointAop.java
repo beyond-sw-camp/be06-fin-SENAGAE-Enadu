@@ -6,7 +6,6 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
-import org.example.backend.ErrorArchive.Model.Res.LikeOrHateRes;
 import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
 import org.example.backend.Point.Model.Enum.PointDescriptionEnum;
 import org.example.backend.Point.Service.PointService;
@@ -36,10 +35,15 @@ public class PointAop {
     }
 
     // 위키 작성
-    @AfterReturning("execution(* org.example.backend.Wiki.Service.WikiService.register(..))")
-    public void givePointAfterSuccessWikiRegister(JoinPoint joinPoint) {
+    @AfterReturning("execution(* org.example.backend.Wiki.Service.WikiService.register(..)) || " +
+            "execution(* org.example.backend.Wiki.Service.WikiService.update(..))")
+    public void givePointAfterSuccessWikiRegisterAndUpdate(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
-        pointService.givePoint(((CustomUserDetails) args[2]).getUserId(), PointDescriptionEnum.POINT_WIKI_WRITE);
+        if (joinPoint.getSignature().getName().equals("register")) {
+            pointService.givePoint(((CustomUserDetails) args[2]).getUserId(), PointDescriptionEnum.POINT_WIKI_WRITE);
+        } else {
+            pointService.givePoint((Long) args[2], PointDescriptionEnum.POINT_WIKI_UPDATE);
+        }
     }
 
     // 에러아카이브 작성
