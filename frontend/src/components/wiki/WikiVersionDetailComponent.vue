@@ -202,13 +202,7 @@ v-md-preview p {
 .sc-egiyK {
     color: #2689d2;
     text-decoration: none;
-    cursor: pointer;
 }
-
-.sc-egiyK:hover {
-    text-decoration: underline;
-}
-
 v-md-preview {
     font-size: 1.125rem;
     line-height: 1.7;
