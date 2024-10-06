@@ -33,5 +33,11 @@ public class PointAop {
         pointService.givePoint(((CustomUserDetails) args[1]).getUserId(), PointDescriptionEnum.POINT_ERRORARCHIVE_WRITE);
     }
 
+    @AfterReturning("execution(* org.example.backend.Qna.Service.QnaService.saveAnswer(..))")
+    public void givePointAfterSuccessAnswerRegister(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        pointService.givePoint((Long) args[1], PointDescriptionEnum.POINT_QNA_ANSWER_WRITE);
+    }
+
     //todo - 질문 글 답변 작성, 답변 채택, 추천 10 이상, 비추천 5이상
 }
