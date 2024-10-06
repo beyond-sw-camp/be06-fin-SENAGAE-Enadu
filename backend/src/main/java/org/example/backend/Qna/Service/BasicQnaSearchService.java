@@ -30,12 +30,13 @@ public class BasicQnaSearchService implements QnaSearchService {
 
     @Override
     public List<GetQnaListRes> getQnaSearch(GetQnaSearchReq getQnaSearchReq) {
-        Optional<Category> category = categoryRepository.findById(getQnaSearchReq.getCategoryId());
-        boolean useSuperCategory;
-        if (category.get().getSuperCategory() == null) {
-            useSuperCategory = true;
-        } else {
-            useSuperCategory = false;
+        Optional<Category> category;
+        boolean useSuperCategory = false;
+        if (getQnaSearchReq.getCategoryId() != null) {
+            category = categoryRepository.findById(getQnaSearchReq.getCategoryId());
+            if (category.get().getSuperCategory() == null) {
+                useSuperCategory = true;
+            }
         }
 
         Pageable pageable;
