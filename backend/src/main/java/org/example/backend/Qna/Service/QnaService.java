@@ -491,6 +491,9 @@ public class QnaService {
 
         if (answerRepository.countAdopted(qnaBoardId).equals(0)) {
             answer.adoptedAnswer(true);
+            qnaBoard.adopted(answerId);
+            answerRepository.save(answer);
+            questionRepository.save(qnaBoard);
             return answer.getId();
         } else {
             throw new InvalidQnaException(BaseResponseStatus.QNA_ALREADY_ADOPTED);

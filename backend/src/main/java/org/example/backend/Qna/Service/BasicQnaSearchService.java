@@ -1,8 +1,11 @@
 package org.example.backend.Qna.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.Category.Model.Entity.Category;
+import org.example.backend.Category.Repository.CategoryRepository;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidQnaException;
+import org.example.backend.Qna.Repository.QnaRepositoryCustomImpl;
 import org.example.backend.Qna.Repository.QuestionRepository;
 import org.example.backend.Qna.model.Entity.QnaBoard;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -21,12 +25,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BasicQnaSearchService implements QnaSearchService {
     private final QuestionRepository questionRepository;
+    private final CategoryRepository categoryRepository;
+    private final QnaRepositoryCustomImpl qnaRepositoryCustom;
 
     @Override
     public List<GetQnaListRes> getQnaSearch(GetQnaSearchReq getQnaSearchReq) {
-        boolean notChosenCategory = false;
-        if (getQnaSearchReq.getCategoryId() == null || getQnaSearchReq.getCategoryId() < 1) {
-            notChosenCategory = true;
+        Optional<Category> category;
+        boolean useSuperCategory = false;
+        if (getQnaSearchReq.getCategoryId() != null) {
+            category = categoryRepository.findById(getQnaSearchReq.getCategoryId());
+            if (category.get().getSuperCategory() == null) {
+                useSuperCategory = true;
+            }
         }
 
         Pageable pageable;
@@ -41,12 +51,9 @@ public class BasicQnaSearchService implements QnaSearchService {
         // paging 처리 및 responseList 생성
         Page<QnaBoard> qnaBoardPage;
 
-        if (getQnaSearchReq.getType().equals("tc")) {
-            qnaBoardPage = questionRepository.findByTC(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), notChosenCategory, pageable);
-        } else if (getQnaSearchReq.getType().equals("t")) {
-            qnaBoardPage = questionRepository.findByT(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), notChosenCategory, pageable);
-        } else if (getQnaSearchReq.getType().equals("c")) {
-            qnaBoardPage = questionRepository.findByC(getQnaSearchReq.getKeyword(), getQnaSearchReq.getCategoryId(), notChosenCategory, pageable);
+        if (getQnaSearchReq.getType().equals("tc") || getQnaSearchReq.getType().equals("t") || getQnaSearchReq.getType().equals("c")) {
+            qnaBoardPage = qnaRepositoryCustom.findByKeyword(getQnaSearchReq.getKeyword(), useSuperCategory, getQnaSearchReq.getCategoryId(), getQnaSearchReq.getType(), pageable);
+
         } else {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
         }
