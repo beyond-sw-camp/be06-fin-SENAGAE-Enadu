@@ -70,6 +70,10 @@ public class QnaBoard {
     @Column(name = "hate_cnt", nullable = false)
     private Integer hateCount = 0;
 
+    @Builder.Default()
+    @Column(name = "adopted_answer_id", nullable = true)
+    private Long adoptedAnswerId = null;
+
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -117,5 +121,9 @@ public class QnaBoard {
 
     public void disable() {
         this.enable = false;
+    }
+
+    public void adopted(Long answerId) {
+        this.adoptedAnswerId = answerId;
     }
 }
