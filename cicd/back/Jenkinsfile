@@ -10,7 +10,7 @@ pipeline {
 
         stage('ADD PRIVILIGES'){
             steps{
-                dir('./backend'){
+                dir('./back/backend'){
                     sh 'echo 권한 추가'
                     sh 'chmod +x gradlew'
                 }
@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                dir('./backend'){
+                dir('./back/backend'){
                     sh 'echo 백엔드 프로젝트 빌드 중...'
                     sh './gradlew bootJar'
                 }
@@ -26,7 +26,7 @@ pipeline {
         }
         stage('Build Docker Image'){
             steps {
-                dir('./backend'){
+                dir('./back/backend'){
                     sh 'echo 도커 이미지 빌드'
                     sh 'docker build -t senagae/enadu-be:1.$BUILD_ID .'
                 }
