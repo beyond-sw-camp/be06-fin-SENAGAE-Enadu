@@ -49,7 +49,8 @@ export const useQnaStore = defineStore("qna", {
             checkLikeOrHate: null,
         },
 
-        totalPage: 0
+        totalPage: 0,
+        searchedTotalPage: 0,
     }),
 
 
@@ -253,14 +254,14 @@ export const useQnaStore = defineStore("qna", {
             }
         },
 
-        async qnaSearch(type, keyword, category, sort, page) {
+        async qnaSearch(keyword, categoryId, type, sort, page) {
             const params = {
-                type: type,
                 keyword: keyword,
-                categoryId: category.id,
+                categoryId: categoryId,
+                type: type,
                 sort: sort,
                 page: page - 1,
-                size: 15,
+                size: 12,
             };
 
             try {

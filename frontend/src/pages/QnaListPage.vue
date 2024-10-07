@@ -1,6 +1,6 @@
 <template>
   <TagComponent :tagTitle="'QnA'" :tagSubTitle="'당신의 에러를 해결해보세요'"/>
-  <div class="custom-container" style="margin-top: 0; padding-top: 0;">
+  <div v-if="!isLoading" class="custom-container" style="margin-top: 0; padding-top: 0;">
     <div class="qna-inner">
       <SearchComponent @checkLatest="handleCheckLatest"
                        @checkLike="handleCheckLike"
@@ -22,7 +22,7 @@
         />
       </div>
     </div>
-    <div v-if="!isLoading" class="qna-bottom">
+    <div class="qna-bottom">
       <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage" :totalPage="totalPages"/>
     </div>
   </div>
@@ -41,41 +41,28 @@ export default {
   data() {
     return {
       isLoading: true,
+      isSearched: false,
+
       selectedSort: null,
       selectedPage: 0,
-      isSearched: false,
-      selectedSubCategory: "",
+
       searchQuery: "",
+      categoryId: 0,
+      selectedSuperCategoryId: 0,
+      selectedSubCategoryId: 0,
       selectedType: "",
+
       totalPages: 1,
     };
   },
   computed: {
     ...mapStores(useQnaStore),
-    qnaCards() {
-      return this.qnaStore.qnaCards;
-    },
-    qnaSearchedCards() {
-      return this.qnaStore.qnaSearchedCards;
-    },
   },
   mounted() {
     this.selectedSort = "latest";
     this.selectedPage = 1;
     this.isSearched = false;
     this.checking();
-  },
-  watch: {
-    async selectedSort() {
-      await this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
-      this.totalPages = useQnaStore().totalPage || 1;
-      this.isLoading = false;
-    },
-    async selectedPage() {
-      await this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
-      this.totalPages = useQnaStore().totalPage || 1;
-      this.isLoading = false;
-    },
   },
   methods: {
     handleCheckLatest() {
@@ -92,32 +79,59 @@ export default {
         this.isSearched = true;
         this.isLoading = true;
 
-        const {selectedSubCategory, searchQuery, selectedType} = data;
-        this.selectedSubCategory = selectedSubCategory;
+        const {searchQuery, selectedSuperCategoryId, selectedSubCategoryId, selectedType} = data;
+
         this.searchQuery = searchQuery;
+        this.selectedSuperCategoryId = selectedSuperCategoryId;
+        this.selectedSubCategoryId = selectedSubCategoryId;
         this.selectedType = selectedType;
 
-        await useQnaStore().qnaSearch(this.selectedType, this.searchQuery, this.selectedSubCategory, this.selectedSort, this.selectedPage);
+        this.categoryId = (this.selectedSubCategoryId > 0) ? this.selectedSubCategoryId : this.selectedSuperCategoryId;
+        console.log("super" + this.selectedSuperCategoryId);
+        console.log("sub" + this.selectedSubCategoryId);
+        console.log("main" + this.categoryId);
+
+        await useQnaStore().qnaSearch(this.searchQuery, this.categoryId, this.selectedType, this.selectedSort, this.selectedPage);
+
         this.totalPages = useQnaStore().searchedTotalPage || 1;
         this.isLoading = false;
       }
     },
-    checking() {
-      console.log("back"+useQnaStore().totalPage);
+    async checking() {
       if (!this.isSearched) {
         if (useQnaStore().qnaCards.length > 0) {
-          this.totalPages = useQnaStore().totalPage || 1;
+          this.totalPages = await useQnaStore().totalPage || 1;
         } else {
           this.totalPages = 1;
         }
-        console.log(this.totalPages);
       } else {
         if (useQnaStore().qnaSearchedCards.length > 0) {
-          this.totalPages = useQnaStore().searchedTotalPage || 1;
+          this.totalPages = await useQnaStore().searchedTotalPage || 1;
         } else {
           this.totalPages = 1;
         }
-        console.log(this.totalPages);
+      }
+    },
+  },
+  watch: {
+    async selectedSort() {
+      if (!this.isSearched) {
+        await this.qnaStore.getQnaList(this.selectedSort, this.selectedPage - 1);
+        this.totalPages = useQnaStore().totalPage || 1;
+        this.isLoading = false;
+      } else {
+        await useQnaStore().qnaSearch(this.searchQuery, this.categoryId, this.selectedType, this.selectedSort, this.selectedPage);
+        this.totalPages = useQnaStore().searchedTotalPage || 1;
+        this.isLoading = false;
+      }
+    },
+    async selectedPage() {
+      if (!this.isSearched) {
+        this.totalPages = useQnaStore().totalPage || 1;
+        this.isLoading = false;
+      } else {
+        this.totalPages = useQnaStore().searchedTotalPage || 1;
+        this.isLoading = false;
       }
     },
   },
@@ -126,10 +140,8 @@ export default {
     QnaCardComponent,
     PaginationComponent,
     SearchComponent,
-  }
-  ,
+  },
 }
-;
 </script>
 
 

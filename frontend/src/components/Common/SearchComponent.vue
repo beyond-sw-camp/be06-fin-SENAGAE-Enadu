@@ -64,13 +64,13 @@ import {useUserStore} from "@/store/useUserStore";
 export default {
   data() {
     return {
-      selectedCategory: '', // 선택된 슈퍼 카테고리 id
-      selectedSubCategory: { // 선택된 하위 카테고리
+      selectedCategory: '',
+      selectedSubCategory: {
         id: 0,
         categoryName: ''
       },
-      searchQuery: '', // 검색어
-      selectedType: 'tc',  // 검색 범위
+      searchQuery: '',
+      selectedType: 'tc',
       show_more_category: false,
       sort: "latest",
     };
@@ -84,7 +84,7 @@ export default {
     selectCategory(subCategory) {
       this.selectedSubCategory = subCategory; // 탭 선택
     },
-    
+
     handleMoreCategory(){
       this.show_more_category = !this.show_more_category;
     },
@@ -135,9 +135,10 @@ export default {
         }
         case "/qna/list":
           this.$emit("search", {
-            selectedSubCategory: this.selectedSubCategory,
-            searchQuery: this.searchQuery,
-            selectedType: this.selectedType
+            searchQuery: this.searchQuery.trim(),
+            selectedSuperCategoryId: this.selectedCategory,
+            selectedSubCategoryId: this.selectedSubCategory.id,
+            selectedType: this.selectedType,
           });
       }
     },
