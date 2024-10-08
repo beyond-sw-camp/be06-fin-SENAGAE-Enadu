@@ -269,6 +269,36 @@ export const useWikiStore = defineStore("wiki", {
                 this.wikiCards = [];
                 this.searchTotalPages = 1;
             }
+        },
+
+        async fetchUserDetails() {
+            try {
+                const response = await axios.get(backend + "/mypage/info", {
+                    withCredentials: true
+                });
+
+                if (response && response.data && response.data.isSuccess) {
+                    const userDetails = response.data.result;
+                    console.log(userDetails);
+
+                    if (!userDetails.grade) {
+                        alert("로그인이 필요합니다.");
+                        return false;
+                    }
+
+                    if (userDetails.grade === "뉴비") {
+                        alert("뉴비 등급은 위키를 작성할 수 없습니다.");
+                        return false;
+                    }
+
+                    return true;
+                } else {
+                    throw new Error("유저 정보를 가져오지 못했습니다.");
+                }
+            } catch (error) {
+                alert("로그인이 필요합니다.");
+                return false;
+            }
         }
     }
 });
