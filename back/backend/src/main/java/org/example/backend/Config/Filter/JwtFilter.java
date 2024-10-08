@@ -6,7 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.backend.Security.CustomUserDetails;
-import org.example.backend.User.Model.Entity.User;
+import com.example.common.User.Model.Entity.User;
 import org.example.backend.Util.JwtUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

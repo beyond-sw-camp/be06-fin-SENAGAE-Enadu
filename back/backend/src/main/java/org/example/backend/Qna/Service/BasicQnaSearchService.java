@@ -1,15 +1,17 @@
 package org.example.backend.Qna.Service;
 
+import com.example.common.Category.Model.Entity.Category;
+import com.example.common.Category.Repository.CategoryRepository;
+import com.example.common.Qna.Repository.QnaRepositoryCustomImpl;
+import com.example.common.Qna.model.Entity.QnaBoard;
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Category.Model.Entity.Category;
-import org.example.backend.Category.Repository.CategoryRepository;
+
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidQnaException;
-import org.example.backend.Qna.Repository.QnaRepositoryCustomImpl;
-import org.example.backend.Qna.Repository.QuestionRepository;
-import org.example.backend.Qna.model.Entity.QnaBoard;
+
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.req.GetQnaSearchReq;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,7 +27,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BasicQnaSearchService implements QnaSearchService {
-    private final QuestionRepository questionRepository;
     private final CategoryRepository categoryRepository;
     private final QnaRepositoryCustomImpl qnaRepositoryCustom;
 

@@ -1,8 +1,8 @@
 package org.example.backend.Security;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.User.Model.Entity.User;
-import org.example.backend.User.Repository.UserRepository;
+import com.example.common.User.Model.Entity.User;
+import com.example.common.User.Repository.UserRepository;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

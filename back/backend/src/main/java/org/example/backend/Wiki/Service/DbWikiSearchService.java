@@ -1,14 +1,14 @@
 package org.example.backend.Wiki.Service;
 
+import com.example.common.Category.Repository.CategoryRepository;
+import com.example.common.Wiki.Model.Entity.Wiki;
+import com.example.common.Wiki.Repository.WikiRepository;
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Category.Repository.CategoryRepository;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidCategoryException;
 import org.example.backend.Exception.custom.InvalidWikiException;
-import org.example.backend.Wiki.Model.Entity.Wiki;
 import org.example.backend.Wiki.Model.Req.GetWikiSearchReq;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
-import org.example.backend.Wiki.Repository.WikiRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

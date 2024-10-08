@@ -3,14 +3,9 @@ package org.example.backend.EmailVerify.Controller;
 import lombok.RequiredArgsConstructor;
 
 import org.example.backend.Common.BaseResponse;
-import org.example.backend.EmailVerify.Model.Entity.EmailVerify;
+import com.example.common.EmailVerify.Model.Entity.EmailVerify;
 import org.example.backend.EmailVerify.Service.EmailVerifyService;
-import org.example.backend.Exception.custom.InvalidEmailException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping(value="/email")
