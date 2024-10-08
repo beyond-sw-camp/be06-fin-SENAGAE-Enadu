@@ -58,14 +58,16 @@ services:
     depends_on:
       - elasticsearch
   elasticsearch:
-    image: elasticsearch:7.17.24
+    build:
+      context: .
+      dockerfile: Elastic_Dockerfile
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
       - discovery.type=single-node
       - ELASTIC_PASSWORD=qwer1234
-      - ES_JAVA_OPT=-Xmx256m -Xms256m
+      - ES_JAVA_OPTS=-Xmx256m -Xms256m
     container_name: elasticsearch
     volumes:
       - ./elasticsearch/data/:/usr/share/elasticsearch/data/

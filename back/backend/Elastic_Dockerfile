@@ -1,0 +1,5 @@
+FROM elasticsearch:7.17.24
+
+RUN elasticsearch-plugin install analysis-nori
+
+COPY elasticsearch/config/index-settings.json /usr/share/elasticsearch/config/index-settings.json

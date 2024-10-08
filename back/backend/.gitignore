@@ -39,4 +39,4 @@ out/
 .DS_Store
 /db/
 /logstash/
-/elasticsearch/
+/elasticsearch/data/
