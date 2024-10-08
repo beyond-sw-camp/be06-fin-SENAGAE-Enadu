@@ -101,31 +101,34 @@ export default {
     return {
       myTitle: '',
       myText: '',
+      myCategoryId: 0,
+
       selectedSuperCategory: "",
       selectedSubCategory: "",
       showSuperModal: false,
       showSubModal: false,
-      myCategory: 0,
+
     };
   },
   computed: {
     ...mapStores(useQnaStore),
     ...mapStores(useCommonStore),
+
     isNullOrEmpty() {
-      return (this.myTitle === '' || this.myText === '' || this.selectedSuperCategory === '')
+      return (this.myTitle === '' || this.myText === '' || this.selectedSuperCategory === '');
     },
   },
   methods: {
     async click() {
-      if (!this.myTitle || !this.myText || !this.myCategory) {
+      if (!this.myTitle || !this.myText || !this.myCategoryId) {
         alert('모든 필드를 올바르게 입력해 주세요.');
       }
       else {
         try {
-          await useQnaStore().registerQna(this.myTitle, this.myText, this.myCategory);
+          await useQnaStore().registerQna(this.myTitle, this.myText, this.myCategoryId);
           await useQnaStore().getQnaDetail(this.$route.params.id);
           alert('등록이 완료되었습니다.');
-          this.$router.push('/qna/detail/'+useQnaStore().registered);
+          this.$router.push('/qna/detail/'+useQnaStore().registeredQnaId);
           this.cancel();
         }
         catch (error){
@@ -136,9 +139,10 @@ export default {
     cancel() {
       this.myTitle = '';
       this.myText = '';
+      this.myCategoryId='';
+
       this.selectedSuperCategory = '';
       this.selectedSubCategory = '';
-      this.myCategory='';
     },
     openSuperCategoryModal() {
       this.showSuperModal = true;
@@ -151,7 +155,6 @@ export default {
       this.closeSuperCategoryModal();
       this.openSubCategoryModal();
     },
-
     openSubCategoryModal() {
       if (this.selectedSuperCategory) {
         this.showSubModal = true;

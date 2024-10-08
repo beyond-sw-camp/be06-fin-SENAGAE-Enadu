@@ -207,6 +207,7 @@ export default {
 
       isShowAdopted: true,
       isShowEdited: false,
+      closeAdditional: false,
 
       isCheckedAnsLike: false,
       isCheckedAnsHate: false,
@@ -298,6 +299,8 @@ export default {
     handleAdoptUpdate(newIsEdit) {
       this.isAdopted = false;
       this.isAdopted = newIsEdit;
+      this.$emit("clickAdopted", true);
+
     },
     handleCommentRegistered(success) {
       if (success) {

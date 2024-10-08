@@ -15,27 +15,27 @@
     <div
         class="absolute right-0 mt-2 w-[152px] origin-top-right rounded-md bg-white shadow-lg ring-black ring-opacity-5 focus:outline-none md:mt-4 dark:border dark:border-gray-700 dark:bg-gray-800"
         aria-labelledby="headlessui-menu-button-:r1:" id="headlessui-menu-items-:r5:" role="menu" tabindex="0"
-        v-show="isOpen">
-        <button v-if="question"
-                class="text-blue-500 block px-4 py-2 text-sm" id="headlessui-menu-item-:r6:" role="menuitem"
-                tabindex="-1" data-headlessui-state="" @click="doQuestion">다른 질문하기
-        </button>
-        <button v-if="adopted"
-                class="text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-200 block px-4 py-2 text-sm"
-                id="headlessui-menu-item-:r7:" role="menuitem" tabindex="-1" data-headlessui-state=""
-                @click="doAdopting">채택하기
-        </button>
-        <button v-if="editedAndDelete"
-                class="text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-200 block px-4 py-2 text-sm"
-                id="headlessui-menu-item-:r8:" role="menuitem" tabindex="-1" data-headlessui-state=""
-                @click="doEditing">수정하기
-        </button>
-        <button v-if="editedAndDelete"
-                class="text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-200 block px-4 py-2 text-sm"
-                id="headlessui-menu-item-:r9:" role="menuitem" tabindex="-1" data-headlessui-state=""
-                @click="doDeleting">
-          삭제하기
-        </button>
+        v-show="!qnaStore.isAdopted && isOpen">
+      <button v-if="qnaRegister"
+              class="text-blue-500 block px-4 py-2 text-sm" id="headlessui-menu-item-:r6:" role="menuitem"
+              tabindex="-1" data-headlessui-state="" @click="doQuestion">다른 질문하기
+      </button>
+      <button v-if="adopted && adopter"
+              class="text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-200 block px-4 py-2 text-sm"
+              id="headlessui-menu-item-:r7:" role="menuitem" tabindex="-1" data-headlessui-state=""
+              @click="doAdopting">채택하기
+      </button>
+      <button v-if="editedAndDelete"
+              class="text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-200 block px-4 py-2 text-sm"
+              id="headlessui-menu-item-:r8:" role="menuitem" tabindex="-1" data-headlessui-state=""
+              @click="doEditing">수정하기
+      </button>
+      <button v-if="editedAndDelete"
+              class="text-gray-600 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-200 block px-4 py-2 text-sm"
+              id="headlessui-menu-item-:r9:" role="menuitem" tabindex="-1" data-headlessui-state=""
+              @click="doDeleting">
+        삭제하기
+      </button>
     </div>
   </div>
 </template>
@@ -51,17 +51,24 @@ export default {
     return {
       isOpen: false,
       editedAndDelete: false,
-      question: false,
+
       isEdit: false,
       isAdopted: false,
+
+      qnaOwner: false,
+      adopter: false,
+      qnaRegister: false,
+      answerExist: false,
     }
   },
   props: ["adopted", "detail", "isQuestion"],
   mounted() {
     this.showEditAndDelete();
     this.isOpen = false;
-    this.question = false;
-    this.checkQna();
+    this.qnaRegister = false;
+    this.checkIsOwner();
+    this.isQnaRegister();
+    this.isAdopter();
   },
   methods: {
     toggleMenu() {
@@ -118,9 +125,26 @@ export default {
 
       }
     },
-    checkQna() {
-      if (this.isQuestion === true) {
-        this.question = true;
+    checkIsOwner() {
+      if (useUserStore().isLoggedIn && this.detail.userId === useUserStore().userId) {
+        this.qnaOwner = true;
+      }
+    },
+    isQnaRegister() {
+      if (this.isQuestion === true && useUserStore().isLoggedIn && !this.detail.userId === useUserStore().userId) {
+        this.qnaRegister = true;
+      }
+    },
+    AnswerInQna() {
+      this.answerExist = useQnaStore().qnaAnswers.some(answer => answer.id === this.detail.id);
+      console.log("ansEX" + this.answerExist);
+    },
+    isAdopter() {
+      if (this.isQuestion !== true && useQnaStore().qnaDetail.userId === useUserStore().userId) {
+        this.AnswerInQna();
+        if (this.answerExist) {
+          this.adopter = true;
+        }
       }
     },
   },

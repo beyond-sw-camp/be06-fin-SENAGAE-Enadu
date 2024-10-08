@@ -4,9 +4,11 @@
     <div v-else>
       <QnaDetailHeader v-bind:qnaDetail=qnaStore.qnaDetail />
       <QnaDetailComponent v-bind:qnaDetail=qnaStore.qnaDetail />
-      <QnaAnswerDetailComponent v-for="qnaAnswer in qnaStore.qnaAnswers"
+      <QnaAnswerDetailComponent
+          v-for="qnaAnswer in qnaStore.qnaAnswers"
                                 :key="qnaAnswer.id"
-                                :qnaAnswer="qnaAnswer"/>
+                                :qnaAnswer="qnaAnswer"
+      />
     </div>
   </div>
 </template>
@@ -31,6 +33,11 @@ export default {
     async getQnaDetail() {
       await useQnaStore().getQnaDetail(this.$route.params.id);
       this.isLoading = false
+    },
+    handleAdopted(){
+      this.isLoading = true;
+      console.log(this.isLoading);
+      this.isLoading = false;
     }
   },
   computed: {
