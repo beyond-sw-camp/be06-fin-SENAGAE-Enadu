@@ -48,3 +48,36 @@ services:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+  kibana:
+    image: kibana:7.17.24
+    ports:
+      - "5601:5601"
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+  elasticsearch:
+    image: elasticsearch:7.17.24
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=qwer1234
+      - ES_JAVA_OPT=-Xmx256m -Xms256m
+    container_name: elasticsearch
+    volumes:
+      - ./elasticsearch/data/:/usr/share/elasticsearch/data/
+  logstash:
+    image: logstash:7.17.24
+    container_name: logstash
+    ports:
+      - "5001:5001/tcp"
+      - "5001:5001/udp"
+      - "9600:9600"
+    volumes:
+      - ./logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash/config/mariadb-java-client-3.4.1.jar:/usr/share/logstash/mariadb-java-client-3.4.1.jar
+    depends_on:
+      - elasticsearch
