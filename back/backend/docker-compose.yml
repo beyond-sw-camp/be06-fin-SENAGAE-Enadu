@@ -58,9 +58,7 @@ services:
     depends_on:
       - elasticsearch
   elasticsearch:
-    build:
-      context: .
-      dockerfile: Elastic_Dockerfile
+    image: elasticsearch:7.17.24
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -71,6 +69,17 @@ services:
     container_name: elasticsearch
     volumes:
       - ./elasticsearch/data/:/usr/share/elasticsearch/data/
+      - ./elasticsearch/config/index-settings.json:/usr/share/elasticsearch/config/index-settings.json
+    command: >
+      bash -c "
+      bin/elasticsearch-plugin install analysis-nori;
+      (sleep 60
+      && curl -X PUT -u elastic:qwer1234 'http://localhost:9200/qna_board' -H 'Content-Type: application/json' -d @/usr/share/elasticsearch/config/index-settings.json
+      && curl -X PUT -u elastic:qwer1234 'http://localhost:9200/wiki' -H 'Content-Type: application/json' -d @/usr/share/elasticsearch/config/index-settings.json
+      && curl -X PUT -u elastic:qwer1234 'http://localhost:9200/error_archive' -H 'Content-Type: application/json' -d @/usr/share/elasticsearch/config/index-settings.json
+      ) &
+      /usr/local/bin/docker-entrypoint.sh;
+      "
   logstash:
     image: logstash:7.17.24
     container_name: logstash
