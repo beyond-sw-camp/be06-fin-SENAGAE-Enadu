@@ -1,11 +1,24 @@
 server:
   port: 9090
 spring:
+  batch:
+    job:
+      name: answerJob
+    jdbc:
+      datasource: batchDataSource
+      initialize-schema: always
   datasource:
-    url: ${DB_HOST}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: org.mariadb.jdbc.Driver
+    main:
+      url: ${DB_HOST}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.mariadb.jdbc.Driver
+    batch:
+      url: ${BATCH_DB_HOST}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.mariadb.jdbc.Driver
+
 
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
