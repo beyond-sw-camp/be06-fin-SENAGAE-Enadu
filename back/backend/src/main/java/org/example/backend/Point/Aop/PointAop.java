@@ -5,12 +5,12 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
-import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
+import com.example.common.ErrorArchive.Model.Entity.ErrorArchive;
+import com.example.common.ErrorArchive.Repository.ErrorArchiveReository;
 import org.example.backend.Point.Model.Enum.PointDescriptionEnum;
 import org.example.backend.Point.Service.PointService;
-import org.example.backend.Qna.Repository.AnswerRepository;
-import org.example.backend.Qna.model.Entity.Answer;
+import com.example.common.Qna.Repository.AnswerRepository;
+import com.example.common.Qna.model.Entity.Answer;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.stereotype.Component;
 

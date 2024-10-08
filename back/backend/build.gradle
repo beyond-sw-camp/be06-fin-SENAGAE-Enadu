@@ -2,6 +2,7 @@ plugins {
 }
 
 dependencies {
+	implementation project(':common')
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation group: 'io.awspring.cloud', name: 'spring-cloud-starter-aws', version: '2.4.2'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -16,10 +17,6 @@ dependencies {
 	implementation 'org.webjars:stomp-websocket:2.3.3-1'
 	implementation 'org.springframework.kafka:spring-kafka'
 
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
-	implementation "com.querydsl:querydsl-core"
-	implementation "com.querydsl:querydsl-collections"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 에러 대응 코드
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 에러 대응 코드
 

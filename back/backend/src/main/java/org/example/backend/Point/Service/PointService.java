@@ -1,18 +1,19 @@
 package org.example.backend.Point.Service;
 
+import com.example.common.Point.Repository.PointRepository;
+import com.example.common.User.Model.Entity.User;
+import com.example.common.User.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Common.UserGradeIconManager;
 import org.example.backend.Exception.custom.InvalidUserException;
-import org.example.backend.Point.Model.Entity.PointDetail;
+import com.example.common.Point.Model.Entity.PointDetail;
 import org.example.backend.Point.Model.Enum.PointDescriptionEnum;
 import org.example.backend.Point.Model.Res.GetMyRankRes;
 import org.example.backend.Point.Model.Res.GetPointHistoryRes;
 import org.example.backend.Point.Model.Res.GetPointRankRes;
-import org.example.backend.Point.Repository.PointRepository;
-import org.example.backend.User.Model.Entity.User;
-import org.example.backend.User.Repository.UserRepository;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

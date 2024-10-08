@@ -1,16 +1,16 @@
 package org.example.backend.Main.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
+import com.example.common.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
-import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
+import com.example.common.ErrorArchive.Repository.ErrorArchiveReository;
 import org.example.backend.Main.Model.Res.MainRes;
-import org.example.backend.Qna.Repository.QuestionRepository;
-import org.example.backend.Qna.model.Entity.QnaBoard;
+import com.example.common.Qna.Repository.QuestionRepository;
+import com.example.common.Qna.model.Entity.QnaBoard;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
-import org.example.backend.Wiki.Model.Entity.Wiki;
+import com.example.common.Wiki.Model.Entity.Wiki;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
-import org.example.backend.Wiki.Repository.WikiRepository;
+import com.example.common.Wiki.Repository.WikiRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

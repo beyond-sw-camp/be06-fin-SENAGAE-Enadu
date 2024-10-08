@@ -1,16 +1,20 @@
 package org.example.backend.ErrorArchive.Service;
 
+import com.example.common.Category.Model.Entity.Category;
+import com.example.common.Category.Repository.CategoryRepository;
+import com.example.common.ErrorArchive.Model.Entity.ErrorArchive;
+import com.example.common.ErrorArchive.Repository.ErrorArchiveReository;
+import com.example.common.User.Model.Entity.User;
 import lombok.RequiredArgsConstructor;
-import org.example.backend.Category.Model.Entity.Category;
-import org.example.backend.Category.Repository.CategoryRepository;
+
 import org.example.backend.Common.BaseResponseStatus;
-import org.example.backend.ErrorArchive.Model.Entity.ErrorArchive;
+
 import org.example.backend.ErrorArchive.Model.Req.GetErrorArchiveSearchReq;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
-import org.example.backend.ErrorArchive.Repository.ErrorArchiveReository;
+
 import org.example.backend.Exception.custom.InvalidCategoryException;
 import org.example.backend.Exception.custom.InvalidErrorBoardException;
-import org.example.backend.User.Model.Entity.User;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

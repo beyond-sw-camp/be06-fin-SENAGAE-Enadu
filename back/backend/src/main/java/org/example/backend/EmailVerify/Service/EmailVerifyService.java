@@ -2,8 +2,8 @@ package org.example.backend.EmailVerify.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
-import org.example.backend.EmailVerify.Model.Entity.EmailVerify;
-import org.example.backend.EmailVerify.Repository.EmailVerifyRepository;
+import com.example.common.EmailVerify.Model.Entity.EmailVerify;
+import com.example.common.EmailVerify.Repository.EmailVerifyRepository;
 import org.example.backend.Exception.custom.InvalidEmailException;
 import org.example.backend.User.Service.UserService;
 import org.springframework.beans.factory.annotation.Value;
