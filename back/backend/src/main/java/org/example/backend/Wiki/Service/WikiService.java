@@ -48,6 +48,9 @@ public class WikiService {
         if (user.isEmpty()) {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
         }
+        if(user.get().getGrade().equals("뉴비")) {
+            throw new InvalidWikiException(BaseResponseStatus.WIKI_PERMISSION_DENIED);
+        }
         // Wiki 등록
         Wiki registerWiki = Wiki.builder()
                 .category(categoryRepository.findById(wikiRegisterReq.getCategoryId()).orElseThrow(() -> new InvalidCategoryException(BaseResponseStatus.CATEGORY_NOT_FOUND_CATEGORY)))
