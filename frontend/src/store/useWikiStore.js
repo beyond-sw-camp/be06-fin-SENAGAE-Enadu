@@ -279,14 +279,15 @@ export const useWikiStore = defineStore("wiki", {
 
                 if (response && response.data && response.data.isSuccess) {
                     const userDetails = response.data.result;
+                    const grade = userDetails.grade;
                     console.log(userDetails);
 
-                    if (!userDetails.grade) {
+                    if (!grade) {
                         alert("로그인이 필요합니다.");
                         return false;
                     }
 
-                    if (userDetails.grade === "뉴비") {
+                    if (grade === "뉴비") {
                         alert("뉴비 등급은 위키를 작성할 수 없습니다.");
                         return false;
                     }
