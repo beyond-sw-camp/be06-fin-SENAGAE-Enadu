@@ -3,7 +3,6 @@ package org.example.backend.Qna.Controller;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Qna.Service.BasicQnaSearchService;
-import org.example.backend.Qna.Service.ElasticQnaSearchService;
 import org.example.backend.Qna.Service.QnaService;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +25,6 @@ import java.util.Map;
 public class QuestionController {
     private final QnaService qnaService;
     private final BasicQnaSearchService basicQnaSearchService;
-    private final ElasticQnaSearchService elasticQnaSearchService;
 
     //qna 등록
     @PostMapping()
@@ -88,12 +87,6 @@ public class QuestionController {
     @GetMapping("/search")
     public BaseResponse<List<GetQnaListRes>> getQnaSearch(GetQnaSearchReq getQnaSearchReq) {
         List<GetQnaListRes> qnaListRes = basicQnaSearchService.getQnaSearch(getQnaSearchReq);
-        return new BaseResponse<>(qnaListRes);
-    }
-
-    @GetMapping("/search2") //엘라스틱 서치 테스트 용도
-    public BaseResponse<List<GetQnaListRes>> getQnaSearch2(GetQnaSearchReq getQnaSearchReq) {
-        List<GetQnaListRes> qnaListRes = elasticQnaSearchService.getQnaSearch(getQnaSearchReq);
         return new BaseResponse<>(qnaListRes);
     }
 
