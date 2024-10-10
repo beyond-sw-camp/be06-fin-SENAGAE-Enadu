@@ -13,11 +13,6 @@ spring:
       hibernate:
         format_sql: true
 
-  elasticsearch:
-    username: ${ELASTIC_USERNAME}
-    password: ${ELASTIC_PASSWORD}
-    host: ${ELASTIC_HOST}
-
   servlet:
     multipart:
       max-file-size: 20MB
@@ -85,4 +80,3 @@ frontend:
   url: ${FRONT_URL}
 kafka:
   url: ${KAFKA_URL}
-
