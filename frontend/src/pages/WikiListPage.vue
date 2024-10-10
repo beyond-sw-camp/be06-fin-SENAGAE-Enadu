@@ -2,7 +2,7 @@
   <TagComponent :tagTitle="'WIKI'" :tagSubTitle="'당신의 위키를 만들어보세요'" />
   <div class="custom-container" style="margin-top: 0;">
     <div class="wiki-inner">
-      <WikiSearchComponent @search="handleSearch"/>
+      <WikiSearchComponent @search="handleSearch" />
 
       <div class="create-wiki-btn-container">
         <button @click="navigateToWikiRegister" class="create-wiki-btn">작성하기</button>
@@ -13,7 +13,7 @@
       </div>
 
       <div class="wiki-list-grid" v-if="!wikiStore.isLoading">
-        <WikiCardComponent v-for="wikiCard in wikiStore.wikiCards" :key="wikiCard.id" :wikiCard="wikiCard"/>
+        <WikiCardComponent v-for="wikiCard in wikiStore.wikiCards" :key="wikiCard.id" :wikiCard="wikiCard" />
       </div>
 
       <div v-if="!wikiStore.isLoading && wikiStore.wikiCards.length === 0" style="text-align: center;">
@@ -22,22 +22,18 @@
     </div>
 
     <div class="pagination-container" v-if="!isLoading && totalPage > 0">
-      <PaginationComponent
-          :totalPage="totalPage"
-          :nowPage="selectedPage"
-          @updatePage="handlePageUpdate"
-      />
+      <PaginationComponent :totalPage="totalPage" :nowPage="selectedPage" @updatePage="handlePageUpdate" />
     </div>
   </div>
 </template>
 
 <script>
-import {useWikiStore} from "@/store/useWikiStore";
+import { useWikiStore } from "@/store/useWikiStore";
 import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import WikiSearchComponent from "@/components/Common/WikiSearchComponent .vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
-import {mapStores} from "pinia";
+import { mapStores } from "pinia";
 
 export default {
   name: "WikiListPage",
@@ -98,8 +94,12 @@ export default {
       }
     },
 
-    navigateToWikiRegister() {
-      this.$router.push("/wiki/register");
+    async navigateToWikiRegister() {
+      const canProceed = await this.wikiStore.fetchUserDetails();
+
+      if (canProceed) {
+        this.$router.push("/wiki/register");
+      }
     }
   },
 
