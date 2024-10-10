@@ -66,6 +66,7 @@ services:
       - discovery.type=single-node
       - ELASTIC_PASSWORD=qwer1234
       - ES_JAVA_OPTS=-Xmx256m -Xms256m
+      - xpack.security.enabled=true
     container_name: elasticsearch
     volumes:
       - ./elasticsearch/data/:/usr/share/elasticsearch/data/
