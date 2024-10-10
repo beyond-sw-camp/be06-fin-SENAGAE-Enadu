@@ -65,4 +65,31 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
 
         return new PageImpl<>(results, pageable, total);
     }
+
+    @Override
+    public Page<QnaBoard> getQnaList(String resolved, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qQnaBoard.enable.isTrue());
+
+        switch (resolved) {
+            case "ALL" -> builder.and(qQnaBoard.adoptedAnswerId.isNull())
+                    .or(qQnaBoard.adoptedAnswerId.gt(0));
+            case "RESOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.gt(0));
+            case "UNSOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.isNull());
+        }
+
+        List<QnaBoard> results = queryFactory.selectFrom(qQnaBoard)
+                .where(builder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // 페이징 처리 위해 보내는 값
+        long total = queryFactory.selectFrom(qQnaBoard)
+                .where(builder)
+                .fetchCount();
+
+        return new PageImpl<>(results, pageable, total);
+
+    }
 }
