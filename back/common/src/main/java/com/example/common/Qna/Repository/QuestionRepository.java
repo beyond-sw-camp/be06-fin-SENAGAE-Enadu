@@ -7,11 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
-    List<QnaBoard> findByAnswerCount(Integer answerCount);
 
     Optional<QnaBoard> findByIdAndEnableTrue(Long id);
 
@@ -56,5 +55,7 @@ public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
             "JOIN FETCH q.qnaScrapList qs " +
             "WHERE qs.user.id = :userId AND q.enable = true")
     Page<QnaBoard> findByQnaScrapListUserIdAndEnableTrueWithFetch(@Param("userId") Long userId, Pageable pageable);
+
+    Page<QnaBoard> findByAnswerCountAndEnableTrue(Integer answerCount, Pageable pageable);
 
 }

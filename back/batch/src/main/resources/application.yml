@@ -1,12 +1,21 @@
 server:
   port: 9090
 spring:
+  main:
+    web-application-type: none
   batch:
     job:
       name: answerJob
     jdbc:
       datasource: batchDataSource
       initialize-schema: always
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: ${GCLOUD_ID}
+          location: asia-northeast3
+
   datasource:
     main:
       url: ${DB_HOST}
@@ -18,7 +27,6 @@ spring:
       username: ${DB_USERNAME}
       password: ${DB_PASSWORD}
       driver-class-name: org.mariadb.jdbc.Driver
-
 
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
@@ -32,3 +40,7 @@ spring:
     level:
       org.hibernate.SQL: debug
       org.hibernate.orm.jdbc.bind: trace
+      org:
+        springframework:
+          batch: DEBUG
+          transaction: DEBUG
