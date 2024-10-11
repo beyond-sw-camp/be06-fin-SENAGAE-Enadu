@@ -66,6 +66,7 @@ logging:
     org.apache.kafka: OFF
     kafka: OFF
     org.springframework.kafka: OFF
+    org.springframework.data.elasticsearch: DEBUG  # Elasticsearch 관련 디버깅 로그 활성화
 
 cloud:
   aws:
