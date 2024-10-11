@@ -1,0 +1,12 @@
+#logstash-yml-configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-yml
+  namespace: elastic-system  # 사용할 네임스페이스에 맞게 수정
+data:
+  logstash.yml: |
+    http.host: "0.0.0.0"  # HTTP API가 모든 IP에서 접근 가능하도록 설정
+    xpack.monitoring.elasticsearch.hosts: [ "https://quickstart-es-http:9200" ]
+    xpack.monitoring.elasticsearch.username: "elastic"
+    xpack.monitoring.elasticsearch.password: "${ELASTIC_PASSWORD}"
