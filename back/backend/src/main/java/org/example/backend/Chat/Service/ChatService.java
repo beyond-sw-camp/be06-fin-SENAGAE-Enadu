@@ -129,7 +129,6 @@ public class ChatService {
         } else {
             chatRoom = chatRoomOptional.get();
         }
-        System.out.println("에러");
         return StartChatRes.builder()
                 .chatRoomId(chatRoom.getId())
                 .recipientId(recipient.getId())
