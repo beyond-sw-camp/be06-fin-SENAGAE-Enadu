@@ -10,8 +10,8 @@
   <span :class="['grade', dynamicClass]">{{ qnaDetail.grade }}</span>
   <div class="label-custom">
     <div class="ui tag labels">
-      <CategoryComponent v-if="qnaDetail.superCategoryName !== null" :category=qnaDetail.superCategoryName :isShowSlash=true />
-      <CategoryComponent v-if="qnaDetail.subCategoryName !== null" :category=qnaDetail.subCategoryName :isShowSlash="qnaDetail.superCategoryName === null" />
+      <CategoryComponent v-if="qnaDetail.superCategoryName !== null" :category=qnaDetail.superCategoryName />
+      <CategoryComponent v-if="qnaDetail.subCategoryName !== null" :category=qnaDetail.subCategoryName :is-sub="true"/>
     </div>
   </div>
   <div class="qna-detail-top-items" v-if="isLoggedIn">
@@ -177,12 +177,14 @@ export default {
       }
     },
     checking() {
+      console.log("id" + this.qnaDetail.id);
       this.qnaLikeCnt = this.qnaDetail.likeCnt;
       this.qnaHateCnt = this.qnaDetail.hateCnt;
 
       console.log("checkingScrap" + this.qnaDetail.checkScrap);
       this.isCheckedScrap = this.qnaDetail.checkScrap;
 
+      console.log("checking" + this.qnaDetail.checkLikeOrHate);
       if (this.qnaDetail.checkLikeOrHate === true) {
         this.isCheckedLike = true;
         this.isCheckedHate = false
@@ -196,6 +198,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.qnaDetail);
     this.isLoggedIn = useUserStore().isLoggedIn;
     this.isReLoading = false;
     this.checking();
