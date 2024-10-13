@@ -1,15 +1,19 @@
 package com.example.common.Qna.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import com.example.common.Qna.model.Entity.QnaBoard;
 import com.example.common.Qna.model.Entity.QQnaBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,7 +25,7 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
     QQnaBoard qQnaBoard = QQnaBoard.qnaBoard;
 
     @Override
-    public Page<QnaBoard> findByKeyword(String keyword, boolean useSuperCategory, Long categoryId, String type, Pageable pageable) {
+    public Page<QnaBoard> findByKeyword(String keyword, boolean useSuperCategory, Long categoryId, String type, String resolved, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qQnaBoard.enable.isTrue());
 
@@ -52,11 +56,31 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
             }
         }
 
-        List<QnaBoard> results = queryFactory.selectFrom(qQnaBoard)
+        switch (resolved) {
+            case "ALL" -> builder.and(qQnaBoard.adoptedAnswerId.isNull())
+                    .or(qQnaBoard.adoptedAnswerId.gt(0));
+            case "RESOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.gt(0));
+            case "UNSOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.isNull());
+        }
+
+        JPAQuery<QnaBoard> query = queryFactory.selectFrom(qQnaBoard)
                 .where(builder)
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+                .limit(pageable.getPageSize());
+
+        if (pageable.getSort() != null) {
+            pageable.getSort().forEach(order -> {
+
+                switch (order.getProperty()) {
+                    case "likeCount" -> query.orderBy(qQnaBoard.likeCount.desc());
+                    case "createdAt" -> query.orderBy(qQnaBoard.createdAt.desc());
+                }
+            });
+        } else {
+            query.orderBy(qQnaBoard.createdAt.desc());
+        }
+
+        List<QnaBoard> results = query.fetch();
 
         // 페이징 처리 위해 보내는 값
         long total = queryFactory.selectFrom(qQnaBoard)
@@ -78,11 +102,25 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
             case "UNSOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.isNull());
         }
 
-        List<QnaBoard> results = queryFactory.selectFrom(qQnaBoard)
+        JPAQuery<QnaBoard> query = queryFactory.selectFrom(qQnaBoard)
                 .where(builder)
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+                .limit(pageable.getPageSize());
+
+        if (pageable.getSort() != null) {
+            pageable.getSort().forEach(order -> {
+
+                switch (order.getProperty()) {
+                    case "likeCount" -> query.orderBy(qQnaBoard.likeCount.desc());
+                    case "createdAt" -> query.orderBy(qQnaBoard.createdAt.desc());
+                }
+            });
+        } else {
+            query.orderBy(qQnaBoard.createdAt.desc());
+        }
+
+        List<QnaBoard> results = query.fetch();
+
 
         // 페이징 처리 위해 보내는 값
         long total = queryFactory.selectFrom(qQnaBoard)
@@ -90,6 +128,5 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
                 .fetchCount();
 
         return new PageImpl<>(results, pageable, total);
-
     }
 }
