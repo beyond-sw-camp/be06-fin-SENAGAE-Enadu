@@ -15,4 +15,5 @@ public class GetQnaSearchReq {
     private String sort;
     private Integer page;
     private Integer size;
+    private String resolved;
 }

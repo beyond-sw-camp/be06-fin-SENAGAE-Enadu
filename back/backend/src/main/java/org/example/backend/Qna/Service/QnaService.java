@@ -101,7 +101,8 @@ public class QnaService {
         return GetQuestionDetailRes.builder()
                 .id(qnaBoard.getId())
                 .userId(qnaBoard.getUser().getId())
-                .superCategoryId(qnaBoard.getCategory().getSuperCategory().getId())
+                .superCategoryId(qnaBoard.getCategory().getSuperCategory() != null ?
+                        qnaBoard.getCategory().getSuperCategory().getId() : null)
                 .subCategoryId(qnaBoard.getCategory().getId())
                 .title(qnaBoard.getTitle())
                 .content(qnaBoard.getContent())

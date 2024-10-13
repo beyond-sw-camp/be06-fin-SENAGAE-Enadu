@@ -54,7 +54,7 @@ public class BasicQnaSearchService implements QnaSearchService {
         Page<QnaBoard> qnaBoardPage;
 
         if (getQnaSearchReq.getType().equals("tc") || getQnaSearchReq.getType().equals("t") || getQnaSearchReq.getType().equals("c")) {
-            qnaBoardPage = qnaRepositoryCustom.findByKeyword(getQnaSearchReq.getKeyword(), useSuperCategory, getQnaSearchReq.getCategoryId(), getQnaSearchReq.getType(), pageable);
+            qnaBoardPage = qnaRepositoryCustom.findByKeyword(getQnaSearchReq.getKeyword(), useSuperCategory, getQnaSearchReq.getCategoryId(), getQnaSearchReq.getType(), getQnaSearchReq.getResolved(), pageable);
 
         } else {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
@@ -74,6 +74,7 @@ public class BasicQnaSearchService implements QnaSearchService {
                                 .likeCnt(qnaBoard.getLikeCount())
                                 .answerCnt(qnaBoard.getAnswerCount())
                                 .createdAt(qnaBoard.getCreatedAt())
+                                .totalPage(qnaBoardPage.getTotalPages())
                                 .build())
                 .collect(Collectors.toList());
     }
