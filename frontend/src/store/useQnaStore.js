@@ -74,11 +74,12 @@ export const useQnaStore = defineStore("qna", {
             }
         },
 
-        async getQnaList(sort, page) {
+        async getQnaList(sort, page, resolved) {
             const params = {
                 sort: sort,
                 page: page,
-                size: 12
+                size: 12,
+                resolved: resolved
             };
 
             try {
@@ -88,7 +89,7 @@ export const useQnaStore = defineStore("qna", {
                 this.qnaCards = res.data.result;
                 this.totalPage = this.qnaCards[0].totalPage;
             } catch (error) {
-                alert("질문 목록 데이터 요청 중 에러가 발생했습니다.");
+                return false;
             }
         }, async getQnaDetail(id) {
             try {
@@ -254,7 +255,7 @@ export const useQnaStore = defineStore("qna", {
             }
         },
 
-        async qnaSearch(keyword, categoryId, type, sort, page) {
+        async qnaSearch(keyword, categoryId, type, sort, page, resolved) {
             const params = {
                 keyword: keyword,
                 categoryId: categoryId,
@@ -262,6 +263,7 @@ export const useQnaStore = defineStore("qna", {
                 sort: sort,
                 page: page - 1,
                 size: 12,
+                resolved: resolved
             };
 
             try {
