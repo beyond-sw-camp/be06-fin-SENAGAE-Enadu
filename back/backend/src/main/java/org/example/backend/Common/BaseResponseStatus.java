@@ -82,6 +82,8 @@ public enum BaseResponseStatus {
     QNA_ANSWER_NOT_FOUND(false, 7201, "해당 답변이 존재하지 않습니다."),
     QNA_INVALID_ANSWER_FORMAT(false, 7202, "잘못된 형식의 답변입니다."),
     QNA_ADOPTED_EDIT(false, 7203, "이미 채택된 경우 답변을 수정 및 삭제할 수 없습니다."),
+    // - QnA 검색 에러
+    QNA_SEARCH_EMPTY_REQUEST(false, 7301, "검색 요청이 비어 있습니다."),
 
 
 

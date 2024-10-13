@@ -2,6 +2,8 @@ package org.example.backend.Qna.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
+import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Exception.custom.InvalidQnaException;
 import org.example.backend.Qna.Service.BasicQnaSearchService;
 import org.example.backend.Qna.Service.ElasticQnaSearchService;
 import org.example.backend.Qna.Service.QnaService;
@@ -16,6 +18,7 @@ import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -85,16 +88,19 @@ public class QuestionController {
     }
 
     //qna 검색
-    @GetMapping("/search")
+    @GetMapping("/search/deprecated")
     public BaseResponse<List<GetQnaListRes>> getQnaSearch(GetQnaSearchReq getQnaSearchReq) {
         List<GetQnaListRes> qnaListRes = basicQnaSearchService.getQnaSearch(getQnaSearchReq);
         return new BaseResponse<>(qnaListRes);
     }
 
-    @GetMapping("/search2") //엘라스틱 서치 테스트 용도
+    @GetMapping("/search") //엘라스틱 서치 테스트 용도
     public BaseResponse<List<GetQnaListRes>> getQnaSearch2(GetQnaSearchReq getQnaSearchReq) {
-        List<GetQnaListRes> qnaListRes = elasticQnaSearchService.getQnaSearch(getQnaSearchReq);
-        return new BaseResponse<>(qnaListRes);
+        try {
+            return new BaseResponse<>(elasticQnaSearchService.getQnaSearch(getQnaSearchReq));
+        } catch (IOException e) {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_FAIL);
+        }
     }
 
     @PatchMapping()
