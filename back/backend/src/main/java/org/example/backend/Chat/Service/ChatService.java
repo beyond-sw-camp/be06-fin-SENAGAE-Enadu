@@ -114,7 +114,10 @@ public class ChatService {
 
     @Transactional
     public StartChatRes startChat(Long userId, StartChatReq startChatReq){
-        User recipient = userRepository.findByNickname(startChatReq.getNickname()).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        User recipient = userRepository.findByNicknameAndEnableTrue(startChatReq.getNickname()).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        if (recipient.getId().equals(userId)){
+            throw new InvalidChatException(BaseResponseStatus.CHAT_SELF_CHAT);
+        }
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
         User user1 = userId < recipient.getId() ? user : recipient;  // 작은 userId가 user1에 들어간다.
         User user2 = userId > recipient.getId() ? user : recipient;
@@ -126,7 +129,6 @@ public class ChatService {
         } else {
             chatRoom = chatRoomOptional.get();
         }
-        System.out.println("에러");
         return StartChatRes.builder()
                 .chatRoomId(chatRoom.getId())
                 .recipientId(recipient.getId())
