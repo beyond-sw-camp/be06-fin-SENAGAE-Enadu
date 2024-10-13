@@ -50,7 +50,7 @@ public class PointService {
         return GetMyRankRes.builder()
                 .grade(user.getGrade())
                 .point(user.getPoint())
-                .rank(userRepository.countByPointGreaterThan(user.getPoint()) + 1).build();
+                .rank(userRepository.countByPointGreaterThanAndEnableTrue(user.getPoint()) + 1).build();
     }
 
     public List<GetPointRankRes> getPointRankList(Integer page, Integer size) {
@@ -60,7 +60,7 @@ public class PointService {
         for (User user : userOrderByPointDescPage) {
             getPointRankResList.add(GetPointRankRes.builder()
                     .point(user.getPoint())
-                    .rank(userRepository.countByPointGreaterThan(user.getPoint())+1)
+                    .rank(userRepository.countByPointGreaterThanAndEnableTrue(user.getPoint())+1)
                     .grade(user.getGrade())
                     .profileImg(user.getProfileImg())
                     .totalPage(userOrderByPointDescPage.getTotalPages())
