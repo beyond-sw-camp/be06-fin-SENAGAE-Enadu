@@ -22,6 +22,7 @@ import java.util.List;
 @Service
 @Qualifier("WikiDbSearch")
 @RequiredArgsConstructor
+//db에서 검색
 public class DbWikiSearchService implements WikiSearchService {
     private final CategoryRepository categoryRepository;
     private final WikiRepository wikiRepository;

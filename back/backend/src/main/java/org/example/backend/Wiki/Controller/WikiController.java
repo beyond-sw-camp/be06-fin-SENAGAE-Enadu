@@ -8,13 +8,15 @@ import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.Wiki.Model.Req.*;
 import org.example.backend.Wiki.Model.Res.*;
+import org.example.backend.Wiki.Service.ElasticWikiSearchService;
 import org.example.backend.Wiki.Service.WikiSearchService;
 import org.example.backend.Wiki.Service.WikiService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 
@@ -24,7 +26,8 @@ import java.util.List;
 public class WikiController {
     private final WikiService wikiService;
     private final CloudFileUploadService cloudFileUploadService;
-    private final WikiSearchService wikiSearchService;
+    private final @Qualifier("WikiDbSearch") WikiSearchService dbWikiSearchService;  // DB 검색 서비스
+    private final @Qualifier("WikiElasticSearch") WikiSearchService elasticWikiSearchService;  // ES 검색 서비스
 
     // 위키 등록
     @PostMapping
@@ -133,15 +136,19 @@ public class WikiController {
     @PostMapping("/rollback")
     public BaseResponse<WikiRollbackRes> rollback(@RequestBody WikiRollbackReq wikiRollbackReq,
                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
         return new BaseResponse<>(wikiService.rollback(wikiRollbackReq, customUserDetails.getUserId()));
-
     }
 
     // 위키 검색
+    @GetMapping("/search1")
+    public BaseResponse<List<WikiListRes>> search1(GetWikiSearchReq getWikiSearchReq)throws IOException {
+        return new BaseResponse<>(dbWikiSearchService.search(getWikiSearchReq));
+    }
+
+    // 위키 검색(엘라스틱서치)
     @GetMapping("/search")
-    public BaseResponse<List<WikiListRes>> search(GetWikiSearchReq getWikiSearchReq) {
-        return new BaseResponse<>(wikiSearchService.search(getWikiSearchReq));
+    public BaseResponse<List<WikiListRes>> search(@ModelAttribute GetWikiSearchReq getWikiSearchReq)throws IOException {
+        return new BaseResponse<>(elasticWikiSearchService.search(getWikiSearchReq));
     }
 }
 
