@@ -32,12 +32,17 @@ public class ElasticSearchConfig extends ElasticsearchConfiguration {
                 .build();
     }
 
+    // RestHighLevelClient
     @Bean
     public RestHighLevelClient restHighLevelClient() {
         String[] hostPort = host.split(":");
         return new RestHighLevelClient(
-                RestClient.builder(new HttpHost(hostPort[0], Integer.parseInt(hostPort[1]), "http"))
-                        .setDefaultHeaders(new BasicHeader[]{
-                                new BasicHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))}));
+                RestClient.builder(
+                        new HttpHost(hostPort[0], Integer.parseInt(hostPort[1]), "http")
+                ).setDefaultHeaders(new BasicHeader[]{
+                        new BasicHeader("Authorization",
+                                "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
+                })
+        );
     }
 }

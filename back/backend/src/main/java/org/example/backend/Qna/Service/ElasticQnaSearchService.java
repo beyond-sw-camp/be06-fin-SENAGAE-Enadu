@@ -1,16 +1,14 @@
 package org.example.backend.Qna.Service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -40,46 +38,82 @@ public class ElasticQnaSearchService implements QnaSearchService {
         validateSearchReq(getQnaSearchReq); // 요청값 유효성 검사
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
+        setQnaCategoryQuery(getQnaSearchReq, boolQueryBuilder);
+
+        setQnaKeywordQuery(getQnaSearchReq, boolQueryBuilder);
+
+        setQnaEnableQuery(boolQueryBuilder);
+
+        SearchResponse searchResponse = getSearchResponse(getQnaSearchReq, boolQueryBuilder);
+        return makeQnaListRes(getQnaSearchReq, searchResponse);
+    }
+
+    private static void setQnaEnableQuery(BoolQueryBuilder boolQueryBuilder) {
+        MatchQueryBuilder enabledQueryBuilder = QueryBuilders.matchQuery("enable", true);
+        boolQueryBuilder.must(enabledQueryBuilder);
+    }
+
+    private void validateSearchReq(GetQnaSearchReq getQnaSearchReq) { // request 값들의 유효성 검사
+        String keyword = getQnaSearchReq.getKeyword().strip();
+        if (keyword.isEmpty() // 검색어도 없고, 카테고리도 선택되어 있지 않으면
+                && (getQnaSearchReq.getCategoryId() == null || getQnaSearchReq.getCategoryId() == 0)) {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_SEARCH_EMPTY_REQUEST);
+        }
+
+        if (!SEARCH_TYPE.contains(getQnaSearchReq.getType())) { // type이 유효하지 않으면
+            throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
+        }
+    }
+
+    private static void setQnaCategoryQuery(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
         if (getQnaSearchReq.getCategoryId() != null) { // 카테고리가 선택되었을 때
             QueryStringQueryBuilder categoryQueryBuilder = QueryBuilders
                     .queryStringQuery(getQnaSearchReq.getCategoryId().toString())
                     .field("super_category_id")
                     .field("sub_category_id");
             boolQueryBuilder.must(categoryQueryBuilder);
-            System.out.println("카테고리가 입력되었을 때");
-
         }
+    }
+
+    private static void setQnaKeywordQuery(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
         if (getQnaSearchReq.getKeyword() != null && !getQnaSearchReq.getKeyword().isBlank()) { // 검색어가 입력되었을 때
             boolQueryBuilder.minimumShouldMatch(1);
-            if (getQnaSearchReq.getType().contains("t")){
-                MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title", getQnaSearchReq.getKeyword()).slop(2);
-                boolQueryBuilder.should(titleQueryBuilder);
-
-            }
-            if (getQnaSearchReq.getType().contains("c")){
-                MatchPhraseQueryBuilder contentQueryBuilder = QueryBuilders.matchPhraseQuery("content", getQnaSearchReq.getKeyword()).slop(2);
-                boolQueryBuilder.should(contentQueryBuilder);
-            }
-            System.out.println("검색어가 입력되었을 때");
+            setKeywordByType(getQnaSearchReq, boolQueryBuilder);
         }
+    }
 
+    private static void setKeywordByType(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
+        if (getQnaSearchReq.getType().contains("t")) {
+            MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title", getQnaSearchReq.getKeyword()).slop(2);
+            boolQueryBuilder.should(titleQueryBuilder);
 
+        }
+        if (getQnaSearchReq.getType().contains("c")) {
+            MatchPhraseQueryBuilder contentQueryBuilder = QueryBuilders.matchPhraseQuery("content", getQnaSearchReq.getKeyword()).slop(2);
+            boolQueryBuilder.should(contentQueryBuilder);
+        }
+    }
+
+    private SearchResponse getSearchResponse(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) throws IOException {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(boolQueryBuilder);
-        searchSourceBuilder.from(getQnaSearchReq.getPage()*getQnaSearchReq.getSize());
+        searchSourceBuilder.from(getQnaSearchReq.getPage() * getQnaSearchReq.getSize());
         searchSourceBuilder.size(getQnaSearchReq.getSize());
-        if (getQnaSearchReq.getSort().equals("latest")){
+        if (getQnaSearchReq.getSort().equals("latest")) {
             searchSourceBuilder.sort("created_at", SortOrder.DESC);
         } else {
             searchSourceBuilder.sort("like_cnt", SortOrder.DESC);
         }
         SearchRequest searchRequest = new SearchRequest(INDEX);
         searchRequest.source(searchSourceBuilder);
-        SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+    }
+
+    private List<GetQnaListRes> makeQnaListRes(GetQnaSearchReq getQnaSearchReq, SearchResponse searchResponse) throws JsonProcessingException {
         List<GetQnaListRes> getQnaListRes = new ArrayList<>();
 
         long totalDocsCount = searchResponse.getHits().getTotalHits().value;
-        Integer totalPage = (int) totalDocsCount /getQnaSearchReq.getSize() + (totalDocsCount % getQnaSearchReq.getSize() == 0 ? 0 : 1);
+        Integer totalPage = (int) totalDocsCount / getQnaSearchReq.getSize() + (totalDocsCount % getQnaSearchReq.getSize() == 0 ? 0 : 1);
 
         for (SearchHit hit : searchResponse.getHits().getHits()) {
             QnaBoard qnaBoard = objectMapper.readValue(hit.getSourceAsString(), QnaBoard.class);
@@ -97,19 +131,6 @@ public class ElasticQnaSearchService implements QnaSearchService {
                     .totalPage(totalPage)
                     .build());
         }
-
         return getQnaListRes;
-    }
-
-    private void validateSearchReq(GetQnaSearchReq getQnaSearchReq) { // request 값들의 유효성 검사
-        String keyword = getQnaSearchReq.getKeyword().strip();
-        if (keyword.isEmpty() // 검색어도 없고, 카테고리도 선택되어 있지 않으면
-                && (getQnaSearchReq.getCategoryId() == null || getQnaSearchReq.getCategoryId() == 0)) {
-            throw new InvalidQnaException(BaseResponseStatus.QNA_SEARCH_EMPTY_REQUEST);
-        }
-
-        if (!SEARCH_TYPE.contains(getQnaSearchReq.getType())) { // type이 유효하지 않으면
-            throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
-        }
     }
 }

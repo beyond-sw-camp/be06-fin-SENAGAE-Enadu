@@ -31,7 +31,7 @@ public class QnaBoard {
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
-    private Boolean enabled;
+    private Boolean enable;
 
     @Field(name = "sub_category_id")
     @JsonProperty("sub_category_id")
