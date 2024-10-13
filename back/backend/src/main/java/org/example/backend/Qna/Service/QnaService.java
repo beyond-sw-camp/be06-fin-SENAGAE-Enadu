@@ -1,5 +1,6 @@
 package org.example.backend.Qna.Service;
 
+import com.example.common.Qna.model.Resolved;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import com.example.common.Category.Model.Entity.Category;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class QnaService {
     private final QuestionRepository questionRepository;
+    private final QnaRepositoryCustomImpl qnaRepositoryCustom;
     private final AnswerRepository answerRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
@@ -64,7 +66,7 @@ public class QnaService {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
         }
         // paging 처리 및 responseList 생성
-        Page<QnaBoard> qnaBoardPage = questionRepository.findByEnableTrue(pageable);
+        Page<QnaBoard> qnaBoardPage = qnaRepositoryCustom.getQnaList(getQnaListReq.getResolved(), pageable);
 
         return qnaBoardPage.getContent().stream().map(qnaBoard -> GetQnaListRes.builder()
                         .id(qnaBoard.getId())
@@ -492,6 +494,7 @@ public class QnaService {
         if (answerRepository.countAdopted(qnaBoardId).equals(0)) {
             answer.adoptedAnswer(true);
             qnaBoard.adopted(answerId);
+            qnaBoard.changeResolved(Resolved.RESOLVED);
             answerRepository.save(answer);
             questionRepository.save(qnaBoard);
             return answer.getId();

@@ -6,4 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface QnaRepositoryCustom {
     public Page<QnaBoard> findByKeyword(String keyword, boolean useSuperCategory, Long categoryId, String type, Pageable pageable);
+
+    public Page<QnaBoard> getQnaList(String resolved, Pageable pageable);
+
 }

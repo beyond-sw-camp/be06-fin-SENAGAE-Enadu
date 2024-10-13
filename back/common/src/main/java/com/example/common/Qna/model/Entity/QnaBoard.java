@@ -1,5 +1,6 @@
 package com.example.common.Qna.model.Entity;
 
+import com.example.common.Qna.model.Resolved;
 import jakarta.persistence.*;
 import lombok.*;
 import com.example.common.Category.Model.Entity.Category;
@@ -58,6 +59,10 @@ public class QnaBoard {
     @Builder.Default()
     @Column(name = "enable", nullable = false)
     private boolean enable = true;
+
+    @Builder.Default()
+    @Column(name = "resolved", nullable = false)
+    private Resolved resolved = Resolved.UNSOLVED;
 
     @Builder.Default()
     @Column(name = "like_cnt", nullable = false)
@@ -122,5 +127,9 @@ public class QnaBoard {
 
     public void adopted(Long answerId) {
         this.adoptedAnswerId = answerId;
+    }
+
+    public void changeResolved(Resolved resolved) {
+        this.resolved = resolved;
     }
 }
