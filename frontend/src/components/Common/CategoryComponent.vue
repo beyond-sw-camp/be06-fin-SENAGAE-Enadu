@@ -1,5 +1,5 @@
 <template>
-    <div v-show="isSub" class="separator"> / </div>
+    <div v-show="!isShowSlash" class="separator"> / </div>
     <div class="category">
         {{ category }}
     </div>
@@ -13,11 +13,11 @@ export default {
             type: String,
             required: true,
         },
-        isSub: {
+        isShowSlash: {
             type: Boolean,
-            default: false
+            default: true
         }
-    }
+    },
 }
 </script>
 

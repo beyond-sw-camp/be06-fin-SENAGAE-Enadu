@@ -71,7 +71,7 @@ export default {
     ...mapStores(useQnaStore),
   },
   mounted() {
-    // this.selectedSort = "latest";
+    this.selectedSort = "latest";
     this.selectedPage = 1;
     this.selectedSolvedStatus = "ALL"
     this.isSearched = false;
@@ -110,7 +110,7 @@ export default {
 
         await useQnaStore().qnaSearch(this.searchQuery, this.categoryId, this.selectedType, this.selectedSort, this.selectedPage, this.selectedSolvedStatus);
 
-        this.totalPages = await useQnaStore().searchedTotalPage || 1;
+        this.totalPages = useQnaStore().searchedTotalPage || 1;
         this.isLoading = false;
       }
     },
@@ -133,8 +133,14 @@ export default {
     async selectedSolvedStatus() {
       this.isLoading = true;
       this.selectedPage = 1;
-      await useQnaStore().getQnaList(this.selectedSort, this.selectedPage - 1, this.selectedSolvedStatus);
-      this.totalPages = useQnaStore().totalPage || 1;
+      if (!this.isSearched) {
+        await useQnaStore().getQnaList(this.selectedSort, this.selectedPage - 1, this.selectedSolvedStatus);
+        this.totalPages = useQnaStore().totalPage || 1;
+      }
+      else {
+        await useQnaStore().qnaSearch(this.searchQuery, this.categoryId, this.selectedType, this.selectedSort, this.selectedPage, this.selectedSolvedStatus);
+        this.totalPages = useQnaStore().searchedTotalPage || 1;
+      }
       this.isLoading = false;
     },
   },
