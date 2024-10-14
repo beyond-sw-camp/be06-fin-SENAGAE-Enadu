@@ -1,5 +1,6 @@
 package com.example.common.Qna.Repository;
 
+import com.example.common.Qna.model.Resolved;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
@@ -57,10 +58,10 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
         }
 
         switch (resolved) {
-            case "ALL" -> builder.and(qQnaBoard.adoptedAnswerId.isNull())
-                    .or(qQnaBoard.adoptedAnswerId.gt(0));
-            case "RESOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.gt(0));
-            case "UNSOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.isNull());
+            case "ALL" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("UNSOLVED")))
+                    .or(qQnaBoard.resolved.eq(Resolved.valueOf("RESOLVED")));
+            case "RESOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("RESOLVED")));
+            case "UNSOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("UNSOLVED")));
         }
 
         JPAQuery<QnaBoard> query = queryFactory.selectFrom(qQnaBoard)
@@ -96,10 +97,10 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
         builder.and(qQnaBoard.enable.isTrue());
 
         switch (resolved) {
-            case "ALL" -> builder.and(qQnaBoard.adoptedAnswerId.isNull())
-                    .or(qQnaBoard.adoptedAnswerId.gt(0));
-            case "RESOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.gt(0));
-            case "UNSOLVED" -> builder.and(qQnaBoard.adoptedAnswerId.isNull());
+            case "ALL" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("UNSOLVED")))
+                    .or(qQnaBoard.resolved.eq(Resolved.valueOf("RESOLVED")));
+            case "RESOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("RESOLVED")));
+            case "UNSOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("UNSOLVED")));
         }
 
         JPAQuery<QnaBoard> query = queryFactory.selectFrom(qQnaBoard)
