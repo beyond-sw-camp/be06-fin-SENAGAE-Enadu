@@ -1,9 +1,10 @@
 package com.example.batch.job;
 
-import com.example.common.Ranking.Repository.RankRepository;
-import com.example.common.Ranking.model.Entity.Ranking;
+import com.example.common.Ranking.Repository.DailyRankingRepository;
+import com.example.common.Ranking.model.Entity.DailyRanking;
 import com.example.common.User.Model.Entity.User;
 import com.example.common.User.Repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -24,21 +25,13 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-public class DailyRankJob {
+@RequiredArgsConstructor
+public class DailyRankingConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final UserRepository beforeRepository;
-    private final RankRepository afterRepository;
+    private final DailyRankingRepository dailyRankingRepository;
 
-    public DailyRankJob(JobRepository jobRepository,
-                        PlatformTransactionManager transactionManager,
-                        UserRepository beforeRepository,
-                        RankRepository afterRepository) {
-        this.jobRepository = jobRepository;
-        this.transactionManager = transactionManager;
-        this.beforeRepository = beforeRepository;
-        this.afterRepository = afterRepository;
-    }
 
     Integer chunkSize = 0;
 
@@ -53,33 +46,32 @@ public class DailyRankJob {
     }
 
 
-    public ItemProcessor<User, Ranking> rankProcessor() {
+    public ItemProcessor<User, DailyRanking> rankProcessor() {
         return user -> {
             System.out.println("user.getEnable() = " + user.getEnable());
             Integer userRank = beforeRepository.countByPointGreaterThanAndEnableTrue(user.getPoint());
             System.out.println("userRank = " + userRank);
-            return Ranking.builder()
-                    .userId(user.getId())
-                    .name(user.getNickname())
+            return DailyRanking.builder()
+                    .user(user)
                     .point(user.getPoint())
-                    .grade(user.getGrade())
                     .rank(userRank+1)
                     .build();
         };
     }
 
     @Bean
-    public ItemWriter<Ranking> rankWriter() {
-        if (!afterRepository.findAll().isEmpty()) {
-            System.out.println("데이터 삭제 완");
-            afterRepository.deleteAll();
+    @StepScope
+    public ItemWriter<DailyRanking> rankWriter() {
+        if (!dailyRankingRepository.findAll().isEmpty()) {
+            System.out.println("일간 랭킹 데이터 삭제 완료");
+            dailyRankingRepository.deleteAll();
         }
-        return afterRepository::saveAll;
+        return dailyRankingRepository::saveAll;
     }
 
     @Bean
-    public Job dailyRankingCalculateJob(Step updateDailyRankStep) {
-        return new JobBuilder("dailyRankingCalculateJob", jobRepository)
+    public Job dailyRankingJob(Step updateDailyRankStep) {
+        return new JobBuilder("dailyRankingJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .preventRestart()
                 .start(updateDailyRankStep)
@@ -88,8 +80,8 @@ public class DailyRankJob {
 
     @Bean
     public Step updateDailyRankStep() {
-        return new StepBuilder("updateDailyRankStep", jobRepository)
-                .<User, Ranking>chunk(chunkSize, transactionManager)
+        return new StepBuilder("updateDailyRankingStep", jobRepository)
+                .<User, DailyRanking>chunk(chunkSize, transactionManager)
                 .reader(userItemReader())
                 .processor(rankProcessor())
                 .writer(rankWriter())
