@@ -14,22 +14,8 @@ export const usePointStore = defineStore("point", {
                 totalPage: 0,
             }
         ],
-        myPointRank: {
-            point: 0,
-            rank: 1,
-        },
-        pointRankingList: [
-            {
-                point: 3000,
-                userId: 0,
-                nickname: "nickname",
-                profileImg: "url",
-                grade: "뉴비",
-                gradeImg: "url",
-                rank: "1",
-                totalPage: 10,
-            }
-        ],
+        myPointRank: {},
+        rankingList: [],
 
     }),
     actions: {
@@ -42,10 +28,10 @@ export const usePointStore = defineStore("point", {
             const res = await axios.get(`${backend}/point/myrank`, {withCredentials: true})
             this.myPointRank = res.data.result;
         },
-        async getPointRankList(page) {
+        async fetchRanking(page, pageType) {
             const size = 10;
-            const res = await axios.get(`${backend}/point/rank?page=${page}&size=${size}`, {withCredentials: true})
-            this.pointRankingList = res.data.result;
+            const res = await axios.get(`${backend}/point/ranking/${pageType}?page=${page}&size=${size}`)
+            this.rankingList = res.data.result;
         }
     }
 })
