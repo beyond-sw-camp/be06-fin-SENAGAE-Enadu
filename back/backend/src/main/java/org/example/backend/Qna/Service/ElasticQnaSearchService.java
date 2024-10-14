@@ -28,6 +28,7 @@ import java.util.List;
 public class ElasticQnaSearchService implements QnaSearchService {
 
     private final static List<String> SEARCH_TYPE = List.of("tc", "t", "c");
+    private final static List<String> RESOLVE_TYPE = List.of("ALL","RESOLVED","UNSOLVED");
     private final static String INDEX = "qna_board";
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
@@ -42,17 +43,12 @@ public class ElasticQnaSearchService implements QnaSearchService {
 
         setQnaKeywordQuery(getQnaSearchReq, boolQueryBuilder);
 
-        setQnaEnableQuery(boolQueryBuilder);
-
         setQnaResolvedQuery(getQnaSearchReq, boolQueryBuilder);
+
+        setQnaEnableQuery(boolQueryBuilder);
 
         SearchResponse searchResponse = getSearchResponse(getQnaSearchReq, boolQueryBuilder);
         return makeQnaListRes(getQnaSearchReq, searchResponse);
-    }
-
-    private static void setQnaEnableQuery(BoolQueryBuilder boolQueryBuilder) {
-        MatchQueryBuilder enabledQueryBuilder = QueryBuilders.matchQuery("enable", true);
-        boolQueryBuilder.must(enabledQueryBuilder);
     }
 
     private void validateSearchReq(GetQnaSearchReq getQnaSearchReq) { // request 값들의 유효성 검사
@@ -64,6 +60,10 @@ public class ElasticQnaSearchService implements QnaSearchService {
 
         if (!SEARCH_TYPE.contains(getQnaSearchReq.getType())) { // type이 유효하지 않으면
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
+        }
+
+        if (!RESOLVE_TYPE.contains(getQnaSearchReq.getResolved())){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_RESOLVE_TYPE);
         }
     }
 
@@ -88,11 +88,10 @@ public class ElasticQnaSearchService implements QnaSearchService {
         if (getQnaSearchReq.getType().contains("t")) {
             MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title", getQnaSearchReq.getKeyword()).slop(2);
             boolQueryBuilder.should(titleQueryBuilder);
-
         }
         if (getQnaSearchReq.getType().contains("c")) {
-            MatchPhraseQueryBuilder contentQueryBuilder = QueryBuilders.matchPhraseQuery("content", getQnaSearchReq.getKeyword()).slop(2);
-            boolQueryBuilder.should(contentQueryBuilder);
+            MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("content", getQnaSearchReq.getKeyword()).minimumShouldMatch("2<75%");
+            boolQueryBuilder.should(matchQueryBuilder);
         }
     }
 
@@ -104,6 +103,11 @@ public class ElasticQnaSearchService implements QnaSearchService {
         } else {
             boolQueryBuilder.mustNot(QueryBuilders.matchQuery("resolved", 2));
         }
+    }
+
+    private static void setQnaEnableQuery(BoolQueryBuilder boolQueryBuilder) {
+        MatchQueryBuilder enabledQueryBuilder = QueryBuilders.matchQuery("enable", true);
+        boolQueryBuilder.must(enabledQueryBuilder);
     }
 
     private SearchResponse getSearchResponse(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) throws IOException {
