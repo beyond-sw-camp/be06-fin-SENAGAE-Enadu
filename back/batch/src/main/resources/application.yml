@@ -1,12 +1,19 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+    web-application-type: none
   batch:
     job:
-      name: dailyRankingCalculateJob
+      enabled: false
+      name: ${BATCH_JOB_NAME}
     jdbc:
       initialize-schema: always
-
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: ${GCLOUD_ID}
+          location: asia-northeast3
   datasource:
     main:
       url: ${DB_HOST}
@@ -20,7 +27,6 @@ spring:
       password: ${DB_PASSWORD}
       driver-class-name: org.mariadb.jdbc.Driver
 
-
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
@@ -33,3 +39,7 @@ spring:
     level:
       org.hibernate.SQL: debug
       org.hibernate.orm.jdbc.bind: trace
+      org:
+        springframework:
+          batch: DEBUG
+          transaction: DEBUG
