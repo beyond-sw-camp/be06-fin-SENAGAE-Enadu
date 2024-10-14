@@ -14,13 +14,13 @@ spring:
         gemini:
           project-id: ${GCLOUD_ID}
           location: asia-northeast3
-
   datasource:
     main:
       url: ${DB_HOST}
       username: ${DB_USERNAME}
       password: ${DB_PASSWORD}
       driver-class-name: org.mariadb.jdbc.Driver
+
     batch:
       url: ${BATCH_DB_HOST}
       username: ${DB_USERNAME}

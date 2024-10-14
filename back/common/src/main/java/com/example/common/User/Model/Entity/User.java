@@ -22,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Getter
+@Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
@@ -37,7 +38,7 @@ public class User {
     private String nickname;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(name = "profile_img")
     private String profileImg = "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6";
 
     @Builder.Default
@@ -53,11 +54,11 @@ public class User {
     private Boolean verify = false;
 
     @CreatedDate
-    @Column(nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(nullable = false)
+    @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
 
     @Builder.Default
@@ -68,6 +69,7 @@ public class User {
     @Column(nullable = false, length = 20)
     private String type = "InApp";
 
+    @Column(name = "point_detail")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<PointDetail> pointDetails;
 
