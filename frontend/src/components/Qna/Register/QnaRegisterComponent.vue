@@ -152,6 +152,7 @@ export default {
     },
     handleSuperCategorySelection(category){
       this.selectedSuperCategory = category;
+      this.myCategoryId = this.selectedSuperCategory.id;
       this.closeSuperCategoryModal();
       this.openSubCategoryModal();
     },
@@ -169,7 +170,7 @@ export default {
 
     handleSubCategorySelection(category) {
       this.selectedSubCategory = category;
-      this.myCategory = category.id;
+      this.myCategoryId = this.selectedSubCategory.id;
       this.closeSubCategoryModal();
     },
   },

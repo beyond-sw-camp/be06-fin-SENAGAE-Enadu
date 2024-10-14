@@ -274,7 +274,9 @@ export const useQnaStore = defineStore("qna", {
                     },
                 });
                 this.qnaSearchedCards = res.data.result;
-                this.searchedTotalPage = this.qnaSearchedCard[0].totalPage;
+                console.log("search"+this.qnaSearchedCards);
+                this.searchedTotalPage = this.qnaSearchedCards[0].totalPage;
+                console.log("searchedTotalPage"+this.searchedTotalPage);
             } catch (error) {
                 return false;
             }

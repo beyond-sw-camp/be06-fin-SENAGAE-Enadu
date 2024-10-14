@@ -10,8 +10,8 @@
   <span :class="['grade', dynamicClass]">{{ qnaDetail.grade }}</span>
   <div class="label-custom">
     <div class="ui tag labels">
-      <CategoryComponent v-if="qnaDetail.superCategoryName !== null" :category=qnaDetail.superCategoryName />
-      <CategoryComponent v-if="qnaDetail.subCategoryName !== null" :category=qnaDetail.subCategoryName :is-sub="true"/>
+      <CategoryComponent v-if="qnaDetail.superCategoryName !== null" :category=qnaDetail.superCategoryName :isShowSlash=true />
+      <CategoryComponent v-if="qnaDetail.subCategoryName !== null" :category=qnaDetail.subCategoryName :isShowSlash="qnaDetail.superCategoryName === null" />
     </div>
   </div>
   <div class="qna-detail-top-items" v-if="isLoggedIn">
@@ -177,14 +177,12 @@ export default {
       }
     },
     checking() {
-      console.log("id" + this.qnaDetail.id);
       this.qnaLikeCnt = this.qnaDetail.likeCnt;
       this.qnaHateCnt = this.qnaDetail.hateCnt;
 
       console.log("checkingScrap" + this.qnaDetail.checkScrap);
       this.isCheckedScrap = this.qnaDetail.checkScrap;
 
-      console.log("checking" + this.qnaDetail.checkLikeOrHate);
       if (this.qnaDetail.checkLikeOrHate === true) {
         this.isCheckedLike = true;
         this.isCheckedHate = false
@@ -198,7 +196,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.qnaDetail);
     this.isLoggedIn = useUserStore().isLoggedIn;
     this.isReLoading = false;
     this.checking();
@@ -208,23 +205,23 @@ export default {
     NicknameComponent
   },
   computed: {
-      ...mapStores(useQnaStore),
-      dynamicClass() {
-          switch (this.qnaDetail.grade) {
-              case '뉴비':
-                  return 'newbie';
-              case '견습':
-                  return 'apprentice';
-              case '프로':
-                  return 'pro';
-              case '마스터':
-                  return 'master';
-              case '신':
-                  return 'god';
-              default:
-                  return '';
-          }
+    ...mapStores(useQnaStore),
+    dynamicClass() {
+      switch (this.qnaDetail.grade) {
+        case '뉴비':
+          return 'newbie';
+        case '견습':
+          return 'apprentice';
+        case '프로':
+          return 'pro';
+        case '마스터':
+          return 'master';
+        case '신':
+          return 'god';
+        default:
+          return '';
       }
+    }
   },
 };
 </script>
@@ -266,16 +263,16 @@ export default {
 }
 
 .grade {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    height: 2rem;
-    border-radius: 1rem;
-    display: inline-flex;
-    -webkit-box-align: center;
-    align-items: center;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  height: 2rem;
+  border-radius: 1rem;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 /* 카테고리 태그*/
