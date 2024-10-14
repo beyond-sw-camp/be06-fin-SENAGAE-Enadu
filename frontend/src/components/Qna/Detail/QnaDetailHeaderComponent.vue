@@ -129,7 +129,6 @@ export default {
   props: ["qnaDetail"],
   methods: {
     formatDateTime,
-
     async clickLike() {
       if (!useUserStore().isLoggedIn) {
         alert("좋아요와 싫어요는 로그인하지 않으면 선택할 수 없습니다.");
