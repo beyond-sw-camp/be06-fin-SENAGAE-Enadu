@@ -20,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Builder
+@Table(name = "qna_board")
 public class QnaBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +34,8 @@ public class QnaBoard {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private ErrorArchive errorArchive;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    private ErrorArchive errorArchive;
 
     @OneToMany(mappedBy = "qnaBoard", fetch = FetchType.LAZY)
     private List<Answer> answerList;

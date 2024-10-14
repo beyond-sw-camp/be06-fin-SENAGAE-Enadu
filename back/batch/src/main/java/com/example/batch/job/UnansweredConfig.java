@@ -49,7 +49,7 @@ public class UnansweredConfig {
     public ItemProcessor<QnaBoard, QnaBoard> unansweredProcessor() {
         return item -> {
             System.out.println("Processor 실행 - 처리 중인 항목: " + item.getId());
-            item.resolved(ENDED);
+            item.changeResolved(ENDED);
             return item;
         };
     }
