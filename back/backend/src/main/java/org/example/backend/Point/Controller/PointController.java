@@ -2,9 +2,7 @@ package org.example.backend.Point.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
-import org.example.backend.Point.Model.Res.GetMyRankRes;
-import org.example.backend.Point.Model.Res.GetPointHistoryRes;
-import org.example.backend.Point.Model.Res.GetPointRankRes;
+import org.example.backend.Point.Model.Res.*;
 import org.example.backend.Point.Service.PointService;
 import org.example.backend.Security.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,9 +28,14 @@ public class PointController {
         return new BaseResponse<>(pointService.getMyRank(customUserDetails.getUserId()));
     }
 
-    @GetMapping("/rank")
-    public BaseResponse<List<GetPointRankRes>> gePointRankList(Integer page, Integer size) {
-        return new BaseResponse<>(pointService.getPointRankList(page, size));
+    @GetMapping("/daily")
+    public BaseResponse<List<GetRankingRes>> getDailyRankingList(Integer page, Integer size) {
+        return new BaseResponse<>(pointService.getDailyRankingList(page, size));
+    }
+
+    @GetMapping("/weekly")
+    public BaseResponse<List<GetRankingRes>> getWeeklyRankingList(Integer page, Integer size) {
+        return new BaseResponse<>(pointService.getWeeklyRankingList(page, size));
     }
 
 }
