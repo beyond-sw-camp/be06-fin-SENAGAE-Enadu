@@ -44,6 +44,8 @@ public class ElasticQnaSearchService implements QnaSearchService {
 
         setQnaEnableQuery(boolQueryBuilder);
 
+        setQnaResolvedQuery(getQnaSearchReq, boolQueryBuilder);
+
         SearchResponse searchResponse = getSearchResponse(getQnaSearchReq, boolQueryBuilder);
         return makeQnaListRes(getQnaSearchReq, searchResponse);
     }
@@ -91,6 +93,16 @@ public class ElasticQnaSearchService implements QnaSearchService {
         if (getQnaSearchReq.getType().contains("c")) {
             MatchPhraseQueryBuilder contentQueryBuilder = QueryBuilders.matchPhraseQuery("content", getQnaSearchReq.getKeyword()).slop(2);
             boolQueryBuilder.should(contentQueryBuilder);
+        }
+    }
+
+    private static void setQnaResolvedQuery(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
+        if (getQnaSearchReq.getResolved().equals("RESOLVED")){
+            boolQueryBuilder.must(QueryBuilders.matchQuery("resolved", 0));
+        } else if (getQnaSearchReq.getResolved().equals("UNSOLVED")) {
+            boolQueryBuilder.must(QueryBuilders.matchQuery("resolved", 1));
+        } else {
+            boolQueryBuilder.mustNot(QueryBuilders.matchQuery("resolved", 2));
         }
     }
 
