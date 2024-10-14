@@ -1,4 +1,4 @@
-package com.example.batch.ai.writer;
+package com.example.batch.writer;
 
 import com.example.common.Qna.Repository.AnswerRepository;
 import com.example.common.Qna.Repository.QuestionRepository;

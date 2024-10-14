@@ -1,4 +1,4 @@
-package com.example.batch.ai.processor;
+package com.example.batch.processor;
 
 import com.example.common.Qna.model.Entity.Answer;
 import com.example.common.Qna.model.Entity.QnaBoard;
@@ -20,7 +20,7 @@ public class AiAnswerProcessor implements ItemProcessor<QnaBoard, Answer> {
             throw new Exception("AI 모델에 전달된 데이터가 유효하지 않음: " + item.getId());
         }
         try {
-            String response = vertexAiGeminiChatModel.call("utf8mb3형식으로 답변해줘 그리고 이 내용은 답변에 담지 말고 다음 문장부터의 답변을 해줘."+item.getContent());
+            String response = vertexAiGeminiChatModel.call(item.getContent());
             System.out.println(response);
             if (response == null || response.isEmpty()) {
                 throw new Exception("AI 모델에서 유효한 응답을 생성하지 못했습니다: " + item.getId());

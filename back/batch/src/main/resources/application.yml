@@ -1,13 +1,12 @@
-server:
-  port: 9090
 spring:
   main:
+    allow-bean-definition-overriding: true
     web-application-type: none
   batch:
     job:
-      name: answerJob
+      enabled: false
+      name: ${BATCH_JOB_NAME}
     jdbc:
-      datasource: batchDataSource
       initialize-schema: always
   ai:
     vertex:

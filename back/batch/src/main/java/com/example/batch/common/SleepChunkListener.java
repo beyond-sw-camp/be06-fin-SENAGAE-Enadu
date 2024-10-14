@@ -1,4 +1,4 @@
-package com.example.batch.ai.job;
+package com.example.batch.common;
 
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
