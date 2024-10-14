@@ -37,8 +37,8 @@ public class UnansweredConfig {
         LocalDateTime twoWeeksAgo = LocalDateTime.now().minusWeeks(2);
         return new RepositoryItemReaderBuilder<QnaBoard>()
                 .repository(questionRepository)
-                .methodName("findByAnswerCountAndCreatedAtBeforeAndEnableTrue")
-                .arguments(1, twoWeeksAgo)
+                .methodName("findByCreatedAtBeforeAndAnswerCountAndAnswerListUserIdAndEnableTrue")
+                .arguments(twoWeeksAgo, 1, 0L)
                 .pageSize(20)
                 .sorts(Collections.singletonMap("id", Sort.Direction.ASC))
                 .name("unansweredQnaReader")

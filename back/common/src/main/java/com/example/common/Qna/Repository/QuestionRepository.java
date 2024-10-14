@@ -58,6 +58,6 @@ public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
 
     Page<QnaBoard> findByAnswerCountAndEnableTrue(Integer answerCount, Pageable pageable);
 
-    Page<QnaBoard> findByAnswerCountAndCreatedAtBeforeAndEnableTrue(Integer answerCount, LocalDateTime createdAt, Pageable pageable);
+    Page<QnaBoard> findByCreatedAtBeforeAndAnswerCountAndAnswerListUserIdAndEnableTrue(LocalDateTime createdAt, Integer answerCount, Long id, Pageable pageable);
 
 }
