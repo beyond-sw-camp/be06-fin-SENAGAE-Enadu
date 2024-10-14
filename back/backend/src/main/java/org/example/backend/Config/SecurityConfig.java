@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers("/user/signup").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/email/verify").permitAll()
+                        .requestMatchers("/point/ranking/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/mypage/log/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/**").authenticated()
