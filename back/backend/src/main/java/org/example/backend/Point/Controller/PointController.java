@@ -28,12 +28,12 @@ public class PointController {
         return new BaseResponse<>(pointService.getMyRank(customUserDetails.getUserId()));
     }
 
-    @GetMapping("/daily")
+    @GetMapping("/ranking/daily")
     public BaseResponse<List<GetRankingRes>> getDailyRankingList(Integer page, Integer size) {
         return new BaseResponse<>(pointService.getDailyRankingList(page, size));
     }
 
-    @GetMapping("/weekly")
+    @GetMapping("/ranking/weekly")
     public BaseResponse<List<GetRankingRes>> getWeeklyRankingList(Integer page, Integer size) {
         return new BaseResponse<>(pointService.getWeeklyRankingList(page, size));
     }
