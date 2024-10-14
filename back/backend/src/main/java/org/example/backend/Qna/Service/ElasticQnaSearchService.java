@@ -8,6 +8,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -90,8 +91,8 @@ public class ElasticQnaSearchService implements QnaSearchService {
             boolQueryBuilder.should(titleQueryBuilder);
         }
         if (getQnaSearchReq.getType().contains("c")) {
-            MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("content", getQnaSearchReq.getKeyword()).minimumShouldMatch("2<75%");
-            boolQueryBuilder.should(matchQueryBuilder);
+            MatchQueryBuilder contentQueryBuilder = QueryBuilders.matchQuery("content", getQnaSearchReq.getKeyword()).minimumShouldMatch("2<75%").fuzziness(Fuzziness.AUTO);
+            boolQueryBuilder.should(contentQueryBuilder);
         }
     }
 
