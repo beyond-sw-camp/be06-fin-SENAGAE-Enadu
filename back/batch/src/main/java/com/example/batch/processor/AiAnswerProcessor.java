@@ -20,7 +20,7 @@ public class AiAnswerProcessor implements ItemProcessor<QnaBoard, Answer> {
             throw new Exception("AI 모델에 전달된 데이터가 유효하지 않음: " + item.getId());
         }
         try {
-            String response = vertexAiGeminiChatModel.call(item.getContent());
+            String response = vertexAiGeminiChatModel.call("한국어로 답변해줘" + item.getContent());
             System.out.println(response);
             if (response == null || response.isEmpty()) {
                 throw new Exception("AI 모델에서 유효한 응답을 생성하지 못했습니다: " + item.getId());
