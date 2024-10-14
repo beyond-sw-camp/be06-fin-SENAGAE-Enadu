@@ -131,6 +131,7 @@ public class User {
 
     public void updatePoint(Integer point) {
         this.point += point;
+        this.weeklyPoint += point;
     }
 
     public void updateGrade(String grade) {
