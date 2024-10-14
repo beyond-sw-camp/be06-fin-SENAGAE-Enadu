@@ -7,6 +7,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -51,11 +52,13 @@ public class ElasticWikiSearchService implements WikiSearchService {
             String keyword = getWikiSearchReq.getKeyword().toLowerCase(); // 다 소문자 변환
 
             if ("t".equals(getWikiSearchReq.getType())) { // 제목 검색
-                boolQuery.must(QueryBuilders.matchQuery("title", keyword));
+                boolQuery.must(QueryBuilders.matchQuery("title", keyword).fuzziness(Fuzziness.AUTO));
             } else if ("c".equals(getWikiSearchReq.getType())) { // 내용 검색
-                boolQuery.must(QueryBuilders.matchQuery("content", keyword));
+                boolQuery.must(QueryBuilders.matchQuery("content", keyword).fuzziness(Fuzziness.AUTO));
             } else if ("tc".equals(getWikiSearchReq.getType())) { // 제목+내용 검색
-                boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "title", "content"));
+                boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "title", "content")
+                        .fuzziness(Fuzziness.AUTO) // 오타 또는 띄어쓰기 변형 처리
+                );
             }
         }
 
@@ -76,8 +79,11 @@ public class ElasticWikiSearchService implements WikiSearchService {
         // Elasticsearch 검색 실행
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
 
+        long totalDocsCount = searchResponse.getHits().getTotalHits().value;
+        Integer totalPage = (int) totalDocsCount / getWikiSearchReq.getSize() + (totalDocsCount % getWikiSearchReq.getSize() == 0 ? 0 : 1);
+
         // 검색 결과를 WikiListRes로 변환
-        return searchResponseToWikiListRes(searchResponse);
+        return searchResponseToWikiListRes(searchResponse, totalPage);
     }
 
     // 유효성 검사
@@ -91,14 +97,10 @@ public class ElasticWikiSearchService implements WikiSearchService {
         if (!SEARCH_TYPE.contains(getWikiSearchReq.getType())) {
             throw new InvalidWikiException(BaseResponseStatus.WIKI_INVALID_SEARCH_TYPE);
         }
-
-        if (getWikiSearchReq.getCategoryId() != null && getWikiSearchReq.getCategoryId() != 0) {
-            // 카테고리 유효성 체크 (categoryRepository를 추가해서 처리하거나 별도의 로직 추가)
-        }
     }
 
     // SearchResponse를 WikiListRes로 변환하는 메서드
-    private List<WikiListRes> searchResponseToWikiListRes(SearchResponse searchResponse) {
+    private List<WikiListRes> searchResponseToWikiListRes(SearchResponse searchResponse, Integer totalPage) {
         return Arrays.stream(searchResponse.getHits().getHits())
                 .map(hit -> {
                     Wiki wiki = objectMapper.convertValue(hit.getSourceAsMap(), Wiki.class);
@@ -109,6 +111,7 @@ public class ElasticWikiSearchService implements WikiSearchService {
                             .category(wiki.getCategoryName())
                             .createdAt(wiki.getCreatedAt())
                             .thumbnail(wiki.getThumbnailImgUrl())
+                            .totalPages(totalPage)
                             .build();
                 })
                 .collect(Collectors.toList());
