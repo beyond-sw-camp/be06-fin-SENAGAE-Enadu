@@ -11,7 +11,7 @@ spec:
         spec:
           containers:
             - name: unanswered-batch
-              image: senagae/enadu-batch:2.2
+              image: senagae/enadu-batch:latest
               env:
                 - name: BATCH_JOB_NAME
                   value: unansweredJob
