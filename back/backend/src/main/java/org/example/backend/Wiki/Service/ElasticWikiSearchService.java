@@ -9,6 +9,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -38,40 +39,28 @@ public class ElasticWikiSearchService implements WikiSearchService {
 
     @Override
     public List<WikiListRes> search(GetWikiSearchReq getWikiSearchReq) throws IOException {
-        ValidateSearchReq(getWikiSearchReq);
-
-        if (getWikiSearchReq.getPage() == null) {
-            getWikiSearchReq.setPage(0);
-        }
-        if (getWikiSearchReq.getSize() == null) {
-            getWikiSearchReq.setSize(16);
-        }
-
+        validateSearchReq(getWikiSearchReq);
+        
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery(); // bool 쿼리를 사용하면 그 안에 다른 쿼리들을 넣는 식으로 사용이 가능!
 
-        if (getWikiSearchReq.getKeyword() != null && !getWikiSearchReq.getKeyword().isEmpty()) { // 키워드 값이 있는데
+        if (getWikiSearchReq.getKeyword() != null && !getWikiSearchReq.getKeyword().isEmpty()) {
             String keyword = getWikiSearchReq.getKeyword().toLowerCase(); // 다 소문자 변환
+            boolQuery.minimumShouldMatch(1);
 
-            if ("t".equals(getWikiSearchReq.getType())) { // 제목 검색
-                boolQuery.must(QueryBuilders.matchQuery("title", keyword).fuzziness(Fuzziness.AUTO));
-            } else if ("c".equals(getWikiSearchReq.getType())) { // 내용 검색
-                boolQuery.must(QueryBuilders.matchQuery("content", keyword).fuzziness(Fuzziness.AUTO));
-            } else if ("tc".equals(getWikiSearchReq.getType())) { // 제목+내용 검색
-                boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "title", "content")
-                        .fuzziness(Fuzziness.AUTO) // 오타 또는 띄어쓰기 변형 처리
-                );
+            if ((getWikiSearchReq.getType()).contains("t")) { // 제목 검색
+                boolQuery.should(QueryBuilders.matchPhraseQuery("title", keyword).slop(2));
+            }
+            if ((getWikiSearchReq.getType()).contains("c")) { // 내용 검색
+                MatchQueryBuilder contentQuery = QueryBuilders.matchQuery("content", keyword).minimumShouldMatch("75%").fuzziness(Fuzziness.AUTO);
+                boolQuery.should(contentQuery);
             }
         }
 
-        if (getWikiSearchReq.getCategoryId() != null && getWikiSearchReq.getCategoryId() != 0) { // 카테고리 값이 있으면
+        if (getWikiSearchReq.getCategoryId() != null && getWikiSearchReq.getCategoryId() != 0) {
             boolQuery.filter(QueryBuilders.termQuery("category_id", getWikiSearchReq.getCategoryId()));
         }
 
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder() // Elasticsearch에 보낼 검색 쿼리를 설정하는 빌더
-                .query(boolQuery)
-                .from(getWikiSearchReq.getPage() * getWikiSearchReq.getSize())  // 페이지 설정
-                .size(getWikiSearchReq.getSize())  // 페이지 크기 설정
-                .sort("created_at", SortOrder.DESC);  // 최신순 정렬
+        SearchSourceBuilder searchSourceBuilder = getSearchSourceBuilder(getWikiSearchReq, boolQuery);
 
         // SearchRequest = Elasticsearch에서 검색 요청을 정의하는 객체
         SearchRequest searchRequest = new SearchRequest(INDEX);  // 인덱스 설정
@@ -87,8 +76,18 @@ public class ElasticWikiSearchService implements WikiSearchService {
         return searchResponseToWikiListRes(searchResponse, totalPage);
     }
 
+    // Elasticsearch에 보낼 검색 쿼리 설정
+    private static SearchSourceBuilder getSearchSourceBuilder(GetWikiSearchReq getWikiSearchReq, BoolQueryBuilder boolQuery) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+                .query(boolQuery)
+                .from(getWikiSearchReq.getPage() * getWikiSearchReq.getSize())  // 페이지 설정
+                .size(getWikiSearchReq.getSize())  // 페이지 크기 설정
+                .sort("created_at", SortOrder.DESC);  // 최신순 정렬
+        return searchSourceBuilder;
+    }
+
     // 유효성 검사
-    private void ValidateSearchReq(GetWikiSearchReq getWikiSearchReq) {
+    private void validateSearchReq(GetWikiSearchReq getWikiSearchReq) {
         String keyword = getWikiSearchReq.getKeyword().toLowerCase().replaceAll("\\s", "");
         if ((keyword.isEmpty())
                 && (getWikiSearchReq.getCategoryId() == null || getWikiSearchReq.getCategoryId() == 0)) {
