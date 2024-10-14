@@ -89,13 +89,13 @@ public class QuestionController {
 
     //qna 검색
     @GetMapping("/search/deprecated")
-    public BaseResponse<List<GetQnaListRes>> getQnaSearch(GetQnaSearchReq getQnaSearchReq) {
+    public BaseResponse<List<GetQnaListRes>> getQnaSearchDeprecated(GetQnaSearchReq getQnaSearchReq) {
         List<GetQnaListRes> qnaListRes = basicQnaSearchService.getQnaSearch(getQnaSearchReq);
         return new BaseResponse<>(qnaListRes);
     }
 
     @GetMapping("/search") //엘라스틱 서치 테스트 용도
-    public BaseResponse<List<GetQnaListRes>> getQnaSearch2(GetQnaSearchReq getQnaSearchReq) {
+    public BaseResponse<List<GetQnaListRes>> getQnaSearch(GetQnaSearchReq getQnaSearchReq) {
         try {
             return new BaseResponse<>(elasticQnaSearchService.getQnaSearch(getQnaSearchReq));
         } catch (IOException e) {

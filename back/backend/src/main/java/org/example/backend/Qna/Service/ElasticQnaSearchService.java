@@ -29,7 +29,8 @@ import java.util.List;
 public class ElasticQnaSearchService implements QnaSearchService {
 
     private final static List<String> SEARCH_TYPE = List.of("tc", "t", "c");
-    private final static List<String> RESOLVE_TYPE = List.of("ALL","RESOLVED","UNSOLVED");
+    private final static List<String> RESOLVE_TYPE = List.of("ALL", "RESOLVED", "UNSOLVED");
+    private final static List<String> SORT_TYPE = List.of("latest", "like", "accuracy");
     private final static String INDEX = "qna_board";
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
@@ -53,10 +54,18 @@ public class ElasticQnaSearchService implements QnaSearchService {
     }
 
     private void validateSearchReq(GetQnaSearchReq getQnaSearchReq) { // request 값들의 유효성 검사
-        String keyword = getQnaSearchReq.getKeyword().strip();
-        if (keyword.isEmpty() // 검색어도 없고, 카테고리도 선택되어 있지 않으면
-                && (getQnaSearchReq.getCategoryId() == null || getQnaSearchReq.getCategoryId() == 0)) {
+        String keyword = getQnaSearchReq.getKeyword();
+        // 검색어도 없고, 카테고리도 선택되어 있지 않으면
+        if ((keyword == null || keyword.isBlank()) && (getQnaSearchReq.getCategoryId() == null || getQnaSearchReq.getCategoryId() == 0)) {
             throw new InvalidQnaException(BaseResponseStatus.QNA_SEARCH_EMPTY_REQUEST);
+        }
+
+        if (getQnaSearchReq.getPage() == null) {
+            getQnaSearchReq.setPage(0);
+        }
+
+        if (getQnaSearchReq.getSize() == null) {
+            getQnaSearchReq.setSize(12);
         }
 
         if (!SEARCH_TYPE.contains(getQnaSearchReq.getType())) { // type이 유효하지 않으면
@@ -66,15 +75,18 @@ public class ElasticQnaSearchService implements QnaSearchService {
         if (!RESOLVE_TYPE.contains(getQnaSearchReq.getResolved())){
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_RESOLVE_TYPE);
         }
+
+        if (!SORT_TYPE.contains(getQnaSearchReq.getSort())) {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SORT_TYPE);
+        }
     }
 
     private static void setQnaCategoryQuery(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
         if (getQnaSearchReq.getCategoryId() != null) { // 카테고리가 선택되었을 때
-            QueryStringQueryBuilder categoryQueryBuilder = QueryBuilders
-                    .queryStringQuery(getQnaSearchReq.getCategoryId().toString())
-                    .field("super_category_id")
-                    .field("sub_category_id");
-            boolQueryBuilder.must(categoryQueryBuilder);
+            BoolQueryBuilder categoryFilter = QueryBuilders.boolQuery()
+                    .should(QueryBuilders.termQuery("super_category_id", getQnaSearchReq.getCategoryId()))
+                    .should(QueryBuilders.termQuery("sub_category_id", getQnaSearchReq.getCategoryId()));
+            boolQueryBuilder.filter(categoryFilter);
         }
     }
 
@@ -91,24 +103,24 @@ public class ElasticQnaSearchService implements QnaSearchService {
             boolQueryBuilder.should(titleQueryBuilder);
         }
         if (getQnaSearchReq.getType().contains("c")) {
-            MatchQueryBuilder contentQueryBuilder = QueryBuilders.matchQuery("content", getQnaSearchReq.getKeyword()).minimumShouldMatch("2<75%").fuzziness(Fuzziness.AUTO);
+            MatchQueryBuilder contentQueryBuilder = QueryBuilders.matchQuery("content", getQnaSearchReq.getKeyword()).minimumShouldMatch("75%").fuzziness(Fuzziness.AUTO);
             boolQueryBuilder.should(contentQueryBuilder);
         }
     }
 
     private static void setQnaResolvedQuery(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
-        if (getQnaSearchReq.getResolved().equals("RESOLVED")){
-            boolQueryBuilder.must(QueryBuilders.matchQuery("resolved", 0));
+        if (getQnaSearchReq.getResolved().equals("RESOLVED")) {
+            boolQueryBuilder.filter(QueryBuilders.matchQuery("resolved", 0));
         } else if (getQnaSearchReq.getResolved().equals("UNSOLVED")) {
-            boolQueryBuilder.must(QueryBuilders.matchQuery("resolved", 1));
+            boolQueryBuilder.filter(QueryBuilders.matchQuery("resolved", 1));
         } else {
-            boolQueryBuilder.mustNot(QueryBuilders.matchQuery("resolved", 2));
+            boolQueryBuilder.filter(QueryBuilders.boolQuery().mustNot(QueryBuilders.matchQuery("resolved", 2)));
         }
     }
 
     private static void setQnaEnableQuery(BoolQueryBuilder boolQueryBuilder) {
         MatchQueryBuilder enabledQueryBuilder = QueryBuilders.matchQuery("enable", true);
-        boolQueryBuilder.must(enabledQueryBuilder);
+        boolQueryBuilder.filter(enabledQueryBuilder);
     }
 
     private SearchResponse getSearchResponse(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) throws IOException {
@@ -116,11 +128,13 @@ public class ElasticQnaSearchService implements QnaSearchService {
         searchSourceBuilder.query(boolQueryBuilder);
         searchSourceBuilder.from(getQnaSearchReq.getPage() * getQnaSearchReq.getSize());
         searchSourceBuilder.size(getQnaSearchReq.getSize());
+
         if (getQnaSearchReq.getSort().equals("latest")) {
             searchSourceBuilder.sort("created_at", SortOrder.DESC);
-        } else {
+        } else if (getQnaSearchReq.getSort().equals("like")){
             searchSourceBuilder.sort("like_cnt", SortOrder.DESC);
-        }
+        } // 정확도순 정렬
+
         SearchRequest searchRequest = new SearchRequest(INDEX);
         searchRequest.source(searchSourceBuilder);
         return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);

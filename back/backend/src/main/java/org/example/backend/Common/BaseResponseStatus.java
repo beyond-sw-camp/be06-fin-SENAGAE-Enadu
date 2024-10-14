@@ -70,8 +70,9 @@ public enum BaseResponseStatus {
     QNA_FAIL(false, 7001, "요청이 실패하였습니다."),
     QNA_INVALID_OR_EMPTY_DATA(false, 7002, "데이터 값이 비어있거나, 유효하지 않은 데이터입니다."),
     QNA_NO_EDIT_PERMISSION(false, 7003, "수정 및 삭제 권한이 없습니다."),
-    QNA_INVALID_SEARCH_TYPE(false, 7004, "존재하지 않은 타입의 검색 방식 입니다."),
-    QNA_INVALID_RESOLVE_TYPE(false, 7005, "존재하지 않은 해결 여부 타입 입니다."),
+    QNA_INVALID_SEARCH_TYPE(false, 7004, "잘못된 검색 방식 입니다."),
+    QNA_INVALID_RESOLVE_TYPE(false, 7005, "잘못된 해결 여부 타입 입니다."),
+    QNA_INVALID_SORT_TYPE(false, 7005, "잘못된 정렬 타입 입니다."),
     QNA_CONFLICT_LIKE_DISLIKE(false, 7010, "좋아요와 싫어요는 동시에 표기할 수 없습니다."),
     // - QnA 질문 에러
     QNA_QUESTION_NOT_FOUND(false, 7101, "해당 질문이 존재하지 않습니다."),
