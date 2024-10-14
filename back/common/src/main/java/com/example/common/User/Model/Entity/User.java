@@ -6,6 +6,8 @@ import com.example.common.ErrorArchive.Model.Entity.ErrorLike;
 import com.example.common.ErrorArchive.Model.Entity.ErrorScrap;
 import com.example.common.Point.Model.Entity.PointDetail;
 import com.example.common.Qna.model.Entity.*;
+import com.example.common.Ranking.model.Entity.DailyRanking;
+import com.example.common.Ranking.model.Entity.WeeklyRanking;
 import com.example.common.Wiki.Model.Entity.WikiContent;
 import com.example.common.Wiki.Model.Entity.WikiScrap;
 import org.springframework.data.annotation.CreatedDate;
@@ -48,6 +50,10 @@ public class User {
     @Builder.Default
     @Column(nullable = false)
     private Integer point = 10;
+
+    @Builder.Default
+    @Column(name = "weekly_point", nullable = false)
+    private Integer weeklyPoint = 0;
 
     @Builder.Default
     @Column(nullable = false)
@@ -108,6 +114,12 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<ErrorScrap> ErrorScrapList;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private DailyRanking dailyRanking;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private WeeklyRanking weeklyRanking;
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;

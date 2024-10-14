@@ -1,5 +1,6 @@
 package com.example.common.Ranking.model.Entity;
 
+import com.example.common.User.Model.Entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,20 +9,17 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ranking")
-public class Ranking {
+@Table(name = "daily_ranking")
+public class DailyRanking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
-
-    private String name;
+    private Integer rank;
 
     private Integer point;
 
-    private String grade;
-
-    private Integer rank;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
