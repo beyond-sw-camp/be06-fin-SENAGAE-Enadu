@@ -8,7 +8,6 @@ import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.Wiki.Model.Req.*;
 import org.example.backend.Wiki.Model.Res.*;
-import org.example.backend.Wiki.Service.ElasticWikiSearchService;
 import org.example.backend.Wiki.Service.WikiSearchService;
 import org.example.backend.Wiki.Service.WikiService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -58,14 +57,14 @@ public class WikiController {
 
     // 위키 목록 조회
     @GetMapping("/list")
-    public BaseResponse<List<WikiListRes>> list(Integer page,Integer size) {
+    public BaseResponse<List<WikiListRes>> list(Integer page, Integer size) {
         if (page == null) {
             page = 0;
         }
         if (size == null || size == 0) {
-            size =20;
+            size = 20;
         }
-        List<WikiListRes> wikiList = wikiService.wikiList(page,size);
+        List<WikiListRes> wikiList = wikiService.wikiList(page, size);
         return new BaseResponse<>(wikiList);
     }
 
@@ -112,6 +111,7 @@ public class WikiController {
 
         return new BaseResponse<>(wikiService.versionDetail(wikiContentId, userId));
     }
+
     // 위키 (이전버전) 목록 조회
     @GetMapping("/version/list")
     public BaseResponse<List<GetWikiVersionListRes>> versionList(GetWikiVersionListReq getWikiVersionListReq) {
@@ -141,14 +141,18 @@ public class WikiController {
 
     // 위키 검색
     @GetMapping("/search1")
-    public BaseResponse<List<WikiListRes>> search1(GetWikiSearchReq getWikiSearchReq)throws IOException {
+    public BaseResponse<List<WikiListRes>> search1(GetWikiSearchReq getWikiSearchReq) throws IOException {
         return new BaseResponse<>(dbWikiSearchService.search(getWikiSearchReq));
     }
 
     // 위키 검색(엘라스틱서치)
     @GetMapping("/search")
-    public BaseResponse<List<WikiListRes>> search(@ModelAttribute GetWikiSearchReq getWikiSearchReq)throws IOException {
-        return new BaseResponse<>(elasticWikiSearchService.search(getWikiSearchReq));
+    public BaseResponse<List<WikiListRes>> search(@ModelAttribute GetWikiSearchReq getWikiSearchReq) {
+        try {
+            return new BaseResponse<>(elasticWikiSearchService.search(getWikiSearchReq));
+        } catch (IOException e) {
+            throw new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL);
+        }
     }
 }
 

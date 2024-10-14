@@ -34,6 +34,7 @@ public class ElasticWikiSearchService implements WikiSearchService {
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
     private final static List<String> SEARCH_TYPE = List.of("tc", "t", "c");
+    private final static String INDEX = "wiki";
 
     @Override
     public List<WikiListRes> search(GetWikiSearchReq getWikiSearchReq) throws IOException {
@@ -73,7 +74,7 @@ public class ElasticWikiSearchService implements WikiSearchService {
                 .sort("created_at", SortOrder.DESC);  // 최신순 정렬
 
         // SearchRequest = Elasticsearch에서 검색 요청을 정의하는 객체
-        SearchRequest searchRequest = new SearchRequest("wiki");  // 인덱스 설정
+        SearchRequest searchRequest = new SearchRequest(INDEX);  // 인덱스 설정
         searchRequest.source(searchSourceBuilder);
 
         // Elasticsearch 검색 실행
