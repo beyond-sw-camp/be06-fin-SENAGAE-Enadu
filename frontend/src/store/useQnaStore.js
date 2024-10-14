@@ -49,8 +49,8 @@ export const useQnaStore = defineStore("qna", {
             checkLikeOrHate: null,
         },
 
-        totalPage: 0,
-        searchedTotalPage: 0,
+        totalPage: 1,
+        searchedTotalPage: 1,
     }),
 
 
@@ -87,7 +87,8 @@ export const useQnaStore = defineStore("qna", {
                     params: params
                 });
                 this.qnaCards = res.data.result;
-                this.totalPage = this.qnaCards[0].totalPage;
+                this.totalPage = this.qnaCards[0] !== undefined ? this.qnaCards[0].totalPage : 1;
+                console.log("listTotalPage"+this.totalPage);
             } catch (error) {
                 return false;
             }
@@ -274,8 +275,8 @@ export const useQnaStore = defineStore("qna", {
                     },
                 });
                 this.qnaSearchedCards = res.data.result;
-                console.log("search"+this.qnaSearchedCards);
-                this.searchedTotalPage = this.qnaSearchedCards[0].totalPage;
+
+                this.searchedTotalPage = this.qnaSearchedCards[0] !== undefined ? this.qnaSearchedCards[0].totalPage : 1;
                 console.log("searchedTotalPage"+this.searchedTotalPage);
             } catch (error) {
                 return false;
