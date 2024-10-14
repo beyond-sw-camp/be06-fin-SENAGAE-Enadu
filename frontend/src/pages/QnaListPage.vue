@@ -133,8 +133,14 @@ export default {
     async selectedSolvedStatus() {
       this.isLoading = true;
       this.selectedPage = 1;
-      await useQnaStore().getQnaList(this.selectedSort, this.selectedPage - 1, this.selectedSolvedStatus);
-      this.totalPages = useQnaStore().totalPage || 1;
+      if (!this.isSearched) {
+        await useQnaStore().getQnaList(this.selectedSort, this.selectedPage - 1, this.selectedSolvedStatus);
+        this.totalPages = useQnaStore().totalPage || 1;
+      }
+      else {
+        await useQnaStore().qnaSearch(this.searchQuery, this.categoryId, this.selectedType, this.selectedSort, this.selectedPage, this.selectedSolvedStatus);
+        this.totalPages = useQnaStore().searchedTotalPage || 1;
+      }
       this.isLoading = false;
     },
   },

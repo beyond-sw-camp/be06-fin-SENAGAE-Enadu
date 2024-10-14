@@ -6,8 +6,8 @@
       <QnaDetailComponent v-bind:qnaDetail=qnaStore.qnaDetail />
       <QnaAnswerDetailComponent
           v-for="qnaAnswer in qnaStore.qnaAnswers"
-                                :key="qnaAnswer.id"
-                                :qnaAnswer="qnaAnswer"
+          :key="qnaAnswer.id"
+          :qnaAnswer="qnaAnswer"
       />
     </div>
   </div>
@@ -34,11 +34,6 @@ export default {
       await useQnaStore().getQnaDetail(this.$route.params.id);
       this.isLoading = false
     },
-    handleAdopted(){
-      this.isLoading = true;
-      console.log(this.isLoading);
-      this.isLoading = false;
-    }
   },
   computed: {
     ...mapStores(useQnaStore),
