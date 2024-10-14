@@ -58,10 +58,10 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
         }
 
         switch (resolved) {
-            case "ALL" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("UNSOLVED")))
-                    .or(qQnaBoard.resolved.eq(Resolved.valueOf("RESOLVED")));
-            case "RESOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("RESOLVED")));
-            case "UNSOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("UNSOLVED")));
+            case "ALL" -> builder.and(qQnaBoard.resolved.eq(Resolved.UNSOLVED))
+                    .or(qQnaBoard.resolved.eq(Resolved.RESOLVED));
+            case "RESOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.RESOLVED));
+            case "UNSOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.UNSOLVED));
         }
 
         JPAQuery<QnaBoard> query = queryFactory.selectFrom(qQnaBoard)
@@ -97,10 +97,10 @@ public class QnaRepositoryCustomImpl implements QnaRepositoryCustom {
         builder.and(qQnaBoard.enable.isTrue());
 
         switch (resolved) {
-            case "ALL" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("UNSOLVED")))
-                    .or(qQnaBoard.resolved.eq(Resolved.valueOf("RESOLVED")));
-            case "RESOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("RESOLVED")));
-            case "UNSOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.valueOf("UNSOLVED")));
+            case "ALL" -> builder.and(qQnaBoard.resolved.eq(Resolved.UNSOLVED))
+                    .or(qQnaBoard.resolved.eq(Resolved.RESOLVED));
+            case "RESOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.RESOLVED));
+            case "UNSOLVED" -> builder.and(qQnaBoard.resolved.eq(Resolved.UNSOLVED));
         }
 
         JPAQuery<QnaBoard> query = queryFactory.selectFrom(qQnaBoard)
