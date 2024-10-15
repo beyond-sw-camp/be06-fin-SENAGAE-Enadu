@@ -1,6 +1,5 @@
 package org.example.backend.Wiki.Controller;
 
-import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidWikiException;
@@ -18,15 +17,21 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/wiki")
 public class WikiController {
     private final WikiService wikiService;
     private final CloudFileUploadService cloudFileUploadService;
-    private final @Qualifier("WikiDbSearch") WikiSearchService dbWikiSearchService;  // DB 검색 서비스
-    private final @Qualifier("WikiElasticSearch") WikiSearchService elasticWikiSearchService;  // ES 검색 서비스
+    private final @Qualifier("WikiElasticSearch") WikiSearchService wikiSearchService;  // ES 검색 서비스
+
+    public WikiController(@Qualifier("WikiElasticSearch") WikiSearchService wikiSearchService,
+                          WikiService wikiservice,
+                          CloudFileUploadService cloudFileUploadService
+    ) {
+        this.wikiSearchService = wikiSearchService;
+        this.wikiService = wikiservice;
+        this.cloudFileUploadService = cloudFileUploadService;
+    }
 
     // 위키 등록
     @PostMapping
@@ -139,17 +144,11 @@ public class WikiController {
         return new BaseResponse<>(wikiService.rollback(wikiRollbackReq, customUserDetails.getUserId()));
     }
 
-    // 위키 검색
-    @GetMapping("/search1")
-    public BaseResponse<List<WikiListRes>> search1(GetWikiSearchReq getWikiSearchReq) throws IOException {
-        return new BaseResponse<>(dbWikiSearchService.search(getWikiSearchReq));
-    }
-
     // 위키 검색(엘라스틱서치)
     @GetMapping("/search")
     public BaseResponse<List<WikiListRes>> search(GetWikiSearchReq getWikiSearchReq) {
         try {
-            return new BaseResponse<>(elasticWikiSearchService.search(getWikiSearchReq));
+            return new BaseResponse<>(wikiSearchService.search(getWikiSearchReq));
         } catch (IOException e) {
             throw new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL);
         }

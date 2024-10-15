@@ -9,7 +9,6 @@ import org.example.backend.Exception.custom.InvalidCategoryException;
 import org.example.backend.Exception.custom.InvalidWikiException;
 import org.example.backend.Wiki.Model.Req.GetWikiSearchReq;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-@Qualifier("WikiDbSearch")
+@Service("WikiDbSearch")
 @RequiredArgsConstructor
 //db에서 검색
 public class DbWikiSearchService implements WikiSearchService {

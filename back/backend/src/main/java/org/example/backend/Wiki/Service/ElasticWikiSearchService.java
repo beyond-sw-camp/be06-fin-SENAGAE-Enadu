@@ -14,20 +14,18 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Exception.custom.InvalidWikiException;
 import org.example.backend.Wiki.Model.Doc.Wiki;
 import org.example.backend.Wiki.Model.Req.GetWikiSearchReq;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.example.backend.Exception.custom.InvalidWikiException;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@Qualifier("WikiElasticSearch")
+@Service("WikiElasticSearch")
 @RequiredArgsConstructor
 //es에서 검색
 public class ElasticWikiSearchService implements WikiSearchService {
