@@ -1,20 +1,23 @@
 package org.example.backend.ErrorArchive.Controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.ErrorArchive.Model.Req.*;
 import org.example.backend.ErrorArchive.Model.Res.*;
+import org.example.backend.ErrorArchive.Service.DbErrorArchiveSearchService;
+import org.example.backend.ErrorArchive.Service.ErrorArchiveElasticSearchService;
 import org.example.backend.ErrorArchive.Service.ErrorArchiveSearchService;
 import org.example.backend.ErrorArchive.Service.ErrorArchiveService;
 import org.example.backend.Exception.custom.InvalidErrorBoardException;
-import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
-import org.springframework.beans.factory.annotation.Qualifier;
 
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -25,11 +28,9 @@ public class ErrorArchiveController {
     private final ErrorArchiveService errorArchiveService;
     private final ErrorArchiveSearchService errorArchiveSearchService;
 
-
-    public ErrorArchiveController(ErrorArchiveService errorArchiveService, @Qualifier("DbSearch") ErrorArchiveSearchService errorArchiveSearchService) {
-        this.errorArchiveSearchService = errorArchiveSearchService;
+    public ErrorArchiveController(ErrorArchiveService errorArchiveService, @Qualifier("ErrorarchiveElasticService") ErrorArchiveSearchService errorArchiveSearchService) {
         this.errorArchiveService = errorArchiveService;
-
+        this.errorArchiveSearchService = errorArchiveSearchService;
     }
 
     // 아카이브 등록
@@ -66,10 +67,14 @@ public class ErrorArchiveController {
         }
         return new BaseResponse<>(errorArchiveService.detail(getErrorArchiveDetailReq, customUserDetails));
     }
-
+    // 아카이브 검색
     @GetMapping("/search")
-    public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq errorArchiveSearchReq) {
-        return new BaseResponse<>(errorArchiveSearchService.errorArchiveSearch(errorArchiveSearchReq));
+    public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq errorArchiveSearchReq)  {
+        try {
+            return new BaseResponse<>(errorArchiveSearchService.errorArchiveSearch(errorArchiveSearchReq));
+        } catch (IOException e){
+            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_FAIL);
+        }
     }
 
     // 좋아요 싫어요 토글
