@@ -71,12 +71,12 @@ public class ErrorArchiveController {
     }
     // 아카이브 검색
     @GetMapping("/search/deprecated")
-    public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq errorArchiveSearchReq) throws IOException {
+    public BaseResponse<List<ListErrorArchiveRes>> searchDeprecated(GetErrorArchiveSearchReq errorArchiveSearchReq) throws IOException {
         return new BaseResponse<>(errorArchiveSearchService.errorArchiveSearch(errorArchiveSearchReq));
     }
     // 엘라스틱 서치 테스트 용도
     @GetMapping("/search")
-    public BaseResponse<List<ListErrorArchiveRes>> search2(GetErrorArchiveSearchReq getErrorArchiveSearchReq) {
+    public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq getErrorArchiveSearchReq) {
         try {
             return new BaseResponse<>(elasticErrorArchiveQuerydslSerchService.errorArchiveSearch(getErrorArchiveSearchReq));
         } catch (IOException e){
