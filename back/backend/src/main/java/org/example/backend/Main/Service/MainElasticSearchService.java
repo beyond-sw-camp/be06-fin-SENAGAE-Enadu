@@ -26,6 +26,7 @@ import org.example.backend.Wiki.Model.Doc.Wiki;
 import org.example.backend.Wiki.Model.Res.WikiListRes;
 import org.springframework.stereotype.Service;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,6 @@ public class MainElasticSearchService {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         setAllEnableQuery(boolQueryBuilder);
         setMainKeywordQuery(keyword, boolQueryBuilder);
-        setKeyWordByType(keyword,boolQueryBuilder);
 
         SearchResponse searchResponse = getSearchResponse(keyword, boolQueryBuilder);
         return makeAllRes( wikiSize,errorArchiveSize, qnaSize ,searchResponse);
@@ -104,7 +104,7 @@ public class MainElasticSearchService {
         for (SearchHit hit : searchResponse.getHits().getHits()) {
             if (hit.getIndex().equals("wiki")) {
                 // Wiki는 최대 4개까지만 추가
-                if (wikiSize<4) {
+                if (wikiListResListRes.size()>wikiSize) {
                     continue;
                 }
                 Wiki wiki = objectMapper.readValue(hit.getSourceAsString(), Wiki.class);
@@ -118,7 +118,7 @@ public class MainElasticSearchService {
                         .build());
             } else if (hit.getIndex().equals("error_archive")) {
                 // ErrorArchive는 최대 8개까지만 추가
-                if (errorArchiveSize<8) {
+                if(listErrorArchiveRes.size()>=errorArchiveSize){
                     continue;
                 }
                 ErrorArchive errorArchive = objectMapper.readValue(hit.getSourceAsString(), ErrorArchive.class);
@@ -135,7 +135,7 @@ public class MainElasticSearchService {
                         .build());
             } else if (hit.getIndex().equals("qna_board")) {
                 // qna는 최대 8개까지만 추가
-                if (qnaSize<8) {
+                if (qnaListRes.size()>=qnaSize) {
                     continue;
                 }
                 QnaBoard qnaBoard = objectMapper.readValue(hit.getSourceAsString(), QnaBoard.class);
