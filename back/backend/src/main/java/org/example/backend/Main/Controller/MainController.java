@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidMainException;
-import org.example.backend.Main.Model.Req.GetMainSearchReq;
 import org.example.backend.Main.Model.Res.GetMainSearchRes;
 import org.example.backend.Main.Model.Res.MainRes;
 import org.example.backend.Main.Service.MainElasticSearchService;
@@ -29,9 +28,12 @@ public class MainController {
         return new BaseResponse<>(mainService.getMainInfo(errorArchiveSize, wikiSize, qnaSize));
     }
     @GetMapping("/main/search")
-    public BaseResponse<GetMainSearchRes> search(GetMainSearchReq getMainSearchReq) {
+    public BaseResponse<GetMainSearchRes> search(@RequestParam(defaultValue = "8") Integer errorArchiveSize,
+                                                 @RequestParam(defaultValue = "4") Integer wikiSize,
+                                                 @RequestParam(defaultValue = "8") Integer qnaSize,
+                                                String keyword) {
         try {
-            return new BaseResponse<>(mainElasticSearchService.mainSearch(getMainSearchReq));
+            return new BaseResponse<>(mainElasticSearchService.mainSearch(errorArchiveSize,wikiSize,qnaSize,keyword));
         } catch (IOException e) {
             throw new InvalidMainException(BaseResponseStatus.MAIN_SEARCH_EMPTY_REQUEST);
         }
