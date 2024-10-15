@@ -114,6 +114,9 @@ public enum BaseResponseStatus {
     EMAIL_VERIFY_FAIL(false, 11001, "이메일 인증에 실패하였습니다"),
     UUID_ALREADY_USED(false,11002,"이미 사용된 UUID 입니다"),
 
+    // 메인 페이지 - 12000
+    MAIN_SEARCH_EMPTY_REQUEST(false,12001,"검색 요청이 비어 있습니다."),
+
 
     // 실패 - 40000 (위치 바꾸지 마시오)
     FAIL(false, 40000, "요청에 실패하였습니다.");
