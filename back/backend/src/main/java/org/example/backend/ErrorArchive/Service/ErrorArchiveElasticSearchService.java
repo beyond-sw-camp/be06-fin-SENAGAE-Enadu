@@ -114,7 +114,7 @@ public class ErrorArchiveElasticSearchService implements ErrorArchiveSearchServi
         if(getErrorArchiveSearchReq.getSort().equals("latest")){
             searchSourceBuilder.sort("created_at", SortOrder.DESC);
         } else if (getErrorArchiveSearchReq.getSort().equals("like")){
-            searchSourceBuilder.sort("like", SortOrder.DESC);
+            searchSourceBuilder.sort("like_cnt", SortOrder.DESC);
         }
         // search()를 통해 검색 수행 후 응답값 받아옴
         SearchRequest searchRequest = new SearchRequest(INDEX);
