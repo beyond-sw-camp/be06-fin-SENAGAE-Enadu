@@ -11,9 +11,9 @@
                 <li class="divider">|</li>
                 <li><router-link :to="{ path: '/wiki/list' }"><i class="fas fa-book"></i> 위키</router-link></li>
                 <li class="divider">|</li>
-                <li>
-                    <router-link :to="{ path: '/qna/list' }"><i class="fas fa-question-circle"></i> QnA</router-link>
-                </li>
+                <li><router-link :to="{ path: '/qna/list' }"><i class="fas fa-question-circle"></i> QnA</router-link></li>
+                <li class="divider">|</li>
+                <li><router-link :to="{ path: '/ranking' }"><i class="fas fa-trophy"></i> 랭킹</router-link></li>
             </ul>
         </nav>
         <div class="search-bar">
@@ -42,7 +42,7 @@
                             <li><router-link :to="{ path: '/mypage/info' }"><i class="fas fa-user"></i> 회원 정보</router-link></li>
                             <li><router-link :to="{ path: '/mypage/history' }"><i class="fas fa-file-alt"></i> 작성 내역</router-link></li>
                             <li><router-link :to="{ path: '/mypage/scrap' }"><i class="fas fa-bookmark"></i> 스크랩 내역</router-link></li>
-                            <li><router-link :to="{ path: '/point/info' }"><i class="fas fa-coins"></i> 포인트 및 랭킹</router-link></li>
+                            <li><router-link :to="{ path: '/point' }"><i class="fas fa-coins"></i> 포인트 내역</router-link></li>
                             <li><router-link :to="{ path: '/chat' }"><i class="fas fa-comments"></i> 채팅</router-link></li>
                         </ul>
                     </li>
@@ -177,7 +177,6 @@ i {
 }
 
 .search-bar {
-    width: 480px;
     display: flex;
     align-items: center;
     background-color: #fafcfc;
@@ -225,11 +224,6 @@ i {
     .navigation ul, .auth-navigation ul {
         flex-direction: column;
         gap: 10px;
-    }
-
-    .search-bar {
-        width: 100%;
-        margin-top: 10px;
     }
 }
 </style>

@@ -7,8 +7,6 @@ import QnaRegisterComponent from "@/components/Qna/Register/QnaRegisterComponent
 import ErrorArchiveRegisterPage from "@/pages/ErrorArchiveRegisterPage.vue";
 import OAuthLoginPage from "@/pages/OAuthLoginPage.vue";
 import PointPage from "@/pages/PointPage.vue";
-import PointInfoComponent from "@/components/Point/PointInfoComponent.vue";
-import PointRankingComponent from "@/components/Point/PointRankingComponent.vue";
 import WikiDetailPage from "@/pages/WikiDetailPage.vue";
 import QnaDetailPage from "@/pages/QnaDetailPage.vue";
 import EmailVerifyPage from "@/pages/EmailVerifyPage.vue";
@@ -27,7 +25,8 @@ import MainPage from "@/pages/MainPage.vue";
 import QnaEditComponent from "@/components/Qna/Refactor/QnaEditComponent.vue";
 import UserLogPage from "@/pages/UserLogPage.vue";
 import ErrorArchiveUpdatePage from "@/pages/ErrorArchiveUpdatePage.vue";
-import { useUserStore } from "@/store/useUserStore"; 
+import { useUserStore } from "@/store/useUserStore";
+import RankingPage from "@/pages/RankingPage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -54,12 +53,8 @@ const router = createRouter({
         { path: "/errorarchive/list", component: ErrorArchiveListPage },
         { path: "/errorarchive/update", name: "ErrorArchiveUpdate", component: ErrorArchiveUpdatePage },
         { path: "/oauth", component: OAuthLoginPage, meta: { showHeader: false } },
-        {
-            path: "/point", component: PointPage, children: [
-                { path: "info", component: PointInfoComponent },
-                { path: "rank", component: PointRankingComponent },
-            ]
-        },
+        { path: "/point", component: PointPage },
+        { path: "/ranking", component: RankingPage },
         { path: "/email/verify", component: EmailVerifyPage },
 
         { path: "/wiki/detail", name: "WikiDetail", component: WikiDetailPage },
