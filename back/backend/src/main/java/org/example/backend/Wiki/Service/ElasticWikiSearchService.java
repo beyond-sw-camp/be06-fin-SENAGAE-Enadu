@@ -39,12 +39,14 @@ public class ElasticWikiSearchService implements WikiSearchService {
 
     @Override
     public List<WikiListRes> search(GetWikiSearchReq getWikiSearchReq) throws IOException {
+
+
         validateSearchReq(getWikiSearchReq);
-        
+
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery(); // bool 쿼리를 사용하면 그 안에 다른 쿼리들을 넣는 식으로 사용이 가능!
 
         if (getWikiSearchReq.getKeyword() != null && !getWikiSearchReq.getKeyword().isEmpty()) {
-            String keyword = getWikiSearchReq.getKeyword().toLowerCase(); // 다 소문자 변환
+            String keyword = getWikiSearchReq.getKeyword();
             boolQuery.minimumShouldMatch(1);
 
             if ((getWikiSearchReq.getType()).contains("t")) { // 제목 검색
@@ -88,6 +90,14 @@ public class ElasticWikiSearchService implements WikiSearchService {
 
     // 유효성 검사
     private void validateSearchReq(GetWikiSearchReq getWikiSearchReq) {
+
+        if (getWikiSearchReq.getPage() == null) {
+            getWikiSearchReq.setPage(0);
+        }
+        if (getWikiSearchReq.getSize() == null || getWikiSearchReq.getSize() == 0) {
+            getWikiSearchReq.setSize(15);
+        }
+
         String keyword = getWikiSearchReq.getKeyword().toLowerCase().replaceAll("\\s", "");
         if ((keyword.isEmpty())
                 && (getWikiSearchReq.getCategoryId() == null || getWikiSearchReq.getCategoryId() == 0)) {
