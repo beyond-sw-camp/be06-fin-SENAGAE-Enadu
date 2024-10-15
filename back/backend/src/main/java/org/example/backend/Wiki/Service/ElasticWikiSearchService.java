@@ -93,7 +93,7 @@ public class ElasticWikiSearchService implements WikiSearchService {
             getWikiSearchReq.setPage(0);
         }
         if (getWikiSearchReq.getSize() == null || getWikiSearchReq.getSize() == 0) {
-            getWikiSearchReq.setSize(15);
+            getWikiSearchReq.setSize(16);
         }
 
         String keyword = getWikiSearchReq.getKeyword().toLowerCase().replaceAll("\\s", "");
