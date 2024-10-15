@@ -26,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Service
-@Qualifier("DbSearch")
+@Service("ErrorarchiveDbSearch")
 @RequiredArgsConstructor
 public class DbErrorArchiveSearchService implements ErrorArchiveSearchService {
     private final ErrorArchiveReository errorArchiveReository;

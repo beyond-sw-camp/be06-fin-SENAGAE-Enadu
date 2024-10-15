@@ -5,7 +5,8 @@ import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.ErrorArchive.Model.Req.*;
 import org.example.backend.ErrorArchive.Model.Res.*;
-import org.example.backend.ErrorArchive.Service.ElasticErrorArchiveQuerydslSerchService;
+import org.example.backend.ErrorArchive.Service.DbErrorArchiveSearchService;
+import org.example.backend.ErrorArchive.Service.ErrorArchiveElasticSearchService;
 import org.example.backend.ErrorArchive.Service.ErrorArchiveSearchService;
 import org.example.backend.ErrorArchive.Service.ErrorArchiveService;
 import org.example.backend.Exception.custom.InvalidErrorBoardException;
@@ -22,18 +23,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/errorarchive")
-@Qualifier("elasticErrorArchiveQuerydslSearchService")
 public class ErrorArchiveController {
 
     private final ErrorArchiveService errorArchiveService;
     private final ErrorArchiveSearchService errorArchiveSearchService;
-    private final ElasticErrorArchiveQuerydslSerchService elasticErrorArchiveQuerydslSerchService;
-    public ErrorArchiveController(ErrorArchiveService errorArchiveService, @Qualifier("dbErrorArchiveSearchService") ErrorArchiveSearchService errorArchiveSearchService, ElasticErrorArchiveQuerydslSerchService elasticErrorArchiveQuerydslSerchService) {
+
+    public ErrorArchiveController(ErrorArchiveService errorArchiveService, @Qualifier("ErrorarchiveElasticService") ErrorArchiveSearchService errorArchiveSearchService) {
         this.errorArchiveService = errorArchiveService;
         this.errorArchiveSearchService = errorArchiveSearchService;
-        this.elasticErrorArchiveQuerydslSerchService = elasticErrorArchiveQuerydslSerchService;
     }
-
 
     // 아카이브 등록
     @PostMapping()
@@ -70,15 +68,10 @@ public class ErrorArchiveController {
         return new BaseResponse<>(errorArchiveService.detail(getErrorArchiveDetailReq, customUserDetails));
     }
     // 아카이브 검색
-    @GetMapping("/search/deprecated")
-    public BaseResponse<List<ListErrorArchiveRes>> searchDeprecated(GetErrorArchiveSearchReq errorArchiveSearchReq) throws IOException {
-        return new BaseResponse<>(errorArchiveSearchService.errorArchiveSearch(errorArchiveSearchReq));
-    }
-    // 엘라스틱 서치 테스트 용도
     @GetMapping("/search")
-    public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq getErrorArchiveSearchReq) {
+    public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq errorArchiveSearchReq)  {
         try {
-            return new BaseResponse<>(elasticErrorArchiveQuerydslSerchService.errorArchiveSearch(getErrorArchiveSearchReq));
+            return new BaseResponse<>(errorArchiveSearchService.errorArchiveSearch(errorArchiveSearchReq));
         } catch (IOException e){
             throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_FAIL);
         }
