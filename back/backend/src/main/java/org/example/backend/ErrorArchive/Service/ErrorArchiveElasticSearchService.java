@@ -82,6 +82,7 @@ public class ErrorArchiveElasticSearchService implements ErrorArchiveSearchServi
     // 검색어가 입력되었을 떄
     private static void setErrorArchiveKeywordQuery(GetErrorArchiveSearchReq getErrorArchiveSearchReq, BoolQueryBuilder boolQueryBuilder){
         if(getErrorArchiveSearchReq.getKeyword()!=null && !getErrorArchiveSearchReq.getKeyword().isBlank()){
+            boolQueryBuilder.minimumShouldMatch(1);
             setKeyWordByType(getErrorArchiveSearchReq, boolQueryBuilder);
         }
     }
