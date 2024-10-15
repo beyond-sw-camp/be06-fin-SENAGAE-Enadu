@@ -147,7 +147,7 @@ public class WikiController {
 
     // 위키 검색(엘라스틱서치)
     @GetMapping("/search")
-    public BaseResponse<List<WikiListRes>> search(@ModelAttribute GetWikiSearchReq getWikiSearchReq) {
+    public BaseResponse<List<WikiListRes>> search(GetWikiSearchReq getWikiSearchReq) {
         try {
             return new BaseResponse<>(elasticWikiSearchService.search(getWikiSearchReq));
         } catch (IOException e) {
