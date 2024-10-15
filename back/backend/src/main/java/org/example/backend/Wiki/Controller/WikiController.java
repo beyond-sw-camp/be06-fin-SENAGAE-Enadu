@@ -1,6 +1,5 @@
 package org.example.backend.Wiki.Controller;
 
-import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
 import org.example.backend.Exception.custom.InvalidWikiException;
@@ -10,21 +9,29 @@ import org.example.backend.Wiki.Model.Req.*;
 import org.example.backend.Wiki.Model.Res.*;
 import org.example.backend.Wiki.Service.WikiSearchService;
 import org.example.backend.Wiki.Service.WikiService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/wiki")
 public class WikiController {
     private final WikiService wikiService;
     private final CloudFileUploadService cloudFileUploadService;
-    private final WikiSearchService wikiSearchService;
+    private final @Qualifier("WikiElasticSearch") WikiSearchService wikiSearchService;  // ES 검색 서비스
+
+    public WikiController(@Qualifier("WikiElasticSearch") WikiSearchService wikiSearchService,
+                          WikiService wikiservice,
+                          CloudFileUploadService cloudFileUploadService
+    ) {
+        this.wikiSearchService = wikiSearchService;
+        this.wikiService = wikiservice;
+        this.cloudFileUploadService = cloudFileUploadService;
+    }
 
     // 위키 등록
     @PostMapping
@@ -55,14 +62,14 @@ public class WikiController {
 
     // 위키 목록 조회
     @GetMapping("/list")
-    public BaseResponse<List<WikiListRes>> list(Integer page,Integer size) {
+    public BaseResponse<List<WikiListRes>> list(Integer page, Integer size) {
         if (page == null) {
             page = 0;
         }
         if (size == null || size == 0) {
-            size =20;
+            size = 20;
         }
-        List<WikiListRes> wikiList = wikiService.wikiList(page,size);
+        List<WikiListRes> wikiList = wikiService.wikiList(page, size);
         return new BaseResponse<>(wikiList);
     }
 
@@ -109,6 +116,7 @@ public class WikiController {
 
         return new BaseResponse<>(wikiService.versionDetail(wikiContentId, userId));
     }
+
     // 위키 (이전버전) 목록 조회
     @GetMapping("/version/list")
     public BaseResponse<List<GetWikiVersionListRes>> versionList(GetWikiVersionListReq getWikiVersionListReq) {
@@ -133,15 +141,17 @@ public class WikiController {
     @PostMapping("/rollback")
     public BaseResponse<WikiRollbackRes> rollback(@RequestBody WikiRollbackReq wikiRollbackReq,
                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
         return new BaseResponse<>(wikiService.rollback(wikiRollbackReq, customUserDetails.getUserId()));
-
     }
 
-    // 위키 검색
+    // 위키 검색(엘라스틱서치)
     @GetMapping("/search")
     public BaseResponse<List<WikiListRes>> search(GetWikiSearchReq getWikiSearchReq) {
-        return new BaseResponse<>(wikiSearchService.search(getWikiSearchReq));
+        try {
+            return new BaseResponse<>(wikiSearchService.search(getWikiSearchReq));
+        } catch (IOException e) {
+            throw new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL);
+        }
     }
 }
 
