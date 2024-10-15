@@ -36,7 +36,7 @@ import java.util.List;
 public class MainElasticSearchService {
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
-    private final static String[] INDEX = new String[]{"wiki", "error_archive", "qna_board"};
+    private final static String[] INDEXS = new String[]{"wiki", "error_archive", "qna_board"};
     private final static String SEARCH_TYPE = "tc";
     public GetMainSearchRes mainSearch(GetMainSearchReq getMainSearchReq) throws IOException {
         validateSearchReq(getMainSearchReq);
@@ -102,8 +102,7 @@ public class MainElasticSearchService {
         searchSourceBuilder.size(getMainSearchReq.getSize());
         searchSourceBuilder.sort("created_at", SortOrder.DESC);
         // search()를 통해 검색 수행 후 응답값 받아옴
-        String[] all = {"wiki","error_archive","qna_board"};
-        SearchRequest searchRequest = new SearchRequest(all);
+        SearchRequest searchRequest = new SearchRequest(INDEXS);
         searchRequest.source(searchSourceBuilder);
         return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
     }
