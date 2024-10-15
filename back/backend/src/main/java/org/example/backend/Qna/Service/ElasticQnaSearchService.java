@@ -9,7 +9,10 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.Fuzziness;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -24,7 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("QnaElasticSearch")
 @RequiredArgsConstructor
 public class ElasticQnaSearchService implements QnaSearchService {
 
@@ -56,7 +59,7 @@ public class ElasticQnaSearchService implements QnaSearchService {
     private void validateSearchReq(GetQnaSearchReq getQnaSearchReq) { // request 값들의 유효성 검사
         String keyword = getQnaSearchReq.getKeyword();
         // 검색어도 없고, 카테고리도 선택되어 있지 않으면
-        if ((keyword == null || keyword.isBlank()) && (getQnaSearchReq.getCategoryId() == null || getQnaSearchReq.getCategoryId() == 0)) {
+        if (keyword.isBlank() && (getQnaSearchReq.getCategoryId() == null || getQnaSearchReq.getCategoryId() == 0)) {
             throw new InvalidQnaException(BaseResponseStatus.QNA_SEARCH_EMPTY_REQUEST);
         }
 
@@ -129,15 +132,19 @@ public class ElasticQnaSearchService implements QnaSearchService {
         searchSourceBuilder.from(getQnaSearchReq.getPage() * getQnaSearchReq.getSize());
         searchSourceBuilder.size(getQnaSearchReq.getSize());
 
+        setSortType(getQnaSearchReq, searchSourceBuilder);
+
+        SearchRequest searchRequest = new SearchRequest(INDEX);
+        searchRequest.source(searchSourceBuilder);
+        return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+    }
+
+    private static void setSortType(GetQnaSearchReq getQnaSearchReq, SearchSourceBuilder searchSourceBuilder) {
         if (getQnaSearchReq.getSort().equals("latest")) {
             searchSourceBuilder.sort("created_at", SortOrder.DESC);
         } else if (getQnaSearchReq.getSort().equals("like")){
             searchSourceBuilder.sort("like_cnt", SortOrder.DESC);
         } // 정확도순 정렬
-
-        SearchRequest searchRequest = new SearchRequest(INDEX);
-        searchRequest.source(searchSourceBuilder);
-        return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
     }
 
     private List<GetQnaListRes> makeQnaListRes(GetQnaSearchReq getQnaSearchReq, SearchResponse searchResponse) throws JsonProcessingException {

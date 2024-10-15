@@ -7,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class GetQnaSearchReq {
     private String type = "tc";
-    private String keyword;
+    private String keyword = "";
     private Long categoryId;
 
     private String sort = "latest";
     private Integer page = 0;
     private Integer size = 12;
-    private String resolved;
+    private String resolved = "ALL";
 }
