@@ -1,6 +1,7 @@
 package com.example.common.Qna.Repository;
 
 import com.example.common.Qna.model.Entity.QnaBoard;
+import com.example.common.Qna.model.Resolved;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,8 @@ public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
 
     Optional<QnaBoard> findByIdAndEnableTrue(Long id);
 
-    Page<QnaBoard> findByEnableTrue(Pageable pageable);
+    Page<QnaBoard> findByResolvedNotAndEnableTrue(Resolved resolved, Pageable pageable);
+
 
     // type이 tc일 때 검색 쿼리문
     @Query("SELECT q FROM QnaBoard q WHERE (q.title LIKE CONCAT('%', :keyword, '%') OR q.content LIKE CONCAT('%', :keyword, '%')) AND (q.category.id = :categoryId OR :notChosenCategory = true)  AND q.enable = true")
