@@ -39,7 +39,7 @@ public class WeeklyRankingConfig {
 
     int userRank = 0;
     int samePointRank = 0;
-    int beforePoint = 999999;
+    int beforePoint = Integer.MAX_VALUE;
 
     Integer chunkSize = 0;
 
