@@ -17,6 +17,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Common.ChosungChecker;
 import org.example.backend.Exception.custom.InvalidQnaException;
 import org.example.backend.Qna.model.Doc.QnaBoard;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
@@ -96,13 +97,28 @@ public class ElasticQnaSearchService implements QnaSearchService {
     private static void setQnaKeywordQuery(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
         if (getQnaSearchReq.getKeyword() != null && !getQnaSearchReq.getKeyword().isBlank()) { // 검색어가 입력되었을 때
             boolQueryBuilder.minimumShouldMatch(1);
-            setKeywordByType(getQnaSearchReq, boolQueryBuilder);
+            if (ChosungChecker.isChosungOnly(getQnaSearchReq.getKeyword())){
+                setChosungByType(getQnaSearchReq, boolQueryBuilder);
+            } else {
+                setKeywordByType(getQnaSearchReq, boolQueryBuilder);
+            }
         }
     }
 
     private static void setKeywordByType(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
         if (getQnaSearchReq.getType().contains("t")) {
             MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title", getQnaSearchReq.getKeyword()).slop(2);
+            boolQueryBuilder.should(titleQueryBuilder);
+        }
+        if (getQnaSearchReq.getType().contains("c")) {
+            MatchQueryBuilder contentQueryBuilder = QueryBuilders.matchQuery("content", getQnaSearchReq.getKeyword()).minimumShouldMatch("75%").fuzziness(Fuzziness.AUTO);
+            boolQueryBuilder.should(contentQueryBuilder);
+        }
+    }
+
+    private static void setChosungByType(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
+        if (getQnaSearchReq.getType().contains("t")) {
+            MatchQueryBuilder titleQueryBuilder = QueryBuilders.matchQuery("title.jaso", getQnaSearchReq.getKeyword());
             boolQueryBuilder.should(titleQueryBuilder);
         }
         if (getQnaSearchReq.getType().contains("c")) {
