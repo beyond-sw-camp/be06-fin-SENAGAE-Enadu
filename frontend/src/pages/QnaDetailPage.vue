@@ -53,6 +53,7 @@ export default {
     },
   },
   mounted() {
+    this.isLoading = true;
     this.getQnaDetail();
   },
   components: {

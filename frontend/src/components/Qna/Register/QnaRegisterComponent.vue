@@ -66,6 +66,7 @@
                                         </button>
                                     </div>
                                 </div>
+                              <p style="text-align: center">등록된 질문은 답변이 2주일간 작성되지 않을 경우 조회 및 검색이 되지 않으며, 해당 질문은 마이페이지 내 USER LOG에서 확인하실 수 있습니다.</p>
                             </div>
                         </form>
                     </div>
@@ -192,5 +193,12 @@ export default {
     }
   }
 
+  @media (min-width: 640px) {
+    .sm\:space-y-14 > :not([hidden]) ~ :not([hidden]) {
+      --tw-space-y-reverse: 0;
+      margin-top: calc(1.5rem* calc(1 - var(--tw-space-y-reverse)));
+      margin-bottom: calc(3.5rem* var(--tw-space-y-reverse));
+    }
+  }
 </style>
 

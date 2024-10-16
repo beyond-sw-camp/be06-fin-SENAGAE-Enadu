@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-box p-5 mb-10 md:p-8 bento-card" style="background: #f8f9fa; border: 1px solid #19192c">
+  <div v-if="!isLoading" class="rounded-box p-5 mb-10 md:p-8 bento-card" style="background: #f8f9fa; border: 1px solid #19192c">
     <div class="mb-10" v-if="qnaAnswer.userId === 0">
         <div class="mantine-2j9uwr">
             <div class="mantine-1uguyhf">

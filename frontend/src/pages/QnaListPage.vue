@@ -26,7 +26,6 @@
                             v-for="qnaCard in qnaStore.qnaSearchedCards"
                             :key="qnaCard.id"
                             v-bind:qnaCard="qnaCard"
-                            @click="goToDetail(qnaCard.id)"
           />
         </div>
       </div>
@@ -71,7 +70,7 @@ export default {
     ...mapStores(useQnaStore),
   },
   mounted() {
-    // this.selectedSort = "latest";
+    this.selectedSort = "latest";
     this.selectedPage = 1;
     this.selectedSolvedStatus = "ALL"
     this.isSearched = false;
@@ -124,7 +123,7 @@ export default {
         this.totalPages = useQnaStore().searchedTotalPage || 1;
       }
       this.isLoading = false;
-    }
+    },
   },
   watch: {
     async selectedSort() {
