@@ -8,5 +8,6 @@ import lombok.Getter;
 public class GetMyRankRes {
     private String grade;
     private Integer point;
-    private Integer rank;
+    private Integer dailyRanking;
+    private Integer weeklyRanking;
 }

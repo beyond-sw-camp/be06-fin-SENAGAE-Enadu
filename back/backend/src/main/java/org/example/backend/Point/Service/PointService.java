@@ -1,18 +1,19 @@
 package org.example.backend.Point.Service;
 
 import com.example.common.Point.Repository.PointRepository;
+import com.example.common.Ranking.Repository.DailyRankingRepository;
+import com.example.common.Ranking.Repository.WeeklyRankingRepository;
+import com.example.common.Ranking.model.Entity.DailyRanking;
+import com.example.common.Ranking.model.Entity.WeeklyRanking;
 import com.example.common.User.Model.Entity.User;
 import com.example.common.User.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponseStatus;
-import org.example.backend.Common.UserGradeIconManager;
 import org.example.backend.Exception.custom.InvalidUserException;
 import com.example.common.Point.Model.Entity.PointDetail;
 import org.example.backend.Point.Model.Enum.PointDescriptionEnum;
-import org.example.backend.Point.Model.Res.GetMyRankRes;
-import org.example.backend.Point.Model.Res.GetPointHistoryRes;
-import org.example.backend.Point.Model.Res.GetPointRankRes;
+import org.example.backend.Point.Model.Res.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,8 @@ import java.util.List;
 public class PointService {
     private final PointRepository pointRepository;
     private final UserRepository userRepository;
+    private final DailyRankingRepository dailyRankingRepository;
+    private final WeeklyRankingRepository weeklyRankingRepository;
 
     public List<GetPointHistoryRes> getPointHistory(Long userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -50,25 +53,43 @@ public class PointService {
         return GetMyRankRes.builder()
                 .grade(user.getGrade())
                 .point(user.getPoint())
-                .rank(userRepository.countByPointGreaterThanAndEnableTrue(user.getPoint()) + 1).build();
+                .dailyRanking(dailyRankingRepository.findByUserId(userId).getRank())
+                .weeklyRanking(weeklyRankingRepository.findByUserId(userId).getRank())
+                .build();
     }
 
-    public List<GetPointRankRes> getPointRankList(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "point"));
-        Page<User> userOrderByPointDescPage = userRepository.findAll(pageable);
-        List<GetPointRankRes> getPointRankResList = new ArrayList<>();
-        for (User user : userOrderByPointDescPage) {
-            getPointRankResList.add(GetPointRankRes.builder()
-                    .point(user.getPoint())
-                    .rank(userRepository.countByPointGreaterThanAndEnableTrue(user.getPoint())+1)
-                    .grade(user.getGrade())
-                    .profileImg(user.getProfileImg())
-                    .totalPage(userOrderByPointDescPage.getTotalPages())
-                    .nickname(user.getNickname())
-                    .gradeImg(UserGradeIconManager.getGradeIcon(user.getGrade()))
+    public List<GetRankingRes> getDailyRankingList(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DailyRanking> dailyRankingPage = dailyRankingRepository.findAll(pageable);
+        List<GetRankingRes> getRankingResList = new ArrayList<>();
+        for (DailyRanking dailyRanking : dailyRankingPage) {
+            getRankingResList.add(GetRankingRes.builder()
+                    .point(dailyRanking.getPoint())
+                    .rank(dailyRanking.getRank())
+                    .grade(dailyRanking.getUser().getGrade())
+                    .nickname(dailyRanking.getUser().getNickname())
+                    .profileImg(dailyRanking.getUser().getProfileImg())
+                    .totalPage(dailyRankingPage.getTotalPages())
                     .build());
         }
-        return getPointRankResList;
+        return getRankingResList;
+    }
+
+    public List<GetRankingRes> getWeeklyRankingList(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<WeeklyRanking> weeklyRankingPage = weeklyRankingRepository.findAll(pageable);
+        List<GetRankingRes> getRankingResList = new ArrayList<>();
+        for (WeeklyRanking weeklyRanking : weeklyRankingPage) {
+            getRankingResList.add(GetRankingRes.builder()
+                    .point(weeklyRanking.getPoint())
+                    .rank(weeklyRanking.getRank())
+                    .grade(weeklyRanking.getUser().getGrade())
+                    .nickname(weeklyRanking.getUser().getNickname())
+                    .profileImg(weeklyRanking.getUser().getProfileImg())
+                    .totalPage(weeklyRankingPage.getTotalPages())
+                    .build());
+        }
+        return getRankingResList;
     }
 
     @Transactional

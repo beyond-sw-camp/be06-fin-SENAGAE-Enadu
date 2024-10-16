@@ -5,12 +5,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GetPointRankRes {
+public class GetRankingRes {
     private Integer point;
     private Integer rank;
     private String nickname;
     private String profileImg;
     private String grade;
-    private String gradeImg;
     private Integer totalPage;
 }

@@ -2,10 +2,17 @@
   "settings": {
     "number_of_replicas": 0,
     "analysis": {
+      "tokenizer": {
+        "nori_tokenizer": {
+          "type": "nori_tokenizer",
+          "decompound_mode": "mixed"
+        }
+      },
       "analyzer": {
         "nori_analyzer": {
-          "type": "nori",
-          "decompound_mode": "mixed"
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "filter": ["lowercase"]
         }
       }
     }
