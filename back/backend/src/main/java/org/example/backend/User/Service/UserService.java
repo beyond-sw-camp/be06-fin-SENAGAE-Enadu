@@ -25,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RestTemplate restTemplate;
     @Value("${spring.security.oauth2.client.registration.github.client-id}")
     private String CLIENT_ID;
     @Value("${spring.security.oauth2.client.registration.github.client-secret}")
@@ -120,16 +121,15 @@ public class UserService {
     }
 
     public void disableSocialUser(Long userId, String token) {
-        User user = userRepository.findByIdAndEnableTrue(userId).orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+        User user = userRepository.findByIdAndEnableTrue(userId)
+                .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
 
         String accessToken = jwtUtil.getAccessToken(token);
         if (accessToken == null) {
             throw new InvalidUserException(BaseResponseStatus.USER_ACCESS_TOKEN_NOT_FOUND);
         }
 
-        RestTemplate restTemplate = new RestTemplate();
         String deleteUrl = "https://api.github.com/applications/" + CLIENT_ID + "/grant";
-
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(CLIENT_ID, CLIENT_SECRET);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -139,12 +139,7 @@ public class UserService {
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
 
-        ResponseEntity<Object> response = restTemplate.exchange(
-                deleteUrl,
-                HttpMethod.DELETE,
-                entity,
-                Object.class
-        );
+        ResponseEntity<Object> response = restTemplate.exchange(deleteUrl, HttpMethod.DELETE, entity, Object.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             user.updateEnable(false);
             userRepository.save(user);

@@ -7,7 +7,20 @@ pipeline {
                 git branch: 'be-dev', url: 'https://github.com/beyond-sw-camp/be06-fin-SENAGAE-Enadu.git'
             }
         }
-
+        stage('Check for Changes') {
+            steps {
+                script {
+                    def changes = sh(script: 'git diff --name-only HEAD~1 HEAD | grep -E "^back/batch/|^back/common/"', returnStatus: true)
+                    if (changes != 0) {
+                        echo 'No changes in batch or common, stopping pipeline.'
+                        currentBuild.result = 'SUCCESS'
+                        error('No changes, stopping the pipeline.')
+                    } else {
+                        echo 'Changes detected in batch or common, proceeding with pipeline.'
+                    }
+                }
+            }
+        }
         stage('ADD PRIVILIGES'){
             steps{
                 dir('./back/batch'){
@@ -41,6 +54,9 @@ pipeline {
 
                     sh 'echo 도커 허브에 푸시'
                     sh 'docker push senagae/enadu-batch:1.$BUILD_ID'
+
+                    sh 'echo 푸시한 로컬 도커 이미지 삭제'
+                    sh 'docker rmi senagae/enadu-batch:1.$BUILD_ID'
                 }
             }
         }
