@@ -70,7 +70,7 @@ public class ErrorArchiveElasticSearchService implements ErrorArchiveSearchServi
             throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_INVALID_SORT_TYPE);
         }
     }
-    // 카테고리가 있으면 상위, 하위id로 검색 쿼리 추가
+    // 카테고리가 있으면 상위, 하위id로 검색면 쿼리 추가
     private static void setErrorArchiveCategoryQuery(GetErrorArchiveSearchReq getErrorArchiveSearchReq, BoolQueryBuilder boolQueryBuilder){
         if (getErrorArchiveSearchReq.getCategoryId() != null){
             BoolQueryBuilder categoryFilter = QueryBuilders.boolQuery()
