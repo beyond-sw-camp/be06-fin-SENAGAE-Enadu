@@ -3,6 +3,8 @@ package org.example.backend.Main.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.action.search.MultiSearchRequest;
+import org.elasticsearch.action.search.MultiSearchResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -36,17 +38,61 @@ import java.util.List;
 public class MainElasticSearchService {
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
-    private final static String[] INDEXS = new String[]{"wiki", "error_archive", "qna_board"};
-    public GetMainSearchRes mainSearch(Integer wikiSize,Integer errorArchiveSize, Integer qnaSize,String keyword) throws IOException {
+    // 변경된 mainSearch 메서드
+    public GetMainSearchRes mainSearch(Integer wikiSize, Integer errorArchiveSize, Integer qnaSize, String keyword) throws IOException {
         validateSearchReq(keyword);
-        // BoolQueryBuilder 사용
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        setAllEnableQuery(boolQueryBuilder);
-        setMainKeywordQuery(keyword, boolQueryBuilder);
 
-        SearchResponse searchResponse = getSearchResponse(keyword, boolQueryBuilder);
-        return makeAllRes( wikiSize,errorArchiveSize, qnaSize ,searchResponse);
+        // 각 인덱스별 BoolQueryBuilder 생성
+        BoolQueryBuilder wikiQuery = QueryBuilders.boolQuery();
+        BoolQueryBuilder errorArchiveQuery = QueryBuilders.boolQuery();
+        BoolQueryBuilder qnaQuery = QueryBuilders.boolQuery();
+
+        // 공통 검색 조건 설정
+        setMainKeywordQuery(keyword, wikiQuery);
+        setMainKeywordQuery(keyword, errorArchiveQuery);
+        setMainKeywordQuery(keyword, qnaQuery);
+
+        // 에러 아카이브, qna enable 조건 설정
+        setEnableQuery(errorArchiveQuery);
+        setEnableQuery(qnaQuery);
+
+        // qan resolved 조건 설정
+        setQnaResolvedQuery(qnaQuery);
+
+        // MultiSearchRequest 생성
+        MultiSearchRequest multiSearchRequest = new MultiSearchRequest();
+
+        // 각 인덱스에 대해 SearchRequest 생성 및 추가
+        SearchRequest wikiSearchRequest = new SearchRequest("wiki");
+        wikiSearchRequest.source(createSearchSourceBuilder(wikiQuery, wikiSize));
+
+        SearchRequest errorArchiveSearchRequest = new SearchRequest("error_archive");
+        errorArchiveSearchRequest.source(createSearchSourceBuilder(errorArchiveQuery, errorArchiveSize));
+
+        SearchRequest qnaSearchRequest = new SearchRequest("qna_board");
+        qnaSearchRequest.source(createSearchSourceBuilder(qnaQuery, qnaSize));
+
+        multiSearchRequest.add(wikiSearchRequest);
+        multiSearchRequest.add(errorArchiveSearchRequest);
+        multiSearchRequest.add(qnaSearchRequest);
+
+        // MultiSearchResponse로 여러 검색 결과를 받아옴
+        MultiSearchResponse multiSearchResponse = restHighLevelClient.msearch(multiSearchRequest, RequestOptions.DEFAULT);
+
+        // 각 검색 결과를 기반으로 응답 객체 생성
+        return makeAllRes(wikiSize, errorArchiveSize, qnaSize, multiSearchResponse);
     }
+
+    // 각 인덱스의 SearchSourceBuilder를 생성하는 메서드
+    private SearchSourceBuilder createSearchSourceBuilder(BoolQueryBuilder queryBuilder, int size) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(queryBuilder);
+        searchSourceBuilder.from(0);
+        searchSourceBuilder.size(size);
+        searchSourceBuilder.sort("created_at", SortOrder.DESC);
+        return searchSourceBuilder;
+    }
+
 
     private void validateSearchReq(String keyword){
         // 키워드가 비어있으면
@@ -73,84 +119,68 @@ public class MainElasticSearchService {
             boolQueryBuilder.should(contentQueryBuilder);
     }
     // enable이 true인 위키,에러 아카이브,qan만 검색 결과에 포함되도록
-    private static void setAllEnableQuery(BoolQueryBuilder boolQueryBuilder){
-        BoolQueryBuilder enableQuery = QueryBuilders.boolQuery()
-                .should(QueryBuilders.matchQuery("enable", true))
-                .should(QueryBuilders.matchQuery("input_id", "wiki")); // wiki 인덱스는 조건 없이 포함
+    private static void setEnableQuery(BoolQueryBuilder boolQueryBuilder){
+        boolQueryBuilder.filter(QueryBuilders.matchQuery("enable", true));
+    }
+    // qna resolved가 true인것만 검색 결과에 포함되도록
+    private static void setQnaResolvedQuery(BoolQueryBuilder boolQueryBuilder){
+        BoolQueryBuilder resovledQuery = QueryBuilders.boolQuery()
+                .mustNot(QueryBuilders.matchQuery("resolved",2));
+        boolQueryBuilder.filter(resovledQuery);
+    }
 
-        boolQueryBuilder.filter(enableQuery);
-    }
-    private SearchResponse getSearchResponse(String keyword, BoolQueryBuilder boolQueryBuilder) throws IOException{
-        // 검색 요청 객체 생성
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(boolQueryBuilder);
-        // 검색 결과 시작 시점
-        searchSourceBuilder.from(0);
-        // 검색 결과 페에지 크기 설정
-        searchSourceBuilder.size(8);
-        searchSourceBuilder.sort("created_at", SortOrder.DESC);
-        // search()를 통해 검색 수행 후 응답값 받아옴
-        SearchRequest searchRequest = new SearchRequest(INDEXS);
-        searchRequest.source(searchSourceBuilder);
-        return restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-    }
-    private GetMainSearchRes makeAllRes(Integer wikiSize, Integer errorArchiveSize, Integer qnaSize,SearchResponse searchResponse) throws JsonProcessingException {
+    // MultiSearchResponse에서 각각의 검색 결과를 처리하는 메서드
+    private GetMainSearchRes makeAllRes(Integer wikiSize, Integer errorArchiveSize, Integer qnaSize, MultiSearchResponse multiSearchResponse) throws JsonProcessingException {
         // 각각의 리스트 생성
         List<GetQnaListRes> qnaListRes = new ArrayList<>();
         List<ListErrorArchiveRes> listErrorArchiveRes = new ArrayList<>();
         List<WikiListRes> wikiListResListRes = new ArrayList<>();
 
-        // SearchHit을 순회하며 각 인덱스에 맞는 리스트에 데이터를 추가
-        for (SearchHit hit : searchResponse.getHits().getHits()) {
-            if (hit.getIndex().equals("wiki")) {
-                // Wiki는 최대 4개까지만 추가
-                if (wikiListResListRes.size()>=wikiSize) {
-                    continue;
+        // 각 검색 응답을 분리하여 처리
+        for (int i = 0; i < multiSearchResponse.getResponses().length; i++) {
+            MultiSearchResponse.Item item = multiSearchResponse.getResponses()[i];
+            SearchResponse searchResponse = item.getResponse();
+
+            // 해당 인덱스의 검색 결과를 처리
+            for (SearchHit hit : searchResponse.getHits().getHits()) {
+                if (i == 0 && hit.getIndex().equals("wiki")) {
+                    Wiki wiki = objectMapper.readValue(hit.getSourceAsString(), Wiki.class);
+                    wikiListResListRes.add(WikiListRes.builder()
+                            .id(wiki.getId())
+                            .title(wiki.getTitle())
+                            .content(wiki.getContent())
+                            .category(wiki.getCategoryName())
+                            .createdAt(wiki.getCreatedAt())
+                            .thumbnail(wiki.getThumbnailImgUrl())
+                            .build());
+                } else if (i == 1 && hit.getIndex().equals("error_archive")) {
+                    ErrorArchive errorArchive = objectMapper.readValue(hit.getSourceAsString(), ErrorArchive.class);
+                    listErrorArchiveRes.add(ListErrorArchiveRes.builder()
+                            .id(errorArchive.getId())
+                            .title(errorArchive.getTitle())
+                            .content(errorArchive.getContent())
+                            .profileImg(errorArchive.getProfileImg())
+                            .nickname(errorArchive.getNickname())
+                            .superCategory(errorArchive.getSuperCategoryName())
+                            .subCategory(errorArchive.getSubCategoryName())
+                            .createdAt(errorArchive.getCreatedAt().toString())
+                            .grade(errorArchive.getGrade())
+                            .build());
+                } else if (i == 2 && hit.getIndex().equals("qna_board")) {
+                    QnaBoard qnaBoard = objectMapper.readValue(hit.getSourceAsString(), QnaBoard.class);
+                    qnaListRes.add(GetQnaListRes.builder()
+                            .id(qnaBoard.getId())
+                            .title(qnaBoard.getTitle())
+                            .superCategoryName(qnaBoard.getSuperCategoryName())
+                            .subCategoryName(qnaBoard.getSubCategoryName())
+                            .likeCnt(qnaBoard.getLikeCnt())
+                            .createdAt(qnaBoard.getCreatedAt())
+                            .answerCnt(qnaBoard.getAnswerCnt())
+                            .nickname(qnaBoard.getNickname())
+                            .profileImage(qnaBoard.getProfileImg())
+                            .grade(qnaBoard.getGrade())
+                            .build());
                 }
-                Wiki wiki = objectMapper.readValue(hit.getSourceAsString(), Wiki.class);
-                wikiListResListRes.add(WikiListRes.builder()
-                        .id(wiki.getId())
-                        .title(wiki.getTitle())
-                        .content(wiki.getContent())
-                        .category(wiki.getCategoryName())
-                        .createdAt(wiki.getCreatedAt())
-                        .thumbnail(wiki.getThumbnailImgUrl())
-                        .build());
-            } else if (hit.getIndex().equals("error_archive")) {
-                // ErrorArchive는 최대 8개까지만 추가
-                if(listErrorArchiveRes.size()>=errorArchiveSize){
-                    continue;
-                }
-                ErrorArchive errorArchive = objectMapper.readValue(hit.getSourceAsString(), ErrorArchive.class);
-                listErrorArchiveRes.add(ListErrorArchiveRes.builder()
-                        .id(errorArchive.getId())
-                        .title(errorArchive.getTitle())
-                        .content(errorArchive.getContent())
-                        .profileImg(errorArchive.getProfileImg())
-                        .nickname(errorArchive.getNickname())
-                        .superCategory(errorArchive.getSuperCategoryName())
-                        .subCategory(errorArchive.getSubCategoryName())
-                        .createdAt(errorArchive.getCreatedAt().toString())
-                        .grade(errorArchive.getGrade())
-                        .build());
-            } else if (hit.getIndex().equals("qna_board")) {
-                // qna는 최대 8개까지만 추가
-                if (qnaListRes.size()>=qnaSize) {
-                    continue;
-                }
-                QnaBoard qnaBoard = objectMapper.readValue(hit.getSourceAsString(), QnaBoard.class);
-                qnaListRes.add(GetQnaListRes.builder()
-                        .id(qnaBoard.getId())
-                        .title(qnaBoard.getTitle())
-                        .superCategoryName(qnaBoard.getSuperCategoryName())
-                        .subCategoryName(qnaBoard.getSubCategoryName())
-                        .likeCnt(qnaBoard.getLikeCnt())
-                        .createdAt(qnaBoard.getCreatedAt())
-                        .answerCnt(qnaBoard.getAnswerCnt())
-                        .nickname(qnaBoard.getNickname())
-                        .profileImage(qnaBoard.getProfileImg())
-                        .grade(qnaBoard.getGrade())
-                        .build());
             }
         }
 
@@ -159,6 +189,7 @@ public class MainElasticSearchService {
                 .qnaListResList(qnaListRes)
                 .errorArchiveResList(listErrorArchiveRes)
                 .wikiListResList(wikiListResListRes)
-                .build(); // GetMainSearchRes 객체를 반환
+                .build();
     }
+
 }

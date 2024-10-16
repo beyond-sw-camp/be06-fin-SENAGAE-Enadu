@@ -33,7 +33,7 @@ public class MainController {
                                                  @RequestParam(defaultValue = "8") Integer qnaSize,
                                                 String keyword) {
         try {
-            return new BaseResponse<>(mainElasticSearchService.mainSearch(errorArchiveSize,wikiSize,qnaSize,keyword));
+            return new BaseResponse<>(mainElasticSearchService.mainSearch(wikiSize,errorArchiveSize,qnaSize,keyword));
         } catch (IOException e) {
             throw new InvalidMainException(BaseResponseStatus.MAIN_SEARCH_EMPTY_REQUEST);
         }
