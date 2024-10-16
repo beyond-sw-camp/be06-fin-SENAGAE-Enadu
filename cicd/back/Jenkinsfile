@@ -37,6 +37,11 @@ pipeline {
                 }
             }
         }
+        stage('Publish Test Results') {
+            steps {
+                junit '**/test-results/**/*Test.xml'
+            }
+        }
         stage('Build') {
             steps {
                 dir('./back/backend'){
