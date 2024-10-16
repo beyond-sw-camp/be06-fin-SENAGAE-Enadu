@@ -1,5 +1,6 @@
 package org.example.backend.Main.Service;
 
+import com.example.common.Qna.model.Resolved;
 import lombok.RequiredArgsConstructor;
 import com.example.common.ErrorArchive.Model.Entity.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
@@ -34,7 +35,7 @@ public class MainService {
 
         Page<ErrorArchive> errorArchivePage = errorArchiveReository.findByEnableTrue(errorArchivePageable);
         Page<Wiki> wikiPage = wikiRepository.findAll(wikiPageable);
-        Page<QnaBoard> qnaBoardPage = questionRepository.findByEnableTrue(qnaPageable);
+        Page<QnaBoard> qnaBoardPage = questionRepository.findByResolvedNotAndEnableTrue(Resolved.ENDED, qnaPageable);
 
         List<ListErrorArchiveRes> listErrorArchiveResList = errorArchivePage.getContent().stream().map
                         (errorArchive -> ListErrorArchiveRes.builder()
