@@ -56,7 +56,8 @@
       },
       "content": {
         "type": "text",
-        "analyzer": "nori_analyzer"
+        "analyzer": "nori_analyzer",
+        "search_analyzer" : "nori_analyzer"
       }
     }
   }
