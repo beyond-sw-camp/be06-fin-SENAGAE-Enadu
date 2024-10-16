@@ -104,7 +104,7 @@ public class MainElasticSearchService {
         for (SearchHit hit : searchResponse.getHits().getHits()) {
             if (hit.getIndex().equals("wiki")) {
                 // Wiki는 최대 4개까지만 추가
-                if (wikiListResListRes.size()>wikiSize) {
+                if (wikiListResListRes.size()>=wikiSize) {
                     continue;
                 }
                 Wiki wiki = objectMapper.readValue(hit.getSourceAsString(), Wiki.class);
