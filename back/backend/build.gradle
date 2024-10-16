@@ -31,3 +31,4 @@ dependencies {
 bootJar {
 	archiveFileName = "backend.jar"
 }
+

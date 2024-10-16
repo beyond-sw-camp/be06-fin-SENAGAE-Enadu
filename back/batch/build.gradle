@@ -17,10 +17,3 @@ dependencies {
 bootJar {
     archiveFileName = "batch.jar"
 }
-
-test {
-    reports {
-        junitXml.required.set(true)
-        html.required.set(true)
-    }
-}
