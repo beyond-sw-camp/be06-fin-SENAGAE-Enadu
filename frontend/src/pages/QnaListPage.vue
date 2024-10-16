@@ -26,7 +26,6 @@
                             v-for="qnaCard in qnaStore.qnaSearchedCards"
                             :key="qnaCard.id"
                             v-bind:qnaCard="qnaCard"
-                            @click="goToDetail(qnaCard.id)"
           />
         </div>
       </div>
@@ -71,12 +70,12 @@ export default {
     ...mapStores(useQnaStore),
   },
   mounted() {
-    // this.selectedSort = "latest";
     if(this.$route.query.keyword){
       console.log(this.$route.query.keyword);
       this.selectedPage = 1;
       this.selectedSolvedStatus = "ALL"
       this.isSearched = true;
+      this.selectedSort = "latest";
       const query = {
           searchQuery: this.$route.query.keyword.trim(),
           selectedSuperCategoryId: '',
@@ -89,7 +88,9 @@ export default {
       this.selectedSolvedStatus = "ALL"
       this.isSearched = false;
       this.fetchQnaList();
+      this.selectedSort = "latest";
     }
+
   },
   methods: {
     handleCheckLatest() {
@@ -139,7 +140,7 @@ export default {
         this.totalPages = useQnaStore().searchedTotalPage || 1;
       }
       this.isLoading = false;
-    }
+    },
   },
   watch: {
     async selectedSort() {
