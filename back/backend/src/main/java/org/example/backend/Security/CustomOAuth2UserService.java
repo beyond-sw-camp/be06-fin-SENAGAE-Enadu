@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
+    private final RestTemplate restTemplate;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -36,9 +37,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 //                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 //        추후 다른 소셜 로그인 추가할 때 사용
         String accessToken = userRequest.getAccessToken().getTokenValue();
-
         Map<String, Object> attributes = oAuth2User.getAttributes();
-
         String email = (String) attributes.get("email");
 
         if (email == null) {
@@ -78,9 +77,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new CustomOAuth2User(oAuth2User, userId, email, accessToken);
     }
 
-    private String fetchEmailFromGitHub(String accessToken) {
+    public String fetchEmailFromGitHub(String accessToken) {
         String uri = "https://api.github.com/user/emails";
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
