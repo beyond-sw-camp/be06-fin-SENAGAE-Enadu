@@ -70,11 +70,27 @@ export default {
     ...mapStores(useQnaStore),
   },
   mounted() {
-    this.selectedSort = "latest";
-    this.selectedPage = 1;
-    this.selectedSolvedStatus = "ALL"
-    this.isSearched = false;
-    this.fetchQnaList();
+    if(this.$route.query.keyword){
+      console.log(this.$route.query.keyword);
+      this.selectedPage = 1;
+      this.selectedSolvedStatus = "ALL"
+      this.isSearched = true;
+      this.selectedSort = "latest";
+      const query = {
+          searchQuery: this.$route.query.keyword.trim(),
+          selectedSuperCategoryId: '',
+          selectedSubCategoryId: 0,
+          selectedType: "tc",
+      }
+      this.handleSearch(query);
+    } else {
+      this.selectedPage = 1;
+      this.selectedSolvedStatus = "ALL"
+      this.isSearched = false;
+      this.fetchQnaList();
+      this.selectedSort = "latest";
+    }
+
   },
   methods: {
     handleCheckLatest() {
@@ -111,6 +127,7 @@ export default {
 
         this.totalPages = await useQnaStore().searchedTotalPage || 1;
         this.isLoading = false;
+        this.$router.push("/qna/list")
       }
     },
     async fetchQnaList() {

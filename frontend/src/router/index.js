@@ -27,6 +27,7 @@ import UserLogPage from "@/pages/UserLogPage.vue";
 import ErrorArchiveUpdatePage from "@/pages/ErrorArchiveUpdatePage.vue";
 import { useUserStore } from "@/store/useUserStore";
 import RankingPage from "@/pages/RankingPage.vue";
+import TotalSearchPage from "@/pages/TotalSearchPage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -72,6 +73,7 @@ const router = createRouter({
         { path: "/user/log/:nickname", component: UserLogPage },
         { path: "/errorarchive/detail", component: ErrorArchiveDetailPage },
         { path: "/", component: MainPage },
+        { path: "/search", component: TotalSearchPage },
     ]
 });
 

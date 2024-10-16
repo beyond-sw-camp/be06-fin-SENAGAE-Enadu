@@ -17,8 +17,8 @@
             </ul>
         </nav>
         <div class="search-bar">
-            <input type="text" placeholder="검색어를 입력하세요">
-            <button @click="showAlert"><i class="fas fa-search"></i></button>
+            <input type="text" v-model="keyword" @keydown.enter="totalSearch" placeholder="검색어를 입력하세요">
+            <button @click="totalSearch"><i class="fas fa-search"></i></button>
         </div>
         <div class="auth-navigation">
             <div v-if="!isLoggedIn">
@@ -64,9 +64,26 @@ export default {
             return this.userStore.isLoggedIn;
         },
     },
+    data(){
+        return {
+            keyword: "",
+        }
+    },
+    watch: {
+        '$route.query': {
+            handler(newQuery) {
+                if (window.location.pathname !== "/search"){
+                    this.keyword = '';
+                } else {
+                    this.keyword = newQuery.keyword || '';
+                }
+            },
+            immediate: true
+        }
+    },
     methods: {
-        showAlert() {
-            alert("통합 검색은 추후 추가 예정입니다.")
+        totalSearch(){
+            window.location.href = "/search?keyword="+this.keyword;
         },
         logout() {
             if (window.confirm("로그아웃 하시겠습니까?")) {
