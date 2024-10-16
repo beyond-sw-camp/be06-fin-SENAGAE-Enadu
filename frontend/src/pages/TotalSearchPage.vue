@@ -5,8 +5,8 @@
         <div v-if="isLoading" style="text-align:center;"></div>
         <div v-else class="subject-container">
             <div class="subject-box">
-                <router-link to="/errorarchive/list" class="subject">에러 아카이브</router-link>
-                <router-link to="/errorarchive/list" class="show-all-button">더 보기</router-link>
+                <router-link :to="'/errorarchive/list?type=tc&keyword='+keyword" class="subject">에러 아카이브</router-link>
+                <router-link :to="'/errorarchive/list?type=tc&keyword='+keyword" class="show-all-button">더 보기</router-link>
             </div>
             <div class="errorarchive-inner">
                 <div class="errorarchive-list-flex">
@@ -27,8 +27,8 @@
         <div v-if="isLoading" style="text-align:center;"></div>
         <div v-else class="subject-container">
             <div class="subject-box">
-                <router-link to="/wiki/list" class="subject">위키</router-link>
-                <router-link to="/wiki/list" class="show-all-button">더 보기</router-link>
+                <router-link :to="'/wiki/list?keyword='+keyword" class="subject">위키</router-link>
+                <router-link :to="'/wiki/list?keyword='+keyword" class="show-all-button">더 보기</router-link>
             </div>
             <div class="wiki-list-grid" v-if="!isLoading">
                 <WikiCardComponent v-for="wikiCard in mainStore.searchInfo.wikiListResList" :key="wikiCard.id"
@@ -44,8 +44,8 @@
         <LoadingComponent v-if="isLoading"/>
         <div v-else class="subject-container">
             <div class="subject-box">
-                <router-link to="/qna/list" class="subject">QnA</router-link>
-                <router-link to="/qna/list" class="show-all-button">더 보기</router-link>
+                <router-link :to="'/qna/list?keyword='+keyword" class="subject">QnA</router-link>
+                <router-link :to="'/qna/list?keyword='+keyword" class="show-all-button">더 보기</router-link>
             </div>
             <div class="qna-inner">
                 <div class="qna-list-flex">
@@ -76,12 +76,14 @@ import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
 import LoadingComponent from "@/components/Common/LoadingComponent.vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
+import {useQnaStore} from "@/store/useQnaStore";
+import {useWikiStore} from "@/store/useWikiStore";
 
 export default {
     name: "TotalSearchPage",
     components: {TagComponent, LoadingComponent, QnaCardComponent, WikiCardComponent, ErrorArchiveCardComponent},
     computed: {
-        ...mapStores(useMainStore),
+        ...mapStores(useMainStore,useWikiStore,useQnaStore),
     },
     data() {
         return {

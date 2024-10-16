@@ -157,12 +157,12 @@ export default {
     }
   },
   async mounted() {
-    await this.getSuperCategory();
     this.selectedCategory = this.$route.query.selectedCategory || '';
     this.searchQuery = this.$route.query.keyword || "";
     this.selectedType = this.$route.query.type || "tc";
     this.selectedSubCategory.id = this.$route.query.selectedSubCategoryId || 0;
     this.selectedSubCategory.categoryName = this.$route.query.selectedSubCategoryName || "";
+    await this.getSuperCategory();
   },
   components: {
     SortTypeComponent
