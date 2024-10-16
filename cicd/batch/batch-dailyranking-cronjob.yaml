@@ -5,6 +5,8 @@ metadata:
   namespace: batch-dailyranking
 spec:
   schedule: "0 0 * * *"
+  startingDeadlineSeconds: 300
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
@@ -41,3 +43,4 @@ spec:
                       name: batch-env-secrets
                       key: GCLOUD_ID
           restartPolicy: OnFailure
+      backoffLimit: 5

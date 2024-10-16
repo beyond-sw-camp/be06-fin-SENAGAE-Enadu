@@ -79,6 +79,14 @@ pipeline {
                                         '''
                                     ),
                                     sshTransfer(
+                                        sourceFiles: "cicd/batch/batch-weeklyranking-cronjob.yaml",
+                                        remoteDirectory: "/home/test",
+                                        execCommand: '''
+                                            sed -i "s/latest/1.$BUILD_ID/g" cicd/batch/batch-weeklyranking-cronjob.yaml
+                                            kubectl apply -f /home/test/cicd/batch/batch-weeklyranking-cronjob.yaml
+                                        '''
+                                    ),
+                                    sshTransfer(
                                         sourceFiles: "cicd/batch/batch-unanswered-cronjob.yaml",
                                         remoteDirectory: "/home/test",
                                         execCommand: '''
