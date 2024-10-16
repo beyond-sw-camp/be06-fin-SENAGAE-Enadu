@@ -144,10 +144,6 @@ public class MainElasticSearchService {
             // 해당 인덱스의 검색 결과를 처리
             for (SearchHit hit : searchResponse.getHits().getHits()) {
                 if (i == 0 && hit.getIndex().equals("wiki")) {
-                    // Wiki는 최대 wikiSize까지만 추가
-                    if (wikiListResListRes.size() >= wikiSize) {
-                        continue;
-                    }
                     Wiki wiki = objectMapper.readValue(hit.getSourceAsString(), Wiki.class);
                     wikiListResListRes.add(WikiListRes.builder()
                             .id(wiki.getId())
@@ -158,10 +154,6 @@ public class MainElasticSearchService {
                             .thumbnail(wiki.getThumbnailImgUrl())
                             .build());
                 } else if (i == 1 && hit.getIndex().equals("error_archive")) {
-                    // ErrorArchive는 최대 errorArchiveSize까지만 추가
-                    if (listErrorArchiveRes.size() >= errorArchiveSize) {
-                        continue;
-                    }
                     ErrorArchive errorArchive = objectMapper.readValue(hit.getSourceAsString(), ErrorArchive.class);
                     listErrorArchiveRes.add(ListErrorArchiveRes.builder()
                             .id(errorArchive.getId())
@@ -175,10 +167,6 @@ public class MainElasticSearchService {
                             .grade(errorArchive.getGrade())
                             .build());
                 } else if (i == 2 && hit.getIndex().equals("qna_board")) {
-                    // qna는 최대 qnaSize까지만 추가
-                    if (qnaListRes.size() >= qnaSize) {
-                        continue;
-                    }
                     QnaBoard qnaBoard = objectMapper.readValue(hit.getSourceAsString(), QnaBoard.class);
                     qnaListRes.add(GetQnaListRes.builder()
                             .id(qnaBoard.getId())
