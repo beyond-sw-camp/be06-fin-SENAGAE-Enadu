@@ -115,12 +115,6 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<ErrorScrap> ErrorScrapList;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private DailyRanking dailyRanking;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private WeeklyRanking weeklyRanking;
-
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }

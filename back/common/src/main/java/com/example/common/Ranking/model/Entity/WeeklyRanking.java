@@ -15,7 +15,8 @@ public class WeeklyRanking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer point;
+    @Column(name = "delta_point")
+    private Integer deltaPoint;
 
     private Integer rank;
 

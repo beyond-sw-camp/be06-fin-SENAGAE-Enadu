@@ -81,7 +81,7 @@ public class PointService {
         List<GetRankingRes> getRankingResList = new ArrayList<>();
         for (WeeklyRanking weeklyRanking : weeklyRankingPage) {
             getRankingResList.add(GetRankingRes.builder()
-                    .point(weeklyRanking.getPoint())
+                    .point(weeklyRanking.getDeltaPoint())
                     .rank(weeklyRanking.getRank())
                     .grade(weeklyRanking.getUser().getGrade())
                     .nickname(weeklyRanking.getUser().getNickname())
