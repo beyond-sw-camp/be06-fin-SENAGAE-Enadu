@@ -12,7 +12,7 @@ spec:
       template:
         spec:
           containers:
-            - name: dailyRanking-batch
+            - name: weeklyranking-batch
               image: senagae/enadu-batch:latest
               env:
                 - name: BATCH_JOB_NAME
