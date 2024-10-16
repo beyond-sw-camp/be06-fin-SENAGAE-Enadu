@@ -2,10 +2,22 @@
   "settings": {
     "number_of_replicas": 0,
     "analysis": {
+      "filter": {
+        "ngram_filter": {
+          "type": "edge_ngram",
+          "min_gram": 1,
+          "max_gram": 50
+        }
+      },
       "tokenizer": {
         "nori_tokenizer": {
           "type": "nori_tokenizer",
           "decompound_mode": "mixed"
+        },
+        "jaso_tokenizer": {
+          "type": "jaso_tokenizer",
+          "chosung": true,
+          "mistype": false
         }
       },
       "analyzer": {
@@ -13,6 +25,15 @@
           "type": "custom",
           "tokenizer": "nori_tokenizer",
           "filter": ["lowercase"]
+        },
+        "jaso_index_analyzer": {
+          "type": "custom",
+          "tokenizer": "jaso_tokenizer",
+          "filter": ["ngram_filter"]
+        },
+        "jaso_search_analyzer": {
+          "type": "custom",
+          "tokenizer": "jaso_tokenizer"
         }
       }
     }
@@ -21,7 +42,17 @@
     "properties": {
       "title": {
         "type": "text",
-        "analyzer": "nori_analyzer"
+        "fields": {
+          "nori": {
+            "type": "text",
+            "analyzer": "nori_analyzer"
+          },
+          "jaso": {
+            "type": "text",
+            "analyzer": "jaso_index_analyzer",
+            "search_analyzer": "jaso_search_analyzer"
+          }
+        }
       },
       "content": {
         "type": "text",
