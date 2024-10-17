@@ -1,7 +1,7 @@
-FROM openjdk:17-jdk
+FROM openjdk:17-jdk-alpine
 
 # bash, curl, python3, py3-pip 설치
-RUN apt-get update && apt-get install -y bash curl python3 python3-pip \
+RUN apk add --no-cache bash curl python3 py3-pip \
   && curl -sSL https://sdk.cloud.google.com | bash \
   && /root/google-cloud-sdk/install.sh
 
