@@ -18,6 +18,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Common.ChosungChecker;
 import org.example.backend.ErrorArchive.Model.Doc.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
 import org.example.backend.Exception.custom.InvalidMainException;
@@ -48,9 +49,11 @@ public class MainElasticSearchService {
         BoolQueryBuilder qnaQuery = QueryBuilders.boolQuery();
 
         // 공통 검색 조건 설정
-        setMainKeywordQuery(keyword, wikiQuery);
-        setMainKeywordQuery(keyword, errorArchiveQuery);
-        setMainKeywordQuery(keyword, qnaQuery);
+        // 초성일때, 제목 -> 자소, content -> 노리로 쓰므로, type 추가!
+        setMainKeywordQuery(keyword, wikiQuery, "t");
+        setMainKeywordQuery(keyword, errorArchiveQuery, "tc");
+        setMainKeywordQuery(keyword, qnaQuery, "tc");
+
 
         // 에러 아카이브, qna enable 조건 설정
         setEnableQuery(errorArchiveQuery);
@@ -93,21 +96,42 @@ public class MainElasticSearchService {
         return searchSourceBuilder;
     }
 
-
     private void validateSearchReq(String keyword){
         // 키워드가 비어있으면
         if(keyword == null || keyword.isBlank()) {
             throw new InvalidMainException(BaseResponseStatus.MAIN_SEARCH_EMPTY_REQUEST);
         }
     }
-    // 검색어가 입력되었을 때
-    private static void setMainKeywordQuery(String keyword, BoolQueryBuilder boolQueryBuilder){
-        if(keyword!=null && !keyword.isBlank()){
-            boolQueryBuilder.minimumShouldMatch(1);
-            setKeyWordByType(keyword, boolQueryBuilder);
+    // 초성 검색 메소드 추가
+    private static void setChosungQuery(String keyword, BoolQueryBuilder boolQueryBuilder, String type) {
+        // 초성으로만 구성된 경우 초성 검색 처리
+        if (ChosungChecker.isChosungOnly(keyword)) {
+            // 제목 검색일 경우, jaso 분석기로 검색
+            if (type.contains("t")) {
+                MatchQueryBuilder jasoTitleQuery = QueryBuilders.matchQuery("title.jaso", keyword).fuzziness(Fuzziness.AUTO);;
+                boolQueryBuilder.should(jasoTitleQuery);
+            }
+
+            // 내용 검색일 경우, nori 분석기로 검색
+            if (type.contains("c")) {
+                MatchQueryBuilder noriContentQuery = QueryBuilders.matchQuery("content", keyword).fuzziness(Fuzziness.AUTO);;
+                boolQueryBuilder.should(noriContentQuery);
+            }
         }
     }
-
+    // 검색어가 입력되었을 때 초성 검색 포함한 메소드 수정
+    private static void setMainKeywordQuery(String keyword, BoolQueryBuilder boolQueryBuilder, String type) {
+        if (keyword != null && !keyword.isBlank()) {
+            boolQueryBuilder.minimumShouldMatch(1);
+            if(ChosungChecker.isChosungOnly(keyword)){
+                // 초성 검색 처리
+                setChosungQuery(keyword, boolQueryBuilder, type);
+            } else {
+                // 일반 검색 처리
+                setKeyWordByType(keyword, boolQueryBuilder);
+            }
+        }
+    }
     // 검색어를 제목이나 본문에서 검색하는 쿼리문 생성 후 boolQueryBuilder에 추가
     private static void setKeyWordByType(String keyword, BoolQueryBuilder boolQueryBuilder){
             // 제목에 대한 검색 조건

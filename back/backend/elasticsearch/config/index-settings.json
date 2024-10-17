@@ -1,12 +1,13 @@
 {
   "settings": {
     "number_of_replicas": 0,
+    "index.max_ngram_diff": 6,
     "analysis": {
       "filter": {
         "ngram_filter": {
-          "type": "edge_ngram",
-          "min_gram": 1,
-          "max_gram": 50
+          "type": "ngram",
+          "min_gram": 2,
+          "max_gram": 8
         }
       },
       "tokenizer": {
