@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        SKIP_PIPELINE = 'false'
-    }
-
     stages {
         stage('git clone') {
             steps {
@@ -18,8 +14,7 @@ pipeline {
                     if (changes != 0) {
                         echo 'No changes in batch or common, stopping pipeline.'
                         currentBuild.result = 'SUCCESS'
-                        env.SKIP_PIPELINE = 'true'
-                        return
+                        error('No changes, stopping the pipeline.')
                     } else {
                         echo 'Changes detected in batch or common, proceeding with pipeline.'
                     }
@@ -28,9 +23,6 @@ pipeline {
         }
 
         stage('ADD PRIVILIGES') {
-            when {
-                expression { return env.SKIP_PIPELINE != 'true' }
-            }
             steps {
                 dir('./back/batch') {
                     sh 'echo 권한 추가'
@@ -40,9 +32,6 @@ pipeline {
         }
 
         stage('Build') {
-            when {
-                expression { return env.SKIP_PIPELINE != 'true' }
-            }
             steps {
                 dir('./back/batch') {
                     sh 'echo 배치 빌드 중...'
@@ -52,9 +41,6 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            when {
-                expression { return env.SKIP_PIPELINE != 'true' }
-            }
             steps {
                 dir('./back/batch') {
                     sh 'echo 도커 이미지 빌드'
@@ -64,9 +50,6 @@ pipeline {
         }
 
         stage('Docker Push') {
-            when {
-                expression { return env.SKIP_PIPELINE != 'true' }
-            }
             steps {
                 script {
                     sh 'echo 도커 로그인'
@@ -82,9 +65,6 @@ pipeline {
         }
 
         stage('SSH transfer') {
-            when {
-                expression { return env.SKIP_PIPELINE != 'true' }
-            }
             steps {
                 script {
                     sshPublisher(
@@ -141,7 +121,6 @@ pipeline {
             withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
                 discordSend description: """
                 제목 : ${currentBuild.displayName}
-                파이프라인 실행 여부 : ${env.SKIP_PIPELINE == 'true' ? '스테이지 건너뜀' : '정상 실행됨'}
                 결과 : ${currentBuild.result}
                 실행 시간 : ${currentBuild.duration / 1000}s
                 """,
@@ -154,7 +133,6 @@ pipeline {
             withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
                 discordSend description: """
                 제목 : ${currentBuild.displayName}
-                파이프라인 실행 여부 : ${env.SKIP_PIPELINE == 'true' ? '스테이지 건너뜀' : '정상 실행됨'}
                 결과 : ${currentBuild.result}
                 실행 시간 : ${currentBuild.duration / 1000}s
                 """,

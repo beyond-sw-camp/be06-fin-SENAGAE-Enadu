@@ -4,7 +4,7 @@ metadata:
   name: aianswer-batch-job
   namespace: batch-aianswer
 spec:
-  schedule: "0 * * * *"
+  schedule: "0 0 * * *"
   startingDeadlineSeconds: 300
   concurrencyPolicy: Forbid
   jobTemplate:
