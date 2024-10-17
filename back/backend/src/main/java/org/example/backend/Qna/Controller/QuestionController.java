@@ -7,6 +7,7 @@ import org.example.backend.Qna.Service.QnaSearchService;
 import org.example.backend.Qna.Service.QnaService;
 import org.example.backend.Qna.model.Res.GetQnaListRes;
 import org.example.backend.Qna.model.Res.GetQuestionDetailRes;
+import org.example.backend.Qna.model.Res.GetQuestionEditDetailRes;
 import org.example.backend.Qna.model.Res.GetQuestionStateRes;
 import org.example.backend.Qna.model.req.CreateQuestionReq;
 import org.example.backend.Qna.model.req.EditQuestionReq;
@@ -59,6 +60,19 @@ public class QuestionController {
         GetQuestionDetailRes questionDetailRes = qnaService.getQuestionDetail(qnaBoardId, userId);
 
         return new BaseResponse<>(questionDetailRes);
+    }
+
+    @GetMapping("/edit-detail")
+    public BaseResponse<GetQuestionEditDetailRes> getQnaEditDetail(Integer qnaBoardId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long userId;
+        if (customUserDetails != null) {
+            userId = customUserDetails.getUserId();
+        } else {
+            userId = null;
+        }
+        GetQuestionEditDetailRes questionEditDetailRes = qnaService.getQuestionEditDetail(qnaBoardId, userId);
+
+        return new BaseResponse<>(questionEditDetailRes);
     }
 
     //qna 질문 좋아요

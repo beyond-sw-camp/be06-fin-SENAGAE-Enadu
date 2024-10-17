@@ -122,6 +122,38 @@ public class QnaService {
                 .build();
     }
 
+
+    public GetQuestionEditDetailRes getQuestionEditDetail(Integer qnaBoardId, Long userId) {
+        User user;
+        if (userId != null){
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.USER_NOT_FOUND));
+        }
+        else {
+            user = null;
+        }
+
+        QnaBoard qnaBoard = questionRepository.findByIdAndEnableTrue(qnaBoardId.longValue())
+                .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
+        if (user != qnaBoard.getUser()){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
+
+        return GetQuestionEditDetailRes.builder()
+                .id(qnaBoard.getId())
+                .userId(qnaBoard.getUser().getId())
+                .superCategoryId(qnaBoard.getCategory().getSuperCategory() != null ?
+                        qnaBoard.getCategory().getSuperCategory().getId() : null)
+                .subCategoryId(qnaBoard.getCategory().getId())
+                .title(qnaBoard.getTitle())
+                .content(qnaBoard.getContent())
+                .superCategoryName(qnaBoard.getCategory().getSuperCategory() != null ?
+                        qnaBoard.getCategory().getSuperCategory().getCategoryName() : null)
+                .subCategoryName(qnaBoard.getCategory() != null ?
+                        qnaBoard.getCategory().getCategoryName() : null)
+                .build();
+    }
+
     public List<GetAnswerDetailListRes> getAnswerDetails(List<Answer> answers, User user) {
         return answers.stream()
                 .filter(answer -> answer.isEnable())
