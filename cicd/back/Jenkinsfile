@@ -10,11 +10,11 @@ pipeline {
         stage('Check for Changes') {
             steps {
                 script {
-                    def changes = sh(script: 'git diff --name-only HEAD~1 HEAD | grep -E "^back/backend/|^back/common/"', returnStatus: true)
+                    def changes = sh(script: 'git diff --name-only HEAD~1 HEAD | grep -E "^back/backend/|^back/common/|^cicd/back/"', returnStatus: true)
                     if (changes != 0) {
                         echo 'No changes in batch or common, stopping pipeline.'
                         currentBuild.result = 'SUCCESS'
-                        error('No changes, stopping the pipeline.')
+                        return
                     } else {
                         echo 'Changes detected in backend or common, proceeding with pipeline.'
                     }
