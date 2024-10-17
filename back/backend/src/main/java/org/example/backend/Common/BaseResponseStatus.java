@@ -88,6 +88,7 @@ public enum BaseResponseStatus {
     QNA_ADOPTED_EDIT(false, 7203, "이미 채택된 경우 답변을 수정 및 삭제할 수 없습니다."),
     // - QnA 검색 에러
     QNA_SEARCH_EMPTY_REQUEST(false, 7301, "검색 요청이 비어 있습니다."),
+    QNA_SEARCH_CHOSUNG_LENGTH(false, 7302, "초성 검색은 한글자로 진행할 수 없습니다."),
 
 
 

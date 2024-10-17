@@ -64,6 +64,10 @@ public class ElasticQnaSearchService implements QnaSearchService {
             throw new InvalidQnaException(BaseResponseStatus.QNA_SEARCH_EMPTY_REQUEST);
         }
 
+        if (ChosungChecker.isChosungOnly(keyword) && keyword.length() == 1) {
+            throw new InvalidQnaException(BaseResponseStatus.QNA_SEARCH_CHOSUNG_LENGTH);
+        }
+
         if (getQnaSearchReq.getPage() == null) {
             getQnaSearchReq.setPage(0);
         }
@@ -76,7 +80,7 @@ public class ElasticQnaSearchService implements QnaSearchService {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_SEARCH_TYPE);
         }
 
-        if (!RESOLVE_TYPE.contains(getQnaSearchReq.getResolved())){
+        if (!RESOLVE_TYPE.contains(getQnaSearchReq.getResolved())) {
             throw new InvalidQnaException(BaseResponseStatus.QNA_INVALID_RESOLVE_TYPE);
         }
 
@@ -97,7 +101,7 @@ public class ElasticQnaSearchService implements QnaSearchService {
     private static void setQnaKeywordQuery(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
         if (getQnaSearchReq.getKeyword() != null && !getQnaSearchReq.getKeyword().isBlank()) { // 검색어가 입력되었을 때
             boolQueryBuilder.minimumShouldMatch(1);
-            if (ChosungChecker.isChosungOnly(getQnaSearchReq.getKeyword())){
+            if (ChosungChecker.isChosungOnly(getQnaSearchReq.getKeyword())) {
                 setChosungByType(getQnaSearchReq, boolQueryBuilder);
             } else {
                 setKeywordByType(getQnaSearchReq, boolQueryBuilder);
@@ -107,7 +111,7 @@ public class ElasticQnaSearchService implements QnaSearchService {
 
     private static void setKeywordByType(GetQnaSearchReq getQnaSearchReq, BoolQueryBuilder boolQueryBuilder) {
         if (getQnaSearchReq.getType().contains("t")) {
-            MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title", getQnaSearchReq.getKeyword()).slop(2);
+            MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title.nori", getQnaSearchReq.getKeyword()).slop(2);
             boolQueryBuilder.should(titleQueryBuilder);
         }
         if (getQnaSearchReq.getType().contains("c")) {
@@ -158,7 +162,7 @@ public class ElasticQnaSearchService implements QnaSearchService {
     private static void setSortType(GetQnaSearchReq getQnaSearchReq, SearchSourceBuilder searchSourceBuilder) {
         if (getQnaSearchReq.getSort().equals("latest")) {
             searchSourceBuilder.sort("created_at", SortOrder.DESC);
-        } else if (getQnaSearchReq.getSort().equals("like")){
+        } else if (getQnaSearchReq.getSort().equals("like")) {
             searchSourceBuilder.sort("like_cnt", SortOrder.DESC);
         } // 정확도순 정렬
     }
