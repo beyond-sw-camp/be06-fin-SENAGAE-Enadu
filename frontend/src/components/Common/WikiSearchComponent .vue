@@ -62,9 +62,6 @@ export default {
   },
   async mounted() {
     await this.categoryStore.loadSuperCategories();
-    if (this.keyword) {
-      // 이미 `this.keyword`가 `data()`의 `searchQuery`로 설정되어 있어 별도 처리 없이 검색이 가능합니다.
-    }
   }
 };
 </script>
