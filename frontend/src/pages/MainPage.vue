@@ -8,7 +8,6 @@
         </div>
     </div>
     <div class="custom-container" style="margin-top: 0;">
-
         <div v-if="isLoading" style="text-align:center;"></div>
         <div v-else class="subject-container">
             <div class="subject-box">
@@ -57,10 +56,7 @@
     </div>
 </template>
 
-
 <script>
-
-
 import {mapStores} from "pinia";
 import {useMainStore} from "@/store/useMainStore";
 import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";
@@ -77,14 +73,31 @@ export default {
     data() {
         return {
             isLoading: true,
-        }
+        };
     },
     methods: {
-        async getMainPageInfo() {
-            await this.mainStore.getMainPageInfo();
-            this.isLoading = false;
-        }
+    isSingleChosung(keyword) {
+        const chosungRegex = /^[ㄱ-ㅎ]$/; // 초성 한 글자인지 체크
+        return chosungRegex.test(keyword);
     },
+    async getMainPageInfo() {
+    const keyword = this.$route.query.keyword ? this.$route.query.keyword.trim() : '';
+
+    // 초성 한 글자인지 체크
+    if (this.isSingleChosung(keyword)) {
+        alert("초성검색은 한 글자가 불가합니다.");
+        this.isLoading = false; // 로딩 상태 해제
+        return; // API 호출 방지
+    }
+
+    console.log("API 호출"); // 디버깅 로그 추가
+    this.isLoading = true; // API 호출 전에 로딩 상태 설정
+    await this.mainStore.getMainPageInfo();
+    this.isLoading = false; // API 호출 후 로딩 상태 해제
+},
+
+},
+
     mounted() {
         this.getMainPageInfo();
     }
