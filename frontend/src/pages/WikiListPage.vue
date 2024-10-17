@@ -35,6 +35,7 @@ import TagComponent from "@/components/Common/TagComponent.vue";
 import { mapStores } from "pinia";
 import LoadingComponent from '@/components/Common/LoadingComponent.vue';
 
+
 export default {
   name: "WikiListPage",
   components: {
@@ -58,15 +59,24 @@ export default {
   },
   methods: {
     handleSearch(searchParams) {
+      if (this.isSingleChosung(searchParams.keyword)) {
+        alert("초성검색은 한 글자가 불가합니다");
+        return;
+      }
       this.isSearchMode = true;
       this.selectedPage = 1;
       this.isLoading = true;
       this.searchParams = searchParams;
-      this.wikiStore.wikiSearch(this.searchParams).then(() => {
+      this.wikiStore.wikiSearch({ ...this.searchParams, page: 0 }).then(() => {
         this.totalPage = this.wikiStore.searchTotalPages;
         this.isLoading = false;
       });
-      this.$router.push("/wiki/list");
+      this.$router.push({ path: "/wiki/list", query: { keyword: searchParams.keyword } });
+    },
+
+    isSingleChosung(keyword) {
+      const chosungRegex = /^[ㄱ-ㅎ]$/;
+      return chosungRegex.test(keyword);
     },
 
     async fetchWikiList(page) {
@@ -91,7 +101,6 @@ export default {
         } else {
           this.fetchWikiList(this.selectedPage);
           this.isLoading = false;
-
         }
       }
     },
@@ -105,22 +114,25 @@ export default {
     }
   },
 
-  mounted() {
+
+  async mounted() {
     if (this.$route.query.keyword) {
-      const request = {
+      this.searchParams = {
         keyword: this.$route.query.keyword,
         categoryId: null,
         type: this.selectedType || 'tc',
         page: 0,
         size: 16
       };
-      this.handleSearch(request);
+      this.isSearchMode = true;
+      await this.handleSearch(this.searchParams);
     } else {
-      this.fetchWikiList(this.selectedPage);
+      await this.fetchWikiList(this.selectedPage);
     }
   }
 };
 </script>
+
 
 <style scoped>
 .wiki-list-grid {
