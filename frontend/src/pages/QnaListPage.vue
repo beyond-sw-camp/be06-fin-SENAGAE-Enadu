@@ -106,8 +106,16 @@ export default {
     handleResolved(newStatus) {
       this.selectedSolvedStatus = newStatus;
     },
+    isChosung(keyword){
+        const charCode = keyword.charCodeAt(0);
+        return (charCode >= 0x3131 && charCode <= 0x314E);
+    },
     async handleSearch(data) {
       if (data !== null) {
+        if (data.searchQuery.length === 1 && this.isChosung(data.searchQuery)) {
+          alert("초성검색은 한 글자가 불가합니다.");
+          return;
+        }
         this.isSearched = true;
         this.isLoading = true;
 
@@ -144,7 +152,7 @@ export default {
   },
   watch: {
     async selectedSort() {
-      await this.fetchQnaList();
+        await this.fetchQnaList();
     },
     async selectedSolvedStatus() {
       this.isLoading = true;
