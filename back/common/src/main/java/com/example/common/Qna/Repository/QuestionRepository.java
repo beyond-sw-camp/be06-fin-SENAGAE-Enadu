@@ -2,6 +2,7 @@ package com.example.common.Qna.Repository;
 
 import com.example.common.Qna.model.Entity.QnaBoard;
 import com.example.common.Qna.model.Resolved;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -58,8 +59,7 @@ public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
             "WHERE qs.user.id = :userId AND q.enable = true")
     Page<QnaBoard> findByQnaScrapListUserIdAndEnableTrueWithFetch(@Param("userId") Long userId, Pageable pageable);
 
-    Page<QnaBoard> findByAnswerCountAndEnableTrue(Integer answerCount, Pageable pageable);
+    List<QnaBoard> findAllByAnswerCountAndEnableTrue(Integer answerCount);
 
-    Page<QnaBoard> findByCreatedAtBeforeAndAnswerCountAndAnswerListUserIdAndEnableTrue(LocalDateTime createdAt, Integer answerCount, Long id, Pageable pageable);
-
+    List<QnaBoard> findAllByCreatedAtBeforeAndAnswerCountAndAnswerListUserIdAndEnableTrue(LocalDateTime createdAt, Integer answerCount, Long id);
 }
