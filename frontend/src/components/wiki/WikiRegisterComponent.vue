@@ -53,7 +53,6 @@
                       </button>
                     </div>
                   </div>
-
                   <!-- 본문 -->
                   <div class="space-y-1">
                     <label for="text"
@@ -185,6 +184,7 @@ export default {
       this.isLoading = false;
     },
     cancel() {
+      this.$router.push('/wiki/list');
     }
   },
   components: {
