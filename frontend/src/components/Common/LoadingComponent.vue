@@ -19,6 +19,8 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
+  margin-left: -25px;
+  margin-top: -25px;
 }
 
 @keyframes spin {
