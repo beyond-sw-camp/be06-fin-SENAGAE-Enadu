@@ -89,16 +89,16 @@ public class ElasticWikiSearchService implements WikiSearchService {
             boolQuery.should(QueryBuilders.matchQuery("title.jaso", getWikiSearchReq.getKeyword()));
         }
         if ((getWikiSearchReq.getType()).contains("c")) {
-            boolQuery.should(QueryBuilders.matchQuery("content", getWikiSearchReq.getKeyword()));
+            boolQuery.should(QueryBuilders.matchQuery("content", getWikiSearchReq.getKeyword()).minimumShouldMatch("75%").fuzziness(Fuzziness.AUTO));
         }
     }
 
     // 일반 검색
     private static void setKeywordByType(GetWikiSearchReq getWikiSearchReq, BoolQueryBuilder boolQuery) {
-        if ((getWikiSearchReq.getType()).contains("t")) { // 제목 검색
+        if ((getWikiSearchReq.getType()).contains("t")) {
             boolQuery.should(QueryBuilders.matchPhraseQuery("title.nori", getWikiSearchReq.getKeyword()).slop(2));
         }
-        if ((getWikiSearchReq.getType()).contains("c")) { // 내용 검색
+        if ((getWikiSearchReq.getType()).contains("c")) {
             boolQuery.should(QueryBuilders.matchQuery("content", getWikiSearchReq.getKeyword()).minimumShouldMatch("75%").fuzziness(Fuzziness.AUTO));
         }
     }
