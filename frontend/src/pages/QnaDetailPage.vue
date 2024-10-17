@@ -19,6 +19,7 @@ import {useQnaStore} from "@/store/useQnaStore";
 import QnaDetailComponent from "@/components/Qna/Detail/QnaDetailComponent.vue";
 import QnaDetailHeader from "@/components/Qna/Detail/QnaDetailHeaderComponent.vue";
 import QnaAnswerDetailComponent from "@/components/Qna/Detail/QnaAnswerDetailComponent.vue";
+import router from "@/router";
 
 export default {
   name: "QnaDetailPage",
@@ -31,7 +32,7 @@ export default {
   },
   methods: {
     async getQnaDetail() {
-      await useQnaStore().getQnaDetail(this.$route.params.id);
+      await useQnaStore().getQnaDetail(this.$route.params.id, router);
       this.isLoading = false
     },
   },

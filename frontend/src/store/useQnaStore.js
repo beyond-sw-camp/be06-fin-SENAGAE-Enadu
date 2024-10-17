@@ -24,8 +24,7 @@ export const useQnaStore = defineStore("qna", {
             likeCnt: 0,
             hateCnt: 0,
         },
-        qnaAnswers: [
-        ],
+        qnaAnswers: [],
 
         checkQnaLike: 0,
         checkQnaHate: 0,
@@ -88,13 +87,21 @@ export const useQnaStore = defineStore("qna", {
                 });
                 this.qnaCards = res.data.result;
                 this.totalPage = this.qnaCards[0] !== undefined ? this.qnaCards[0].totalPage : 1;
-                console.log("listTotalPage"+this.totalPage);
+                console.log("listTotalPage" + this.totalPage);
             } catch (error) {
                 return false;
             }
-        }, async getQnaDetail(id) {
+        },
+        async getQnaDetail(id, router) {
             try {
                 let res = await axios.get(backend + "/qna/detail?qnaBoardId=" + id, {withCredentials: true});
+                if (!res.data.isSuccess) {
+                    console.log(res.data);
+                    console.log(res.data.message);
+                    alert(res.data.message);
+                    router.push('/exception');
+                    return false;
+                }
                 this.qnaDetail = res.data.result;
                 this.qnaAnswers = res.data.result.answers;
                 this.adoptedAnswerId = res.data.result.adoptedAnswerId;
@@ -277,7 +284,7 @@ export const useQnaStore = defineStore("qna", {
                 this.qnaSearchedCards = res.data.result;
 
                 this.searchedTotalPage = this.qnaSearchedCards[0] !== undefined ? this.qnaSearchedCards[0].totalPage : 1;
-                console.log("searchedTotalPage"+this.searchedTotalPage);
+                console.log("searchedTotalPage" + this.searchedTotalPage);
             } catch (error) {
                 return false;
             }

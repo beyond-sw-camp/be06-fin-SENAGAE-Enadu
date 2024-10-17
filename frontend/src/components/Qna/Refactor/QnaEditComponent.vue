@@ -94,6 +94,7 @@ import { useQnaStore } from "@/store/useQnaStore";
 import SuperCategoryModal from "@/components/Category/SuperCategoryModal.vue";
 import SubCategoryModal from "@/components/Category/SubCategoryModal.vue";
 import {useCommonStore} from "@/store/useCommonStore";
+import router from "@/router";
 
 export default {
   name: "QnaRegisterComponent",
@@ -126,7 +127,7 @@ export default {
     },
   },
   async mounted() {
-    await useQnaStore().getQnaDetail(this.$route.params.id);
+    await useQnaStore().getQnaDetail(this.$route.params.id, router);
     this.isLoading = false;
     this.myTitle = useQnaStore().qnaDetail.title;
     this.myText = useQnaStore().qnaDetail.content;

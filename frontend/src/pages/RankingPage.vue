@@ -103,7 +103,7 @@ export default {
                 await this.pointStore.fetchRanking(this.page, this.pageType);
                 this.totalPage = this.pointStore.rankingList[0].totalPage;
             } catch (error) {
-                return false;
+                return alert("hello");
             } finally {
                 this.isLoading = false;
             }
