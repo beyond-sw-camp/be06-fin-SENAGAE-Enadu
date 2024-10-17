@@ -1,8 +1,7 @@
 <template>
   <div class="search-container">
-
     <select v-model="selectedCategory" class="category-select rounded-select">
-      <option value="">카테고리 선택</option> 
+      <option value="">카테고리 선택</option>
       <option v-for="category in categoryStore.filteredCategories" :key="category.id" :value="category.id">
         {{ category.categoryName }}
       </option>
@@ -23,20 +22,24 @@
 </template>
 
 <script>
-import { useWikiStore } from "@/store/useWikiStore"; 
-import { useCategoryStore } from "@/store/useCategoryStore"; 
+import { useCategoryStore } from "@/store/useCategoryStore";
 import { mapStores } from "pinia";
 
 export default {
+  props: {
+    keyword: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
-      searchQuery: '',
-      selectedType: 'tc',  
-      selectedCategory: '', 
+      searchQuery: this.keyword || '',
+      selectedType: 'tc',
+      selectedCategory: '',
     };
   },
   computed: {
-    ...mapStores(useWikiStore),
     ...mapStores(useCategoryStore),
   },
   methods: {
@@ -51,16 +54,17 @@ export default {
         categoryId: this.selectedCategory || null,
         type: this.selectedType || 'tc',
         page: 0,
-        size: 16
+        size: 16,
       };
 
-      await this.wikiStore.wikiSearch(request);
       this.$emit("search", request);
     }
   },
   async mounted() {
-    this.searchQuery = this.$route.query.keyword || "";
     await this.categoryStore.loadSuperCategories();
+    if (this.keyword) {
+      // 이미 `this.keyword`가 `data()`의 `searchQuery`로 설정되어 있어 별도 처리 없이 검색이 가능합니다.
+    }
   }
 };
 </script>
