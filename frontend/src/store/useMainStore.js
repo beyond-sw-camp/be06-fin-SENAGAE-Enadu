@@ -39,21 +39,29 @@ export const useMainStore = defineStore('main', {
                 return null;
             }
         },
-
         async getTotalSearchInfo(keyword) {
+            // 초성 한 글자인지 체크하는 함수 추가
+            const isSingleChosung = (keyword) => /^[ㄱ-ㅎ]$/.test(keyword);
+            
+            // 초성이 한 글자인 경우 경고 메시지 및 API 호출 중단
+            if (isSingleChosung(keyword)) {
+                alert("초성검색은 한 글자가 불가합니다.");
+                return; // API 호출 방지
+            }
+        
             const request = {
                 errorArchiveSize: 8,
                 wikiSize: 4,
                 qnaSize: 8,
                 keyword: keyword
-            }
+            };
             try {
-                const response= await axios.get(backend+'/main/search',{
+                const response = await axios.get(backend + '/main/search', {
                     params: request,
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true
                 });
-                if (response.data.isSuccess){
+                if (response.data.isSuccess) {
                     this.searchInfo = response.data.result;
                 } else {
                     throw new Error(response.data.message);
@@ -63,6 +71,7 @@ export const useMainStore = defineStore('main', {
                 return null;
             }
         }
+        
     }
 });
 
