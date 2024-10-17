@@ -3,19 +3,6 @@ import axios from "axios";
 
 const backend = "/api";
 
-axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response && error.response.status === 401) {
-            console.log("401 에러 처리");
-        } else if (error.response && error.response.status === 405) {
-            console.log("405 에러 처리");
-        } else if (error.response && error.response.status === 304) {
-            console.log("304 에러 처리");
-        }
-    }
-);
-
 export const useQnaStore = defineStore("qna", {
     state: () => ({
         qnaCards: [],
@@ -24,6 +11,7 @@ export const useQnaStore = defineStore("qna", {
             likeCnt: 0,
             hateCnt: 0,
         },
+        qnaEditDetail: [],
         qnaAnswers: [],
 
         checkQnaLike: 0,
@@ -105,6 +93,21 @@ export const useQnaStore = defineStore("qna", {
                 this.qnaDetail = res.data.result;
                 this.qnaAnswers = res.data.result.answers;
                 this.adoptedAnswerId = res.data.result.adoptedAnswerId;
+            } catch (error) {
+                return false;
+            }
+        },
+        async getQnaEditDetail(id, router) {
+            try {
+                let res = await axios.get(backend + "/qna/edit-detail?qnaBoardId=" + id, {withCredentials: true});
+                if (!res.data.isSuccess) {
+                    console.log(res.data);
+                    console.log(res.data.message);
+                    alert(res.data.message);
+                    router.push('/exception');
+                    return false;
+                }
+                this.qnaEditDetail = res.data.result;
             } catch (error) {
                 return false;
             }

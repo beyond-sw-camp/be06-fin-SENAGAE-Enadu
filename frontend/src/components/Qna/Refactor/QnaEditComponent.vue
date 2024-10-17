@@ -127,16 +127,24 @@ export default {
     },
   },
   async mounted() {
-    await useQnaStore().getQnaDetail(this.$route.params.id, router);
+    await useQnaStore().getQnaEditDetail(this.$route.params.id, router);
     this.isLoading = false;
-    this.myTitle = useQnaStore().qnaDetail.title;
-    this.myText = useQnaStore().qnaDetail.content;
+    this.myTitle = useQnaStore().qnaEditDetail.title;
+    this.myText = useQnaStore().qnaEditDetail.content;
 
 
-    this.selectedSuperCategory.id = useQnaStore().qnaDetail.superCategoryId;
-    this.selectedSubCategory.id = useQnaStore().qnaDetail.subCategoryId;
-    this.selectedSuperCategory.categoryName = useQnaStore().qnaDetail.superCategoryName;
-    this.selectedSubCategory.categoryName = useQnaStore().qnaDetail.subCategoryName;
+    this.selectedSuperCategory.id = useQnaStore().qnaEditDetail.superCategoryId;
+    this.selectedSubCategory.id = useQnaStore().qnaEditDetail.subCategoryId;
+    console.log(useQnaStore().qnaEditDetail.superCategoryName);
+    if (useQnaStore().qnaEditDetail.superCategoryName !== null){
+      this.selectedSuperCategory.categoryName = useQnaStore().qnaEditDetail.superCategoryName;
+      this.selectedSubCategory.categoryName = useQnaStore().qnaEditDetail.subCategoryName
+    }
+    else{
+      this.selectedSuperCategory.categoryName = useQnaStore().qnaEditDetail.subCategoryName;
+      this.selectedSubCategory.categoryName = " ";
+    }
+
     this.myCategory = this.selectedSubCategory.id;
   },
   methods: {
