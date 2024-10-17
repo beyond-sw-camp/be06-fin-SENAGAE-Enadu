@@ -4,7 +4,7 @@ metadata:
   name: unanswered-batch-job
   namespace: batch-unanswered
 spec:
-  schedule: "0 0 * * *"
+  schedule: "0 15 * * *"
   startingDeadlineSeconds: 300
   concurrencyPolicy: Forbid
   jobTemplate:

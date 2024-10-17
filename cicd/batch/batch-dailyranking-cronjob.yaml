@@ -4,7 +4,7 @@ metadata:
   name: dailyranking-batch-job
   namespace: batch-dailyranking
 spec:
-  schedule: "0 0 * * *"
+  schedule: "0 15 * * *"
   startingDeadlineSeconds: 300
   concurrencyPolicy: Forbid
   jobTemplate:
