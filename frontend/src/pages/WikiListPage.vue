@@ -1,28 +1,27 @@
 <template>
-  <TagComponent :tagTitle="'WIKI'" :tagSubTitle="'당신의 위키를 만들어보세요'" />
+  <TagComponent :tagTitle="'WIKI'" :tagSubTitle="'당신의 위키를 만들어보세요'"/>
   <div class="custom-container" style="margin-top: 0;">
     <div class="wiki-inner">
-      <WikiSearchComponent @search="handleSearch" />
+      <WikiSearchComponent @search="handleSearch" :keyword="$route.query.keyword"/>
 
       <div class="create-wiki-btn-container">
         <button @click="navigateToWikiRegister" class="create-wiki-btn">작성하기</button>
       </div>
 
-      <div v-if="wikiStore.isLoading" style="text-align:center;">
-        <p>로딩 중...</p>
-      </div>
-
       <div class="wiki-list-grid" v-if="!wikiStore.isLoading">
-        <WikiCardComponent v-for="wikiCard in wikiStore.wikiCards" :key="wikiCard.id" :wikiCard="wikiCard" />
+        <WikiCardComponent v-for="wikiCard in wikiStore.wikiCards" :key="wikiCard.id"
+                           :wikiCard="wikiCard"/>
       </div>
-
-      <div v-if="!wikiStore.isLoading && wikiStore.wikiCards.length === 0" style="text-align: center;">
+      <LoadingComponent v-if="wikiStore.isLoading" style="margin-top: 5rem"/>
+      <div v-else-if="!wikiStore.isLoading && wikiStore.wikiCards.length === 0"
+           style="text-align: center;">
         <p>검색 결과가 없습니다.</p>
       </div>
     </div>
 
     <div class="pagination-container" v-if="!isLoading && totalPage > 0">
-      <PaginationComponent :totalPage="totalPage" :nowPage="selectedPage" @updatePage="handlePageUpdate" />
+      <PaginationComponent :totalPage="totalPage" :nowPage="selectedPage"
+                           @updatePage="handlePageUpdate"/>
     </div>
   </div>
 </template>
@@ -34,10 +33,13 @@ import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import WikiSearchComponent from "@/components/Common/WikiSearchComponent .vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
 import { mapStores } from "pinia";
+import LoadingComponent from '@/components/Common/LoadingComponent.vue';
+
 
 export default {
   name: "WikiListPage",
   components: {
+    LoadingComponent,
     WikiCardComponent,
     PaginationComponent,
     WikiSearchComponent,
@@ -57,14 +59,24 @@ export default {
   },
   methods: {
     handleSearch(searchParams) {
+      if (this.isSingleChosung(searchParams.keyword)) {
+        alert("초성검색은 한 글자가 불가합니다");
+        return;
+      }
       this.isSearchMode = true;
       this.selectedPage = 1;
       this.isLoading = true;
       this.searchParams = searchParams;
-      this.wikiStore.wikiSearch(this.searchParams).then(() => {
+      this.wikiStore.wikiSearch({ ...this.searchParams, page: 0 }).then(() => {
         this.totalPage = this.wikiStore.searchTotalPages;
         this.isLoading = false;
       });
+      this.$router.push({ path: "/wiki/list", query: { keyword: searchParams.keyword } });
+    },
+
+    isSingleChosung(keyword) {
+      const chosungRegex = /^[ㄱ-ㅎ]$/;
+      return chosungRegex.test(keyword);
     },
 
     async fetchWikiList(page) {
@@ -89,7 +101,6 @@ export default {
         } else {
           this.fetchWikiList(this.selectedPage);
           this.isLoading = false;
-
         }
       }
     },
@@ -103,11 +114,25 @@ export default {
     }
   },
 
-  mounted() {
-    this.fetchWikiList(this.selectedPage);
+
+  async mounted() {
+    if (this.$route.query.keyword) {
+      this.searchParams = {
+        keyword: this.$route.query.keyword,
+        categoryId: null,
+        type: this.selectedType || 'tc',
+        page: 0,
+        size: 16
+      };
+      this.isSearchMode = true;
+      await this.handleSearch(this.searchParams);
+    } else {
+      await this.fetchWikiList(this.selectedPage);
+    }
   }
 };
 </script>
+
 
 <style scoped>
 .wiki-list-grid {
