@@ -1,5 +1,5 @@
 <template>
-  <div id="__next">
+  <div id="__next" :class="{ 'loading': isLoading }">
     <main class="mx-auto mt-2 w-full max-w-7xl px-4 lg:mt-[18px] lg:px-0">
       <div class="flex lg:space-x-10">
         <div class="w-full min-w-0 flex-auto lg:static lg:max-h-full lg:overflow-visible">
@@ -19,11 +19,14 @@
 
                   <!-- 상위 카테고리 -->
                   <div class="space-y-1">
-                    <label for="superCategory" class="text-sm font-medium text-gray-700 dark:text-gray-300">상위 카테고리</label>
+                    <label for="superCategory"
+                           class="text-sm font-medium text-gray-700 dark:text-gray-300">상위
+                      카테고리</label>
                     <div class="flex w-full">
-                      <input type="text" id="superCategory" :placeholder="selectedSuperCategory ? selectedSuperCategory.categoryName : '상위 카테고리를 선택해주세요.'"
+                      <input type="text" id="superCategory"
+                             :placeholder="selectedSuperCategory ? selectedSuperCategory.categoryName : '상위 카테고리를 선택해주세요.'"
                              disabled
-                             class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20" />
+                             class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"/>
                       <div style="margin-left:10px">
                         <button type="button" @click="openSuperCategoryModal"
                                 class="w-20 items-center space-x-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600">
@@ -34,11 +37,14 @@
                   </div>
                   <!-- 하위 카테고리 -->
                   <div class="space-y-1">
-                    <label for="subCategory" class="text-sm font-medium text-gray-700 dark:text-gray-300">하위 카테고리</label>
+                    <label for="subCategory"
+                           class="text-sm font-medium text-gray-700 dark:text-gray-300">하위
+                      카테고리</label>
                     <div class="flex w-full">
-                      <input type="text" id="subCategory" :placeholder="selectedSubCategory ? selectedSubCategory.categoryName : '하위 카테고리를 선택해주세요.'"
+                      <input type="text" id="subCategory"
+                             :placeholder="selectedSubCategory ? selectedSubCategory.categoryName : '하위 카테고리를 선택해주세요.'"
                              disabled
-                             class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20" />
+                             class="w-full appearance-none rounded-md border border-gray-500/30 pl-3 pr-10 py-2 text-base placeholder-gray-500/80 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-0 dark:bg-gray-500/20"/>
                       <div style="margin-left:10px">
                         <button type="button" @click="openSubCategoryModal"
                                 class="w-20 items-center space-x-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-600">
@@ -50,7 +56,9 @@
                   <!-- 본문 -->
                   <div class="space-y-1">
                     <label for="text" class="text-sm font-medium text-gray-700 dark:text-gray-300">본문</label>
-                    <v-md-editor v-model="errorArchive.content" :disabled-menus="[]" @upload-image="commonStore.imageUpload" height="400px"></v-md-editor>
+                    <v-md-editor v-model="errorArchive.content" :disabled-menus="[]"
+                                 @upload-image="commonStore.imageUpload"
+                                 height="400px"></v-md-editor>
                   </div>
                 </div>
 
@@ -70,6 +78,7 @@
                   </div>
                 </div>
               </div>
+              <LoadingComponent v-show="isLoading" style="margin-top: 15rem"/>
             </form>
           </div>
         </div>
@@ -77,68 +86,75 @@
 
       <!-- 상위 카테고리 모달 -->
       <SuperCategoryModal
-        v-if="showSuperModal"
-        @mySuperCategory="handleSuperCategorySelection"
-        @closeSuper="closeSuperCategoryModal"
+          v-if="showSuperModal"
+          @mySuperCategory="handleSuperCategorySelection"
+          @closeSuper="closeSuperCategoryModal"
       />
       <!-- 하위 카테고리 모달 -->
       <SubCategoryModal
-        v-if="showSubModal"
-        :superCategory="selectedSuperCategory"
-        @mySubCategory="handleSubCategorySelection"
-        @closeSub="closeSubCategoryModal"
+          v-if="showSubModal"
+          :superCategory="selectedSuperCategory"
+          @mySubCategory="handleSubCategorySelection"
+          @closeSub="closeSubCategoryModal"
       />
     </main>
   </div>
 </template>
 
 <script>
-import {mapStores} from "pinia";
+import { mapStores } from "pinia";
 import SuperCategoryModal from '@/components/Category/SuperCategoryModal.vue';
 import SubCategoryModal from '@/components/Category/SubCategoryModal.vue';
 import { useErrorArchiveStore } from '@/store/useErrorArchiveStore';
-import {useCommonStore} from "@/store/useCommonStore";
+import { useCommonStore } from "@/store/useCommonStore";
+import LoadingComponent from '@/components/Common/LoadingComponent.vue';
 
 export default {
   name: 'ErrorArchiveRegisterComponent',
   components: {
+    LoadingComponent,
     SuperCategoryModal,
     SubCategoryModal,
   },
   computed: {
-    ...mapStores(useErrorArchiveStore), 
+    ...mapStores(useErrorArchiveStore),
     ...mapStores(useCommonStore)
   },
-  data () {
+  data() {
     return {
-     selectedSuperCategory: "",
-     selectedSubCategory: "",
-     showSuperModal: false,
-     showSubModal: false,
-     errorArchive : {
-      title: "",
-      content:"",
-      categoryId: null
-     }
+      isLoading: false,
+      selectedSuperCategory: "",
+      selectedSubCategory: "",
+      showSuperModal: false,
+      showSubModal: false,
+      errorArchive: {
+        title: "",
+        content: "",
+        categoryId: null
+      }
     }
   },
   methods: {
-    async handleSubmit(){
+    async handleSubmit() {
       if (!this.errorArchive.title || !this.errorArchive.content || !this.selectedSuperCategory) {
         alert('모든 필드를 올바르게 입력해 주세요.');
         return;
-      }    
-      try { 
-        const errorArchiveStore = useErrorArchiveStore(); 
+      }
+      this.isLoading = true;
+      try {
+        const errorArchiveStore = useErrorArchiveStore();
         const id = await errorArchiveStore.registerErrorArchive(this.errorArchive);
         if (this.selectedSuperCategory === null) {
           this.selectedSuperCategory = this.selectedSubCategory; // 하위 카테고리 ID를 상위 카테고리 ID로 설정
         }
         alert('등록이 완료되었습니다.');
-        this.$router.push('/errorarchive/detail?id='+id);
-      } catch (error) {
+        this.$router.push('/errorarchive/detail?id=' + id);
+      }
+      catch (error) {
         console.error('등록 중 오류 발생:', error);
         alert(`등록 중 오류 발생: ${error.message}`);
+      } finally {
+        this.isLoading = false;
       }
     },
     // 메소드 2개일 필요없고, if-else문으로 처리 가능
@@ -148,7 +164,7 @@ export default {
     closeSuperCategoryModal() {
       this.showSuperModal = false;
     },
-    handleSuperCategorySelection(category){
+    handleSuperCategorySelection(category) {
       this.selectedSuperCategory = category;
       this.errorArchive.categoryId = category.id;
       this.closeSuperCategoryModal();
@@ -158,12 +174,12 @@ export default {
     openSubCategoryModal() {
       if (this.selectedSuperCategory) {
         this.showSubModal = true;
-        this.showSuperModal=false;
+        this.showSuperModal = false;
       } else {
         alert('상위 카테고리를 먼저 선택하세요.');
       }
     },
-    closeSubCategoryModal(){
+    closeSubCategoryModal() {
       this.showSubModal = false;
     },
 
@@ -173,43 +189,42 @@ export default {
       this.closeSubCategoryModal();
     },
     cancel() {
-      this.errorArchive.title = '';
-      this.errorArchive.content = '';
-      this.selectedSuperCategory = '';
-      this.selectedSubCategory = '';
-      this.categoryId='';
-    },
- }
+      this.$router.go(-1);
+    }
+  }
 }
 
 
 </script>
 <style scoped>
 .category-selection {
-margin-top: 1rem;
+  margin-top: 1rem;
 }
+
 .category-select {
-width: 100%;
-appearance: none;
-border-radius: 4px;
-border: 1px solid #ddd;
-padding: 8px 12px;
-font-size: 16px;
-box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  appearance: none;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  font-size: 16px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
 .btn-select {
-width: 100%;
-background-color: #3b82f6;
-color: white;
-border: none;
-border-radius: 4px;
-padding: 10px;
-font-size: 16px;
-font-weight: bold;
-cursor: pointer;
-transition: background-color 0.3s;
+  width: 100%;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
+
 .btn-select:hover {
-background-color: #2563eb;
+  background-color: #2563eb;
 }
 </style>
