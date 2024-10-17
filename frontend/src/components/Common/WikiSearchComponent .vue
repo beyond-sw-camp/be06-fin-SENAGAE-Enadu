@@ -61,6 +61,7 @@ export default {
     }
   },
   async mounted() {
+    this.searchQuery = this.$route.query.keyword || "";
     await this.categoryStore.loadSuperCategories();
   }
 };
