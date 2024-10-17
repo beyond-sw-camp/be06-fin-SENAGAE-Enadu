@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SKIP_PIPELINE = 'false'
+    }
+
     stages {
         stage('git clone') {
             steps {
@@ -14,6 +18,7 @@ pipeline {
                     if (changes != 0) {
                         echo 'No changes in batch or common, stopping pipeline.'
                         currentBuild.result = 'SUCCESS'
+                        env.SKIP_PIPELINE = 'true'
                         return
                     } else {
                         echo 'Changes detected in backend or common, proceeding with pipeline.'
@@ -21,45 +26,68 @@ pipeline {
                 }
             }
         }
-        stage('ADD PRIVILIGES'){
-            steps{
-                dir('./back/backend'){
+
+        stage('ADD PRIVILIGES') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
+            steps {
+                dir('./back/backend') {
                     sh 'echo 권한 추가'
                     sh 'chmod +x gradlew'
                 }
             }
         }
-        stage('Test Application'){
-            steps{
-                dir('./back/backend'){
+
+        stage('Test Application') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
+            steps {
+                dir('./back/backend') {
                     sh 'echo 단위 테스트 실행 중...'
                     sh './gradlew test'
                 }
             }
         }
+
         stage('Publish Test Results') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
                 junit '**/test-results/**/*Test.xml'
             }
         }
+
         stage('Build') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
-                dir('./back/backend'){
+                dir('./back/backend') {
                     sh 'echo 백엔드 프로젝트 빌드 중...'
                     sh './gradlew bootJar'
                 }
             }
         }
-        stage('Build Docker Image'){
+
+        stage('Build Docker Image') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
-                dir('./back/backend'){
+                dir('./back/backend') {
                     sh 'echo 도커 이미지 빌드'
                     sh 'docker build -t senagae/enadu-be:1.$BUILD_ID .'
                 }
             }
         }
 
-        stage('Docker Push'){
+        stage('Docker Push') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
                 script {
                     sh 'echo 도커 로그인'
@@ -74,30 +102,23 @@ pipeline {
             }
         }
 
-        stage('SSH transfer'){
+        stage('SSH transfer') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
                 script {
                     sshPublisher(
-                        // 오류 발생 시 진행을 멈춤
                         continueOnError: false,
-                        // 오류 발생 시 파이프라인을 실패시킴
                         failOnError: true,
-                        // 전송자 목록
                         publishers: [
-                            // SSH 전송 설명
                             sshPublisherDesc(
-                                // SSH 서버 설정 이름 지정 ( master 노드 )
                                 configName: "jenkins-k8s",
-                                // 자세한 출력 모드 활성화
                                 verbose: true,
                                 transfers: [
                                     sshTransfer(
-                                        // 전송할 파일 지정
                                         sourceFiles: "cicd/back/backend-deployment.yaml",
-                                        // 원격 디렉토리 지정 ( 원격서버로 파일을 전송할 위치 )
                                         remoteDirectory: "/home/test",
-                                        // 전송 후 yaml 파일의 latest 파이프라인 빌드 숫자로 변경
-                                        // backend-deployment 야멜 파일 실행
                                         execCommand: '''
                                             sed -i "s/latest/1.$BUILD_ID/g" cicd/back/backend-deployment.yaml
                                         '''
@@ -116,7 +137,6 @@ pipeline {
                                         execCommand: '''
                                             bash cicd/back/backend.sh
                                         '''
-
                                     )
                                 ]
                             )
@@ -126,31 +146,33 @@ pipeline {
             }
         }
     }
+
     post {
         success {
             withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
-                        discordSend description: """
-                        제목 : ${currentBuild.displayName}
-                        결과 : ${currentBuild.result}
-                        실행 시간 : ${currentBuild.duration / 1000}s
-                        """,
-                        link: env.BUILD_URL, result: currentBuild.currentResult,
-                        title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
-                        webhookURL: "$DISCORD"
+                discordSend description: """
+                제목 : ${currentBuild.displayName}
+                파이프라인 실행 여부 : ${env.SKIP_PIPELINE == 'true' ? '스테이지 건너뜀' : '정상 실행됨'}
+                결과 : ${currentBuild.result}
+                실행 시간 : ${currentBuild.duration / 1000}s
+                """,
+                link: env.BUILD_URL, result: currentBuild.currentResult,
+                title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
+                webhookURL: "$DISCORD"
             }
         }
         failure {
             withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
-                        discordSend description: """
-                        제목 : ${currentBuild.displayName}
-                        결과 : ${currentBuild.result}
-                        실행 시간 : ${currentBuild.duration / 1000}s
-                        """,
-                        link: env.BUILD_URL, result: currentBuild.currentResult,
-                        title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
-                        webhookURL: "$DISCORD"
+                discordSend description: """
+                제목 : ${currentBuild.displayName}
+                파이프라인 실행 여부 : ${env.SKIP_PIPELINE == 'true' ? '스테이지 건너뜀' : '정상 실행됨'}
+                결과 : ${currentBuild.result}
+                실행 시간 : ${currentBuild.duration / 1000}s
+                """,
+                link: env.BUILD_URL, result: currentBuild.currentResult,
+                title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
+                webhookURL: "$DISCORD"
             }
         }
     }
 }
-

@@ -10,7 +10,7 @@ spec:
     matchLabels:
       type: backend
       deployment: color
-  replicas: 4
+  replicas: 2
   strategy:
     type: RollingUpdate
   minReadySeconds: 10
