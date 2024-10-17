@@ -49,6 +49,7 @@ public enum BaseResponseStatus {
     WIKI_PERMISSION_DENIED(false, 5006,"등록 및 수정 권한이 없습니다."),
     WIKI_SEARCH_EMPTY_REQUEST(false, 5007, "검색 요청이 비어 있습니다."),
     WIKI_INVALID_SEARCH_TYPE(false, 5008, "존재하지 않은 타입의 검색 방식 입니다."),
+    WIKI_INVALID_KEYWORD_TYPE(false, 5009, "초성검색은 한 글자가 불가합니다"),
 
     // 에러 아카이브 기능 - 6000
     ERRORARCHIVE_INVALID_SEARCH_TYPE(false, 6060, "존재하지 않은 타입의 검색 방식 입니다."),

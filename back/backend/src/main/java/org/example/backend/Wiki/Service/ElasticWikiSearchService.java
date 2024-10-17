@@ -89,14 +89,14 @@ public class ElasticWikiSearchService implements WikiSearchService {
             boolQuery.should(QueryBuilders.matchQuery("title.jaso", getWikiSearchReq.getKeyword()));
         }
         if ((getWikiSearchReq.getType()).contains("c")) {
-            boolQuery.should(QueryBuilders.matchPhraseQuery("content", getWikiSearchReq.getKeyword()));
+            boolQuery.should(QueryBuilders.matchQuery("content", getWikiSearchReq.getKeyword()));
         }
     }
 
     // 일반 검색
     private static void setKeywordByType(GetWikiSearchReq getWikiSearchReq, BoolQueryBuilder boolQuery) {
         if ((getWikiSearchReq.getType()).contains("t")) { // 제목 검색
-            boolQuery.should(QueryBuilders.matchPhraseQuery("title", getWikiSearchReq.getKeyword()).slop(2));
+            boolQuery.should(QueryBuilders.matchPhraseQuery("title.nori", getWikiSearchReq.getKeyword()).slop(2));
         }
         if ((getWikiSearchReq.getType()).contains("c")) { // 내용 검색
             boolQuery.should(QueryBuilders.matchQuery("content", getWikiSearchReq.getKeyword()).minimumShouldMatch("75%").fuzziness(Fuzziness.AUTO));
@@ -132,6 +132,10 @@ public class ElasticWikiSearchService implements WikiSearchService {
 
         if (!SEARCH_TYPE.contains(getWikiSearchReq.getType())) {
             throw new InvalidWikiException(BaseResponseStatus.WIKI_INVALID_SEARCH_TYPE);
+        }
+
+        if (ChosungChecker.isChosungOnly(getWikiSearchReq.getKeyword()) && keyword.length() == 1) {
+            throw new InvalidWikiException(BaseResponseStatus.WIKI_INVALID_KEYWORD_TYPE);
         }
     }
 
