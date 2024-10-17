@@ -48,6 +48,7 @@ public enum BaseResponseStatus {
     WIKI_PERMISSION_DENIED(false, 5006,"등록 및 수정 권한이 없습니다."),
     WIKI_SEARCH_EMPTY_REQUEST(false, 5007, "검색 요청이 비어 있습니다."),
     WIKI_INVALID_SEARCH_TYPE(false, 5008, "존재하지 않은 타입의 검색 방식 입니다."),
+    WIKI_INVALID_KEYWORD_TYPE(false, 5009, "초성검색은 한 글자가 불가합니다"),
 
     // 에러 아카이브 기능 - 6000
     ERRORARCHIVE_INVALID_SEARCH_TYPE(false, 6060, "존재하지 않은 타입의 검색 방식 입니다."),
@@ -88,6 +89,7 @@ public enum BaseResponseStatus {
     QNA_ADOPTED_EDIT(false, 7203, "이미 채택된 경우 답변을 수정 및 삭제할 수 없습니다."),
     // - QnA 검색 에러
     QNA_SEARCH_EMPTY_REQUEST(false, 7301, "검색 요청이 비어 있습니다."),
+    QNA_SEARCH_CHOSUNG_LENGTH(false, 7302, "초성 검색은 한글자로 진행할 수 없습니다."),
 
 
 

@@ -71,10 +71,11 @@ services:
     volumes:
       - ./elasticsearch/data/:/usr/share/elasticsearch/data/
       - ./elasticsearch/config/index-settings.json:/usr/share/elasticsearch/config/index-settings.json
+      - ./elasticsearch/config/jaso-analyzer-plugin-7.17.24-plugin.zip:/usr/share/elasticsearch/config/jaso-analyzer-plugin-7.17.24-plugin.zip
     command: >
       bash -c "
       bin/elasticsearch-plugin install analysis-nori;
-      bin/elasticsearch-plugin install file:///usr/share/elasticsearch/data/jaso-analyzer-plugin-7.17.24-plugin.zip;
+      bin/elasticsearch-plugin install file:///usr/share/elasticsearch/config/jaso-analyzer-plugin-7.17.24-plugin.zip;
       (sleep 60
       && curl -X PUT -u elastic:qwer1234 'http://localhost:9200/qna_board' -H 'Content-Type: application/json' -d @/usr/share/elasticsearch/config/index-settings.json
       && curl -X PUT -u elastic:qwer1234 'http://localhost:9200/wiki' -H 'Content-Type: application/json' -d @/usr/share/elasticsearch/config/index-settings.json

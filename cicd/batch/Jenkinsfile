@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SKIP_PIPELINE = 'false'
+    }
+
     stages {
         stage('git clone') {
             steps {
@@ -10,43 +14,59 @@ pipeline {
         stage('Check for Changes') {
             steps {
                 script {
-                    def changes = sh(script: 'git diff --name-only HEAD~1 HEAD | grep -E "^back/batch/|^back/common/"', returnStatus: true)
+                    def changes = sh(script: 'git diff --name-only HEAD~1 HEAD | grep -E "^back/batch/|^back/common/|^cicd/batch/"', returnStatus: true)
                     if (changes != 0) {
                         echo 'No changes in batch or common, stopping pipeline.'
                         currentBuild.result = 'SUCCESS'
-                        error('No changes, stopping the pipeline.')
+                        env.SKIP_PIPELINE = 'true'
+                        return
                     } else {
                         echo 'Changes detected in batch or common, proceeding with pipeline.'
                     }
                 }
             }
         }
-        stage('ADD PRIVILIGES'){
-            steps{
-                dir('./back/batch'){
+
+        stage('ADD PRIVILIGES') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
+            steps {
+                dir('./back/batch') {
                     sh 'echo 권한 추가'
                     sh 'chmod +x gradlew'
                 }
             }
         }
+
         stage('Build') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
-                dir('./back/batch'){
+                dir('./back/batch') {
                     sh 'echo 배치 빌드 중...'
                     sh './gradlew bootJar'
                 }
             }
         }
-        stage('Build Docker Image'){
+
+        stage('Build Docker Image') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
-                dir('./back/batch'){
+                dir('./back/batch') {
                     sh 'echo 도커 이미지 빌드'
                     sh 'docker build -t senagae/enadu-batch:1.$BUILD_ID .'
                 }
             }
         }
 
-        stage('Docker Push'){
+        stage('Docker Push') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
                 script {
                     sh 'echo 도커 로그인'
@@ -61,21 +81,18 @@ pipeline {
             }
         }
 
-        stage('SSH transfer'){
+        stage('SSH transfer') {
+            when {
+                expression { return env.SKIP_PIPELINE != 'true' }
+            }
             steps {
                 script {
                     sshPublisher(
-                        // 오류 발생 시 진행을 멈춤
                         continueOnError: false,
-                        // 오류 발생 시 파이프라인을 실패시킴
                         failOnError: true,
-                        // 전송자 목록
                         publishers: [
-                            // SSH 전송 설명
                             sshPublisherDesc(
-                                // SSH 서버 설정 이름 지정 ( master 노드 )
                                 configName: "jenkins-k8s",
-                                // 자세한 출력 모드 활성화
                                 verbose: true,
                                 transfers: [
                                     sshTransfer(
@@ -118,31 +135,33 @@ pipeline {
             }
         }
     }
+
     post {
         success {
             withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
-                        discordSend description: """
-                        제목 : ${currentBuild.displayName}
-                        결과 : ${currentBuild.result}
-                        실행 시간 : ${currentBuild.duration / 1000}s
-                        """,
-                        link: env.BUILD_URL, result: currentBuild.currentResult,
-                        title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
-                        webhookURL: "$DISCORD"
+                discordSend description: """
+                제목 : ${currentBuild.displayName}
+                파이프라인 실행 여부 : ${env.SKIP_PIPELINE == 'true' ? '스테이지 건너뜀' : '정상 실행됨'}
+                결과 : ${currentBuild.result}
+                실행 시간 : ${currentBuild.duration / 1000}s
+                """,
+                link: env.BUILD_URL, result: currentBuild.currentResult,
+                title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
+                webhookURL: "$DISCORD"
             }
         }
         failure {
             withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
-                        discordSend description: """
-                        제목 : ${currentBuild.displayName}
-                        결과 : ${currentBuild.result}
-                        실행 시간 : ${currentBuild.duration / 1000}s
-                        """,
-                        link: env.BUILD_URL, result: currentBuild.currentResult,
-                        title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
-                        webhookURL: "$DISCORD"
+                discordSend description: """
+                제목 : ${currentBuild.displayName}
+                파이프라인 실행 여부 : ${env.SKIP_PIPELINE == 'true' ? '스테이지 건너뜀' : '정상 실행됨'}
+                결과 : ${currentBuild.result}
+                실행 시간 : ${currentBuild.duration / 1000}s
+                """,
+                link: env.BUILD_URL, result: currentBuild.currentResult,
+                title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
+                webhookURL: "$DISCORD"
             }
         }
     }
 }
-
