@@ -29,7 +29,6 @@ public enum BaseResponseStatus {
     USER_ACCESS_TOKEN_NOT_FOUND(false, 2051, "소셜 토큰을 찾을 수 없습니다."),
     USER_INVALID_INPUT(false,2100, "필수 값이 비어있습니다."),
 
-
     // 이메일 인증 실패
     USER_EMAIL_VERIFY_FAIL(false,2500,"이메일 인증에 실패했습니다."),
     USER_EMAIL_SEND_FAILED(false, 2600, "이메일 전송에 실패했습니다."),
@@ -63,6 +62,7 @@ public enum BaseResponseStatus {
     ERROR_ALREADY_HATED(false, 6028, "이미 싫어요를 눌렀던 게시글입니다"),
     ERROR_PERMISSION_DENIED(false,6029,"권한이 없습니다"),
     ERRORARCHIVE_FAIL(false, 6080, "요청이 실패하였습니다"),
+    ERRORARCHIVE_SEARCH_CHOSUNG_LENGTH(false,6081,"초성 글자는 한글자로 할 수 없습니다."),
 
 
 
