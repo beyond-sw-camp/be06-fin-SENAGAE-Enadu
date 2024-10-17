@@ -127,7 +127,16 @@ export default {
       this.isLoading = false;
       this.searchRequest = null;
     },
+    isSingleChosung(keyword) {
+      // 한 글자 초성 체크
+      const chosungRegex = /^[ㄱ-ㅎ]$/; // 초성 한 글자인지 체크
+      return chosungRegex.test(keyword);
+    },
     async searchErrorArchiveList(){ // 검색 처음 했을 때
+      if (this.isSingleChosung(this.$route.query.keyword.trim())){
+        alert("초성검색은 한 글자가 불가합니다.");
+        return;
+      }
       this.isLoading = true;
       this.isLoading2 = true;
       this.isUpdating = true; // watch에서 감지 안돼도록
