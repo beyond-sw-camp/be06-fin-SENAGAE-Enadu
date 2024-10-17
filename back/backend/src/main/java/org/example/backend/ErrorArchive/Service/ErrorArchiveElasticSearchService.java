@@ -8,6 +8,7 @@ import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Common.ChosungChecker;
 import org.example.backend.ErrorArchive.Model.Doc.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Req.GetErrorArchiveSearchReq;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
@@ -17,7 +18,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class ErrorArchiveElasticSearchService implements ErrorArchiveSearchServi
         setErrorArchiveCategoryQuery(getErrorArchiveSearchReq,boolQueryBuilder);
         setErrorArchiveKeywordQuery(getErrorArchiveSearchReq,boolQueryBuilder);
         setErrorArchiveEnableQuery(boolQueryBuilder);
-
+        // 검색 응답
         SearchResponse searchResponse = getSearchResponse(getErrorArchiveSearchReq, boolQueryBuilder);
         return makeErrorArchiveRes(getErrorArchiveSearchReq, searchResponse);
     }
@@ -54,6 +54,9 @@ public class ErrorArchiveElasticSearchService implements ErrorArchiveSearchServi
         // 검색어와 카테고리가 없으면
         if ((keyword == null || keyword.isBlank()) && (getErrorArchiveSearchReq.getCategoryId() == null || getErrorArchiveSearchReq.getCategoryId() == 0)) {
             throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_SEARCH_EMPTY_REQUEST);
+        }
+        if (ChosungChecker.isChosungOnly(keyword) && keyword.length() == 1) {
+            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_SEARCH_CHOSUNG_LENGTH);
         }
         if (getErrorArchiveSearchReq.getPage() == null){
             getErrorArchiveSearchReq.setPage(0);
@@ -79,18 +82,41 @@ public class ErrorArchiveElasticSearchService implements ErrorArchiveSearchServi
             boolQueryBuilder.filter(categoryFilter);
         }
     }
-    // 검색어가 입력되었을 떄
-    private static void setErrorArchiveKeywordQuery(GetErrorArchiveSearchReq getErrorArchiveSearchReq, BoolQueryBuilder boolQueryBuilder){
-        if(getErrorArchiveSearchReq.getKeyword()!=null && !getErrorArchiveSearchReq.getKeyword().isBlank()){
+
+    private static void setChosungQuery(String keyword, BoolQueryBuilder boolQueryBuilder, GetErrorArchiveSearchReq getErrorArchiveSearchReq) {
+        // 제목 검색일 경우, jaso 분석기로 검색
+        if (getErrorArchiveSearchReq.getType().contains("t")) {
+            MatchQueryBuilder titleQueryBuilder = QueryBuilders.matchQuery("title.jaso", getErrorArchiveSearchReq.getKeyword());
+            boolQueryBuilder.should(titleQueryBuilder);
+        }
+
+        // 내용 검색일 경우, nori 분석기로 검색
+        if (getErrorArchiveSearchReq.getType().contains("c")) {
+            MatchQueryBuilder contentQueryBuilder = QueryBuilders.matchQuery("content", getErrorArchiveSearchReq.getKeyword()).minimumShouldMatch("75%").fuzziness(Fuzziness.AUTO);
+            boolQueryBuilder.should(contentQueryBuilder);
+        }
+    }
+
+
+    // 검색어가 입력되었을 때
+    private static void setErrorArchiveKeywordQuery(GetErrorArchiveSearchReq getErrorArchiveSearchReq, BoolQueryBuilder boolQueryBuilder) {
+        String keyword = getErrorArchiveSearchReq.getKeyword();
+        if (keyword != null && !keyword.isBlank()) {
             boolQueryBuilder.minimumShouldMatch(1);
-            setKeyWordByType(getErrorArchiveSearchReq, boolQueryBuilder);
+            if (ChosungChecker.isChosungOnly(keyword)){
+                // 초성 검색 처리
+                setChosungQuery(keyword, boolQueryBuilder, getErrorArchiveSearchReq);
+            } else {
+                // 일반 검색 처리
+                setKeyWordByType(getErrorArchiveSearchReq, boolQueryBuilder);
+            }
         }
     }
 
     // 검색타입에 따라 검색어를 제목이나 본문에서 검색하는 쿼리문 생성후 boolQueryBuilder에 추가
     private static void setKeyWordByType(GetErrorArchiveSearchReq getErrorArchiveSearchReq, BoolQueryBuilder boolQueryBuilder){
         if(getErrorArchiveSearchReq.getType().contains("t")){
-            MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title", getErrorArchiveSearchReq.getKeyword()).slop(2);
+            MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title.nori", getErrorArchiveSearchReq.getKeyword()).slop(2);
             boolQueryBuilder.should(titleQueryBuilder);
         }
         if(getErrorArchiveSearchReq.getType().contains("c")){
@@ -104,6 +130,7 @@ public class ErrorArchiveElasticSearchService implements ErrorArchiveSearchServi
         MatchQueryBuilder enabledQueryBuilder = QueryBuilders.matchQuery("enable", true);
         boolQueryBuilder.filter(enabledQueryBuilder);
     }
+
     private SearchResponse getSearchResponse(GetErrorArchiveSearchReq getErrorArchiveSearchReq, BoolQueryBuilder boolQueryBuilder) throws IOException{
         // 검색 요청 객체 생성
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -116,7 +143,7 @@ public class ErrorArchiveElasticSearchService implements ErrorArchiveSearchServi
             searchSourceBuilder.sort("created_at", SortOrder.DESC);
         } else if (getErrorArchiveSearchReq.getSort().equals("like")){
             searchSourceBuilder.sort("like_cnt", SortOrder.DESC);
-        }
+        } // 정확도 순
         // search()를 통해 검색 수행 후 응답값 받아옴
         SearchRequest searchRequest = new SearchRequest(INDEX);
         searchRequest.source(searchSourceBuilder);

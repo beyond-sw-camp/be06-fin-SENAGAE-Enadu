@@ -18,6 +18,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.example.backend.Common.BaseResponseStatus;
+import org.example.backend.Common.ChosungChecker;
 import org.example.backend.ErrorArchive.Model.Doc.ErrorArchive;
 import org.example.backend.ErrorArchive.Model.Res.ListErrorArchiveRes;
 import org.example.backend.Exception.custom.InvalidMainException;
@@ -48,9 +49,11 @@ public class MainElasticSearchService {
         BoolQueryBuilder qnaQuery = QueryBuilders.boolQuery();
 
         // 공통 검색 조건 설정
+        // 초성일때, 제목 -> 자소, content -> 노리로 쓰므로, type 추가!
         setMainKeywordQuery(keyword, wikiQuery);
         setMainKeywordQuery(keyword, errorArchiveQuery);
         setMainKeywordQuery(keyword, qnaQuery);
+
 
         // 에러 아카이브, qna enable 조건 설정
         setEnableQuery(errorArchiveQuery);
@@ -80,7 +83,7 @@ public class MainElasticSearchService {
         MultiSearchResponse multiSearchResponse = restHighLevelClient.msearch(multiSearchRequest, RequestOptions.DEFAULT);
 
         // 각 검색 결과를 기반으로 응답 객체 생성
-        return makeAllRes(wikiSize, errorArchiveSize, qnaSize, multiSearchResponse);
+        return makeAllRes(multiSearchResponse);
     }
 
     // 각 인덱스의 SearchSourceBuilder를 생성하는 메서드
@@ -93,25 +96,38 @@ public class MainElasticSearchService {
         return searchSourceBuilder;
     }
 
-
     private void validateSearchReq(String keyword){
         // 키워드가 비어있으면
         if(keyword == null || keyword.isBlank()) {
             throw new InvalidMainException(BaseResponseStatus.MAIN_SEARCH_EMPTY_REQUEST);
         }
     }
-    // 검색어가 입력되었을 때
-    private static void setMainKeywordQuery(String keyword, BoolQueryBuilder boolQueryBuilder){
-        if(keyword!=null && !keyword.isBlank()){
-            boolQueryBuilder.minimumShouldMatch(1);
-            setKeyWordByType(keyword, boolQueryBuilder);
-        }
-    }
+    // 초성 검색 메소드 추가
+    private static void setChosungQuery(String keyword, BoolQueryBuilder boolQueryBuilder) {
+        // 초성으로만 구성된 경우 초성 검색 처리
+            // 제목 검색일 경우, jaso 분석기로 검색
+                MatchQueryBuilder jasoTitleQuery = QueryBuilders.matchQuery("title.jaso", keyword);;
+                boolQueryBuilder.should(jasoTitleQuery);
 
+            // 내용 검색일 경우, nori 분석기로 검색
+                MatchQueryBuilder noriContentQuery = QueryBuilders.matchQuery("content", keyword).fuzziness(Fuzziness.AUTO);;
+                boolQueryBuilder.should(noriContentQuery);
+    }
+    // 검색어가 입력되었을 때 초성 검색 포함한 메소드 수정
+    private static void setMainKeywordQuery(String keyword, BoolQueryBuilder boolQueryBuilder) {
+            boolQueryBuilder.minimumShouldMatch(1);
+            if(ChosungChecker.isChosungOnly(keyword)){
+                // 초성 검색 처리
+                setChosungQuery(keyword, boolQueryBuilder);
+            } else {
+                // 일반 검색 처리
+                setKeyWordByType(keyword, boolQueryBuilder);
+            }
+    }
     // 검색어를 제목이나 본문에서 검색하는 쿼리문 생성 후 boolQueryBuilder에 추가
     private static void setKeyWordByType(String keyword, BoolQueryBuilder boolQueryBuilder){
             // 제목에 대한 검색 조건
-            MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title", keyword).slop(2);
+            MatchPhraseQueryBuilder titleQueryBuilder = QueryBuilders.matchPhraseQuery("title.nori", keyword).slop(2);
             boolQueryBuilder.should(titleQueryBuilder);
             // 내용에 대한 검색 조건
             MatchQueryBuilder contentQueryBuilder = QueryBuilders.matchQuery("content", keyword)
@@ -130,7 +146,7 @@ public class MainElasticSearchService {
     }
 
     // MultiSearchResponse에서 각각의 검색 결과를 처리하는 메서드
-    private GetMainSearchRes makeAllRes(Integer wikiSize, Integer errorArchiveSize, Integer qnaSize, MultiSearchResponse multiSearchResponse) throws JsonProcessingException {
+    private GetMainSearchRes makeAllRes(MultiSearchResponse multiSearchResponse) throws JsonProcessingException {
         // 각각의 리스트 생성
         List<GetQnaListRes> qnaListRes = new ArrayList<>();
         List<ListErrorArchiveRes> listErrorArchiveRes = new ArrayList<>();
