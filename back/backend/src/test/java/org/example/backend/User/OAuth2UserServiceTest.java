@@ -14,7 +14,6 @@ import org.springframework.http.*;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class OAuth2UserServiceTest {
@@ -34,7 +33,7 @@ public class OAuth2UserServiceTest {
     }
 
     @Test
-    public void testFetchEmailFromGitHub() {
+    public void 깃허브에서이메일가져오기_성공() {
         // Given
         String accessToken = "access_token";
         String uri = "https://api.github.com/user/emails";
@@ -57,7 +56,7 @@ public class OAuth2UserServiceTest {
     }
 
     @Test
-    public void testFetchEmailFromGitHub_NoEmailFound() {
+    public void 깃허브에서이메일가져오기_이메일없음() {
         String accessToken = "access_token";
         String uri = "https://api.github.com/user/emails";
 
