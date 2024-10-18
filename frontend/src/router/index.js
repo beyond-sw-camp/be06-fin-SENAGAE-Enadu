@@ -84,6 +84,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  if (to.path === "/wiki/register" && to.fullPath.includes('?')) {
+    const cleanPath = to.path; // 쿼리 파라미터 제거
+    next({ path: cleanPath, replace: true });
+  } else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
   if (from.path === "/chat") { // /chat 페이지를 벋어날 때 소켓 연결 해재
     const chatStore = useChatStore();
     chatStore.disconnect();
