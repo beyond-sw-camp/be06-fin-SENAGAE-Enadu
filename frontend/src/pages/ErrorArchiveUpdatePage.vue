@@ -18,12 +18,12 @@ import { mapStores } from "pinia";
 import { useErrorArchiveStore } from "@/store/useErrorArchiveStore";
 import SuperCategoryModal from '@/components/Category/SuperCategoryModal.vue';
 import SubCategoryModal from '@/components/Category/SubCategoryModal.vue';
+import { useUserStore } from "@/store/useUserStore";
 
 export default {
   name: "ErrorArchiveUpdatePage",
   data() {
     return {
-      isLoading: true,
       formData: {
         title: "",
         content: "",
@@ -32,10 +32,8 @@ export default {
       },
       showSubModal: false,
       showSuperModal: false,
+      hasPermission: false,
     };
-  },
-  created() {
-    this.loadData();
   },
   components: {
     ErrorArchiveUpdateComponent,
@@ -43,24 +41,47 @@ export default {
     SuperCategoryModal
   },
   computed: {
-    ...mapStores(useErrorArchiveStore) // Pinia store 연결
+    ...mapStores(useErrorArchiveStore, useUserStore)
+  },
+  async beforeRouteEnter(to, from, next) {
+    const userStore = useUserStore();
+    const errorArchiveStore = useErrorArchiveStore();
+    const { id } = to.query;
+    const loggedInUserId = userStore.userId;
+
+    try {
+      const articleData = await errorArchiveStore.getErrorArchiveDetail(id);
+      console.log("API Response:", articleData); // 응답 확인
+
+      if (articleData) {
+        if (articleData.authorId !== loggedInUserId) {
+          alert('수정 권한이 없습니다. 목록 페이지로 이동합니다.');
+          next('/errorarchive/list'); // 권한 없음
+        } else {
+          next(vm => {
+            vm.formData = {
+              title: articleData.title,
+              content: articleData.content,
+              superCategory: articleData.superCategory,
+              subCategory: articleData.subCategory,
+            };
+            vm.hasPermission = true; // 권한 있음
+          });
+        }
+      } else {
+        alert('글 데이터를 찾을 수 없습니다. 목록 페이지로 이동합니다.');
+        next('/errorarchive/list'); // 글 데이터 없음
+      }
+    } catch (error) {
+      console.error("글 데이터를 가져오는 중 오류 발생:", error);
+      next('/errorarchive/list'); // 오류 발생 시 목록 페이지로 이동
+    }
   },
   methods: {
-    async loadData() {
-      // 데이터 로드 로직 추가
-      const { title, content, superCategory, subCategory } = this.$route.query;
-      this.formData.title = title || '';
-      this.formData.content = content || '';
-      this.formData.superCategory = superCategory || '';
-      this.formData.subCategory = subCategory || '';
-    },
     async handleClick(updatedData) {
-      console.log('Received data: ', updatedData);
       try {
-        // store의 updateErrorArchive 메서드에 updatedData를 전달
         await this.errorArchiveStore.updateErrorArchive(updatedData);
         console.log('Update successful');
-        // 성공적으로 업데이트된 후 필요한 추가 작업
       } catch (error) {
         console.error('Update error:', error);
       }

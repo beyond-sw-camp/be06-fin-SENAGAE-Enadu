@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-
-
 const backend = "/api";
 
 export const useErrorArchiveStore = defineStore('errorarchive', {
@@ -113,17 +111,21 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           params: { id: id },
           withCredentials: true,
         });
-        console.log('응답 데이터:'+response.data);
-        if (response && response.data) {
+        console.log('응답 데이터:', response.data); // 응답 데이터 로그 추가
+    
+        // 응답의 유효성 검사
+        if (response.data && response.data.isSuccess) {
           this.errorArchiveDetail = response.data.result;
           console.log('상세 조회 결과:', this.errorArchiveDetail);
+          return response.data.result; // 결과를 반환
         } else {
-          throw new Error("에러아카이브 상세 조회 실패");
+          throw new Error("에러아카이브 상세 조회 실패: " + response.data.message);
         }
       } catch (error) {
         console.error("에러아카이브 상세 조회 중 오류 발생:", error);
+        throw error; // 오류를 호출자에게 전파
       }
-    },
+    },    
     async getErrorArchiveList(sort, page) {
       const params = {
         sort: sort,
