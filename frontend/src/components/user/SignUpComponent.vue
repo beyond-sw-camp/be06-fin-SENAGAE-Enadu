@@ -61,6 +61,10 @@ export default {
       };
     },
     methods: {
+        isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 정규식
+            return emailRegex.test(email);
+        },
         signup() {
             if (!this.userInfo.email || !this.userInfo.email.trim()) {
                 alert("이메일을 입력해주세요.");
