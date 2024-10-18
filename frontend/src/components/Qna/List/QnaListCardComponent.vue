@@ -1,78 +1,80 @@
 <template>
-<router-link :to="`/qna/detail/${qnaCard.id}`">
-  <div class="card">
-    <div class="mantine-2j9uwr">
-      <div class="mantine-1uguyhf">
-        <a class="mantine-Avatar-root mantine-18l6s08">
-          <img
-              class="mantine-9rx0rd mantine-Avatar-image"
-              :src="qnaCard.profileImage"
-          />
-        </a>
-        <div class="mantine-Stack-root mantine-1l47z8p">
-          <div class="mantine-824czz">
-            <a class="mantine-Text-root mantine-3qdwx9">{{
-                qnaCard.nickname
-              }}</a>
-            <div :class="['mantine-Badge-root mantine-11jjpd0', dynamicClass]">
-              {{ qnaCard.grade }}
+  <router-link :to="`/qna/detail/${qnaCard.id}`">
+    <div class="card">
+      <div class="mantine-2j9uwr">
+        <div class="mantine-1uguyhf">
+          <a class="mantine-Avatar-root mantine-18l6s08">
+            <img
+                class="mantine-9rx0rd mantine-Avatar-image"
+                :src="qnaCard.profileImage"
+            />
+          </a>
+          <div class="mantine-Stack-root mantine-1l47z8p">
+            <div class="mantine-824czz">
+              <a class="mantine-Text-root mantine-3qdwx9">{{
+                  qnaCard.nickname
+                }}</a>
+              <div :class="['mantine-Badge-root mantine-11jjpd0', dynamicClass]">
+                {{ qnaCard.grade }}
+              </div>
             </div>
+            <p class="mantine-Text-root mantine-1q4x896">
+              {{ formatDateTime(qnaCard.createdAt) }}
+            </p>
           </div>
-          <p class="mantine-Text-root mantine-1q4x896">
-            {{ formatDateTime(qnaCard.createdAt) }}
-          </p>
         </div>
       </div>
-    </div>
-    <div class="qna-title" ><a :href="'/qna/detail/' + qnaCard.id">
-      {{ qnaCard.title }}
-    </a>
-    </div>
-    <div class="footer">
-      <div class="test">
-        <div>
-          <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-          >
-            <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
-            <g
-                stroke-linejoin="round"
-                stroke-linecap="round"
-                id="SVGRepo_tracerCarrier"
-            ></g>
-            <g id="SVGRepo_iconCarrier">
-              <path
+      <div class="qna-title"><a :href="'/qna/detail/' + qnaCard.id">
+        {{ qnaCard.title }}
+      </a>
+      </div>
+      <div class="footer">
+        <div class="test">
+          <div>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+            >
+              <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+              <g
                   stroke-linejoin="round"
                   stroke-linecap="round"
-                  stroke-width="1.5"
-                  d="M16 10H16.01M12 10H12.01M8 10H8.01M3 10C3 4.64706 5.11765 3 12 3C18.8824 3 21 4.64706 21 10C21 15.3529 18.8824 17 12 17C11.6592 17 11.3301 16.996 11.0124 16.9876L7 21V16.4939C4.0328 15.6692 3 13.7383 3 10Z"
-              ></path>
-            </g>
-          </svg
-          >
-          {{ qnaCard.answerCnt }}
+                  id="SVGRepo_tracerCarrier"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="1.5"
+                    d="M16 10H16.01M12 10H12.01M8 10H8.01M3 10C3 4.64706 5.11765 3 12 3C18.8824 3 21 4.64706 21 10C21 15.3529 18.8824 17 12 17C11.6592 17 11.3301 16.996 11.0124 16.9876L7 21V16.4939C4.0328 15.6692 3 13.7383 3 10Z"
+                ></path>
+              </g>
+            </svg
+            >
+            {{ qnaCard.answerCnt }}
+          </div>
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M14 9V5a3 3 0 00-6 0v4H3.75a2.25 2.25 0 00-2.25 2.25v7.5A2.25 2.25 0 003.75 21h12.5a2.25 2.25 0 002.25-2.25v-7.5A2.25 2.25 0 0016.25 9H14zM9 9v12"/>
+            </svg>
+            {{ qnaCard.likeCnt }}
+          </div>
         </div>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 9V5a3 3 0 00-6 0v4H3.75a2.25 2.25 0 00-2.25 2.25v7.5A2.25 2.25 0 003.75 21h12.5a2.25 2.25 0 002.25-2.25v-7.5A2.25 2.25 0 0016.25 9H14zM9 9v12" />
-          </svg>
-          {{ qnaCard.likeCnt }}
+        <div class="qna-category-highlow">
+          <span>{{ qnaCard.superCategoryName }}</span>
+          <span v-show="qnaCard.superCategoryName"> / </span>
+          <span>{{ qnaCard.subCategoryName }}</span>
         </div>
-      </div>
-      <div class="qna-category-highlow">
-        <span>{{ qnaCard.superCategoryName }}</span>
-        <span v-show="qnaCard.superCategoryName"> / </span>
-        <span>{{ qnaCard.subCategoryName }}</span>
       </div>
     </div>
-  </div>
-</router-link>
+  </router-link>
 </template>
 
 <script>
-import {formatDateTime} from "@/utils/FormatDate";
+import { formatDateTime } from "@/utils/FormatDate";
 
 export default {
   name: "QnaCardComponent",
@@ -85,25 +87,24 @@ export default {
   methods: {
     formatDateTime
   },
-  components: {
-  },
+  components: {},
   computed: {
-      dynamicClass() {
-          switch (this.qnaCard.grade) {
-              case '뉴비':
-                  return 'newbie';
-              case '견습':
-                  return 'apprentice';
-              case '프로':
-                  return 'pro';
-              case '마스터':
-                  return 'master';
-              case '신':
-                  return 'god';
-              default:
-                  return '';
-          }
+    dynamicClass() {
+      switch (this.qnaCard.grade) {
+        case '뉴비':
+          return 'newbie';
+        case '견습':
+          return 'apprentice';
+        case '프로':
+          return 'pro';
+        case '마스터':
+          return 'master';
+        case '신':
+          return 'god';
+        default:
+          return '';
       }
+    }
   }
 };
 </script>
@@ -111,24 +112,24 @@ export default {
 <style scoped>
 /* QnA card */
 .card {
-    position: relative;
-    background-color: #fff3f35e;
-    padding: 1em;
-    z-index: 5;
-    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    width: 250px;
-    min-height: 170px;
-    display: flex;
-    flex-direction: column;
-    transition: 200ms ease-in-out;
-    justify-content: space-between;
-    overflow: hidden;
-    cursor: pointer;
+  position: relative;
+  background-color: #fff3f35e;
+  padding: 1em;
+  z-index: 5;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  width: 250px;
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  transition: 200ms ease-in-out;
+  justify-content: space-between;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 .card:hover {
-    box-shadow:  2px 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .qna-category-highlow {
@@ -361,6 +362,10 @@ export default {
   font-weight: 700;
   line-height: 1.5;
   text-underline-position: under;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mantine-3qdwx9:focus {

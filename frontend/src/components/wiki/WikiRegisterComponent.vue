@@ -129,6 +129,9 @@ export default {
       // 비로그인 상태일 경우 에러 메시지 및 리다이렉트 처리
       alert("로그인이 필요합니다.");
       this.$router.push('/login');
+    } else if (this.wikiStore.grade === null || this.wikiStore.grade === "뉴비") {
+      alert("견습 등급 이상만 위키 등록이 가능합니다.");
+      this.$router.go(-1);
     }
   },
   methods: {
