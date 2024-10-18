@@ -76,4 +76,6 @@ public interface ErrorArchiveReository extends JpaRepository<ErrorArchive, Long>
             "WHERE es.user.id = :userId AND e.enable = true")
     Page<ErrorArchive> findByErrorScrapListUserIdAndEnableTrueWithFetch(@Param("userId") Long userId, Pageable pageable);
 
+    Optional<ErrorArchive> findByIdAndEnableTrue(Long id);
+
 }
