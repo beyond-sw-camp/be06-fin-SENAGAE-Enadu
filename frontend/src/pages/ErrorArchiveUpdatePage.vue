@@ -69,12 +69,18 @@ export default {
           });
         }
       } else {
-        alert('글 데이터를 찾을 수 없습니다. 목록 페이지로 이동합니다.');
-        next('/errorarchive/list'); // 글 데이터 없음
+        alert('글 데이터가 존재하지 않습니다. 예외 페이지로 이동합니다.');
+        next('/exception'); // 글 데이터 없음
       }
     } catch (error) {
       console.error("글 데이터를 가져오는 중 오류 발생:", error);
-      next('/errorarchive/list'); // 오류 발생 시 목록 페이지로 이동
+
+      // 오류 메시지에 따라 예외 페이지로 리다이렉트
+      if (error.message.includes("삭제된 게시글입니다")) {
+        next('/exception'); // 삭제된 게시글인 경우
+      } else {
+        next('/exception'); // 기타 오류인 경우
+      }
     }
   },
   methods: {
