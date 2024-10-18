@@ -51,7 +51,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testSignup() {
+    public void 회원가입_성공() {
         UserSignupReq req = new UserSignupReq("test@example.com", "password", "nickname");
         User user = User.builder()
                 .email(req.getEmail())
@@ -68,7 +68,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCheckDuplicateEmailSuccess() {
+    public void 이메일_중복확인_성공() {
 
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
 
@@ -78,7 +78,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCheckDuplicateEmailFail() {
+    public void 이메일_중복확인_실패() {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(new User()));
 
         boolean result = userService.checkDuplicateEmail("test@example.com");
@@ -87,7 +87,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCheckDuplicateNicknameSuccess() {
+    public void 닉네임_중복확인_성공() {
 
         when(userRepository.findByNickname("nickname")).thenReturn(Optional.empty());
 
@@ -97,7 +97,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCheckDuplicateNicknameFail() {
+    public void 닉네임_중복확인_실패() {
         when(userRepository.findByNickname("nickname")).thenReturn(Optional.of(new User()));
 
         boolean result = userService.checkDuplicateNickname("nickname");
@@ -106,7 +106,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateNicknameSuccess() {
+    public void 닉네임변경_성공() {
         User user = User.builder().id(1L).nickname("old_nickname").build();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.findByNickname("new_nickname")).thenReturn(Optional.empty());
@@ -118,7 +118,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateNicknameFail() {
+    public void 닉네임변경_실패() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
@@ -129,7 +129,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdatePasswordSuccess() {
+    public void 비밀번호변경_성공() {
         User user = User.builder().password("encoded_old_password").build();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("old_password", user.getPassword())).thenReturn(true);
@@ -144,7 +144,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdatePasswordFail() {
+    public void 비밀번호변경_실패() {
         User user = User.builder().password("encoded_old_password").build();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrong_old_password", user.getPassword())).thenReturn(false);
@@ -159,7 +159,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateImg() {
+    public void 프로필이미지_변경() {
         User user = User.builder().id(1L).profileImg("old_img").build();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
@@ -170,7 +170,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDisableUserSuccess() {
+    public void 유저비활성화_성공() {
         User user = User.builder().id(1L).password("encoded_password").enable(true).build();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("password", user.getPassword())).thenReturn(true);
@@ -182,7 +182,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDisableUserFail() {
+    public void 유저비활성화_실패() {
         User user = User.builder().id(1L).password("encoded_password").enable(true).build();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrong_password", user.getPassword())).thenReturn(false);
@@ -195,7 +195,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateVerifiedStatusSuccess() {
+    public void 이메일_인증상태_업데이트_성공() {
         User user = User.builder().email("test@example.com").verify(false).build();
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
 
@@ -206,7 +206,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateVerifiedStatusFail() {
+    public void 이메일_인증상태_업데이트_실패() {
         when(userRepository.findByEmail("non_existent@example.com")).thenReturn(Optional.empty());
 
         InvalidEmailException exception = assertThrows(InvalidEmailException.class, () -> {
@@ -217,7 +217,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDisableSocialUser() {
+    public void 소셜유저비활성화_성공() {
         User user = User.builder().id(1L).enable(true).build();
         when(userRepository.findByIdAndEnableTrue(1L)).thenReturn(Optional.of(user));
         when(jwtUtil.getAccessToken("valid_token")).thenReturn("access_token");
@@ -228,7 +228,7 @@ public class UserServiceTest {
                 eq(HttpMethod.DELETE),
                 any(HttpEntity.class),
                 eq(Object.class))
-         ).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        ).thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
         userService.disableSocialUser(1L, "valid_token");
 
@@ -237,7 +237,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDisableSocialUserFailDueToNoToken() {
+    public void 소셜유저비활성화_실패_토큰없음() {
         User user = User.builder().id(1L).enable(true).build();
         when(userRepository.findByIdAndEnableTrue(1L)).thenReturn(Optional.of(user));
         when(jwtUtil.getAccessToken("invalid_token")).thenReturn(null);
