@@ -22,7 +22,7 @@ echo $color
 result=true
 for i in {1..20}; do
 
-    kubectl rollout status deployment | grep be-$color-deployment
+    kubectl rollout status deployment/be-$color-deployment
     rollout_status=$?
     echo $rollout_status
     if [[ $rollout_status -eq 0 ]]; then
@@ -32,12 +32,12 @@ for i in {1..20}; do
     else
         echo "Waiting for deployment to complete..."
         result=false
-        sleep 5  # 다음 시도 전에 대기
+        sleep 10  # 다음 시도 전에 대기
     fi
 
 done
 
-if [[ "$result" == false ]]; then
+if [[ "$result" == "false" ]]; then
     kubectl delete deployment  -l type=backend,deployment="$color"
     exit 1
 fi
