@@ -67,6 +67,18 @@ public class ErrorArchiveController {
         }
         return new BaseResponse<>(errorArchiveService.detail(getErrorArchiveDetailReq, customUserDetails));
     }
+    @GetMapping("/edit-detail")
+    public BaseResponse<GetErrorArchiveEditDetailRes> getErrorArchiveEditDetail(Integer errorArchiveId, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        Long userId;
+        if(customUserDetails != null){
+            userId = customUserDetails.getUserId();
+        } else {
+            userId = null;
+        }
+        GetErrorArchiveEditDetailRes getErrorArchiveEditDetailRes =  errorArchiveService.getErrorArchiveEditDetail(errorArchiveId, userId);
+        return new BaseResponse<>(getErrorArchiveEditDetailRes);
+    }
+
     // 아카이브 검색
     @GetMapping("/search")
     public BaseResponse<List<ListErrorArchiveRes>> search(GetErrorArchiveSearchReq errorArchiveSearchReq)  {
