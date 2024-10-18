@@ -156,11 +156,11 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           throw new Error(response.data.message);
         }
       } catch (error) {
+        alert(error.message);
         console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
       }
     },
     async scrapErrorArchive(id){
-      console.log(id);
       const scrapReq = {
         id: id,
       }
@@ -170,12 +170,14 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         });
 
         if (response.data.isSuccess) {
-          return response.data.result.result;
+          return response.data.result;
         } else {
           throw new Error(response.data.message);
         }
       } catch (error) {
-        console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
+        alert(error.message);
+        console.error("에러아카이브 스크랩 중 오류 발생:", error);
+        return null;
       }
     },
     async searchErrorArchive(request){

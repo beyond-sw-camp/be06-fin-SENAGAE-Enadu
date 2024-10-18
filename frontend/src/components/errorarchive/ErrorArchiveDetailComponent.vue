@@ -24,7 +24,7 @@
             </div>
             <div class="sc-fbyfCU eYeYLy" v-show="userStore.isLoggedIn">
               <div class="bookmark-checkbox">
-                <input type="checkbox" id="bookmark-toggle" :checked="checkScrap" @click="clickScrap"
+                <input type="checkbox" id="bookmark-toggle" v-model="checkScrap" @click="clickScrap"
                        class="bookmark-checkbox__input">
                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                     <svg data-v-00557fae="" class="bookmark-checkbox__icon" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@ export default {
   },
     async getErrorArchiveDetail() {
       await this.errorarchiveStore.getErrorArchiveDetail(this.id);
-      this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap;
+      this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap ? this.errorarchiveStore.errorArchiveDetail.checkScrap : false;
       this.setModifiedTime();
       this.checkLike();
       this.setLikeAndHateCnt();
@@ -253,7 +253,10 @@ export default {
       this.selectedLike = await this.errorarchiveStore.likeErrorArchive(this.id, value)
     },
     async clickScrap(){
-      await this.errorarchiveStore.scrapErrorArchive(this.id);
+      const result = await this.errorarchiveStore.scrapErrorArchive(this.id);
+      if (result == null) { // 스크랩 실패 시
+          this.checkScrap = !this.checkScrap;
+      }
     },
     handleAnchorClick(anchor) {
       const { preview } = this.$refs;
