@@ -199,7 +199,7 @@ public class WikiService {
     public List<GetWikiVersionListRes> versionList(GetWikiVersionListReq getWikiVersionListReq) {
         Pageable pageable = PageRequest.of(getWikiVersionListReq.getPage(), getWikiVersionListReq.getSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<WikiContent> wikiVersionPage = wikiContentRepository.findAllByWikiId(getWikiVersionListReq.getId(), pageable);
-        WikiContent getWikiContent = wikiContentRepository.findById(getWikiVersionListReq.getId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
+        LatestWiki latestWiki = latestWikiRepository.findById(getWikiVersionListReq.getId()).orElseThrow(() -> new InvalidWikiException(BaseResponseStatus.WIKI_NOT_FOUND_DETAIL));
 
         return wikiVersionPage.getContent().stream().map
                         (wikiContent -> GetWikiVersionListRes.builder()
