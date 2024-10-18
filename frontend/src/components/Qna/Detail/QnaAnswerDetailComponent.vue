@@ -97,8 +97,8 @@
         </div>
       </div>
 
-      <div class="qna-detail-top-items" v-if="isLoggedIn && !isAiAnswer">
-        <div class="like-dislike-container">
+      <div class="qna-detail-top-items">
+        <div class="like-dislike-container" v-if="isLoggedIn && !isAiAnswer">
           <div class="icons-box">
             <div class="icons">
               <label class="btn-label" :for="`like-checkbox-a-${qnaAnswer.id}`">
@@ -173,7 +173,7 @@
           <button @click="toggleContent" class="mt-2 text-sm text-blue-500">
             {{ isContentVisible ? '댓글 숨기기' : '댓글 보기' }}
           </button>
-          <button @click="writeRipple"
+          <button v-if="isLoggedIn" @click="writeRipple"
                   class="mt-2 text-sm text-blue-500">
             {{ isRegistered ? '작성 취소' : '댓글 작성' }}
           </button>
