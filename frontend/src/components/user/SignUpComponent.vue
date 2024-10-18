@@ -60,6 +60,18 @@ export default {
         nicknameAvailable: false,
       };
     },
+    watch: {
+        'userInfo.email'(newValue) {
+            if (newValue) {
+                this.emailAvailable = false;
+            }
+        },
+        'userInfo.nickname'(newValue) {
+            if (newValue) {
+                this.nicknameAvailable = false;
+            }
+        }
+   },
     methods: {
         isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 정규식
@@ -125,18 +137,6 @@ export default {
         const userStore = useUserStore();
           this.nicknameAvailable = await userStore.checkNickname(this.userInfo.nickname);
     },
-    watch: {
-        'userInfo.email'(newValue) {
-            if (newValue) {
-                this.emailAvailable = false;
-            }
-        },
-        'userInfo.nickname'(newValue) {
-            if (newValue) {
-                this.nicknameAvailable = false;
-            }
-        }
-   },
    validateEmail() {
       if (this.userInfo.email.includes(" ")) {
         alert("공백이 포함되었습니다.");
