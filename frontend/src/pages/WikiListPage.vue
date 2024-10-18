@@ -4,8 +4,9 @@
     <div class="wiki-inner">
       <WikiSearchComponent @search="handleSearch" :keyword="$route.query.keyword"/>
 
-      <div class="create-wiki-btn-container">
-        <button @click="navigateToWikiRegister" class="create-wiki-btn">작성하기</button>
+      <div class="create-wiki-btn-container" :style="{ justifyContent: isSearchMode ? 'space-between' : 'flex-end' }">
+          <WikiSortTypeComponent v-if="isSearchMode" @emitSortType="handleCheckSort"/>
+          <button @click="navigateToWikiRegister" class="create-wiki-btn">작성하기</button>
       </div>
 
       <div class="wiki-list-grid" v-if="!wikiStore.isLoading">
@@ -34,6 +35,7 @@ import WikiSearchComponent from "@/components/Common/WikiSearchComponent .vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
 import { mapStores } from "pinia";
 import LoadingComponent from '@/components/Common/LoadingComponent.vue';
+import WikiSortTypeComponent from "@/components/Common/WikiSortTypeComponent.vue";
 
 
 export default {
@@ -44,6 +46,7 @@ export default {
     PaginationComponent,
     WikiSearchComponent,
     TagComponent,
+    WikiSortTypeComponent,
   },
   data() {
     return {
@@ -51,14 +54,15 @@ export default {
       isSearchMode: false,
       searchParams: {},
       isLoading: true,
-      totalPage: 1
+      totalPage: 1,
+      sortType: "accuracy",
     };
   },
   computed: {
     ...mapStores(useWikiStore),
   },
   methods: {
-    handleSearch(searchParams) {
+    async handleSearch(searchParams) {
       if (this.isSingleChosung(searchParams.keyword)) {
         alert("초성검색은 한 글자가 불가합니다");
         return;
@@ -67,11 +71,12 @@ export default {
       this.selectedPage = 1;
       this.isLoading = true;
       this.searchParams = searchParams;
-      this.wikiStore.wikiSearch({ ...this.searchParams, page: 0 }).then(() => {
+      this.searchParams.sort = this.sortType;
+      await this.wikiStore.wikiSearch({ ...this.searchParams, page: 0 }).then(() => {
         this.totalPage = this.wikiStore.searchTotalPages;
         this.isLoading = false;
       });
-      this.$router.push({ path: "/wiki/list", query: { keyword: searchParams.keyword } });
+      this.$router.push({ path: "/wiki/list" });
     },
 
     isSingleChosung(keyword) {
@@ -111,6 +116,11 @@ export default {
       if (canProceed) {
         this.$router.push("/wiki/register");
       }
+    },
+    async handleCheckSort(sortType) {
+      this.sortType = sortType;
+      console.log(11111111111);
+      await this.handleSearch(this.searchParams);
     }
   },
 
@@ -153,8 +163,9 @@ export default {
 
 .create-wiki-btn-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .create-wiki-btn {
