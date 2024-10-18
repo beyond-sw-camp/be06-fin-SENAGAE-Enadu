@@ -137,6 +137,7 @@ export const useWikiStore = defineStore("wiki", {
           this.wikiDetail = result;
           this.wikiTitle = result.title || 'Unknown Title';
           this.category = result.category || 'Unknown Category';
+          return true;
 
         }
       }
