@@ -19,6 +19,16 @@
                     </p>
                 </div>
             </div>
+          <div class="adopt-control-component">
+            <div v-if="isAdopted">
+              <AdoptedTagComponent/>
+            </div>
+            <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000"
+                                     v-bind:adopted="isShowAdopted"
+                                     v-bind:detail="qnaAnswer"
+                                     @clickEdit="handleEditUpdate"
+                                     @clickAdopt="handleAdoptUpdate" />
+          </div>
         </div>
         <div class="flex justify-between">
             <div id="ai-answer" class="question-answer mb-5 build-section-card-title">
@@ -87,7 +97,7 @@
         </div>
       </div>
 
-      <div class="qna-detail-top-items" v-if="isLoggedIn">
+      <div class="qna-detail-top-items" v-if="isLoggedIn && !isAiAnswer">
         <div class="like-dislike-container">
           <div class="icons-box">
             <div class="icons">
@@ -159,7 +169,7 @@
           </div>
         </div>
         <br/>
-        <div class="button-divider">
+        <div v-if="!isAiAnswer" class="button-divider">
           <button @click="toggleContent" class="mt-2 text-sm text-blue-500">
             {{ isContentVisible ? '댓글 숨기기' : '댓글 보기' }}
           </button>
@@ -210,6 +220,7 @@ export default {
   data() {
     return {
       isLoading: true,
+      isLoggedIn: false,
       isReLoading: true,
       isRegistered: false,
       isContentVisible: false,
@@ -226,6 +237,7 @@ export default {
 
       isCheckedAnsLike: false,
       isCheckedAnsHate: false,
+      isAiAnswer: false,
     };
   },
   props: ["qnaAnswer"],
@@ -294,6 +306,10 @@ export default {
 
     checking() {
       console.log("id" + this.qnaAnswer.id);
+      console.log("ai"+this.qnaAnswer.userId);
+      if (this.qnaAnswer.userId === 0){
+        this.isAiAnswer = true;
+      }
       this.ansLikeCnt = this.qnaAnswer.likeCnt;
       this.ansHateCnt = this.qnaAnswer.hateCnt;
       console.log("checking" + this.qnaAnswer.checkLikeOrHate);
