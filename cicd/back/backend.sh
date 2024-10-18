@@ -20,7 +20,7 @@ fi
 echo $color
 # 두 번째 for 루프: Pod 상태 확인 (5회 반복)
 result=true
-for i in {1..10}; do
+for i in {1..20}; do
 
     kubectl rollout status deployment | grep be-$color-deployment
     rollout_status=$?
@@ -32,7 +32,7 @@ for i in {1..10}; do
     else
         echo "Waiting for deployment to complete..."
         result=false
-        sleep 10  # 다음 시도 전에 대기
+        sleep 5  # 다음 시도 전에 대기
     fi
 
 done
