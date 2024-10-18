@@ -148,6 +148,10 @@ export default {
         alert("공백이 포함되었습니다.");
         this.userInfo.nickname = this.userInfo.nickname.trim();
       }
+      if (this.userInfo.nickname.length > 50) {
+      alert("닉네임은 50글자를 넘을 수 없습니다.");
+      this.userInfo.nickname = ""; // 닉네임을 초기화
+    }
     },
     validatePassword() {
       if (this.userInfo.password.includes(" ")) {
