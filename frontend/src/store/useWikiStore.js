@@ -179,10 +179,12 @@ export const useWikiStore = defineStore("wiki", {
         if (response && response.data.isSuccess) {
           this.wikiDetail = response.data.result;
           return response.data.result;
+        } else {
+          return null;
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('버전 상세 조회 중 오류 발생:', error);
+        return null;
       }
     },
 
