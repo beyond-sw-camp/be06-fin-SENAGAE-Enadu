@@ -1,8 +1,6 @@
 <template>
   <TagComponent :tagTitle="'유저 랭킹'" :tagSubTitle="'활동에 참여하여 랭킹을 올려보세요'"/>
   <div class="custom-container" style="margin-top: 0;">
-    <canvas data-engine="three.js r149" width="2782" height="916"
-            style="display: block; width: 100%; height: 100%; cursor: default;"></canvas>
     <div class="container">
       <div class="point-container">
         <div class="my-ranking" v-show="userStore.isLoggedIn">

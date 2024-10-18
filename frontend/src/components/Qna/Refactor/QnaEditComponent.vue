@@ -99,6 +99,7 @@ import { mapStores } from "pinia";
 import { useQnaStore } from "@/store/useQnaStore";
 import SuperCategoryModal from "@/components/Category/SuperCategoryModal.vue";
 import SubCategoryModal from "@/components/Category/SubCategoryModal.vue";
+import router from "@/router";
 import { useCommonStore } from "@/store/useCommonStore";
 import LoadingComponent from '@/components/Common/LoadingComponent.vue';
 
@@ -133,16 +134,24 @@ export default {
     },
   },
   async mounted() {
-    await useQnaStore().getQnaDetail(this.$route.params.id);
+    await useQnaStore().getQnaEditDetail(this.$route.params.id, router);
     this.isLoading = false;
-    this.myTitle = useQnaStore().qnaDetail.title;
-    this.myText = useQnaStore().qnaDetail.content;
+    this.myTitle = useQnaStore().qnaEditDetail.title;
+    this.myText = useQnaStore().qnaEditDetail.content;
 
 
-    this.selectedSuperCategory.id = useQnaStore().qnaDetail.superCategoryId;
-    this.selectedSubCategory.id = useQnaStore().qnaDetail.subCategoryId;
-    this.selectedSuperCategory.categoryName = useQnaStore().qnaDetail.superCategoryName;
-    this.selectedSubCategory.categoryName = useQnaStore().qnaDetail.subCategoryName;
+    this.selectedSuperCategory.id = useQnaStore().qnaEditDetail.superCategoryId;
+    this.selectedSubCategory.id = useQnaStore().qnaEditDetail.subCategoryId;
+    console.log(useQnaStore().qnaEditDetail.superCategoryName);
+    if (useQnaStore().qnaEditDetail.superCategoryName !== null){
+      this.selectedSuperCategory.categoryName = useQnaStore().qnaEditDetail.superCategoryName;
+      this.selectedSubCategory.categoryName = useQnaStore().qnaEditDetail.subCategoryName
+    }
+    else{
+      this.selectedSuperCategory.categoryName = useQnaStore().qnaEditDetail.subCategoryName;
+      this.selectedSubCategory.categoryName = " ";
+    }
+
     this.myCategory = this.selectedSubCategory.id;
   },
   methods: {
