@@ -22,6 +22,7 @@ axios.interceptors.response.use(
 
 export const useWikiStore = defineStore("wiki", {
   state: () => ({
+    grade: null,
     wikiCards: [],
     totalPages: 0,
     searchTotalPages: 0,
@@ -291,16 +292,14 @@ export const useWikiStore = defineStore("wiki", {
         });
 
         if (response && response.data && response.data.isSuccess) {
-          const userDetails = response.data.result;
-          const grade = userDetails.grade;
-          console.log(userDetails);
+          this.grade = response.data.result.grade || null;
 
-          if (!grade) {
+          if (!this.grade) {
             alert("로그인이 필요합니다.");
             return false;
           }
 
-          if (grade === "뉴비") {
+          if (this.grade === "뉴비") {
             alert("뉴비 등급은 위키를 작성할 수 없습니다.");
             return false;
           }
