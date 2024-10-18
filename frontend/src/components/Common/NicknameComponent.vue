@@ -4,7 +4,7 @@
       <router-link :to="{ path: `/user/log/${nickname}` }">
         <li><i class="fas fa-user"></i> 유저 로그</li>
       </router-link>
-      <li @click="startChat"><i class="fas fa-comments"></i> 1:1 채팅</li>
+      <li v-if="userStore.isLoggedIn"  @click="startChat"><i class="fas fa-comments"></i> 1:1 채팅</li>
     </ul>
   </div>
 </template>
@@ -12,12 +12,13 @@
 <script>
 import { mapStores } from "pinia";
 import { useChatStore } from "@/store/useChatStore";
+import {useUserStore} from "@/store/useUserStore";
 
 export default {
   name: "NicknameComponent",
   props: ['nickname'],
   computed: {
-    ...mapStores(useChatStore)
+    ...mapStores(useChatStore, useUserStore)
   },
   data() {
     return {
