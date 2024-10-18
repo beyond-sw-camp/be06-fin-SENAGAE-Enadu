@@ -61,7 +61,7 @@ export default {
       answerExist: false,
     }
   },
-  props: ["adopted", "detail", "isQuestion"],
+  props: ["adopted", "detail", "isQuestion", "aiAnswered"],
   mounted() {
     this.showEditAndDelete();
     this.isOpen = false;
@@ -109,7 +109,7 @@ export default {
     showEditAndDelete() {
       if (this.detail.userId === useUserStore().$state.userId) {
         if (this.isQuestion === true) {
-          if (this.detail.answers.length === 0) {
+          if (this.detail.answers.length === 0 || (this.detail.answers.length === 1 && this.detail.answers[0].userId === 0)) {
             this.editedAndDelete = true;
           } else {
             this.editedAndDelete = false;
