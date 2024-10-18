@@ -108,8 +108,10 @@ public class ElasticWikiSearchService implements WikiSearchService {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
                 .query(boolQuery)
                 .from(getWikiSearchReq.getPage() * getWikiSearchReq.getSize())  // 페이지 설정
-                .size(getWikiSearchReq.getSize())  // 페이지 크기 설정
-                .sort("created_at", SortOrder.DESC);  // 최신순 정렬
+                .size(getWikiSearchReq.getSize());  // 페이지 크기 설정
+        if (getWikiSearchReq.getSort().equals("latest")){
+            searchSourceBuilder.sort("created_at", SortOrder.DESC);  // 최신순 정렬
+        }
         return searchSourceBuilder;
     }
 
