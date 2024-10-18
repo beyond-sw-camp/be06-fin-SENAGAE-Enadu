@@ -119,7 +119,6 @@ export default {
     },
     async handleCheckSort(sortType) {
       this.sortType = sortType;
-      console.log(11111111111);
       await this.handleSearch(this.searchParams);
     }
   },
