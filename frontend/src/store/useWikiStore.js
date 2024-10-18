@@ -154,15 +154,18 @@ export const useWikiStore = defineStore("wiki", {
         });
 
         if (response.data.isSuccess) {
-          // 최신 버전을 제외한 나머지 버전들만 필터링
           const filteredVersions = response.data.result.filter(version => version.version !== this.wikiDetail.version);
 
           this.wikiVersions = filteredVersions;
           this.totalPages = filteredVersions[0]?.totalPages || 1;
+          return true;
+        } else {
+          return false;
         }
       }
       catch (error) {
         console.error('API 호출 중 오류 발생:', error);
+        return false;
       }
     },
 
