@@ -58,10 +58,7 @@
   </div>
 </template>
 
-
 <script>
-
-
 import { mapStores } from "pinia";
 import { useMainStore } from "@/store/useMainStore";
 import ErrorArchiveCardComponent from "@/components/errorarchive/ErrorArchiveCardComponent.vue";

@@ -76,14 +76,12 @@ import WikiCardComponent from "@/components/wiki/WikiCardComponent.vue";
 import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
 import LoadingComponent from "@/components/Common/LoadingComponent.vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
-import {useQnaStore} from "@/store/useQnaStore";
-import {useWikiStore} from "@/store/useWikiStore";
 
 export default {
     name: "TotalSearchPage",
     components: {TagComponent, LoadingComponent, QnaCardComponent, WikiCardComponent, ErrorArchiveCardComponent},
     computed: {
-        ...mapStores(useMainStore,useWikiStore,useQnaStore),
+        ...mapStores(useMainStore),
     },
     data() {
         return {
