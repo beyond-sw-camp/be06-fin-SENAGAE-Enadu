@@ -82,8 +82,17 @@ export default {
         }
     },
     methods: {
+        isSingleChosung(keyword) {
+            const chosungRegex = /^[ㄱ-ㅎ]$/;
+            return chosungRegex.test(keyword);
+        },
         totalSearch(){
-            window.location.href = "/search?keyword="+this.keyword;
+            if (this.isSingleChosung(this.keyword.trim())){
+                alert("초성검색은 한 글자가 불가합니다");
+                return;
+            }
+            console.log("1111111");
+            window.location.href = "/search?keyword="+this.keyword.trim();
         },
         logout() {
             if (window.confirm("로그아웃 하시겠습니까?")) {

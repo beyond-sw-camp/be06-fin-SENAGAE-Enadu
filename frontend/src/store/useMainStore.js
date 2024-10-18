@@ -40,15 +40,6 @@ export const useMainStore = defineStore('main', {
             }
         },
         async getTotalSearchInfo(keyword) {
-            // 초성 한 글자인지 체크하는 함수 추가
-            const isSingleChosung = (keyword) => /^[ㄱ-ㅎ]$/.test(keyword);
-            
-            // 초성이 한 글자인 경우 경고 메시지 및 API 호출 중단
-            if (isSingleChosung(keyword)) {
-                alert("초성검색은 한 글자가 불가합니다.");
-                return; // API 호출 방지
-            }
-        
             const request = {
                 errorArchiveSize: 8,
                 wikiSize: 4,
