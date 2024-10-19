@@ -108,6 +108,7 @@ export default {
     if (id) {
       const success = await this.fetchWikiDetail(id);
       if (!success) {
+        alert("존재하지 않는 URL입니다.");
         this.$router.push('/wiki/list');
       }
     }
