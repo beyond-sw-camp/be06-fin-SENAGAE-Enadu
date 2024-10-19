@@ -5,11 +5,13 @@
       <p class="explanation">아이디(E-mail)</p>
 
       <div class="half-form">
-        <input type="email" placeholder="sample@gmail.com" v-model="userInfo.email" @input="validateEmail" />
+        <input type="email" placeholder="sample@gmail.com" v-model="userInfo.email"
+               @input="validateEmail"/>
         <button type="button" class="check-button" @click="checkEmail">중복 확인</button>
       </div>
       <p class="explanation">비밀번호</p>
-      <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="userInfo.password" @input="validatePassword" />
+      <input type="password" placeholder="비밀번호를 8자 이상 입력해주세요" v-model="userInfo.password"
+             @input="validatePassword"/>
 
       <p class="explanation">
         비밀번호 확인
@@ -17,7 +19,7 @@
           {{ userInfo.password === userInfo.confirmPassword ? ' (일치)' : ' (불일치)' }}
         </span>
       </p>
-      <input type="password" placeholder="비밀번호를 한 번 더 입력해주세요" v-model="userInfo.confirmPassword" />
+      <input type="password" placeholder="비밀번호를 한 번 더 입력해주세요" v-model="userInfo.confirmPassword"/>
 
 
       <p class="explanation">닉네임</p>
@@ -28,9 +30,9 @@
       <p class="explanation">프로필 이미지</p>
       <div class="half-form">
         <div class="profile-preview">
-          <img :src="imgUrl" alt="" class="profile-image" />
+          <img :src="imgUrl" alt="" class="profile-image"/>
         </div>
-        <input type="file" @change="handleProfileImageUpload" accept="image/*" />
+        <input type="file" @change="handleProfileImageUpload" accept="image/*"/>
       </div>
 
       <button type="button" @click="signup">회원가입</button>
@@ -39,105 +41,105 @@
 </template>
 
 <script>
-import {useUserStore} from '@/store/useUserStore';
+import { useUserStore } from '@/store/useUserStore';
 
 export default {
-    name: "SignUpComponent",
-    props: {
-      signIn: Boolean,
-    },
-    data() {
-      return {
-        userInfo: {
-          email: "",
-          password: "",
-          nickname: "",
-          confirmPassword: "",
-        },
-        imgUrl: "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6",
-        selectedProfileFile: null,
-        emailAvailable: false,
-        nicknameAvailable: false,
-      };
-    },
-    watch: {
-        'userInfo.email'(newValue) {
-            if (newValue) {
-                this.emailAvailable = false;
-            }
-        },
-        'userInfo.nickname'(newValue) {
-            if (newValue) {
-                this.nicknameAvailable = false;
-            }
-        }
-   },
-    methods: {
-        isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 정규식
-            return emailRegex.test(email);
-        },
-        signup() {
-            if (!this.userInfo.email || !this.userInfo.email.trim()) {
-                alert("이메일을 입력해주세요.");
-                return;
-            }
-            if (!this.isValidEmail(this.userInfo.email) || this.userInfo.email.includes(" ")) {
-              alert('올바른 이메일 형식이 아닙니다.');
-              this.userInfo.email = this.userInfo.email.trim();
-              return;
-            }
-            if (!this.userInfo.password || !this.userInfo.password.trim()) {
-                alert("비밀번호를 입력해주세요.");
-                return;
-            }
-            if (this.userInfo.password.length < 8) {
-              alert("비밀번호는 8자 이상이어야 합니다.");
-              this.userInfo.password = "";
-            }
-            if (!this.userInfo.confirmPassword || !this.userInfo.confirmPassword.trim()) {
-                alert("비밀번호 확인을 입력해주세요.");
-                return;
-            }
-            if (this.userInfo.password.includes(" ") || this.userInfo.confirmPassword.includes(" ")) {
-              alert("비밀번호에 공백이 포함되었습니다.");
-              this.userInfo.password = this.userInfo.password.trim();
-              this.userInfo.confirmPassword = this.userInfo.confirmPassword.trim();
-            }
-            if (!this.userInfo.nickname || !this.userInfo.nickname.trim()) {
-                alert("닉네임을 입력해주세요.");
-                return;
-            }
-            if (this.userInfo.password !== this.userInfo.confirmPassword) {
-                alert("비밀번호가 일치하지 않습니다.");
-                return;
-            }
-            if (!this.emailAvailable) {
-                alert("이메일 중복 확인을 해주세요.");
-                return;
-            }
-            if (!this.nicknameAvailable) {
-                alert("닉네임 중복 확인을 해주세요.");
-                return;
-            }
-            this.$emit('signup', this.userInfo, this.selectedProfileFile || null);
-        },
-      handleProfileImageUpload(event) {
-        const file = event.target.files[0];
-        if (file) {
-          this.imgUrl = URL.createObjectURL(file);
-          this.selectedProfileFile=file;
-        }
+  name: "SignUpComponent",
+  props: {
+    signIn: Boolean,
+  },
+  data() {
+    return {
+      userInfo: {
+        email: "",
+        password: "",
+        nickname: "",
+        confirmPassword: "",
       },
-      async checkEmail() {
-        const userStore = useUserStore();
-          this.emailAvailable = await userStore.checkEmail(this.userInfo.email);
-      },
-      async checkNickname() {
-        const userStore = useUserStore();
-          this.nicknameAvailable = await userStore.checkNickname(this.userInfo.nickname);
+      imgUrl: "https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6",
+      selectedProfileFile: null,
+      emailAvailable: false,
+      nicknameAvailable: false,
+    };
+  },
+  watch: {
+    'userInfo.email'(newValue) {
+      if (newValue) {
+        this.emailAvailable = false;
+      }
     },
-   validateEmail() {
+    'userInfo.nickname'(newValue) {
+      if (newValue) {
+        this.nicknameAvailable = false;
+      }
+    }
+  },
+  methods: {
+    isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 정규식
+      return emailRegex.test(email);
+    },
+    signup() {
+      if (!this.userInfo.email || !this.userInfo.email.trim()) {
+        alert("이메일을 입력해주세요.");
+        return;
+      }
+      if (!this.isValidEmail(this.userInfo.email) || this.userInfo.email.includes(" ")) {
+        alert('올바른 이메일 형식이 아닙니다.');
+        this.userInfo.email = this.userInfo.email.trim();
+        return;
+      }
+      if (!this.userInfo.password || !this.userInfo.password.trim()) {
+        alert("비밀번호를 입력해주세요.");
+        return;
+      }
+      if (this.userInfo.password.length < 8) {
+        alert("비밀번호는 8자 이상이어야 합니다.");
+        return;
+      }
+      if (!this.userInfo.confirmPassword || !this.userInfo.confirmPassword.trim()) {
+        alert("비밀번호 확인을 입력해주세요.");
+        return;
+      }
+      if (this.userInfo.password.includes(" ") || this.userInfo.confirmPassword.includes(" ")) {
+        alert("비밀번호에 공백이 포함되었습니다.");
+        this.userInfo.password = this.userInfo.password.trim();
+        this.userInfo.confirmPassword = this.userInfo.confirmPassword.trim();
+      }
+      if (!this.userInfo.nickname || !this.userInfo.nickname.trim()) {
+        alert("닉네임을 입력해주세요.");
+        return;
+      }
+      if (this.userInfo.password !== this.userInfo.confirmPassword) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+      if (!this.emailAvailable) {
+        alert("이메일 중복 확인을 해주세요.");
+        return;
+      }
+      if (!this.nicknameAvailable) {
+        alert("닉네임 중복 확인을 해주세요.");
+        return;
+      }
+      this.$emit('signup', this.userInfo, this.selectedProfileFile || null);
+    },
+    handleProfileImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.imgUrl = URL.createObjectURL(file);
+        this.selectedProfileFile = file;
+      }
+    },
+    async checkEmail() {
+      const userStore = useUserStore();
+      this.emailAvailable = await userStore.checkEmail(this.userInfo.email);
+    },
+    async checkNickname() {
+      const userStore = useUserStore();
+      this.nicknameAvailable = await userStore.checkNickname(this.userInfo.nickname);
+    },
+    validateEmail() {
       if (this.userInfo.email.includes(" ")) {
         alert("공백이 포함되었습니다.");
         this.userInfo.email = this.userInfo.email.trim();
@@ -149,9 +151,9 @@ export default {
         this.userInfo.nickname = this.userInfo.nickname.trim();
       }
       if (this.userInfo.nickname.length > 50) {
-      alert("닉네임은 50글자를 넘을 수 없습니다.");
-      this.userInfo.nickname = ""; // 닉네임을 초기화
-    }
+        alert("닉네임은 50글자를 넘을 수 없습니다.");
+        this.userInfo.nickname = ""; // 닉네임을 초기화
+      }
     },
     validatePassword() {
       if (this.userInfo.password.includes(" ")) {
