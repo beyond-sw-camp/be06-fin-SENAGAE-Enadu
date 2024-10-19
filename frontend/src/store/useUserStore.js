@@ -84,10 +84,11 @@ export const useUserStore = defineStore('user', {
                 });
 
 
-                if (response || response.data) {
+                if (response.data.isSuccess) {
                    return true;
                 } else {
-                    throw new Error("Invalid response from server");
+                    alert(response.data.message);
+                    return false;
                 }
 
             }
