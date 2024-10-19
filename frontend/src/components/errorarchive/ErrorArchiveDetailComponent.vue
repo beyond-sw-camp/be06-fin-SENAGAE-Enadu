@@ -313,6 +313,9 @@ export default {
     align-items: flex-start;
     justify-content: space-between;
 }
+.errorarchive-title h1 {
+    font-size: 40px !important; /* 원하는 크기로 설정 */
+}
 .sc-fvxzrP {
   display: flex;
   align-items: center; /* 세로 중앙 정렬 */
@@ -320,6 +323,7 @@ export default {
 }
 /* 제목이 짧을 때의 마진을 조정 */
 .header-container.short-title .errorarchive-title {
+    font-size: 50%; /* 기존 크기의 50%로 설정 */
     margin-right: 400px;
 }
 
