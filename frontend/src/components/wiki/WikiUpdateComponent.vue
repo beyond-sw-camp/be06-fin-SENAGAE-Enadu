@@ -13,16 +13,16 @@
 
                   <div class="space-y-1">
                     <label for="title" class="text-sm font-bold font-medium text-gray-700"
-                      style="font-size: 1rem;">제목</label>
-                    <input type="text" v-model="updatedTitle" class="form-control circular-input" readonly
-                      style="pointer-events: none; width: 100%;" />
+                           style="font-size: 1rem;">제목</label>
+                    <input type="text" v-model="updatedTitle" class="form-control circular-input"
+                           readonly style="pointer-events: none; width: 100%;"/>
                   </div>
 
                   <div class="space-y-1">
                     <label for="category" class="text-sm font-bold font-medium text-gray-700"
-                      style="font-size: 1rem;">카테고리</label>
-                    <input type="text" v-model="updatedCategory" class="form-control circular-input" readonly
-                      style="pointer-events: none; width: 100%;" />
+                           style="font-size: 1rem;">카테고리</label>
+                    <input type="text" v-model="updatedCategory" class="form-control circular-input"
+                           readonly style="pointer-events: none; width: 100%;"/>
                   </div>
 
                   <div class="space-y-1">
@@ -113,6 +113,12 @@ export default {
       }
     }
     this.isLoading = false;
+  },
+  mounted() {
+    if (this.wikiStore.grade === null || this.wikiStore.grade === "뉴비") {
+      alert("견습 등급 이상만 위키 수정이 가능합니다.");
+      this.$router.go(-1);
+    }
   },
   methods: {
     async fetchWikiDetail(id) {
