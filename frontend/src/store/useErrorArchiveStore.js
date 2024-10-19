@@ -76,7 +76,6 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         if (error.response) {
           console.error("응답 데이터:", error.response.data); // 응답 데이터 확인
         }
-        throw error;
       }
     },
     async deleteErrorArchive(id) {
