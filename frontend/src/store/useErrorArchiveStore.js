@@ -122,7 +122,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         }
       } catch (error) {
         console.error("에러아카이브 상세 조회 중 오류 발생:", error);
-        throw error; // 오류를 호출자에게 전파
+        throw new Error("에러아카이브 상세 조회 실패: "+response.data.message);
       }
     },    
     async getErrorArchiveList(sort, page) {
