@@ -2,7 +2,6 @@ package org.example.backend.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.BDDMockito.*;
 
 import com.example.common.User.Model.Entity.User;
 import com.example.common.User.Repository.UserRepository;
@@ -45,14 +44,13 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-
         ReflectionTestUtils.setField(userService, "CLIENT_ID", "test-client-id");
         ReflectionTestUtils.setField(userService, "CLIENT_SECRET", "test-client-secret");
     }
 
     @Test
     public void 회원가입_성공() {
-        UserSignupReq req = new UserSignupReq("test@example.com", "password", "nickname");
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123");
         User user = User.builder()
                 .email(req.getEmail())
                 .password("encoded_password")
@@ -68,8 +66,51 @@ public class UserServiceTest {
     }
 
     @Test
-    public void 이메일_중복확인_성공() {
+    public void 회원가입_실패_공백포함() {
+        UserSignupReq req = new UserSignupReq("nickname ", "test@example.com", "password", "password");
 
+        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+            userService.checkUserData(req);
+        });
+
+        assertEquals(BaseResponseStatus.USER_INVALID_INPUT_WITH_WHITESPACE, exception.getStatus());
+    }
+
+    @Test
+    public void 회원가입_이메일_형식_잘못됨() {
+        UserSignupReq req = new UserSignupReq("nickname", "invalid-email", "password123", "password123");
+
+        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+            userService.checkUserData(req);
+        });
+
+        assertEquals(BaseResponseStatus.USER_INVALID_EMAIL_FORMAT, exception.getStatus());
+    }
+
+    @Test
+    public void 회원가입_실패_패스워드_불일치() {
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "passwordDifferent");
+
+        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+            userService.checkUserData(req);
+        });
+
+        assertEquals(BaseResponseStatus.USER_NEW_PASSWORDS_DO_NOT_MATCH, exception.getStatus());
+    }
+
+    @Test
+    public void 회원가입_비밀번호_길이_짧음() {
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "short", "short");
+
+        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+            userService.checkUserData(req);
+        });
+
+        assertEquals(BaseResponseStatus.USER_INVALID_PASSWORD, exception.getStatus());
+    }
+
+    @Test
+    public void 이메일_중복확인_성공() {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
 
         boolean result = userService.checkDuplicateEmail("test@example.com");
@@ -88,7 +129,6 @@ public class UserServiceTest {
 
     @Test
     public void 닉네임_중복확인_성공() {
-
         when(userRepository.findByNickname("nickname")).thenReturn(Optional.empty());
 
         boolean result = userService.checkDuplicateNickname("nickname");
@@ -129,6 +169,36 @@ public class UserServiceTest {
     }
 
     @Test
+    public void 닉네임변경_실패_특수문자_포함() {
+        String invalidNickname = "invalid.nickname";
+        Long userId = 1L;
+
+        User user = User.builder().id(userId).nickname("old_nickname").build();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+            userService.checkNicknamePattern(invalidNickname);
+        });
+
+        assertEquals(BaseResponseStatus.USER_INVALID_NICKNAME, exception.getStatus());
+    }
+
+    @Test
+    public void 닉네임변경_실패_길이_초과() {
+        String longNickname = "a".repeat(51);
+        Long userId = 1L;
+
+        User user = User.builder().id(userId).nickname("old_nickname").build();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+            userService.checkNicknamePattern(longNickname);
+        });
+
+        assertEquals(BaseResponseStatus.USER_INVALID_NICKNAME, exception.getStatus());
+    }
+
+    @Test
     public void 비밀번호변경_성공() {
         User user = User.builder().password("encoded_old_password").build();
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
@@ -144,18 +214,25 @@ public class UserServiceTest {
     }
 
     @Test
-    public void 비밀번호변경_실패() {
-        User user = User.builder().password("encoded_old_password").build();
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("wrong_old_password", user.getPassword())).thenReturn(false);
-
-        UpdateUserPasswordReq req = new UpdateUserPasswordReq("wrong_old_password", "new_password","new_password");
+    public void 비밀번호변경_실패_불일치() {
+        UpdateUserPasswordReq req = new UpdateUserPasswordReq("old_password", "new_password", "different_new_password");
 
         InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userService.updatePassword(1L, req);
+            userService.checkPasswordPattern(req.getNewPassword(), req.getConfirmPassword());
         });
 
-        assertEquals(BaseResponseStatus.USER_PASSWORDS_DO_NOT_MATCH, exception.getStatus());
+        assertEquals(BaseResponseStatus.USER_NEW_PASSWORDS_DO_NOT_MATCH, exception.getStatus());
+    }
+
+    @Test
+    public void 비밀번호변경_실패_공백포함() {
+        UpdateUserPasswordReq req = new UpdateUserPasswordReq("old_password", "new password ", "new password ");
+
+        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+            userService.checkPasswordPattern(req.getNewPassword(), req.getConfirmPassword());
+        });
+
+        assertEquals(BaseResponseStatus.USER_INVALID_INPUT_WITH_WHITESPACE, exception.getStatus());
     }
 
     @Test
@@ -191,7 +268,7 @@ public class UserServiceTest {
             userService.disableUser(1L, "wrong_password");
         });
 
-        assertEquals(BaseResponseStatus.USER_PASSWORDS_DO_NOT_MATCH, exception.getStatus());
+        assertEquals(BaseResponseStatus.USER_PASSWORD_DO_NOT_MATCH, exception.getStatus());
     }
 
     @Test
@@ -248,4 +325,26 @@ public class UserServiceTest {
 
         assertEquals(BaseResponseStatus.USER_ACCESS_TOKEN_NOT_FOUND, exception.getStatus());
     }
+
+    @Test
+    public void 소셜유저비활성화_실패_잘못된_응답() {
+        User user = User.builder().id(1L).enable(true).build();
+        when(userRepository.findByIdAndEnableTrue(1L)).thenReturn(Optional.of(user));
+        when(jwtUtil.getAccessToken("valid_token")).thenReturn("access_token");
+
+        ResponseEntity<Object> mockResponse = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.DELETE),
+                any(HttpEntity.class),
+                eq(Object.class))
+        ).thenReturn(mockResponse);
+
+        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+            userService.disableSocialUser(1L, "valid_token");
+        });
+
+        assertEquals(BaseResponseStatus.USER_FAIL, exception.getStatus());
+    }
+
 }

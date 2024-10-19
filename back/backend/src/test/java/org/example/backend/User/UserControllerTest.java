@@ -51,7 +51,7 @@ class UserControllerTest {
 
     @Test
     public void 회원가입_성공() {
-        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123");
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123"); // confirmPassword 추가
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
 
         when(userService.checkDuplicateEmail(anyString())).thenReturn(true);
@@ -66,7 +66,7 @@ class UserControllerTest {
 
     @Test
     public void 회원가입_중복_이메일() {
-        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123");
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123"); // confirmPassword 추가
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
 
         when(userService.checkDuplicateEmail(anyString())).thenReturn(false);
@@ -79,7 +79,7 @@ class UserControllerTest {
 
     @Test
     public void 회원가입_중복_닉네임() {
-        UserSignupReq req = new UserSignupReq("nickname","test@example.com", "password123");
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123"); // confirmPassword 추가
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
 
         when(userService.checkDuplicateEmail(anyString())).thenReturn(true);
@@ -92,30 +92,8 @@ class UserControllerTest {
     }
 
     @Test
-    public void 회원가입_필드_공백() {
-        UserSignupReq req = new UserSignupReq("", "password123", "nickname");
-        MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
-
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.signup(req, profileImg);
-        });
-        assertEquals(BaseResponseStatus.USER_INVALID_INPUT, exception.getStatus());
-    }
-
-    @Test
-    public void 회원가입_이메일_형식_잘못됨() {
-        UserSignupReq req = new UserSignupReq("invalid-email-format", "password123", "nickname");
-        MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
-
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.signup(req, profileImg);
-        });
-        assertEquals(BaseResponseStatus.USER_INVALID_EMAIL_FORMAT, exception.getStatus());
-    }
-
-    @Test
     public void 회원가입_이메일_전송_실패() {
-        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123");
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123"); // confirmPassword 추가
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
 
         when(userService.checkDuplicateEmail(anyString())).thenReturn(true);
@@ -131,19 +109,8 @@ class UserControllerTest {
     }
 
     @Test
-    public void 회원가입_비밀번호_잘못됨() {
-        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "pass ");
-        MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
-
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.signup(req, profileImg);
-        });
-        assertEquals(BaseResponseStatus.USER_INVALID_PASSWORD, exception.getStatus());
-    }
-
-    @Test
     public void 회원가입_프로필이미지_없음() {
-        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123");
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123");
 
         when(userService.checkDuplicateEmail(anyString())).thenReturn(true);
         when(userService.checkDuplicateNickname(anyString())).thenReturn(true);
@@ -195,30 +162,6 @@ class UserControllerTest {
     }
 
     @Test
-    public void 닉네임_수정_특수문자_포함() {
-        CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
-        when(customUserDetails.getUserId()).thenReturn(1L);
-
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.updateNickname(customUserDetails, Map.of("nickname", "invalid!nickname"));
-        });
-
-        assertEquals(USER_INVALID_NICKNAME, exception.getStatus());
-    }
-
-    @Test
-    public void 닉네임_수정_닉네임_길이_초과() {
-        CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
-        when(customUserDetails.getUserId()).thenReturn(1L);
-
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.updateNickname(customUserDetails, Map.of("nickname", "a".repeat(46)));
-        });
-
-        assertEquals(USER_INVALID_NICKNAME, exception.getStatus());
-    }
-
-    @Test
     public void 프로필_이미지_수정_성공() {
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getUserId()).thenReturn(1L);
@@ -242,18 +185,6 @@ class UserControllerTest {
 
         verify(userService, times(1)).updatePassword(anyLong(), any(UpdateUserPasswordReq.class));
         assertNull(result.getResult());
-    }
-
-    @Test
-    public void 비밀번호_불일치() {
-        CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
-        when(customUserDetails.getUserId()).thenReturn(1L);
-        UpdateUserPasswordReq req = new UpdateUserPasswordReq("oldPassword", "newPassword", "differentNewPassword");
-
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.updatePassword(customUserDetails, req);
-        });
-        assertEquals(BaseResponseStatus.USER_NEW_PASSWORDS_DO_NOT_MATCH, exception.getStatus());
     }
 
     @Test
