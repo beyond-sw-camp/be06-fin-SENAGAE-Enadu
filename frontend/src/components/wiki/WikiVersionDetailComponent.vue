@@ -13,18 +13,22 @@
                         </div>
                         <div class="sc-fbyfCU eYeYLy" style="margin-left: auto;">
                             <!-- 최신 위키로 돌아가기 버튼 -->
-                            <button class="ml-3 text-white px-4 py-2 rounded-md" style="background-color: rgb(39, 194, 224); padding-bottom: 11px;padding-top: 10px; font-weight: bold;"
+                            <button class="ml-3 text-white px-4 py-2 rounded-md"
+                                style="background-color: rgb(39, 194, 224); padding-bottom: 11px;padding-top: 10px; font-weight: bold;"
                                 @click="goToLatestWiki">
                                 최신 위키 돌아가기
                             </button>
 
-                             <div class="bookmark-checkbox" v-if="isLoggedIn">
+                            <div class="bookmark-checkbox" v-if="isLoggedIn">
                                 <input type="checkbox" id="bookmark-toggle" :checked="wikiDetail.checkScrap"
                                     class="bookmark-checkbox__input" @change="toggleScrap" />
                                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                                     <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
-                                        <path class="bookmark-checkbox__icon-back" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5" stroke="#767676"></path>
-                                        <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5" stroke="#767676"></path>
+                                        <path class="bookmark-checkbox__icon-back"
+                                            d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5"
+                                            stroke="#767676"></path>
+                                        <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5"
+                                            stroke="#767676"></path>
                                     </svg>
                                 </label>
                             </div>
@@ -56,7 +60,7 @@
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 </template>
 
 <script>
@@ -76,10 +80,10 @@ export default {
     name: "WikiVersionDetailComponent",
     data() {
         return {
-            id: '', 
-            wikiId: '',  
-            isLoading: true, 
-            titles: [],      
+            id: '',
+            wikiId: '',
+            isLoading: true,
+            titles: [],
         };
     },
     computed: {
@@ -94,11 +98,18 @@ export default {
     },
     async mounted() {
         this.id = this.$route.query.id || this.$route.params.id;
+
         if (this.id) {
             const result = await this.wikiStore.fetchWikiVersionDetail(this.id);
-            this.wikiId = result.wikiId; 
+            if (!result) {
+                alert("존재하지 않는 URL입니다.");
+                this.$router.go(-1);
+                return;
+            }
+            this.wikiId = result.wikiId;
         }
         this.isLoading = false;
+
 
         this.$nextTick(() => {
             const anchors = this.$refs.preview.$el.querySelectorAll('h1,h2,h3,h4,h5,h6');
@@ -130,7 +141,7 @@ export default {
         async toggleScrap() {
             try {
                 const wikiContentId = this.wikiDetail.wikiContentId;
-                
+
                 if (!wikiContentId) {
                     throw new Error('Invalid wikiContentId');
                 }
@@ -202,6 +213,7 @@ v-md-preview p {
     color: #2689d2;
     text-decoration: none;
 }
+
 v-md-preview {
     font-size: 1.125rem;
     line-height: 1.7;
@@ -415,6 +427,7 @@ body[data-theme="light"] {
     cursor: pointer;
     margin-right: 0.5rem;
 }
+
 .gegLws {
     cursor: pointer;
     display: flex;
@@ -1661,6 +1674,5 @@ body[data-theme="light"] {
     100% {
         transform: scale(1.1);
     }
-}
-</style>
+}</style>
   

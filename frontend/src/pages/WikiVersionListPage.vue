@@ -51,7 +51,7 @@ import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 
 export default {
     name: "WikiVersionListPage",
-    components: {NicknameComponent, CategoryComponent, PaginationComponent },
+    components: { NicknameComponent, CategoryComponent, PaginationComponent },
     computed: {
         ...mapState(useWikiStore, ["wikiVersions", "wikiTitle", "category", "currentPage", "totalPages"]),
     },
@@ -68,7 +68,11 @@ export default {
         async handlePageUpdate(newPage) {
             if (newPage !== this.selectedPage) {
                 this.selectedPage = newPage;
-                await this.fetchWikiVersionList(this.$route.query.id, newPage - 1);
+                const success = await this.fetchWikiVersionList(this.$route.query.id, newPage - 1);
+                if (!success) {
+                    alert("존재하지 않는 URL입니다.");
+                    this.$router.go(-1);
+                }
             }
         },
         goToVersionDetail(wikiContentId) {
@@ -87,11 +91,21 @@ export default {
         },
     },
     async mounted() {
-        const id = this.$route.query.id;
-        await this.fetchWikiDetail(id);
-        await this.fetchWikiVersionList(id, this.selectedPage - 1);
-        this.isLoading = false;
-    },
+    const id = this.$route.query.id;
+    const detailSuccess = await this.fetchWikiDetail(id);
+    if (!detailSuccess) {
+        alert("존재하지 않는 URL입니다.");
+      this.$router.go(-1);
+      return; 
+    }
+    const versionListSuccess = await this.fetchWikiVersionList(id, this.selectedPage - 1);
+    if (!versionListSuccess) {
+        alert("존재하지 않는 URL입니다.");
+      this.$router.go(-1);
+    }
+    
+    this.isLoading = false;
+  },
 };
 </script>
   
