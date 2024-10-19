@@ -761,9 +761,18 @@ body[data-theme="light"] {
   align-items: center;
   width: 100%;
 }
-
-
-.jGdQwA .information .username {
+.username {
+  display: inline-block; /* 블록 요소로 설정 */
+  max-width: 200px; /* 원하는 최대 너비 설정 */
+  white-space: normal; /* 기본 텍스트 흐름 */
+  overflow: hidden; /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis; /* 넘치는 텍스트에 "..." 표시 */
+  line-height: 1.2; /* 줄 간격 조정 */
+  color: var(--text1);
+  font-weight: bold;
+  font-size: 16px;
+}
+.jGdQwA .information{
   color: var(--text1);
   font-weight: bold;
   font-size: 16px;

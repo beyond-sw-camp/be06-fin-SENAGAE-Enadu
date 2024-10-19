@@ -180,29 +180,37 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      this.isLoading = true;
-      try {
-        const errorarchiveStore = useErrorArchiveStore();
-        console.log(this.selectedSuperCategory);
-        console.log(this.selectedSubCategory)
-        const categoryId = this.selectedSubCategory.id == null || this.selectedSubCategory.id == 0 ? this.selectedSuperCategory.id : this.selectedSubCategory.id;
-        const errorarchive = {
-          id: this.errorArchive.id,
-          title: this.errorArchive.title,
-          content: this.errorArchive.content,
-          categoryId: categoryId,
-        };
-        await errorarchiveStore.updateErrorArchive(errorarchive);
-        this.$router.push(`/errorarchive/detail?id=${this.errorArchive.id}`);
-      }
-      catch (error) {
-        console.error('수정 중 오류 발생:', error);
-        alert(`수정 중 오류 발생: ${error.message}`);
-      } finally {
-        this.isLoading = false;
-      }
-    },
+  this.isLoading = true;
+  try {
+    const errorarchiveStore = useErrorArchiveStore();
+    console.log(this.selectedSuperCategory);
+    console.log(this.selectedSubCategory);
+    
+    const categoryId = this.selectedSubCategory.id == null || this.selectedSubCategory.id == 0 ? this.selectedSuperCategory.id : this.selectedSubCategory.id;
+    
+    // title과 content가 모두 비어있지 않은지 체크
+    if (!this.errorArchive.title || !this.errorArchive.content) {
+      alert('title과 content는 모두 비워둘 수 없습니다.');
+      return; // 수정 작업 중단
+    }
 
+    const errorarchive = {
+      id: this.errorArchive.id,
+      title: this.errorArchive.title,
+      content: this.errorArchive.content,
+      categoryId: categoryId,
+    };
+
+    await errorarchiveStore.updateErrorArchive(errorarchive);
+    this.$router.push(`/errorarchive/detail?id=${this.errorArchive.id}`);
+  }
+  catch (error) {
+    console.error('수정 중 오류 발생:', error);
+    alert(`수정 중 오류 발생: ${error.message}`);
+  } finally {
+    this.isLoading = false;
+  }
+},
     // 메소드 2개일 필요없고, if-else문으로 처리 가능
     openSuperCategoryModal() {
       this.showSuperModal = true;
