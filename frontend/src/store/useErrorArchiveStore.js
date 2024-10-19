@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-
 const backend = "/api";
-
 export const useErrorArchiveStore = defineStore('errorarchive', {
   state: () => ({
     errorArchiveId: 1,
@@ -40,7 +38,6 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
          console.log('응답 데이터 로그로 확인'+response.data); // 응답 데이터 로그로 확인
          // 응답 구조 로그 출력
          console.log('API 응답:', response.data);
-
         // 응답의 유효성 검사
         if (response.data && response.data.isSuccess) {
           // 응답 데이터가 성공적으로 반환된 경우의 처리
@@ -111,19 +108,27 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           params: { id: id },
           withCredentials: true,
         });
-        console.log('응답 데이터:', response.data); // 응답 데이터 로그 추가
-    
-        // 응답의 유효성 검사
-        if (response.data && response.data.isSuccess) {
+        console.log('응답 데이터:'+response.data);
+        if (response.data.isSuccess) {
           this.errorArchiveDetail = response.data.result;
           console.log('상세 조회 결과:', this.errorArchiveDetail);
-          return response.data.result; // 결과를 반환
         } else {
-          throw new Error("에러아카이브 상세 조회 실패: " + response.data.message);
+          this.errorArchiveDetail = null;
+          if(response.data.message==="삭제된 게시글입니다."){
+            alert("삭제된 게시글입니다.");
+          } else if (response.data.message ==="")
+
+
+
+          throw new Error("에러아카이브 상세 조회 실패");
+
+
+
+
+
         }
       } catch (error) {
         console.error("에러아카이브 상세 조회 중 오류 발생:", error);
-        throw error; // 오류를 호출자에게 전파
       }
     },
     async getErrorArchiveList(sort, page) {
@@ -151,7 +156,6 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         const response = await axios.post(`${backend}/errorarchive/like`,request, {
           withCredentials: true,
         });
-
         if (response.data.isSuccess) {
           return response.data.result.result;
         } else {
@@ -170,7 +174,6 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         const response = await axios.post(`${backend}/errorarchive/scrap`,scrapReq, {
           withCredentials: true,
         });
-
         if (response.data.isSuccess) {
           return response.data.result.result;
         } else {
