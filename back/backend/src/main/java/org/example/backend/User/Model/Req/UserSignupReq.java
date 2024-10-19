@@ -12,4 +12,5 @@ public class UserSignupReq {
     @Email
     private String email;
     private String password;
+    private String confirmPassword;
 }

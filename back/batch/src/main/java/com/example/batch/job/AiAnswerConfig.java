@@ -1,6 +1,7 @@
 package com.example.batch.job;
 
 import com.example.batch.common.SleepChunkListener;
+import com.example.batch.processor.HttpAiAnswerProcessor;
 import com.example.batch.writer.AnswerWriter;
 import com.example.batch.processor.AiAnswerProcessor;
 import com.example.common.Qna.Repository.QuestionRepository;
@@ -29,6 +30,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class AiAnswerConfig {
     private final QuestionRepository questionRepository;
     private final AiAnswerProcessor answerProcessor;
+    private final HttpAiAnswerProcessor httpAiAnswerProcessor;
     private final AnswerWriter answerWriter;
     private final SleepChunkListener sleepChunkListener;
 
@@ -56,7 +58,7 @@ public class AiAnswerConfig {
         return new StepBuilder("answerStep", jobRepository)
                 .<QnaBoard, Answer>chunk(2, transactionManager)
                 .reader(bulkQuestionReader())
-                .processor(answerProcessor)
+                .processor(httpAiAnswerProcessor)
                 .writer(answerWriter)
                 .listener(sleepChunkListener)
                 .build();

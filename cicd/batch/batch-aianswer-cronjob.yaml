@@ -42,6 +42,11 @@ spec:
                     secretKeyRef:
                       name: batch-env-secrets
                       key: GCLOUD_ID
+                - name: GEMINI_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: GEMINI_KEY
                 - name: GOOGLE_APPLICATION_CREDENTIALS
                   value: /etc/gcp/sa_credentials.json
               volumeMounts:

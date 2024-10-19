@@ -42,5 +42,10 @@ spec:
                     secretKeyRef:
                       name: batch-env-secrets
                       key: GCLOUD_ID
+                - name: GEMINI_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: GEMINI_KEY
           restartPolicy: OnFailure
       backoffLimit: 5

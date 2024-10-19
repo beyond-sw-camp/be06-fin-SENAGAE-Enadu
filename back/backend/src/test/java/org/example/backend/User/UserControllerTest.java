@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
+import static org.example.backend.Common.BaseResponseStatus.USER_INVALID_NICKNAME;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,8 +50,8 @@ class UserControllerTest {
     }
 
     @Test
-    public void testSignupSuccess() {
-        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123");
+    public void 회원가입_성공() {
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123"); // confirmPassword 추가
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
 
         when(userService.checkDuplicateEmail(anyString())).thenReturn(true);
@@ -64,8 +65,8 @@ class UserControllerTest {
     }
 
     @Test
-    public void testSignupDuplicateEmail() {
-        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123");
+    public void 회원가입_중복_이메일() {
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123"); // confirmPassword 추가
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
 
         when(userService.checkDuplicateEmail(anyString())).thenReturn(false);
@@ -77,8 +78,8 @@ class UserControllerTest {
     }
 
     @Test
-    public void testSignupWithDuplicateNickname() {
-        UserSignupReq req = new UserSignupReq("nickname","test@example.com", "password123");
+    public void 회원가입_중복_닉네임() {
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123"); // confirmPassword 추가
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
 
         when(userService.checkDuplicateEmail(anyString())).thenReturn(true);
@@ -91,40 +92,36 @@ class UserControllerTest {
     }
 
     @Test
-    public void testSignupWithEmptyFields() {
-        UserSignupReq req = new UserSignupReq("", "password123", "nickname");
+    public void 회원가입_이메일_전송_실패() {
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123"); // confirmPassword 추가
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
+
+        when(userService.checkDuplicateEmail(anyString())).thenReturn(true);
+        when(userService.checkDuplicateNickname(anyString())).thenReturn(true);
+        when(cloudFileUploadService.uploadImg(any(MultipartFile.class))).thenReturn("test-url");
+        doThrow(new RuntimeException()).when(emailVerifyService).sendEmail(anyString());
 
         InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
             userController.signup(req, profileImg);
         });
-        assertEquals(BaseResponseStatus.USER_INVALID_INPUT, exception.getStatus());
+
+        assertEquals(BaseResponseStatus.USER_EMAIL_SEND_FAILED, exception.getStatus());
     }
 
     @Test
-    public void testSignupWithInvalidEmailFormat() {
-        UserSignupReq req = new UserSignupReq("invalid-email-format", "password123", "nickname");
-        MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
+    public void 회원가입_프로필이미지_없음() {
+        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "password123", "password123");
 
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.signup(req, profileImg);
-        });
-        assertEquals(BaseResponseStatus.USER_INVALID_EMAIL_FORMAT, exception.getStatus());
+        when(userService.checkDuplicateEmail(anyString())).thenReturn(true);
+        when(userService.checkDuplicateNickname(anyString())).thenReturn(true);
+
+        userController.signup(req, null);
+
+        verify(userService, times(1)).signup(any(), eq("https://dayun2024-s3.s3.ap-northeast-2.amazonaws.com/IMAGE/2024/09/11/0d7ca962-ccee-4fbb-9b5d-f5deec5808c6"));
     }
 
     @Test
-    public void testSignupWithInvalidPassword() {
-        UserSignupReq req = new UserSignupReq("nickname", "test@example.com", "pass ");
-        MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
-
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.signup(req, profileImg);
-        });
-        assertEquals(BaseResponseStatus.USER_INVALID_PASSWORD, exception.getStatus());
-    }
-
-    @Test
-    public void testLogout() {
+    public void 로그아웃_성공() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         Cookie expiredCookie = new Cookie("ATOKEN", null);
         when(jwtUtil.removeCookie()).thenReturn(expiredCookie);
@@ -135,7 +132,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testCheckDuplicateEmailSuccess() {
+    public void 이메일_중복_검사_성공() {
         when(userService.checkDuplicateEmail("test@example.com")).thenReturn(true);
 
         boolean result = userController.duplicateEmail("test@example.com").getResult();
@@ -145,7 +142,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testCheckDuplicateEmailFailure() {
+    public void 이메일_중복_검사_실패() {
         when(userService.checkDuplicateEmail("test@example.com")).thenReturn(false);
 
         boolean result = userController.duplicateEmail("test@example.com").getResult();
@@ -155,7 +152,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testUpdateNickname() {
+    public void 닉네임_수정_성공() {
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getUserId()).thenReturn(1L);
 
@@ -165,7 +162,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testUpdateImg() {
+    public void 프로필_이미지_수정_성공() {
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getUserId()).thenReturn(1L);
         MockMultipartFile profileImg = new MockMultipartFile("file", "test.png", "image/png", "test".getBytes());
@@ -179,7 +176,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testUpdatePassword() {
+    public void 비밀번호_수정_성공() {
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getUserId()).thenReturn(1L);
         UpdateUserPasswordReq req = new UpdateUserPasswordReq("oldPassword", "newPassword", "newPassword");
@@ -191,19 +188,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testUpdatePasswordMismatch() {
-        CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
-        when(customUserDetails.getUserId()).thenReturn(1L);
-        UpdateUserPasswordReq req = new UpdateUserPasswordReq("oldPassword", "newPassword", "differentNewPassword");
-
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
-            userController.updatePassword(customUserDetails, req);
-        });
-        assertEquals(BaseResponseStatus.USER_NEW_PASSWORDS_DO_NOT_MATCH, exception.getStatus());
-    }
-
-    @Test
-    public void testCheckPassword() {
+    public void 비밀번호_검증() {
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getUserId()).thenReturn(1L);
         when(userService.checkPassword(anyLong(), anyString())).thenReturn(true);
@@ -214,7 +199,19 @@ class UserControllerTest {
     }
 
     @Test
-    public void testQuitAccountSuccess() {
+    public void 비밀번호_검증_실패() {
+        CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
+        when(customUserDetails.getUserId()).thenReturn(1L);
+        when(userService.checkPassword(anyLong(), anyString())).thenReturn(false);
+
+        boolean result = userController.checkPassword(customUserDetails, Map.of("password", "wrongPassword")).getResult();
+
+        assertFalse(result);
+        verify(userService, times(1)).checkPassword(anyLong(), eq("wrongPassword"));
+    }
+
+    @Test
+    public void 회원탈퇴_성공() {
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getUserId()).thenReturn(1L);
         Map<String, String> passwordMap = Map.of("password", "correctPassword");
@@ -229,7 +226,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testOauthQuitSuccess() {
+    public void 소셜_회원탈퇴_성공() {
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getUserId()).thenReturn(1L);
         String validJwtToken = "valid_token";
@@ -242,7 +239,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testOauthQuitInvalidToken() {
+    public void 소셜_회원탈퇴_잘못된_토큰() {
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getUserId()).thenReturn(1L);
         String invalidJwtToken = "invalid_token";
@@ -250,7 +247,7 @@ class UserControllerTest {
         doThrow(new InvalidUserException(BaseResponseStatus.USER_ACCESS_TOKEN_NOT_FOUND)).when(userService)
                 .disableSocialUser(anyLong(), eq(invalidJwtToken));
 
-        InvalidUserException exception = assertThrows(InvalidUserException.class, () -> {
+        InvalidUserException exception = assertThrows(InvalidUserException.class, ()-> {
             userController.oauthQuit(customUserDetails, invalidJwtToken, mock(HttpServletResponse.class));
         });
         assertEquals(BaseResponseStatus.USER_ACCESS_TOKEN_NOT_FOUND, exception.getStatus());
