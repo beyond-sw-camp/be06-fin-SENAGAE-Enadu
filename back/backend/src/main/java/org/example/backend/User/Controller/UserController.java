@@ -29,32 +29,19 @@ public class UserController {
     private final CloudFileUploadService cloudFileUploadService;
     private final JwtUtil jwtUtil;
     private final EmailVerifyService emailVerifyService;
-    private static final String EMAIL_PATTERN = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-    private static final String NICKNAME_PATTERN = "^[a-zA-Z0-9가-힣]+$";
 
     @PostMapping("/signup")
     public BaseResponse<String> signup(
             @RequestPart UserSignupReq userSignupReq,
             @RequestPart(required=false) MultipartFile profileImg) {
 
-        String email = userSignupReq.getEmail().trim();
-        String password = userSignupReq.getPassword().trim();
-        String nickname = userSignupReq.getNickname().trim();
+        userService.checkUserData(userSignupReq);
 
-        if (email.isBlank() || password.isBlank() || nickname.isBlank()) {
-            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_INPUT);
+        if (!userService.checkDuplicateEmail(userSignupReq.getEmail())) {
+            throw new InvalidUserException(BaseResponseStatus.USER_DUPLICATE_EMAIL);
         }
-
-        if (email.length() > 100 || !email.matches(EMAIL_PATTERN)) {
-            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_EMAIL_FORMAT);
-        }
-
-        if (password.length() < 8) {
-            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_PASSWORD);
-        }
-
-        if (nickname.length() > 45 || !nickname.matches(NICKNAME_PATTERN)) {
-            throw new InvalidUserException(USER_INVALID_NICKNAME);
+        if (!userService.checkDuplicateNickname(userSignupReq.getNickname())) {
+            throw new InvalidUserException(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
         }
 
         String profileImgUrl;
@@ -64,17 +51,9 @@ public class UserController {
             profileImgUrl = cloudFileUploadService.uploadImg(profileImg);
         }
 
-        if (!userService.checkDuplicateEmail(email)) {
-            throw new InvalidUserException(BaseResponseStatus.USER_DUPLICATE_EMAIL);
-        }
-
-        if (!userService.checkDuplicateNickname(nickname)) {
-            throw new InvalidUserException(BaseResponseStatus.USER_DUPLICATE_NICKNAME);
-        }
-
         try {
             userService.signup(userSignupReq, profileImgUrl);
-            emailVerifyService.sendEmail(email);
+            emailVerifyService.sendEmail(userSignupReq.getEmail());
         } catch (Exception e) {
             throw new InvalidUserException(BaseResponseStatus.USER_EMAIL_SEND_FAILED);
         }
@@ -91,25 +70,19 @@ public class UserController {
 
     @GetMapping("/duplicate/email")
     public BaseResponse<Boolean> duplicateEmail(String email) {
-        if (email.length() > 100 || !email.matches(EMAIL_PATTERN)) {
-            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_EMAIL_FORMAT);
-        }
+        userService.checkEmailPattern(email);
         return new BaseResponse<>(userService.checkDuplicateEmail(email));
     }
 
     @GetMapping("/duplicate/nickname")
     public BaseResponse<Boolean> duplicateName(String nickname) {
-        if (nickname.length() > 45 || !nickname.matches(NICKNAME_PATTERN)) {
-            throw new InvalidUserException(USER_INVALID_NICKNAME);
-        }
+        userService.checkNicknamePattern(nickname);
         return new BaseResponse<>(userService.checkDuplicateNickname(nickname));
     }
 
     @PatchMapping("/nickname")
     public BaseResponse<String> updateNickname(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody Map<String, String> nicknameMap ) {
-        if (nicknameMap.get("nickname").length() > 45 || !nicknameMap.get("nickname").matches(NICKNAME_PATTERN)) {
-            throw new InvalidUserException(USER_INVALID_NICKNAME);
-        }
+        userService.checkNicknamePattern(nicknameMap.get("nickname"));
         userService.updateNickname(customUserDetails.getUserId(), nicknameMap.get("nickname"));
         return new BaseResponse<>();
     }
@@ -123,14 +96,8 @@ public class UserController {
 
     @PatchMapping("/password")
     public BaseResponse<String> updatePassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UpdateUserPasswordReq updateUserPasswordReq) {
-        if(updateUserPasswordReq.getNewPassword().equals(updateUserPasswordReq.getConfirmPassword())){
-            if (updateUserPasswordReq.getNewPassword().length() < 8) {
-                throw new InvalidUserException(BaseResponseStatus.USER_INVALID_PASSWORD);
-            }
-            userService.updatePassword(customUserDetails.getUserId(), updateUserPasswordReq);
-        } else {
-            throw new InvalidUserException(BaseResponseStatus.USER_NEW_PASSWORDS_DO_NOT_MATCH);
-        }
+        userService.checkPasswordPattern(updateUserPasswordReq.getNewPassword(), updateUserPasswordReq.getConfirmPassword());
+        userService.updatePassword(customUserDetails.getUserId(), updateUserPasswordReq);
         return new BaseResponse<>();
     }
 

@@ -1,5 +1,8 @@
 package org.example.backend.User.Service;
 
+import static org.example.backend.Common.BaseResponseStatus.USER_INVALID_NICKNAME;
+
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import org.example.backend.Common.BaseResponseStatus;
@@ -30,6 +33,37 @@ public class UserService {
     private String CLIENT_ID;
     @Value("${spring.security.oauth2.client.registration.github.client-secret}")
     private String CLIENT_SECRET;
+    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s");
+
+    public void checkEmailPattern(String email) {
+        if (WHITESPACE_PATTERN.matcher(email).find()) {
+            throw new InvalidEmailException(BaseResponseStatus.USER_INVALID_INPUT_WITH_WHITESPACE);
+        }
+        if (email.length() > 100 || !email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_EMAIL_FORMAT);
+        }
+    }
+
+    public void checkNicknamePattern(String nickname) {
+        if (WHITESPACE_PATTERN.matcher(nickname).find()) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_INPUT_WITH_WHITESPACE);
+        }
+        if (nickname.length() > 50 || !nickname.matches("^[a-zA-Z0-9가-힣]+$")) {
+            throw new InvalidUserException(USER_INVALID_NICKNAME);
+        }
+    }
+
+    public void checkPasswordPattern(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new InvalidUserException(BaseResponseStatus.USER_NEW_PASSWORDS_DO_NOT_MATCH);
+        }
+        if (password.length() < 8) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_PASSWORD);
+        }
+        if (WHITESPACE_PATTERN.matcher(password).find()) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_INPUT_WITH_WHITESPACE);
+        }
+    }
 
     public void signup(UserSignupReq userSignupReq, String profileImg ) {
         User user = User.builder()
@@ -41,6 +75,21 @@ public class UserService {
                 .nickname(userSignupReq.getNickname())
                 .build();
         userRepository.save(user);
+    }
+
+    public void checkUserData(UserSignupReq userSignupReq) {
+        String email = userSignupReq.getEmail();
+        String password = userSignupReq.getPassword();
+        String nickname = userSignupReq.getNickname();
+        String confirmPassword = userSignupReq.getConfirmPassword();
+
+        if (email.isBlank() || password.isBlank() || confirmPassword.isEmpty() || nickname.isBlank()) {
+            throw new InvalidUserException(BaseResponseStatus.USER_INVALID_INPUT);
+        }
+
+        checkEmailPattern(email);
+        checkPasswordPattern(password, confirmPassword);
+        checkNicknamePattern(nickname);
     }
 
     public Boolean checkDuplicateEmail(String email) {
@@ -83,7 +132,7 @@ public class UserService {
                 user.updatePassword(encodedNewPassword);
                 userRepository.save(user);
             } else {
-                throw new InvalidUserException(BaseResponseStatus.USER_PASSWORDS_DO_NOT_MATCH);
+                throw new InvalidUserException(BaseResponseStatus.USER_PASSWORD_DO_NOT_MATCH);
             }
         } else {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
@@ -106,7 +155,7 @@ public class UserService {
                 user.updateEnable(false);
                 userRepository.save(user);
             } else {
-                throw new InvalidUserException(BaseResponseStatus.USER_PASSWORDS_DO_NOT_MATCH);
+                throw new InvalidUserException(BaseResponseStatus.USER_PASSWORD_DO_NOT_MATCH);
             }
         } else {
             throw new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND);
