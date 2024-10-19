@@ -103,8 +103,6 @@ public class ErrorArchiveService {
             // 스크랩 여부 조회
             checkScrap = ErrorArchiveScrap(errorArchive.getId(), customUserDetails);
         }
-
-
         GetErrorArchiveDetailRes ErrorArchiveDetailRes = GetErrorArchiveDetailRes.builder()
                 .id(errorArchive.getId())
                 .authorId(errorArchive.getUser().getId()) // 작성자 ID
@@ -131,6 +129,36 @@ public class ErrorArchiveService {
                 .build();
         return ErrorArchiveDetailRes;
     }
+    // 상세 조회 (권한 추가)
+    public GetErrorArchiveEditDetailRes getErrorArchiveEditDetail(Integer errorArchiveId, Long userId){
+        User user;
+        // 유저가 있으면
+        if(userId != null) {
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new InvalidErrorBoardException(BaseResponseStatus.USER_NOT_FOUND));
+        } else {
+            user = null;
+        }
+        ErrorArchive errorArchive = errorArchiveReository.findByIdAndEnableTrue(errorArchiveId.longValue())
+                .orElseThrow(()-> new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NOT_FOUND));
+        if (user != errorArchive.getUser()){
+            throw new InvalidErrorBoardException(BaseResponseStatus.ERRORARCHIVE_NO_EDIT_PERMISSION);
+        }
+        return GetErrorArchiveEditDetailRes.builder()
+                .id(errorArchive.getId())
+                .userId(errorArchive.getUser().getId())
+                .superCategoryId(errorArchive.getCategory().getSuperCategory() != null ?
+                        errorArchive.getCategory().getSuperCategory().getId() : null)
+                .subCategoryId(errorArchive.getCategory().getId())
+                .title(errorArchive.getTitle())
+                .content(errorArchive.getContent())
+                .superCategoryName(errorArchive.getCategory().getSuperCategory() != null ?
+                        errorArchive.getCategory().getSuperCategory().getCategoryName() : null)
+                .subCategoryName(errorArchive.getCategory() != null ?
+                        errorArchive.getCategory().getCategoryName() : null)
+                .build();
+        }
+
     // 로그인한 사용자의 에러 아카이브 좋아요/싫어요 여부 조회 메소드
     public Optional<Boolean> ErrorArchiveLikeOrHate(Long errorArchiveId,Long userId) {
         ErrorArchive errorArchive = errorArchiveReository.findById(errorArchiveId)

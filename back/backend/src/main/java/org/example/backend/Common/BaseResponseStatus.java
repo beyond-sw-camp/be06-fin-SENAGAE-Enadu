@@ -66,8 +66,7 @@ public enum BaseResponseStatus {
     ERROR_PERMISSION_DENIED(false,6029,"권한이 없습니다"),
     ERRORARCHIVE_FAIL(false, 6080, "요청이 실패하였습니다"),
     ERRORARCHIVE_SEARCH_CHOSUNG_LENGTH(false,6081,"초성 글자는 한글자로 할 수 없습니다."),
-
-
+    ERRORARCHIVE_NO_EDIT_PERMISSION(false,6082,"수정 및 삭제 권한이 없습니다."),
 
     // 에러 QnA 기능 - 7000
 

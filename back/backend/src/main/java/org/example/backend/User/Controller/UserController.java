@@ -1,7 +1,7 @@
 package org.example.backend.User.Controller;
 
-import static org.example.backend.Common.BaseResponseStatus.USER_INVALID_NICKNAME;
-
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.Common.BaseResponse;
 import org.example.backend.Common.BaseResponseStatus;
@@ -11,13 +11,12 @@ import org.example.backend.File.Service.CloudFileUploadService;
 import org.example.backend.Security.CustomUserDetails;
 import org.example.backend.User.Model.Req.UpdateUserPasswordReq;
 import org.example.backend.User.Model.Req.UserSignupReq;
+import org.example.backend.User.Model.Res.GetUserStatusRes;
 import org.example.backend.User.Service.UserService;
+import org.example.backend.Util.JwtUtil;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import org.example.backend.Util.JwtUtil;
 
 import java.util.Map;
 
@@ -120,5 +119,16 @@ public class UserController {
         Cookie expiredCookie = jwtUtil.removeCookie();
         response.addCookie(expiredCookie);
         return new BaseResponse<>();
+    }
+
+    @GetMapping("/validate")
+    public BaseResponse<GetUserStatusRes> validateSession(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        GetUserStatusRes getUserStatusRes;
+        if (customUserDetails != null){
+            getUserStatusRes = GetUserStatusRes.builder().userId(customUserDetails.getUserId()).isLoggedIn(true).build();
+        } else {
+            getUserStatusRes = GetUserStatusRes.builder().userId(null).isLoggedIn(false).build();
+        }
+        return new BaseResponse<>(getUserStatusRes);
     }
 }
