@@ -114,10 +114,11 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           withCredentials: true,
         });
         console.log('응답 데이터:'+response.data);
-        if (response && response.data) {
+        if (response.data.isSuccess) {
           this.errorArchiveDetail = response.data.result;
           console.log('상세 조회 결과:', this.errorArchiveDetail);
         } else {
+          this.errorArchiveDetail = null;
           throw new Error("에러아카이브 상세 조회 실패");
         }
       } catch (error) {

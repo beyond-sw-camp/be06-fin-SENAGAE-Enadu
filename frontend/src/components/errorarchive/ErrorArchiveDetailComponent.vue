@@ -1,4 +1,3 @@
-
 <template>
   <div v-if="isLoading"></div>
   <div id="root" v-else>
@@ -227,13 +226,25 @@ export default {
       alert(`삭제 중 오류 발생: ${error.message}`);
     }
   },
-    async getErrorArchiveDetail() {
-      await this.errorarchiveStore.getErrorArchiveDetail(this.id);
-      this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap ? this.errorarchiveStore.errorArchiveDetail.checkScrap : false;
-      this.setModifiedTime();
-      this.checkLike();
-      this.setLikeAndHateCnt();
-    },
+  async getErrorArchiveDetail() {
+  try {
+    await this.errorarchiveStore.getErrorArchiveDetail(this.id);
+
+    // 데이터가 없으면 /exception으로 리다이렉트
+    if (!this.errorarchiveStore.errorArchiveDetail || Object.keys(this.errorarchiveStore.errorArchiveDetail).length === 0) {
+      this.$router.push('/exception');
+      return; // 리다이렉트 후 함수 종료
+    }
+
+    this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap;
+    this.setModifiedTime();
+    this.checkLike();
+    this.setLikeAndHateCnt();
+  } catch (error) {
+    console.error('Error fetching error archive detail:', error);
+    this.$router.push('/exception');
+  }
+},
     setModifiedTime() {
       let date = this.errorarchiveStore.errorArchiveDetail.modifiedAt.split("T")[0].split("-")
       this.lastModifiedDate = date[0] + "년 " + date[1] + "월 " + date[2] + "일";
