@@ -114,7 +114,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
-});
 
   if (from.path === "/chat") { // /chat 페이지를 벋어날 때 소켓 연결 해재
     const chatStore = useChatStore();
