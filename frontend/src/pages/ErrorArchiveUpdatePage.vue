@@ -43,39 +43,38 @@ export default {
     ...mapStores(useErrorArchiveStore, useUserStore)
   },
   async beforeRouteEnter(to, from, next) {
-    const userStore = useUserStore();
-    const errorArchiveStore = useErrorArchiveStore();
-    const { id } = to.query;
-    const loggedInUserId = userStore.userId;
+  const userStore = useUserStore();
+  const errorArchiveStore = useErrorArchiveStore();
+  const { id } = to.query;
+  const loggedInUserId = userStore.userId;
 
-    try {
-      const articleData = await errorArchiveStore.getErrorArchiveDetail(id);
-      console.log("API Response:", articleData); // 응답 확인
+  try {
+    const articleData = await errorArchiveStore.getErrorArchiveDetail(id);
+    console.log("API Response:", articleData); // 응답 확인
 
-      if (articleData) {
-        if (articleData.authorId !== loggedInUserId) {
-          alert('수정 권한이 없습니다. 목록 페이지로 이동합니다.');
-          next('/errorarchive/list'); // 권한 없음
-        } else {
-          next(vm => {
-            vm.formData = {
-              title: articleData.title,
-              content: articleData.content,
-              superCategory: articleData.superCategory,
-              subCategory: articleData.subCategory,
-            };
-
-          });
-        }
+    if (articleData) {
+      if (articleData.authorId !== loggedInUserId) {
+        alert('수정 권한이 없습니다. 목록 페이지로 이동합니다.');
+        next('/errorarchive/list'); // 권한 없음
       } else {
-        alert('글 데이터를 찾을 수 없습니다. 목록 페이지로 이동합니다.');
-        next('/errorarchive/list'); // 글 데이터 없음
+        next(vm => {
+          vm.formData = {
+            title: articleData.title,
+            content: articleData.content,
+            superCategory: articleData.superCategory,
+            subCategory: articleData.subCategory,
+          };
+        });
       }
-    } catch (error) {
-      console.error("글 데이터를 가져오는 중 오류 발생:", error);
-      next('/errorarchive/list'); // 오류 발생 시 목록 페이지로 이동
+    } else {
+      alert('글 데이터를 찾을 수 없습니다. 예외 페이지로 이동합니다.');
+      next('/exception'); // 글 데이터 없음 -> 예외 페이지로 이동
     }
-  },
+  } catch (error) {
+    console.error("글 데이터를 가져오는 중 오류 발생:", error);
+    next('/exception'); // 오류 발생 시 예외 페이지로 이동
+  }
+},
   methods: {
     async handleClick(updatedData) {
       try {
