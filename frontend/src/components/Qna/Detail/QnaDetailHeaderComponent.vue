@@ -14,7 +14,7 @@
       <CategoryComponent v-if="qnaDetail.subCategoryName !== null" :category=qnaDetail.subCategoryName :isShowSlash="qnaDetail.superCategoryName === null" />
     </div>
   </div>
-  <div class="qna-detail-top-items" v-if="isLoggedIn">
+  <div class="qna-detail-top-items" v-if="useUserStore().isLoggedIn">
     <div class="like-dislike-container">
       <div class="bookmark-checkbox">
         <input
@@ -115,7 +115,6 @@ export default {
   name: "QnaDetailHeaderComponent",
   data() {
     return {
-      isLoggedIn: false,
       isReLoading: true,
 
       qnaLikeCnt: 0,
@@ -128,6 +127,7 @@ export default {
   },
   props: ["qnaDetail"],
   methods: {
+    useUserStore,
     formatDateTime,
 
     async clickLike() {
@@ -196,7 +196,6 @@ export default {
     },
   },
   mounted() {
-    this.isLoggedIn = useUserStore().isLoggedIn;
     this.isReLoading = false;
     this.checking();
   },

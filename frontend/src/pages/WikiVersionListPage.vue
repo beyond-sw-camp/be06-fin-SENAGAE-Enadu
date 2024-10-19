@@ -51,48 +51,59 @@ import CategoryComponent from "@/components/Common/CategoryComponent.vue";
 import NicknameComponent from "@/components/Common/NicknameComponent.vue";
 
 export default {
-  name: "WikiVersionListPage",
-  components: { NicknameComponent, CategoryComponent, PaginationComponent },
-  computed: {
-    ...mapState(useWikiStore,
-        ["wikiVersions", "wikiTitle", "category", "currentPage", "totalPages"]),
-  },
-  data() {
-    return {
-      selectedPage: 1,
-      page: 0,
-      isLoading: true,
-    }
-  },
-  methods: {
-    ...mapActions(useWikiStore, ["fetchWikiVersionList", "fetchWikiDetail", "rollbackWikiVersion"]),
-
-    async handlePageUpdate(newPage) {
-      if (newPage !== this.selectedPage) {
-        this.selectedPage = newPage;
-        await this.fetchWikiVersionList(this.$route.query.id, newPage - 1);
-      }
+    name: "WikiVersionListPage",
+    components: { NicknameComponent, CategoryComponent, PaginationComponent },
+    computed: {
+        ...mapState(useWikiStore, ["wikiVersions", "wikiTitle", "category", "currentPage", "totalPages"]),
     },
-    goToVersionDetail(wikiContentId) {
-      this.$router.push({ path: '/wiki/version/detail', query: { id: wikiContentId } });
-    },
-    async rollbackVersion(wikiContentId) {
-      try {
-        const success = await this.rollbackWikiVersion(wikiContentId);
-        if (success) {
-          alert('롤백 성공 !');
-          await this.fetchWikiVersionList(this.$route.query.id, this.selectedPage - 1);
+    data() {
+        return {
+            selectedPage: 1,
+            page: 0,
+            isLoading: true,
         }
-      }
-      catch (error) {
-        console.error('롤백 중 오류 발생 :', error);
-      }
     },
-  },
-  async mounted() {
+    methods: {
+        ...mapActions(useWikiStore, ["fetchWikiVersionList", "fetchWikiDetail", "rollbackWikiVersion"]),
+
+        async handlePageUpdate(newPage) {
+            if (newPage !== this.selectedPage) {
+                this.selectedPage = newPage;
+                const success = await this.fetchWikiVersionList(this.$route.query.id, newPage - 1);
+                if (!success) {
+                    alert("존재하지 않는 URL입니다.");
+                    this.$router.go(-1);
+                }
+            }
+        },
+        goToVersionDetail(wikiContentId) {
+            this.$router.push({ path: '/wiki/version/detail', query: { id: wikiContentId } });
+        },
+        async rollbackVersion(wikiContentId) {
+            try {
+                const success = await this.rollbackWikiVersion(wikiContentId);
+                if (success) {
+                    alert('롤백 성공 !');
+                    await this.fetchWikiVersionList(this.$route.query.id, this.selectedPage - 1);
+                }
+            } catch (error) {
+                console.error('롤백 중 오류 발생 :', error);
+            }
+        },
+    },
+    async mounted() {
     const id = this.$route.query.id;
-    await this.fetchWikiDetail(id);
-    await this.fetchWikiVersionList(id, this.selectedPage - 1);
+    const detailSuccess = await this.fetchWikiDetail(id);
+    if (!detailSuccess) {
+        alert("존재하지 않는 URL입니다.");
+      this.$router.go(-1);
+      return; 
+    }
+    const versionListSuccess = await this.fetchWikiVersionList(id, this.selectedPage - 1);
+    if (!versionListSuccess) {
+        alert("존재하지 않는 URL입니다.");
+      this.$router.go(-1);
+    }
     this.isLoading = false;
   },
 };
@@ -128,6 +139,8 @@ export default {
 }
 
 table {
+  position: relative;
+  overflow: visible; /* 테이블이 자식 요소를 자르지 않도록 설정 */
   width: 100%;
   border-collapse: collapse;
   background-color: white;

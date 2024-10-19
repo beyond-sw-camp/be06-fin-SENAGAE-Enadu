@@ -138,6 +138,7 @@ export const useWikiStore = defineStore("wiki", {
           this.wikiDetail = result;
           this.wikiTitle = result.title || 'Unknown Title';
           this.category = result.category || 'Unknown Category';
+          return true;
 
         }
       }
@@ -155,15 +156,18 @@ export const useWikiStore = defineStore("wiki", {
         });
 
         if (response.data.isSuccess) {
-          // 최신 버전을 제외한 나머지 버전들만 필터링
           const filteredVersions = response.data.result.filter(version => version.version !== this.wikiDetail.version);
 
           this.wikiVersions = filteredVersions;
           this.totalPages = filteredVersions[0]?.totalPages || 1;
+          return true;
+        } else {
+          return false;
         }
       }
       catch (error) {
         console.error('API 호출 중 오류 발생:', error);
+        return false;
       }
     },
 
@@ -177,10 +181,12 @@ export const useWikiStore = defineStore("wiki", {
         if (response && response.data.isSuccess) {
           this.wikiDetail = response.data.result;
           return response.data.result;
+        } else {
+          return null;
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('버전 상세 조회 중 오류 발생:', error);
+        return null;
       }
     },
 

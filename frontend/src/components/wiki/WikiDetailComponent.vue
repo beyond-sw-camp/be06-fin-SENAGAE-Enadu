@@ -26,8 +26,11 @@
                                     class="bookmark-checkbox__input" @change="toggleScrap" />
                                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                                     <svg class="bookmark-checkbox__icon" viewBox="0 0 24 24">
-                                        <path class="bookmark-checkbox__icon-back" d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5" stroke="#767676"></path>
-                                        <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5" stroke="#767676"></path>
+                                        <path class="bookmark-checkbox__icon-back"
+                                            d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-width="1.5"
+                                            stroke="#767676"></path>
+                                        <path class="bookmark-checkbox__icon-check" d="M8 11l3 3 5-5" stroke-width="1.5"
+                                            stroke="#767676"></path>
                                     </svg>
                                 </label>
                             </div>
@@ -135,8 +138,17 @@ export default {
             try {
                 await this.wikiStore.fetchWikiDetail(this.id);
                 this.userGrade = this.wikiStore.wikiDetail.userGrade || 'GUEST';
+
+                // wikiDetail이 존재하지 않으면 메인 페이지로 리다이렉트
+                if (!this.wikiStore.wikiDetail || !this.wikiStore.wikiDetail.title) {
+                    throw new Error('Wiki not found');
+                }
             } catch (error) {
                 console.error('Wiki Detail Fetch Error:', error);
+                alert("존재하지 않는 URL입니다.")
+                this.$router.go(-1);
+            } finally {
+                this.isLoading = false;
             }
         },
         async toggleScrap() {
