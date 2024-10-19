@@ -146,7 +146,7 @@ export default {
             } catch (error) {
                 console.error('Wiki Detail Fetch Error:', error);
                 alert("존재하지 않는 URL입니다.")
-                this.$router.push('/wiki/list');
+                this.$router.go(-1);
             } finally {
                 this.isLoading = false;
             }
