@@ -20,9 +20,9 @@ fi
 echo $color
 # 두 번째 for 루프: Pod 상태 확인 (5회 반복)
 result=true
-for i in {1..10}; do
+for i in {1..20}; do
 
-    kubectl rollout status deployment | grep be-$color-deployment
+    kubectl rollout status deployment/be-$color-deployment
     rollout_status=$?
     echo $rollout_status
     if [[ $rollout_status -eq 0 ]]; then
@@ -37,7 +37,7 @@ for i in {1..10}; do
 
 done
 
-if [[ "$result" == false ]]; then
+if [[ "$result" == "false" ]]; then
     kubectl delete deployment  -l type=backend,deployment="$color"
     exit 1
 fi

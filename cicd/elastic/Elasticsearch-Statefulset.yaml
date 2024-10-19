@@ -1,0 +1,52 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: quickstart
+  namespace: elastic-system
+spec:
+  version: 7.17.24
+  nodeSets:
+    - name: default
+      count: 3
+      config:
+        node.master: true
+        node.data: true
+        node.ingest: false
+        node.store.allow_mmap: false
+        xpack.security.enabled: true  # 사용자 인증 활성화
+        xpack.security.transport.ssl.enabled: true
+        xpack.security.http.ssl.enabled: false  # HTTP 통신에서 SSL(HTTPS) 비활성화
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 5Gi
+            storageClassName: elasticsearch-storage-class
+      podTemplate:
+        spec:
+          containers:
+            - name: elasticsearch
+              env:
+                - name: READINESS_PROBE_PROTOCOL
+                  value: http
+              # nori 플러그인 설치 명령어 추가
+              lifecycle:
+                postStart:
+                  exec:
+                    command:
+                      - /bin/sh
+                      - -c
+                      - |
+                        if ! bin/elasticsearch-plugin list | grep -q analysis-nori; then
+                          echo "Installing nori analyzer plugin"
+                          bin/elasticsearch-plugin install analysis-nori
+                          echo "Restarting Elasticsearch to apply changes"
+                          kill -HUP 1  # Elasticsearch 프로세스 재시작
+                        else
+                          echo "nori analyzer already installed"
+                        fi
+          terminationGracePeriodSeconds: 0

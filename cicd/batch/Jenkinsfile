@@ -1,0 +1,145 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git clone') {
+            steps {
+                git branch: 'be-dev', url: 'https://github.com/beyond-sw-camp/be06-fin-SENAGAE-Enadu.git'
+            }
+        }
+        stage('Check for Changes') {
+            steps {
+                script {
+                    def changes = sh(script: 'git diff --name-only HEAD~1 HEAD | grep -E "^back/batch/|^back/common/|^cicd/batch/"', returnStatus: true)
+                    if (changes != 0) {
+                        echo 'No changes in batch or common, stopping pipeline.'
+                        currentBuild.result = 'SUCCESS'
+                        error('No changes, stopping the pipeline.')
+                    } else {
+                        echo 'Changes detected in batch or common, proceeding with pipeline.'
+                    }
+                }
+            }
+        }
+
+        stage('ADD PRIVILIGES') {
+            steps {
+                dir('./back/batch') {
+                    sh 'echo 권한 추가'
+                    sh 'chmod +x gradlew'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('./back/batch') {
+                    sh 'echo 배치 빌드 중...'
+                    sh './gradlew bootJar'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('./back/batch') {
+                    sh 'echo 도커 이미지 빌드'
+                    sh 'docker build -t senagae/enadu-batch:1.$BUILD_ID .'
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                script {
+                    sh 'echo 도커 로그인'
+                    sh 'docker login -u ${DOCKER_ID} -p ${DOCKER_PW}'
+
+                    sh 'echo 도커 허브에 푸시'
+                    sh 'docker push senagae/enadu-batch:1.$BUILD_ID'
+
+                    sh 'echo 푸시한 로컬 도커 이미지 삭제'
+                    sh 'docker rmi senagae/enadu-batch:1.$BUILD_ID'
+                }
+            }
+        }
+
+        stage('SSH transfer') {
+            steps {
+                script {
+                    sshPublisher(
+                        continueOnError: false,
+                        failOnError: true,
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: "jenkins-k8s",
+                                verbose: true,
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: "cicd/batch/batch-aianswer-cronjob.yaml",
+                                        remoteDirectory: "/home/test",
+                                        execCommand: '''
+                                            sed -i "s/latest/1.$BUILD_ID/g" cicd/batch/batch-aianswer-cronjob.yaml
+                                            kubectl apply -f /home/test/cicd/batch/batch-aianswer-cronjob.yaml
+                                        '''
+                                    ),
+                                    sshTransfer(
+                                        sourceFiles: "cicd/batch/batch-dailyranking-cronjob.yaml",
+                                        remoteDirectory: "/home/test",
+                                        execCommand: '''
+                                            sed -i "s/latest/1.$BUILD_ID/g" cicd/batch/batch-dailyranking-cronjob.yaml
+                                            kubectl apply -f /home/test/cicd/batch/batch-dailyranking-cronjob.yaml
+                                        '''
+                                    ),
+                                    sshTransfer(
+                                        sourceFiles: "cicd/batch/batch-weeklyranking-cronjob.yaml",
+                                        remoteDirectory: "/home/test",
+                                        execCommand: '''
+                                            sed -i "s/latest/1.$BUILD_ID/g" cicd/batch/batch-weeklyranking-cronjob.yaml
+                                            kubectl apply -f /home/test/cicd/batch/batch-weeklyranking-cronjob.yaml
+                                        '''
+                                    ),
+                                    sshTransfer(
+                                        sourceFiles: "cicd/batch/batch-unanswered-cronjob.yaml",
+                                        remoteDirectory: "/home/test",
+                                        execCommand: '''
+                                            sed -i "s/latest/1.$BUILD_ID/g" cicd/batch/batch-unanswered-cronjob.yaml
+                                            kubectl apply -f /home/test/cicd/batch/batch-unanswered-cronjob.yaml
+                                        '''
+                                    ),
+                                ]
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
+                discordSend description: """
+                제목 : ${currentBuild.displayName}
+                결과 : ${currentBuild.result}
+                실행 시간 : ${currentBuild.duration / 1000}s
+                """,
+                link: env.BUILD_URL, result: currentBuild.currentResult,
+                title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
+                webhookURL: "$DISCORD"
+            }
+        }
+        failure {
+            withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
+                discordSend description: """
+                제목 : ${currentBuild.displayName}
+                결과 : ${currentBuild.result}
+                실행 시간 : ${currentBuild.duration / 1000}s
+                """,
+                link: env.BUILD_URL, result: currentBuild.currentResult,
+                title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
+                webhookURL: "$DISCORD"
+            }
+        }
+    }
+}

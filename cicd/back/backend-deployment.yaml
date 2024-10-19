@@ -10,7 +10,7 @@ spec:
     matchLabels:
       type: backend
       deployment: color
-  replicas: 4
+  replicas: 2
   strategy:
     type: RollingUpdate
   minReadySeconds: 10
@@ -107,4 +107,19 @@ spec:
                 secretKeyRef:
                   name: back-secret
                   key: EMAIL_PASSWORD
+            - name: ELASTIC_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: ELASTIC_HOST
+            - name: ELASTIC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: ELASTIC_USERNAME
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: back-secret
+                  key: ELASTIC_PASSWORD
       terminationGracePeriodSeconds: 0
