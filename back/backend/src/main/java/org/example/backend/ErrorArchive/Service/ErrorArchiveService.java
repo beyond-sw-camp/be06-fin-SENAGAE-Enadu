@@ -103,8 +103,6 @@ public class ErrorArchiveService {
             // 스크랩 여부 조회
             checkScrap = ErrorArchiveScrap(errorArchive.getId(), customUserDetails);
         }
-
-
         GetErrorArchiveDetailRes ErrorArchiveDetailRes = GetErrorArchiveDetailRes.builder()
                 .id(errorArchive.getId())
                 .authorId(errorArchive.getUser().getId()) // 작성자 ID
@@ -148,7 +146,7 @@ public class ErrorArchiveService {
         }
         return GetErrorArchiveEditDetailRes.builder()
                 .id(errorArchive.getId())
-                .userId(errorArchive.getId())
+                .userId(errorArchive.getUser().getId())
                 .superCategoryId(errorArchive.getCategory().getSuperCategory() != null ?
                         errorArchive.getCategory().getSuperCategory().getId() : null)
                 .subCategoryId(errorArchive.getCategory().getId())
