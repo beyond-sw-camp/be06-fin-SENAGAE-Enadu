@@ -4,8 +4,8 @@
     <div class="wiki-inner">
       <WikiSearchComponent @search="handleSearch" :keyword="$route.query.keyword"/>
 
-      <div class="create-wiki-btn-container" :style="{ justifyContent: isSearchMode ? 'space-between' : 'flex-end' }">
-          <WikiSortTypeComponent v-if="isSearchMode" @emitSortType="handleCheckSort"/>
+      <div class="create-wiki-btn-container" :style="{ justifyContent: isSearchMode && searchParams.keyword !== '' ? 'space-between' : 'flex-end' }">
+          <WikiSortTypeComponent v-if="isSearchMode && searchParams.keyword !== ''" @emitSortType="handleCheckSort"/>
           <button @click="navigateToWikiRegister" class="create-wiki-btn">작성하기</button>
       </div>
 

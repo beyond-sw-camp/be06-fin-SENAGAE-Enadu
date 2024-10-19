@@ -1,14 +1,14 @@
 <template>
   <div class="radio-input">
     <label>
-      <input value="accuracy" name="value-radio" id="value-2" type="radio" v-model="selectedSort"
-             @change="emitSortChange('accuracy')"/>
-      <span>정확도 순</span>
-    </label>
-    <label>
       <input value="latest" name="value-radio" id="value-1" type="radio" v-model="selectedSort"
              @change="emitSortChange('latest')"/>
       <span>최신 순</span>
+    </label>
+    <label>
+      <input value="accuracy" name="value-radio" id="value-2" type="radio" v-model="selectedSort"
+             @change="emitSortChange('accuracy')"/>
+      <span>정확도 순</span>
     </label>
     <span class="selection"></span>
   </div>
@@ -29,7 +29,7 @@ export default {
     ...mapStores(useQnaStore),
   },
   mounted() {
-    this.selectedSort = "accuracy"
+    this.selectedSort = "latest"
   },
   methods: {
     emitSortChange(sortType) {
