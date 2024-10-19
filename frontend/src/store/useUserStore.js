@@ -185,6 +185,18 @@ export const useUserStore = defineStore('user', {
                 console.error(error);
                 return false;
             }
+        },
+        async validateSession() {
+            try {
+                const response = await axios.get(backend + "/user/validate", {withCredentials: true});
+                if (response.data.isSuccess){
+                    this.userId = response.data.result.userId;
+                    this.isLoggedIn = response.data.result.isLoggedIn;
+                }
+            } catch (error) {
+                alert('새로고침 중 오류가 발생했습니다.');
+                console.error(error);
+            }
         }
     },
 });
