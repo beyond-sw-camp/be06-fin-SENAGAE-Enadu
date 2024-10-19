@@ -102,7 +102,8 @@ export default {
         if (this.id) {
             const result = await this.wikiStore.fetchWikiVersionDetail(this.id);
             if (!result) {
-                this.$router.push('/wiki/list');
+                alert("존재하지 않는 URL입니다.");
+                this.$router.go(-1);
                 return;
             }
             this.wikiId = result.wikiId;
