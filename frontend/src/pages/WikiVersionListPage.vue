@@ -70,7 +70,8 @@ export default {
                 this.selectedPage = newPage;
                 const success = await this.fetchWikiVersionList(this.$route.query.id, newPage - 1);
                 if (!success) {
-                    this.$router.push('/wiki/list');
+                    alert("존재하지 않는 URL입니다.");
+                    this.$router.go(-1);
                 }
             }
         },
@@ -89,13 +90,18 @@ export default {
             }
         },
     },
-   async mounted() {
+    async mounted() {
     const id = this.$route.query.id;
-    await this.fetchWikiDetail(id);
+    const detailSuccess = await this.fetchWikiDetail(id);
+    if (!detailSuccess) {
+        alert("존재하지 않는 URL입니다.");
+      this.$router.go(-1);
+      return; 
+    }
     const versionListSuccess = await this.fetchWikiVersionList(id, this.selectedPage - 1);
-    
     if (!versionListSuccess) {
-      this.$router.push('/wiki/list');
+        alert("존재하지 않는 URL입니다.");
+      this.$router.go(-1);
     }
     
     this.isLoading = false;
