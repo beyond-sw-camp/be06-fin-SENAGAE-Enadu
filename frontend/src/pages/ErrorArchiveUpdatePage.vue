@@ -32,7 +32,6 @@ export default {
       },
       showSubModal: false,
       showSuperModal: false,
-      hasPermission: false,
     };
   },
   components: {
@@ -65,7 +64,7 @@ export default {
               superCategory: articleData.superCategory,
               subCategory: articleData.subCategory,
             };
-            vm.hasPermission = true; // 권한 있음
+
           });
         }
       } else {
