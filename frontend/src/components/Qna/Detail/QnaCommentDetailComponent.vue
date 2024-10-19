@@ -36,7 +36,7 @@
       <button v-if="isSuperNull" @click="toggleContent" class="mt-2 text-sm text-blue-500">
         {{ isContentVisible ? '대댓글 숨기기' : '대댓글 보기' }}
       </button>
-      <button v-if="(isSuperNull || isTopComment) && isLoggedIn" @click="writeRipple"
+      <button v-if="(isSuperNull || isTopComment) && useUserStore().isLoggedIn" @click="writeRipple"
               class="mt-2 text-sm text-blue-500" style="margin-left: 10px;">
         {{ isRegistered ? '작성 취소' : '대댓글 작성' }}
       </button>
@@ -68,7 +68,6 @@ export default {
     return {
       isLoading: true,
       isRegistered: false,
-      isLoggedIn: false,
       isContentVisible: false,
       isSuperNull: true,
       isTopComment: true,
@@ -78,6 +77,7 @@ export default {
   },
   props: ["qnaComment", "qnaAnswer"],
   methods: {
+    useUserStore,
     formatDateTime,
     toggleContent() {
       this.isContentVisible = !this.isContentVisible;
@@ -105,7 +105,6 @@ export default {
     this.isLoading = false
     this.isRegistered = false
     this.isSuperNull = true
-    this.isLoggedIn = useUserStore().isLoggedIn;
     if (this.qnaAnswer !== undefined) {
       this.myComments = this.qnaAnswer.comments
       this.isSuperNull = true;

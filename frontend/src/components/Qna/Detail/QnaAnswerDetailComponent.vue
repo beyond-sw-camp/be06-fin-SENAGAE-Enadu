@@ -98,7 +98,7 @@
       </div>
 
       <div class="qna-detail-top-items">
-        <div class="like-dislike-container" v-if="isLoggedIn && !isAiAnswer">
+        <div class="like-dislike-container" v-if="useUserStore().isLoggedIn && !isAiAnswer">
           <div class="icons-box">
             <div class="icons">
               <label class="btn-label" :for="`like-checkbox-a-${qnaAnswer.id}`">
@@ -173,7 +173,7 @@
           <button @click="toggleContent" class="mt-2 text-sm text-blue-500">
             {{ isContentVisible ? '댓글 숨기기' : '댓글 보기' }}
           </button>
-          <button v-if="isLoggedIn" @click="writeRipple"
+          <button v-if="useUserStore().isLoggedIn" @click="writeRipple"
                   class="mt-2 text-sm text-blue-500">
             {{ isRegistered ? '작성 취소' : '댓글 작성' }}
           </button>
@@ -220,7 +220,6 @@ export default {
   data() {
     return {
       isLoading: true,
-      isLoggedIn: false,
       isReLoading: true,
       isRegistered: false,
       isContentVisible: false,
@@ -242,6 +241,7 @@ export default {
   },
   props: ["qnaAnswer"],
   methods: {
+    useUserStore,
     formatDateTime,
     toggleContent() {
       this.isContentVisible = !this.isContentVisible;
@@ -342,7 +342,6 @@ export default {
   },
   mounted() {
     console.log(this.qnaAnswer);
-    this.isLoggedIn = useUserStore().isLoggedIn;
     this.isLoading = false;
     this.isReLoading = false;
     this.isRegistered = false;
