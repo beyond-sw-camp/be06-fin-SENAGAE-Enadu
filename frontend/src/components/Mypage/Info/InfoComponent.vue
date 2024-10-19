@@ -176,7 +176,7 @@ export default {
           if (window.confirm("닉네임을 사용할 수 있습니다. 변경 하시겠습니까?")) {
             await this.updateNickname();
           }
-        } else {
+        } else if (isAvailable === false) {
           alert("이미 사용 중인 닉네임입니다.");
         }
       }

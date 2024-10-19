@@ -41,8 +41,12 @@ export const useMypageStore = defineStore("mypage", {
         const response = await axios.get(backend + "/user/duplicate/nickname", {
           params: { nickname }
         });
+        console.log(response.data);
         if (!response || !response.data) {
           throw new Error("Invalid response from server");
+        } else if (response.data.isSuccess === false) {
+          alert(response.data.message);
+          return null;
         }
         return response.data.result;
       }
@@ -58,6 +62,9 @@ export const useMypageStore = defineStore("mypage", {
         );
         if (!response || !response.data) {
           throw new Error("Invalid response from server");
+        } else if (response.data.isSuccess === false) {
+          alert(response.data.message);
+          return null;
         }
         this.userInfo.nickname = nickname;
         return true;
@@ -78,6 +85,9 @@ export const useMypageStore = defineStore("mypage", {
         console.log(response.data);
         if (!response || !response.data) {
           throw new Error("Invalid response from server");
+        } else if (response.data.isSuccess === false) {
+          alert(response.data.message);
+          return null;
         }
         this.userInfo.profileImg = response.data.result;
         return true;
@@ -93,10 +103,9 @@ export const useMypageStore = defineStore("mypage", {
           { withCredentials: true });
         if (response.data.code === 1000) {
           return true;
-        } else if (response.data.code === 2041) {
-          window.alert(response.data.message);
-        } else if (response.data.code === 2042) {
-          window.alert(response.data.message);
+        } else if (response.data.isSuccess === false) {
+          alert(response.data.message);
+          return null;
         } else {
           throw new Error('비밀번호 변경 실패');
         }
