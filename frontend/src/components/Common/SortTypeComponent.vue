@@ -1,5 +1,6 @@
 <template>
-  <div class="radio-input">
+  <div class="radio-input"
+       :style="isAccuracyVisible ? '--container_width: 240px;' : '--container_width: 160px;'">
     <label>
       <input value="latest" name="value-radio" id="value-1" type="radio" v-model="selectedSort"
              @change="emitSortChange('checkLatest')"/>
@@ -10,45 +11,63 @@
              @change="emitSortChange('checkLike')"/>
       <span>좋아요 순</span>
     </label>
-    <span class="selection"></span>
+    <label v-if="isAccuracyVisible" :class="!$route. path.startsWith('/wiki') ? 'separator' : ''">
+      <input value="accuracy" name="value-radio" id="value-3" type="radio" v-model="selectedSort"
+             @change="emitSortChange('checkAccuracy')"/>
+      <span>정확도 순</span>
+    </label>
+    <span class="selection" :class="isAccuracyVisible ? 'accuracy' : '' "
+          :style="selectionTransform"></span>
   </div>
 </template>
 
 <script>
-import {mapStores} from "pinia";
-import {useQnaStore} from "@/store/useQnaStore";
+import { mapStores } from "pinia";
+import { useQnaStore } from "@/store/useQnaStore";
 
 export default {
   name: "SortTypeComponent",
   data() {
     return {
-      selectedSort: null
+      selectedSort: null,
+      isAccuracyVisible: false
     };
+  },
+  props: {
+    isSearched: Boolean,
+  },
+  created() {
+    if (this.$route.path.startsWith('/errorarchive') && this.$route.query.keyword !== undefined && this.$route.query.keyword.length > 0) {
+      this.isAccuracyVisible = true;
+    } else if (this.$route.path.startsWith('/qna') && this.isSearched) {
+      this.isAccuracyVisible = true;
+    }
+  },
+  mounted() {
+    this.selectedSort = "latest";
   },
   computed: {
     ...mapStores(useQnaStore),
-  },
-  mounted() {
-    this.selectedSort="latest"
   },
   methods: {
     emitSortChange(sortType) {
       this.$emit(sortType);
     },
   },
-  components: {
-  },
+  watch: {
+    isSearched() {
+      this.isAccuracyVisible = this.isSearched;
+    }
+  }
 };
-
 </script>
 
-<style>
+<style scoped>
 .radio-input input {
   display: none;
 }
 
 .radio-input {
-  --container_width: 160px;
   position: relative;
   display: flex;
   align-items: center;
@@ -85,21 +104,33 @@ export default {
   transition: 0.15s ease;
 }
 
+.selection.accuracy {
+  width: calc(var(--container_width) / 3);
+}
+
 .radio-input label:has(input:checked) {
   color: #fff;
 }
 
 .radio-input label:has(input:checked) ~ .selection {
-  background-color: rgb(11 117 223);
+  background-color: var(--main-color);
   display: inline-block;
 }
 
 .radio-input label:nth-child(1):has(input:checked) ~ .selection {
-  transform: translateX(calc(var(--container_width) * 0 / 2));
+  transform: translateX(0);
 }
 
 .radio-input label:nth-child(2):has(input:checked) ~ .selection {
   transform: translateX(calc(var(--container_width) * 1 / 2));
+}
+
+.radio-input label:nth-child(2):has(input:checked) ~ .selection.accuracy {
+  transform: translateX(calc(var(--container_width) * 1 / 3));
+}
+
+.radio-input label:nth-child(3):has(input:checked) ~ .selection {
+  transform: translateX(calc(var(--container_width) * 2 / 3));
 }
 
 </style>

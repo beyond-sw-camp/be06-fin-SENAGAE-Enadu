@@ -1,31 +1,34 @@
 <template>
-  <router-link to="/errorarchive/list"><TagComponent :tagTitle="'에러 아카이브'" :tagSubTitle="'당신의 에러 해결 방법을 공유해주세요'"/></router-link>
+  <router-link to="/errorarchive/list">
+    <TagComponent :tagTitle="'에러 아카이브'" :tagSubTitle="'당신의 에러 해결 방법을 공유해주세요'"/>
+  </router-link>
   <div class="custom-container" style="margin-top: 0; padding-top: 0;">
     <div class="errorarchive-inner">
       <div v-if="isLoading && isLoading2"></div>
       <SearchComponent v-else @checkLatest="handleCheckLatest"
-                       @checkLike="handleCheckLike"
+                       @checkLike="handleCheckLike" @checkAccuracy="handleCheckAccuracy"
       />
       <div class="errorarchive-list-flex">
         <LoadingComponent v-if="isLoading && isLoading2" style="margin-top: 150px"/>
         <ErrorArchiveCardComponent v-else
-            v-for="errorarchiveCard in errorarchiveStore.errorarchiveCards"
-            :key="errorarchiveCard.id"
-            v-bind:errorarchiveCard="errorarchiveCard"
+                                   v-for="errorarchiveCard in errorarchiveStore.errorarchiveCards"
+                                   :key="errorarchiveCard.id"
+                                   v-bind:errorarchiveCard="errorarchiveCard"
         />
       </div>
     </div>
 
-  <div class="errorarchive-bottom">
-    <div v-if="isLoading && isLoading2"></div>
-    <PaginationComponent v-else @updatePage="handlePageUpdate" :nowPage="selectedPageAndSort.page" :totalPage="totalPage"/>
+    <div class="errorarchive-bottom">
+      <div v-if="isLoading && isLoading2"></div>
+      <PaginationComponent v-else @updatePage="handlePageUpdate" :nowPage="selectedPageAndSort.page"
+                           :totalPage="totalPage"/>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
-import {mapStores} from "pinia";
-import {useErrorArchiveStore} from '@/store/useErrorArchiveStore';
+import { mapStores } from "pinia";
+import { useErrorArchiveStore } from '@/store/useErrorArchiveStore';
 import ErrorArchiveCardComponent from '@/components/errorarchive/ErrorArchiveCardComponent.vue';
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import TagComponent from "@/components/Common/TagComponent.vue";
@@ -52,14 +55,14 @@ export default {
       isLoading: true,
       isLoading2: true,
       searchRequest: null,
-      isUpdating: false ,// 감지 여부 제어용 플래그
+      isUpdating: false,// 감지 여부 제어용 플래그
     };
   },
   computed: {
     ...mapStores(useErrorArchiveStore),
   },
   mounted() {
-    if (Object.keys(this.$route.query).length === 0){
+    if (Object.keys(this.$route.query).length === 0) {
       this.getErrorArchiveList();
     } else {
       this.searchErrorArchiveList();
@@ -75,7 +78,7 @@ export default {
           this.searchRequest = null;
           this.isLoading2 = true;
           this.isLoading = true;
-          if (this.selectedPageAndSort.page === 1 && this.selectedPageAndSort.sort ==="latest") {
+          if (this.selectedPageAndSort.page === 1 && this.selectedPageAndSort.sort === "latest") {
             this.getErrorArchiveList();
           } else {
             this.selectedPageAndSort.page = 1;
@@ -86,7 +89,7 @@ export default {
     },
     selectedPageAndSort: {
       async handler() {
-        if (this.isUpdating){
+        if (this.isUpdating) {
           return;
         }
         this.isLoading = true;
@@ -99,7 +102,7 @@ export default {
         }
         this.isLoading = false;
       },
-      deep:true
+      deep: true
     },
   },
   methods: {
@@ -111,6 +114,10 @@ export default {
       this.isLoading2 = false;
       this.selectedPageAndSort.sort = "like";
     },
+    handleCheckAccuracy() {
+      this.isLoading2 = false;
+      this.selectedPageAndSort.sort = "accuracy";
+    },
     handlePageUpdate(newPage) {
       this.selectedPageAndSort.page = newPage;
       if (newPage % 5 === 0 || newPage % 5 === 1) {
@@ -120,7 +127,8 @@ export default {
     },
     async getErrorArchiveList() {
       this.isLoading = true;
-      await this.errorarchiveStore.getErrorArchiveList(this.selectedPageAndSort.sort, this.selectedPageAndSort.page - 1);
+      await this.errorarchiveStore.getErrorArchiveList(this.selectedPageAndSort.sort,
+          this.selectedPageAndSort.page - 1);
       if (this.errorarchiveStore.errorarchiveCards.length !== 0) {
         this.totalPage = this.errorarchiveStore.errorarchiveCards[0].totalPage;
       }
@@ -132,11 +140,11 @@ export default {
       const chosungRegex = /^[ㄱ-ㅎ]$/; // 초성 한 글자인지 체크
       return chosungRegex.test(keyword);
     },
-    async searchErrorArchiveList(){ // 검색 처음 했을 때
-      if (this.$route.query.keyword !== undefined && this.isSingleChosung(this.$route.query.keyword.trim())){
+    async searchErrorArchiveList() { // 검색 처음 했을 때
+      if (this.$route.query.keyword !== undefined && this.isSingleChosung(this.$route.query.keyword.trim())) {
         alert("초성검색은 한 글자가 불가합니다.");
-        if (this.errorarchiveStore.errorarchiveCards.length === 0){
-            this.$router.push("/errorarchive/list");
+        if (this.errorarchiveStore.errorarchiveCards.length === 0) {
+          this.$router.push("/errorarchive/list");
         }
         return;
       }
@@ -146,17 +154,17 @@ export default {
       this.selectedPageAndSort.sort = "latest";
       this.selectedPageAndSort.page = 1;
       const request = {
-        keyword:  this.$route.query.keyword !== undefined ? this.$route.query.keyword.trim() : "",
+        keyword: this.$route.query.keyword !== undefined ? this.$route.query.keyword.trim() : "",
         categoryId: this.$route.query.selectedSubCategoryId != 0 ? this.$route.query.selectedSubCategoryId : this.$route.query.selectedCategory,
         type: this.$route.query.type,
         sort: this.selectedPageAndSort.sort,
-        page: this.selectedPageAndSort.page-1,
+        page: this.selectedPageAndSort.page - 1,
         size: 16,
       }
-      if ((request.keyword === "") && (request.categoryId === undefined || request.categoryId === 0 || request.categoryId==="")){
-          alert("검색어 혹은 카테고리를 선택해주세요.");
-          this.$router.push("/errorarchive/list");
-          return;
+      if ((request.keyword === "") && (request.categoryId === undefined || request.categoryId === 0 || request.categoryId === "")) {
+        alert("검색어 혹은 카테고리를 선택해주세요.");
+        this.$router.push("/errorarchive/list");
+        return;
       }
       await this.errorarchiveStore.searchErrorArchive(request);
       if (this.errorarchiveStore.errorarchiveCards.length !== 0) {
@@ -211,9 +219,9 @@ export default {
 }
 
 .errorarchive-bottom {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 

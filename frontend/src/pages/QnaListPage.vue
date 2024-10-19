@@ -6,39 +6,42 @@
 
       <SearchComponent @checkLatest="handleCheckLatest"
                        @checkLike="handleCheckLike"
+                       @checkAccuracy="handleCheckAccuracy"
                        @search="handleSearch"
+                       :isSearched="isSearched && (searchQuery!== '' || searchQuery === null) "
       />
 
       <div style="display: flex">
-        <QnaResolvedComponent @changeResolved="handleResolved" />
+        <QnaResolvedComponent @changeResolved="handleResolved"/>
       </div>
       <LoadingComponent v-if="isLoading" style="margin-top: 15rem;"/>
       <div v-else>
         <div class="qna-list-flex" v-if="!isSearched">
           <QnaCardComponent
-                            v-for="qnaCard in qnaStore.qnaCards"
-                            :key="qnaCard.id"
-                            v-bind:qnaCard="qnaCard"
+              v-for="qnaCard in qnaStore.qnaCards"
+              :key="qnaCard.id"
+              v-bind:qnaCard="qnaCard"
           />
         </div>
         <div class="qna-list-flex" v-else>
           <QnaCardComponent
-                            v-for="qnaCard in qnaStore.qnaSearchedCards"
-                            :key="qnaCard.id"
-                            v-bind:qnaCard="qnaCard"
+              v-for="qnaCard in qnaStore.qnaSearchedCards"
+              :key="qnaCard.id"
+              v-bind:qnaCard="qnaCard"
           />
         </div>
       </div>
     </div>
     <div v-if="!isLoading && totalPages > 0" class="qna-bottom">
-      <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage" :totalPage="totalPages"/>
+      <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage"
+                           :totalPage="totalPages"/>
     </div>
   </div>
 </template>
 
 <script>
-import {mapStores} from "pinia";
-import {useQnaStore} from "@/store/useQnaStore";
+import { mapStores } from "pinia";
+import { useQnaStore } from "@/store/useQnaStore";
 import QnaCardComponent from "@/components/Qna/List/QnaListCardComponent.vue";
 import PaginationComponent from "@/components/Common/PaginationComponent.vue";
 import SearchComponent from "@/components/Common/SearchComponent.vue";
@@ -70,17 +73,17 @@ export default {
     ...mapStores(useQnaStore),
   },
   mounted() {
-    if(this.$route.query.keyword){
+    if (this.$route.query.keyword) {
       console.log(this.$route.query.keyword);
       this.selectedPage = 1;
       this.selectedSolvedStatus = "ALL"
       this.isSearched = true;
       this.selectedSort = "latest";
       const query = {
-          searchQuery: this.$route.query.keyword.trim(),
-          selectedSuperCategoryId: '',
-          selectedSubCategoryId: 0,
-          selectedType: "tc",
+        searchQuery: this.$route.query.keyword.trim(),
+        selectedSuperCategoryId: '',
+        selectedSubCategoryId: 0,
+        selectedType: "tc",
       }
       this.handleSearch(query);
     } else {
@@ -99,6 +102,9 @@ export default {
     handleCheckLike() {
       this.selectedSort = "like";
     },
+    handleCheckAccuracy() {
+      this.selectedSort = "accuracy";
+    },
     handlePageUpdate(newPage) {
       this.selectedPage = newPage;
       this.fetchQnaList();
@@ -106,9 +112,9 @@ export default {
     handleResolved(newStatus) {
       this.selectedSolvedStatus = newStatus;
     },
-    isChosung(keyword){
-        const charCode = keyword.charCodeAt(0);
-        return (charCode >= 0x3131 && charCode <= 0x314E);
+    isChosung(keyword) {
+      const charCode = keyword.charCodeAt(0);
+      return (charCode >= 0x3131 && charCode <= 0x314E);
     },
     async handleSearch(data) {
       if (data !== null) {
@@ -119,7 +125,7 @@ export default {
         this.isSearched = true;
         this.isLoading = true;
 
-        const {searchQuery, selectedSuperCategoryId, selectedSubCategoryId, selectedType} = data;
+        const { searchQuery, selectedSuperCategoryId, selectedSubCategoryId, selectedType } = data;
 
         this.searchQuery = searchQuery;
         this.selectedSuperCategoryId = selectedSuperCategoryId;
@@ -131,7 +137,12 @@ export default {
         console.log("sub" + this.selectedSubCategoryId);
         console.log("main" + this.categoryId);
 
-        await useQnaStore().qnaSearch(this.searchQuery, this.categoryId, this.selectedType, this.selectedSort, this.selectedPage, this.selectedSolvedStatus);
+        await useQnaStore().qnaSearch(this.searchQuery,
+            this.categoryId,
+            this.selectedType,
+            this.selectedSort,
+            this.selectedPage,
+            this.selectedSolvedStatus);
 
         this.totalPages = await useQnaStore().searchedTotalPage || 1;
         this.isLoading = false;
@@ -141,10 +152,17 @@ export default {
     async fetchQnaList() {
       this.isLoading = true;
       if (!this.isSearched) {
-        await useQnaStore().getQnaList(this.selectedSort, this.selectedPage - 1, this.selectedSolvedStatus);
+        await useQnaStore().getQnaList(this.selectedSort,
+            this.selectedPage - 1,
+            this.selectedSolvedStatus);
         this.totalPages = useQnaStore().totalPage || 1;
       } else {
-        await useQnaStore().qnaSearch(this.searchQuery, this.categoryId, this.selectedType, this.selectedSort, this.selectedPage, this.selectedSolvedStatus);
+        await useQnaStore().qnaSearch(this.searchQuery,
+            this.categoryId,
+            this.selectedType,
+            this.selectedSort,
+            this.selectedPage,
+            this.selectedSolvedStatus);
         this.totalPages = useQnaStore().searchedTotalPage || 1;
       }
       this.isLoading = false;
@@ -152,17 +170,23 @@ export default {
   },
   watch: {
     async selectedSort() {
-        await this.fetchQnaList();
+      await this.fetchQnaList();
     },
     async selectedSolvedStatus() {
       this.isLoading = true;
       this.selectedPage = 1;
       if (!this.isSearched) {
-        await useQnaStore().getQnaList(this.selectedSort, this.selectedPage - 1, this.selectedSolvedStatus);
+        await useQnaStore().getQnaList(this.selectedSort,
+            this.selectedPage - 1,
+            this.selectedSolvedStatus);
         this.totalPages = useQnaStore().totalPage || 1;
-      }
-      else {
-        await useQnaStore().qnaSearch(this.searchQuery, this.categoryId, this.selectedType, this.selectedSort, this.selectedPage, this.selectedSolvedStatus);
+      } else {
+        await useQnaStore().qnaSearch(this.searchQuery,
+            this.categoryId,
+            this.selectedType,
+            this.selectedSort,
+            this.selectedPage,
+            this.selectedSolvedStatus);
         this.totalPages = useQnaStore().searchedTotalPage || 1;
       }
       this.isLoading = false;

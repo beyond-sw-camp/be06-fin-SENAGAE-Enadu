@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import {mapStores} from "pinia";
-import {useQnaStore} from "@/store/useQnaStore";
+import { mapStores } from "pinia";
+import { useQnaStore } from "@/store/useQnaStore";
 
 export default {
   name: "SortTypeComponent",
@@ -29,20 +29,19 @@ export default {
     ...mapStores(useQnaStore),
   },
   mounted() {
-    this.selectedSort="accuracy"
+    this.selectedSort = "accuracy"
   },
   methods: {
     emitSortChange(sortType) {
       this.$emit("emitSortType", sortType);
     },
   },
-  components: {
-  },
+  components: {},
 };
 
 </script>
 
-<style>
+<style scoped>
 .radio-input input {
   display: none;
 }
