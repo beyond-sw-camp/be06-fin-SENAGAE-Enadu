@@ -60,7 +60,23 @@ export default {
         nicknameAvailable: false,
       };
     },
+    watch: {
+        'userInfo.email'(newValue) {
+            if (newValue) {
+                this.emailAvailable = false;
+            }
+        },
+        'userInfo.nickname'(newValue) {
+            if (newValue) {
+                this.nicknameAvailable = false;
+            }
+        }
+   },
     methods: {
+        isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 정규식
+            return emailRegex.test(email);
+        },
         signup() {
             if (!this.userInfo.email || !this.userInfo.email.trim()) {
                 alert("이메일을 입력해주세요.");
@@ -121,18 +137,6 @@ export default {
         const userStore = useUserStore();
           this.nicknameAvailable = await userStore.checkNickname(this.userInfo.nickname);
     },
-    watch: {
-        'userInfo.email'(newValue) {
-            if (newValue) {
-                this.emailAvailable = false;
-            }
-        },
-        'userInfo.nickname'(newValue) {
-            if (newValue) {
-                this.nicknameAvailable = false;
-            }
-        }
-   },
    validateEmail() {
       if (this.userInfo.email.includes(" ")) {
         alert("공백이 포함되었습니다.");
@@ -144,6 +148,10 @@ export default {
         alert("공백이 포함되었습니다.");
         this.userInfo.nickname = this.userInfo.nickname.trim();
       }
+      if (this.userInfo.nickname.length > 50) {
+      alert("닉네임은 50글자를 넘을 수 없습니다.");
+      this.userInfo.nickname = ""; // 닉네임을 초기화
+    }
     },
     validatePassword() {
       if (this.userInfo.password.includes(" ")) {

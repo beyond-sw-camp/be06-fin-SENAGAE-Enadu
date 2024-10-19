@@ -127,20 +127,36 @@ export default {
       this.isLoading = false;
       this.searchRequest = null;
     },
+    isSingleChosung(keyword) {
+      // 한 글자 초성 체크
+      const chosungRegex = /^[ㄱ-ㅎ]$/; // 초성 한 글자인지 체크
+      return chosungRegex.test(keyword);
+    },
     async searchErrorArchiveList(){ // 검색 처음 했을 때
+      if (this.$route.query.keyword !== undefined && this.isSingleChosung(this.$route.query.keyword.trim())){
+        alert("초성검색은 한 글자가 불가합니다.");
+        if (this.errorarchiveStore.errorarchiveCards.length === 0){
+            this.$router.push("/errorarchive/list");
+        }
+        return;
+      }
       this.isLoading = true;
       this.isLoading2 = true;
       this.isUpdating = true; // watch에서 감지 안돼도록
       this.selectedPageAndSort.sort = "latest";
       this.selectedPageAndSort.page = 1;
-
       const request = {
-        keyword:  this.$route.query.keyword.trim(),
+        keyword:  this.$route.query.keyword !== undefined ? this.$route.query.keyword.trim() : "",
         categoryId: this.$route.query.selectedSubCategoryId != 0 ? this.$route.query.selectedSubCategoryId : this.$route.query.selectedCategory,
         type: this.$route.query.type,
         sort: this.selectedPageAndSort.sort,
         page: this.selectedPageAndSort.page-1,
         size: 16,
+      }
+      if ((request.keyword === "") && (request.categoryId === undefined || request.categoryId === 0 || request.categoryId==="")){
+          alert("검색어 혹은 카테고리를 선택해주세요.");
+          this.$router.push("/errorarchive/list");
+          return;
       }
       await this.errorarchiveStore.searchErrorArchive(request);
       if (this.errorarchiveStore.errorarchiveCards.length !== 0) {

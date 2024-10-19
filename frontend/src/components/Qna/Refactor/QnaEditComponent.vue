@@ -95,11 +95,12 @@
 </template>
 
 <script>
-import { mapStores } from "pinia";
-import { useQnaStore } from "@/store/useQnaStore";
+import {mapStores} from "pinia";
+import {useQnaStore} from "@/store/useQnaStore";
 import SuperCategoryModal from "@/components/Category/SuperCategoryModal.vue";
 import SubCategoryModal from "@/components/Category/SubCategoryModal.vue";
-import { useCommonStore } from "@/store/useCommonStore";
+import router from "@/router";
+import {useCommonStore} from "@/store/useCommonStore";
 import LoadingComponent from '@/components/Common/LoadingComponent.vue';
 
 export default {
@@ -133,19 +134,34 @@ export default {
     },
   },
   async mounted() {
-    await useQnaStore().getQnaDetail(this.$route.params.id);
+    await this.enter();
     this.isLoading = false;
-    this.myTitle = useQnaStore().qnaDetail.title;
-    this.myText = useQnaStore().qnaDetail.content;
+    this.myTitle = useQnaStore().qnaEditDetail.title;
+    this.myText = useQnaStore().qnaEditDetail.content;
 
 
-    this.selectedSuperCategory.id = useQnaStore().qnaDetail.superCategoryId;
-    this.selectedSubCategory.id = useQnaStore().qnaDetail.subCategoryId;
-    this.selectedSuperCategory.categoryName = useQnaStore().qnaDetail.superCategoryName;
-    this.selectedSubCategory.categoryName = useQnaStore().qnaDetail.subCategoryName;
+    this.selectedSuperCategory.id = useQnaStore().qnaEditDetail.superCategoryId;
+    this.selectedSubCategory.id = useQnaStore().qnaEditDetail.subCategoryId;
+    console.log(useQnaStore().qnaEditDetail.superCategoryName);
+    if (useQnaStore().qnaEditDetail.superCategoryName !== null) {
+      this.selectedSuperCategory.categoryName = useQnaStore().qnaEditDetail.superCategoryName;
+      this.selectedSubCategory.categoryName = useQnaStore().qnaEditDetail.subCategoryName
+    } else {
+      this.selectedSuperCategory.categoryName = useQnaStore().qnaEditDetail.subCategoryName;
+      this.selectedSubCategory.categoryName = " ";
+    }
+
     this.myCategory = this.selectedSubCategory.id;
   },
   methods: {
+    async enter() {
+      if (useQnaStore().qnaDetail !== undefined && useQnaStore().qnaDetail.answerCnt !== 0) {
+        alert('이미 입력된 답변이 있습니다. 허가되지 않은 접근 방식입니다.');
+        this.$router.push({path: "/exception"})
+        return;
+      }
+      await useQnaStore().getQnaEditDetail(this.$route.params.id, router);
+    },
     async click() {
       if (!this.myTitle || !this.myText || !this.myCategory) {
         alert('모든 필드를 올바르게 입력해 주세요.');
@@ -160,8 +176,7 @@ export default {
           alert('등록이 완료되었습니다.');
           this.$router.push('/qna/detail/' + this.$route.params.id);
           this.cancel();
-        }
-        catch (error) {
+        } catch (error) {
           alert('등록 중 오류 발생');
         } finally {
           this.isLoading = false;

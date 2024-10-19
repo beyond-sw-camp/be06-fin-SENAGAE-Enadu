@@ -55,6 +55,7 @@ export default {
         type: this.selectedType || 'tc',
         page: 0,
         size: 16,
+        sort: "",
       };
 
       this.$emit("search", request);

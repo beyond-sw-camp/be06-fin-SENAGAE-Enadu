@@ -110,22 +110,18 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           params: { id: id },
           withCredentials: true,
         });
-        console.log('응답 데이터:', response.data); // 응답 데이터 로그 추가
-    
-        // 응답의 유효성 검사
-        if (response.data && response.data.isSuccess) {
+        console.log('응답 데이터:'+response.data);
+        if (response.data.isSuccess) {
           this.errorArchiveDetail = response.data.result;
           console.log('상세 조회 결과:', this.errorArchiveDetail);
           return response.data.result; // 결과를 반환
         } else {
-          if (response.data.message === "해당 게시글이 존재하지 않습니다") {
-            alert(response.data.message);
-          }
+          alert(response.data.message);
           throw new Error("에러아카이브 상세 조회 실패: " + response.data.message);
+          this.errorArchiveDetail = null;
         }
       } catch (error) {
         console.error("에러아카이브 상세 조회 중 오류 발생:", error);
-        throw new Error("에러아카이브 상세 조회 실패: "+response.data.message);
       }
     },    
     async getErrorArchiveList(sort, page) {
@@ -160,11 +156,11 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           throw new Error(response.data.message);
         }
       } catch (error) {
+        alert(error.message);
         console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
       }
     },
     async scrapErrorArchive(id){
-      console.log(id);
       const scrapReq = {
         id: id,
       }
@@ -174,12 +170,14 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         });
 
         if (response.data.isSuccess) {
-          return response.data.result.result;
+          return response.data.result;
         } else {
           throw new Error(response.data.message);
         }
       } catch (error) {
-        console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
+        alert(error.message);
+        console.error("에러아카이브 스크랩 중 오류 발생:", error);
+        return null;
       }
     },
     async searchErrorArchive(request){

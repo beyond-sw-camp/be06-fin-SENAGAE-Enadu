@@ -39,21 +39,20 @@ export const useMainStore = defineStore('main', {
                 return null;
             }
         },
-
         async getTotalSearchInfo(keyword) {
             const request = {
                 errorArchiveSize: 8,
                 wikiSize: 4,
                 qnaSize: 8,
                 keyword: keyword
-            }
+            };
             try {
-                const response= await axios.get(backend+'/main/search',{
+                const response = await axios.get(backend + '/main/search', {
                     params: request,
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true
                 });
-                if (response.data.isSuccess){
+                if (response.data.isSuccess) {
                     this.searchInfo = response.data.result;
                 } else {
                     throw new Error(response.data.message);
@@ -63,6 +62,7 @@ export const useMainStore = defineStore('main', {
                 return null;
             }
         }
+        
     }
 });
 
