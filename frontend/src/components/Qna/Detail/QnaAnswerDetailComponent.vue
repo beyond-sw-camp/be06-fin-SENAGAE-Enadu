@@ -19,6 +19,16 @@
                     </p>
                 </div>
             </div>
+          <div class="adopt-control-component">
+            <div v-if="isAdopted">
+              <AdoptedTagComponent/>
+            </div>
+            <AdditionalInfoComponent style="margin-left: 20px; z-index: 10000"
+                                     v-bind:adopted="isShowAdopted"
+                                     v-bind:detail="qnaAnswer"
+                                     @clickEdit="handleEditUpdate"
+                                     @clickAdopt="handleAdoptUpdate" />
+          </div>
         </div>
         <div class="flex justify-between">
             <div id="ai-answer" class="question-answer mb-5 build-section-card-title">
@@ -87,8 +97,8 @@
         </div>
       </div>
 
-      <div class="qna-detail-top-items" v-if="isLoggedIn">
-        <div class="like-dislike-container">
+      <div class="qna-detail-top-items">
+        <div class="like-dislike-container" v-if="useUserStore().isLoggedIn && !isAiAnswer">
           <div class="icons-box">
             <div class="icons">
               <label class="btn-label" :for="`like-checkbox-a-${qnaAnswer.id}`">
@@ -159,11 +169,11 @@
           </div>
         </div>
         <br/>
-        <div class="button-divider">
+        <div v-if="!isAiAnswer" class="button-divider">
           <button @click="toggleContent" class="mt-2 text-sm text-blue-500">
             {{ isContentVisible ? '댓글 숨기기' : '댓글 보기' }}
           </button>
-          <button @click="writeRipple"
+          <button v-if="useUserStore().isLoggedIn" @click="writeRipple"
                   class="mt-2 text-sm text-blue-500">
             {{ isRegistered ? '작성 취소' : '댓글 작성' }}
           </button>
@@ -226,10 +236,12 @@ export default {
 
       isCheckedAnsLike: false,
       isCheckedAnsHate: false,
+      isAiAnswer: false,
     };
   },
   props: ["qnaAnswer"],
   methods: {
+    useUserStore,
     formatDateTime,
     toggleContent() {
       this.isContentVisible = !this.isContentVisible;
@@ -294,6 +306,10 @@ export default {
 
     checking() {
       console.log("id" + this.qnaAnswer.id);
+      console.log("ai"+this.qnaAnswer.userId);
+      if (this.qnaAnswer.userId === 0){
+        this.isAiAnswer = true;
+      }
       this.ansLikeCnt = this.qnaAnswer.likeCnt;
       this.ansHateCnt = this.qnaAnswer.hateCnt;
       console.log("checking" + this.qnaAnswer.checkLikeOrHate);
@@ -326,7 +342,6 @@ export default {
   },
   mounted() {
     console.log(this.qnaAnswer);
-    this.isLoggedIn = useUserStore().isLoggedIn;
     this.isLoading = false;
     this.isReLoading = false;
     this.isRegistered = false;
