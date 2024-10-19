@@ -11,14 +11,14 @@
                 <li class="divider">|</li>
                 <li><router-link :to="{ path: '/wiki/list' }"><i class="fas fa-book"></i> 위키</router-link></li>
                 <li class="divider">|</li>
-                <li>
-                    <router-link :to="{ path: '/qna/list' }"><i class="fas fa-question-circle"></i> QnA</router-link>
-                </li>
+                <li><router-link :to="{ path: '/qna/list' }"><i class="fas fa-question-circle"></i> QnA</router-link></li>
+                <li class="divider">|</li>
+                <li><router-link :to="{ path: '/ranking' }"><i class="fas fa-trophy"></i> 랭킹</router-link></li>
             </ul>
         </nav>
         <div class="search-bar">
-            <input type="text" placeholder="검색어를 입력하세요">
-            <button @click="showAlert"><i class="fas fa-search"></i></button>
+            <input type="text" v-model="keyword" @keydown.enter="totalSearch" placeholder="검색어를 입력하세요">
+            <button @click="totalSearch"><i class="fas fa-search"></i></button>
         </div>
         <div class="auth-navigation">
             <div v-if="!isLoggedIn">
@@ -42,7 +42,7 @@
                             <li><router-link :to="{ path: '/mypage/info' }"><i class="fas fa-user"></i> 회원 정보</router-link></li>
                             <li><router-link :to="{ path: '/mypage/history' }"><i class="fas fa-file-alt"></i> 작성 내역</router-link></li>
                             <li><router-link :to="{ path: '/mypage/scrap' }"><i class="fas fa-bookmark"></i> 스크랩 내역</router-link></li>
-                            <li><router-link :to="{ path: '/point/info' }"><i class="fas fa-coins"></i> 포인트 및 랭킹</router-link></li>
+                            <li><router-link :to="{ path: '/point' }"><i class="fas fa-coins"></i> 포인트 내역</router-link></li>
                             <li><router-link :to="{ path: '/chat' }"><i class="fas fa-comments"></i> 채팅</router-link></li>
                         </ul>
                     </li>
@@ -64,9 +64,35 @@ export default {
             return this.userStore.isLoggedIn;
         },
     },
+    data(){
+        return {
+            keyword: "",
+        }
+    },
+    watch: {
+        '$route.query': {
+            handler(newQuery) {
+                if (window.location.pathname !== "/search"){
+                    this.keyword = '';
+                } else {
+                    this.keyword = newQuery.keyword || '';
+                }
+            },
+            immediate: true
+        }
+    },
     methods: {
-        showAlert() {
-            alert("통합 검색은 추후 추가 예정입니다.")
+        isSingleChosung(keyword) {
+            const chosungRegex = /^[ㄱ-ㅎ]$/;
+            return chosungRegex.test(keyword);
+        },
+        totalSearch(){
+            if (this.isSingleChosung(this.keyword.trim())){
+                alert("초성검색은 한 글자가 불가합니다");
+                return;
+            }
+            console.log("1111111");
+            window.location.href = "/search?keyword="+this.keyword.trim();
         },
         logout() {
             if (window.confirm("로그아웃 하시겠습니까?")) {
@@ -177,7 +203,6 @@ i {
 }
 
 .search-bar {
-    width: 480px;
     display: flex;
     align-items: center;
     background-color: #fafcfc;
@@ -225,11 +250,6 @@ i {
     .navigation ul, .auth-navigation ul {
         flex-direction: column;
         gap: 10px;
-    }
-
-    .search-bar {
-        width: 100%;
-        margin-top: 10px;
     }
 }
 </style>

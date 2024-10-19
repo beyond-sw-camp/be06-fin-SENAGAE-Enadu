@@ -1,4 +1,3 @@
-
 <template>
   <div v-if="isLoading"></div>
   <div id="root" v-else>
@@ -24,7 +23,7 @@
             </div>
             <div class="sc-fbyfCU eYeYLy" v-show="userStore.isLoggedIn">
               <div class="bookmark-checkbox">
-                <input type="checkbox" id="bookmark-toggle" :checked="checkScrap" @click="clickScrap"
+                <input type="checkbox" id="bookmark-toggle" v-model="checkScrap" @click="clickScrap"
                        class="bookmark-checkbox__input">
                 <label for="bookmark-toggle" class="bookmark-checkbox__label">
                     <svg data-v-00557fae="" class="bookmark-checkbox__icon" viewBox="0 0 24 24">
@@ -227,13 +226,25 @@ export default {
       alert(`삭제 중 오류 발생: ${error.message}`);
     }
   },
-    async getErrorArchiveDetail() {
-      await this.errorarchiveStore.getErrorArchiveDetail(this.id);
-      this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap;
-      this.setModifiedTime();
-      this.checkLike();
-      this.setLikeAndHateCnt();
-    },
+  async getErrorArchiveDetail() {
+  try {
+    await this.errorarchiveStore.getErrorArchiveDetail(this.id);
+
+    // 데이터가 없으면 /exception으로 리다이렉트
+    if (!this.errorarchiveStore.errorArchiveDetail || Object.keys(this.errorarchiveStore.errorArchiveDetail).length === 0) {
+      this.$router.push('/exception');
+      return; // 리다이렉트 후 함수 종료
+    }
+
+    this.checkScrap = this.errorarchiveStore.errorArchiveDetail.checkScrap;
+    this.setModifiedTime();
+    this.checkLike();
+    this.setLikeAndHateCnt();
+  } catch (error) {
+    console.error('Error fetching error archive detail:', error);
+    this.$router.push('/exception');
+  }
+},
     setModifiedTime() {
       let date = this.errorarchiveStore.errorArchiveDetail.modifiedAt.split("T")[0].split("-")
       this.lastModifiedDate = date[0] + "년 " + date[1] + "월 " + date[2] + "일";
@@ -253,7 +264,10 @@ export default {
       this.selectedLike = await this.errorarchiveStore.likeErrorArchive(this.id, value)
     },
     async clickScrap(){
-      await this.errorarchiveStore.scrapErrorArchive(this.id);
+      const result = await this.errorarchiveStore.scrapErrorArchive(this.id);
+      if (result == null) { // 스크랩 실패 시
+          this.checkScrap = !this.checkScrap;
+      }
     },
     handleAnchorClick(anchor) {
       const { preview } = this.$refs;
@@ -310,6 +324,9 @@ export default {
     align-items: flex-start;
     justify-content: space-between;
 }
+.errorarchive-title h1 {
+    font-size: 40px !important; /* 원하는 크기로 설정 */
+}
 .sc-fvxzrP {
   display: flex;
   align-items: center; /* 세로 중앙 정렬 */
@@ -317,6 +334,7 @@ export default {
 }
 /* 제목이 짧을 때의 마진을 조정 */
 .header-container.short-title .errorarchive-title {
+    font-size: 50%; /* 기존 크기의 50%로 설정 */
     margin-right: 400px;
 }
 
@@ -743,9 +761,18 @@ body[data-theme="light"] {
   align-items: center;
   width: 100%;
 }
-
-
-.jGdQwA .information .username {
+.username {
+  display: inline-block; /* 블록 요소로 설정 */
+  max-width: 200px; /* 원하는 최대 너비 설정 */
+  white-space: normal; /* 기본 텍스트 흐름 */
+  overflow: hidden; /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis; /* 넘치는 텍스트에 "..." 표시 */
+  line-height: 1.2; /* 줄 간격 조정 */
+  color: var(--text1);
+  font-weight: bold;
+  font-size: 16px;
+}
+.jGdQwA .information{
   color: var(--text1);
   font-weight: bold;
   font-size: 16px;

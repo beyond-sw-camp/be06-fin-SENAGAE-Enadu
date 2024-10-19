@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-
-
 const backend = "/api";
 
 export const useErrorArchiveStore = defineStore('errorarchive', {
@@ -38,10 +36,10 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
-         // 서버 응답 확인
-         console.log('응답 데이터 로그로 확인'+response.data); // 응답 데이터 로그로 확인
-         // 응답 구조 로그 출력
-         console.log('API 응답:', response.data);
+        // 서버 응답 확인
+        console.log('응답 데이터 로그로 확인'+response.data); // 응답 데이터 로그로 확인
+        // 응답 구조 로그 출력
+        console.log('API 응답:', response.data);
 
         // 응답의 유효성 검사
         if (response.data && response.data.isSuccess) {
@@ -64,7 +62,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
-    
+
         // 응답 확인
         if (response.data.isSuccess) {
           console.log("에러 아카이브 수정 성공:", response.data.message);
@@ -78,7 +76,6 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         if (error.response) {
           console.error("응답 데이터:", error.response.data); // 응답 데이터 확인
         }
-        throw error;
       }
     },
     async deleteErrorArchive(id) {
@@ -86,12 +83,12 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         const response = await axios.patch(`${backend}/errorarchive/removal`,{id:id} , {
           withCredentials: true,
         });
-    
+
         // 응답 확인
         if (response.data.isSuccess) {
           console.log("에러 아카이브 삭제 성공:", response.data.message);
           alert("삭제가 완료되었습니다.");
-        
+
           return response.data.result; // 삭제된 결과를 반환
         } else {
           throw new Error("삭제 실패: " + response.data.message);
@@ -105,7 +102,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         throw error;
       }
     },
-    
+
     // 에러 아카이브 상세 조회
     async getErrorArchiveDetail(id) {
       try {
@@ -113,15 +110,36 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           params: { id: id },
           withCredentials: true,
         });
-        console.log('응답 데이터:'+response.data);
-        if (response && response.data) {
+        console.log('응답 데이터:', response.data); // 응답 데이터 로그 추가
+
+        // 응답의 유효성 검사
+        if (response.data && response.data.isSuccess) {
           this.errorArchiveDetail = response.data.result;
           console.log('상세 조회 결과:', this.errorArchiveDetail);
+          return response.data.result; // 결과를 반환
         } else {
-          throw new Error("에러아카이브 상세 조회 실패");
+          if (response.data.message === "해당 게시글이 존재하지 않습니다") {
+            alert(response.data.message);
+          }
+          throw new Error("에러아카이브 상세 조회 실패: " + response.data.message);
         }
       } catch (error) {
         console.error("에러아카이브 상세 조회 중 오류 발생:", error);
+      }
+    },
+    // 에러 아카이브 상세 조회(권한 설정)
+    async getErrorArchiveEditDetail(errorArchiveId) {
+      const response = await axios.get(backend + "/errorarchive/edit-detail", {
+        params: { errorArchiveId: errorArchiveId }, // 쿼리 파라미터 이름 일치
+        withCredentials: true,
+      });
+
+      // 응답의 유효성 검사
+      if (response.data.isSuccess) {
+        this.errorArchiveDetail = response.data.result;
+        return response.data.result; // 결과를 반환
+      } else {
+        return response.data.message;
       }
     },
     async getErrorArchiveList(sort, page) {
@@ -131,7 +149,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         size: 16
       };
       try {
-        const response = await axios.get(backend+"/errorarchive/list", { 
+        const response = await axios.get(backend+"/errorarchive/list", {
           params: params,
           withCredentials: true });
         this.errorarchiveCards  = response.data.result;

@@ -2,9 +2,9 @@
   <div class="custom-container">
     <div id="root">
       <div class="content-wrapper">
-        <ErrorArchiveUpdateComponent 
-          :formData="formData" 
-          @submitUpdate="handleClick" />
+        <ErrorArchiveUpdateComponent
+            :formData="formData"
+            @submitUpdate="handleClick" />
         <SubCategoryModal v-if="showSubModal" @close="showSubModal = false" />
         <SuperCategoryModal v-if="showSuperModal" @close="showSuperModal = false" />
       </div>
@@ -18,12 +18,12 @@ import { mapStores } from "pinia";
 import { useErrorArchiveStore } from "@/store/useErrorArchiveStore";
 import SuperCategoryModal from '@/components/Category/SuperCategoryModal.vue';
 import SubCategoryModal from '@/components/Category/SubCategoryModal.vue';
+import { useUserStore } from "@/store/useUserStore";
 
 export default {
   name: "ErrorArchiveUpdatePage",
   data() {
     return {
-      isLoading: true,
       formData: {
         title: "",
         content: "",
@@ -34,37 +34,43 @@ export default {
       showSuperModal: false,
     };
   },
-  created() {
-    this.loadData();
-  },
   components: {
     ErrorArchiveUpdateComponent,
     SubCategoryModal,
     SuperCategoryModal
   },
   computed: {
-    ...mapStores(useErrorArchiveStore) // Pinia store 연결
+    ...mapStores(useErrorArchiveStore, useUserStore)
   },
+
   methods: {
-    async loadData() {
-      // 데이터 로드 로직 추가
-      const { title, content, superCategory, subCategory } = this.$route.query;
-      this.formData.title = title || '';
-      this.formData.content = content || '';
-      this.formData.superCategory = superCategory || '';
-      this.formData.subCategory = subCategory || '';
-    },
     async handleClick(updatedData) {
-      console.log('Received data: ', updatedData);
       try {
-        // store의 updateErrorArchive 메서드에 updatedData를 전달
         await this.errorArchiveStore.updateErrorArchive(updatedData);
         console.log('Update successful');
-        // 성공적으로 업데이트된 후 필요한 추가 작업
       } catch (error) {
         console.error('Update error:', error);
       }
     },
+    async checkUpdateAuthorization(id) {
+      const userStore = useUserStore();
+      const errorArchiveStore = useErrorArchiveStore();
+      const loggedInUserId = userStore.userId;
+
+      const articleData = await errorArchiveStore.getErrorArchiveEditDetail(id);
+      if (articleData.userId && articleData.userId !== loggedInUserId) {
+        alert("수정 권한이 없습니다.");
+        this.$router.push('/errorarchive/list'); // 권한 없음
+        return;
+      } else {
+        alert(articleData);
+        this.$router.push('/exception'); // 권한 없음
+        return;
+      }
+    },
   },
+  mounted(){
+    this.checkUpdateAuthorization(this.$route.query.id);
+  }
 };
 </script>
