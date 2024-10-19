@@ -118,6 +118,9 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           console.log('상세 조회 결과:', this.errorArchiveDetail);
           return response.data.result; // 결과를 반환
         } else {
+          if (response.data.message === "해당 게시글이 존재하지 않습니다") {
+            alert(response.data.message);
+          }
           throw new Error("에러아카이브 상세 조회 실패: " + response.data.message);
         }
       } catch (error) {
