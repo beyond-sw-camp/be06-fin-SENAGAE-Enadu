@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.common.Qna.model.Resolved.ENDED;
+import static com.example.common.Qna.model.Resolved.UNSOLVED;
 
 @Slf4j
 @Configuration
@@ -34,7 +35,7 @@ public class UnansweredConfig {
     public ItemReader<QnaBoard> unansweredQuestionReader() {
         log.info("Reader 실행");
         LocalDateTime twoWeeksAgo = LocalDateTime.now().minusWeeks(2);
-        List<QnaBoard> qnaBoardList = questionRepository.findAllByCreatedAtBeforeAndAnswerCountAndAnswerListUserIdAndEnableTrue(twoWeeksAgo, 1, 0L);
+        List<QnaBoard> qnaBoardList = questionRepository.findByEnableTrueAndCreatedAtBeforeAndResolvedAndAnswerCountAndAnswerListUserId(twoWeeksAgo, UNSOLVED, 1, 0L);
         log.info("불러온 QnaBoard 수: {}", qnaBoardList.size());
         return new ListItemReader<>(qnaBoardList);
     }

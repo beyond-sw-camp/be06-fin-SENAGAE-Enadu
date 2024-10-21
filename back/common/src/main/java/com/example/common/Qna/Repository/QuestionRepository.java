@@ -61,5 +61,8 @@ public interface QuestionRepository extends JpaRepository<QnaBoard, Long> {
 
     List<QnaBoard> findAllByAnswerCountAndEnableTrue(Integer answerCount);
 
-    List<QnaBoard> findAllByCreatedAtBeforeAndAnswerCountAndAnswerListUserIdAndEnableTrue(LocalDateTime createdAt, Integer answerCount, Long id);
+    List<QnaBoard> findByEnableTrueAndCreatedAtBeforeAndResolvedAndAnswerCountAndAnswerListUserId(
+            LocalDateTime createdAt, Resolved resolved, Integer answerCount, Long id);
+
+
 }
