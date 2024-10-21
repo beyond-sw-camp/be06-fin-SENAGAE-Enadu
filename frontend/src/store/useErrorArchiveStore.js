@@ -188,7 +188,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         });
 
         if (response.data.isSuccess) {
-          return response.data.result.result;
+          return response.data.result;
         } else {
           throw new Error(response.data.message);
         }
