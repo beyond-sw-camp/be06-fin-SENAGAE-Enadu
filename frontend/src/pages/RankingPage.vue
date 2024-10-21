@@ -44,7 +44,7 @@
           </table>
         </div>
       </div>
-      <div class="pagination-container" v-if="!isLoading">
+      <div class="pagination-container" v-if="!isLoading || !pageLoading">
         <PaginationComponent @updatePage="updatePage" :nowPage="page + 1" :totalPage="totalPage"/>
       </div>
     </div>
@@ -90,7 +90,8 @@ export default {
       isLoading: false,
       page: 0,
       totalPage: 1,
-      pageType: "daily"
+      pageType: "daily",
+      pageLoading: true,
     }
   },
   methods: {
@@ -112,9 +113,11 @@ export default {
         console.error("랭킹 데이터를 가져오는 중 오류 발생:", error);
       } finally {
         this.isLoading = false;
+        this.pageLoading = false;
       }
     },
     async changePageType(type) {
+      this.pageLoading = true;
       this.pageType = type;
       this.page = 0;
       await this.fetchRankingData();
