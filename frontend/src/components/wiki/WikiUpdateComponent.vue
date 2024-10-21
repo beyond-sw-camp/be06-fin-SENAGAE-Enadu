@@ -122,16 +122,13 @@ export default {
       try {
         const success = await this.wikiStore.fetchUserDetails();
         if (!success) {
-          alert("로그인이 필요합니다.");
-          this.$router.go(-1); 
+          this.$router.go(-1);
           return;
         }
         if (this.wikiStore.grade === "뉴비") {
-          alert("견습 등급 이상만 위키 수정이 가능합니다.");
           this.$router.go(-1);
         }
       } catch (error) {
-        console.error("사용자 정보를 불러오는 중 오류 발생:", error);
         this.$router.go(-1);
       }
     },
