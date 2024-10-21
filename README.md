@@ -4,7 +4,7 @@
 <h1 align="center"> 지식관리서비스 Enadu </h1>
 <br>
 <div align="center">
-<img src="https://github.com/user-attachments/assets/08f19cfc-3976-4cc9-91b0-58d0b0224fc3" style="width: 80%;">
+<img src="https://github.com/user-attachments/assets/3f6df515-9e11-4b63-b4e1-c35d22176721" style="width: 60%;">
 </div>
 
 <br>
@@ -69,19 +69,15 @@ https://www.enadu.kro.kr <br>
 <br>
 
 ---
-## 🎁 Enadu 서비스 소개
+## 🎨 Enadu 서비스 소개
 ---
+<img src= "https://github.com/user-attachments/assets/2a07b47d-e074-4821-b5ac-3b445c6a9f1a">
 어쩌구 저쩌구
 
 ---
 ## 🤳 프로젝트 목표
 ---
-#### 1. 운영 중인 환경에 CI/CD 적용
-  -  코드 변경 사항을 자동으로 빌드 및 배포하여 개발에만 집중 할 수 있다.
-  -  서로의 작업이 자동으로 통합되며, 팀원들과 더 쉽게 협업할 수 있다. 
-#### 2. 유연한 배포
-  - 무중단 배포 방식인 <Blue-Green 배포 방식> 을 사용하여 서비스 중단 없이 새로운 기능을 배포할 수 있고, 사용자에게 지속적으로 안정적인 서비스를 제공 가능하게 함.
-  - 새로운 버전(Green) 배포 후 문제가 발생할 경우, 기존 버전(Blue)으로 빠르게 롤백이 가능하므로 안정적인 롤백이 가능함.
+어쩌구 저쩌구~~~~~~~
 
 <br>
 
@@ -97,54 +93,17 @@ https://www.enadu.kro.kr <br>
 
 ### 3. CI/CD
 
-#### - 클러스터 노드 구성
-💻 Master 1대<br>
-💻 Worker 4대의 클러스터 구성
-<br>
-
-#### - 쿠버네티스 적용
--  운영 환경에서 유연성, 동일한 환경을 제공하여 버그를 최소화할 수 있다.
--  프라이빗 클라우드 인프라에서 안정적으로 실행될 수 있는 기능을 제공하여 서비스가 안정적으로 운영되고 개발 및 배포 과정을 더욱 효율적으로 만들어 주었다.
-
 ### 4. 시스템 아키텍처
-<br>
-
 <details>
 <summary><b>시스템 아키텍처</b></summary>
-
-<br>
-  
 <img src="https://github.com/user-attachments/assets/d8f033d6-3e75-4fca-a0b8-d532df8498fd">
+</details>
 
-
-<br>
+---
 ## ⌛프로젝트 기능 및 일정
+---
 어쩌구 저쩌구
-
----
-
 <br>
 <br>
 
----
-## 💻 CI/CD 테스트 및 결과
----
-
-### 젠킨스 파이프라인
-![](https://github.com/user-attachments/assets/ca2edd94-d1a3-4afc-9380-2426f8962d6a)
-
-### K8S Blue/Green 배포 
-![](https://github.com/user-attachments/assets/b8d2d959-975c-4892-8406-010534a62ed1)
-
-### 무중단 배포 (Back - 쉘, Front - 테스트 페이지)
-<img src="https://github.com/user-attachments/assets/25376253-1011-42bc-964f-3daec5e497b9" style="width:400px"></img>
-<img src="https://github.com/user-attachments/assets/88c7b6d2-13f5-40da-8b6e-4ea040a989c5" style="width:350px"></img>
-
-### 디스코드 알림
-<img width="450" alt="스크린샷 2024-08-29 오후 2 36 56" src="https://github.com/user-attachments/assets/5c524497-12fc-4cad-acd3-ce86fd331641">
-
-
-
-<br>
-<br>
 
