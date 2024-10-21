@@ -171,6 +171,8 @@ export default {
   },
   watch: {
     async selectedSort() {
+      this.pageLoading = true;
+      this.selectedPage = 1;
       await this.fetchQnaList();
     },
     async selectedSolvedStatus() {
