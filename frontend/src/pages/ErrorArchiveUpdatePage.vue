@@ -4,9 +4,9 @@
       <div class="content-wrapper">
         <ErrorArchiveUpdateComponent
             :formData="formData"
-            @submitUpdate="handleClick" />
-        <SubCategoryModal v-if="showSubModal" @close="showSubModal = false" />
-        <SuperCategoryModal v-if="showSuperModal" @close="showSuperModal = false" />
+            @submitUpdate="handleClick"/>
+        <SubCategoryModal v-if="showSubModal" @close="showSubModal = false"/>
+        <SuperCategoryModal v-if="showSuperModal" @close="showSuperModal = false"/>
       </div>
     </div>
   </div>
@@ -42,35 +42,26 @@ export default {
   computed: {
     ...mapStores(useErrorArchiveStore, useUserStore)
   },
-
+  created() {
+    this.checkUpdateAuthorization(this.$route.query.id);
+  },
   methods: {
     async handleClick(updatedData) {
       try {
         await this.errorArchiveStore.updateErrorArchive(updatedData);
         console.log('Update successful');
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Update error:', error);
       }
     },
     async checkUpdateAuthorization(id) {
-      const userStore = useUserStore();
       const errorArchiveStore = useErrorArchiveStore();
-      const loggedInUserId = userStore.userId;
-
       const articleData = await errorArchiveStore.getErrorArchiveEditDetail(id);
-      if (articleData.userId && articleData.userId !== loggedInUserId) {
-        alert("수정 권한이 없습니다.");
-        this.$router.push('/errorarchive/list'); // 권한 없음
-        return;
-      } else {
-        alert(articleData);
-        this.$router.push('/exception'); // 권한 없음
-        return;
+      if (articleData === false) {
+        this.$router.go(-1);
       }
     },
-  },
-  mounted(){
-    this.checkUpdateAuthorization(this.$route.query.id);
   }
 };
 </script>
