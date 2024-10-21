@@ -20,7 +20,6 @@ export const useQnaStore = defineStore("qna", {
         checkAnsLike: 0,
         checkAnsHate: 0,
 
-        registeredQnaId: 0,
         AdoptedAnswerId: 0,
 
         qnaState: {
@@ -55,7 +54,7 @@ export const useQnaStore = defineStore("qna", {
                         'Content-Type': 'application/json'
                     }, withCredentials: true
                 });
-                this.registeredQnaId = res.data.result;
+                return res.data.result;
             } catch (error) {
                 return false;
             }

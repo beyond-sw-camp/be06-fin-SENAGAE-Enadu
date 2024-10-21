@@ -136,11 +136,12 @@ export default {
         alert('모든 필드를 올바르게 입력해 주세요.');
       } else {
         try {
-          await useQnaStore().registerQna(this.myTitle, this.myText, this.myCategoryId);
-          await useQnaStore().getQnaDetail(this.$route.params.id);
+          const result = await useQnaStore().registerQna(this.myTitle, this.myText, this.myCategoryId);
+          if (!result) {
+            throw new Error("오류 발생");
+          }
           alert('등록이 완료되었습니다.');
-          this.$router.push('/qna/detail/' + useQnaStore().registeredQnaId);
-          this.cancel();
+          this.$router.push('/qna/detail/' + result);
         }
         catch (error) {
           alert('등록 중 오류 발생');
