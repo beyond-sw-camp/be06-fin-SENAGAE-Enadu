@@ -72,7 +72,12 @@ https://www.enadu.kro.kr <br>
 ## 🎨 Enadu 서비스 소개
 ---
 <img src= "https://github.com/user-attachments/assets/2a07b47d-e074-4821-b5ac-3b445c6a9f1a">
-어쩌구 저쩌구
+개발자들은 에러를 해결하기 위해 인터넷에서 유사한 오류를 검색하거나 개발자 커뮤니티에 질문을
+통해 해결 하고자 노력한다. 하지만 이 과정은 많은 노력과 시간을 필요로하기 때문에 개발 과정에서
+필요한 정보들과, 개발자들이 자주 마주하는 오류들에 대한 해결 방법을 체계적으로 모아둔 웹사이트
+Enadu를 구축하고자 하였다. Enadu는 개발에 필요한 검증된 정보들을 체계적으로 정리하여
+개발자들의 개발과 공부 과정에서 편리함을 제공하고 더나아가, ai 답변과 타 개발자들과의
+일대일 채팅 공간을 제공하여 사용자의 개발 환경을 발전시키는 것을  목표로 하였다.
 
 ---
 ## 🤳 프로젝트 목표
@@ -87,16 +92,20 @@ https://www.enadu.kro.kr <br>
 어쩌구 <br>
 저쩌구 <br>
 
-### 1. ERD
+<details>
+<summary><h3>1. ERD</h3></summary>
+<img src="https://github.com/user-attachments/assets/a6e74e9f-1666-47de-9388-d9352ae4f158">
+</details>
+
 
 ### 2. 화면설계서
+<a href="https://www.figma.com/design/m7hJQ7xwdigDITERHFxOaO/%EC%97%90%EB%82%98%EB%91%90-%ED%99%94%EB%A9%B4-%EC%84%A4%EA%B3%84%EC%84%9C?node-id=4700-2135&node-type=frame&t=qAb7mtL2BFA6NjKI-0">에나두 화면설계서</a>
 
 ### 3. CI/CD
 
-### 4. 시스템 아키텍처
 <details>
-<summary><b>시스템 아키텍처</b></summary>
-<img src="https://github.com/user-attachments/assets/d8f033d6-3e75-4fca-a0b8-d532df8498fd">
+<summary><h3>4. 시스템 아키텍처</h3></summary>
+<img src="https://github.com/user-attachments/assets/20d4bd81-5a44-453e-9315-6fdfa33e2f4d">
 </details>
 
 ---
