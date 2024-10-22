@@ -95,7 +95,6 @@
 
 ### 📌Enadu Website <br>
 https://www.enadu.kro.kr <br>
-<br>
 </div>
 
 ---
@@ -108,11 +107,11 @@ https://www.enadu.kro.kr <br>
 
   개발을 하다 보면 다양한 문제와 오류에 직면 하게 된다. 이 때 개발자들은 AI, 블로그 등등의 다양한 웹 서비스를 이용하지만, 각기 다른 사이트를 방문해야 하는 번거로움이 존재하곤 한다.<br>
   이러한 정보들을 하나의 사이트에서 관리 하여 개발자들이 효율적으로 문제를 해결하고 공유하며, 공유된 지식들을 체계적으로 관리하기위해 Enadu 서비스를 구축하였다.
-  - WIKI<br>
+  - **WIKI**<br>
     유저들이 프로그래밍 언어별 정보, 최신 기술에 관한 지식을 자유롭게 공유하고, 이를 체계적으로 관리할 수 있는 서비스를 제공한다.
-  - QnA<br>
+  - **QnA**<br>
     개발자들이 직면한 문제와 에러를 질문하고, 답변을 얻을 수 있는 서비스를 제공한다.
-  - ErrorArcive<br>
+  - **ErrorArcive**<br>
     단순히 문제를 해결하는 것에 그치지 않고, 해결 과정을 블로그 형태로 정리하고, 공유한다.
 
 
@@ -143,8 +142,7 @@ https://www.enadu.kro.kr <br>
 </details>
 
 
-### 2. 화면설계서
-<a href="https://www.figma.com/design/m7hJQ7xwdigDITERHFxOaO/%EC%97%90%EB%82%98%EB%91%90-%ED%99%94%EB%A9%B4-%EC%84%A4%EA%B3%84%EC%84%9C?node-id=4700-2135&node-type=frame&t=qAb7mtL2BFA6NjKI-0">🌷에나두 화면설계서 바로가기</a>
+### [2. 에나두 화면설계서 바로가기](https://www.figma.com/design/m7hJQ7xwdigDITERHFxOaO/%EC%97%90%EB%82%98%EB%91%90-%ED%99%94%EB%A9%B4-%EC%84%A4%EA%B3%84%EC%84%9C?node-id=4700-2135&node-type=frame&t=qAb7mtL2BFA6NjKI-0")</a>
 
 ### 3. CI/CD
 
