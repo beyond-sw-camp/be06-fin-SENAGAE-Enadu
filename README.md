@@ -1,7 +1,7 @@
 
 <br>
   
-<h1 align="center"> 지식관리서비스 Enadu </h1>
+<h1 align="center"> 지식 관리 시스템   Enadu </h1>
 <br>
 <div align="center">
 <img src="https://github.com/user-attachments/assets/3f6df515-9e11-4b63-b4e1-c35d22176721" style="width: 60%;">
@@ -49,40 +49,84 @@
 ---
 ## 🛠 기술 스택
 ---
-<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white&color=black"></a></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=Git&logoColor=white&color=ffa500"></a></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=black&color=blue"/></a></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=Kubernetes&logoColor=blue&color=skyblue"/></a></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Jenkins-D24939?style=flat&logo=jenkins&logoColor=white"/></a></a>
+#### &nbsp;　[ DB ]
+
+&nbsp;&nbsp;&nbsp;</a>
+<img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white" style="border-radius: 5px;"> 
+<img src="https://img.shields.io/badge/AmazonS3-e05242?style=for-the-badge&logo=AmazonS3&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/elasticSearch-3ebeb0?style=for-the-badge&logo=elasticsearch&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/logstash-f3bd19?style=for-the-badge&logo=logstash&logoColor=white" style="border-radius: 5px;">
+
+#### &nbsp;　[ CI/CD ]
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/kubernates-326CE5?style=for-the-badge&logo=Kubernates&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/discord-326CE5?style=for-the-badge&logo=discord&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white" style="border-radius: 5px;">
+
+#### &nbsp;　[ Backend ]
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/SpringBoot-181717?style=flat&logo=SpringBoot&logoColor=6DB33F&color=white"  style="border-radius: 5px; width: 100px; height: 27px;">
+<img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=Spring-Security&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/Spring data jpa-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white" style="border-radius: 5px;">
+<img src="https://img.shields.io/badge/SMTP-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" style="border-radius: 5px;"> 
+
+
+
+#### &nbsp;　[ Frontend ]
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/vuejs-%2335495e.svg?style=flat&logo=vuedotjs&logoColor=%234FC08D" style="border-radius: 5px; width: 70px; height: 27px;">
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white" style="border-radius: 5px;"/>
+<img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white" style="border-radius: 5px;"/>
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white" style="border-radius: 5px;"/>
+<img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white" style="border-radius: 5px;"/>
+<img src="https://img.shields.io/badge/pinia-gold?style=for-the-badge&logo=Pinia&logoColor=white" style="border-radius: 5px;"/>
+
+#### &nbsp;　[ Etc ]
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Prometheus-E6522C?style=flat&logo=Prometheus&logoColor=white" style="border-radius: 5px; width: 100px; height: 27px;"> 
+<img src="https://img.shields.io/badge/Grafana-F46800?style=flat&logo=Grafana&logoColor=white" style="border-radius: 5px; width: 80px; height: 27px;">
+<img src="https://img.shields.io/badge/kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white">
 <br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/vuejs-%2335495e.svg?style=flat&logo=vuedotjs&logoColor=%234FC08D"/></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/SpringBoot-181717?style=flat&logo=SpringBoot&logoColor=6DB33F&color=white"></a>
-<br><br>
 
 ---
+
 ## 📚 Enadu 사이트 바로가기
 ---
-📌Enadu <br>
+<div style="text-align: center;">
+
+### 📌Enadu Website <br>
 https://www.enadu.kro.kr <br>
-<br>
+</div>
 
 ---
 ## 🎨 Enadu 서비스 소개
 ---
 <img src= "https://github.com/user-attachments/assets/2a07b47d-e074-4821-b5ac-3b445c6a9f1a">
-개발자들은 에러를 해결하기 위해 인터넷에서 유사한 오류를 검색하거나 개발자 커뮤니티에 질문을
-통해 해결 하고자 노력한다. 하지만 이 과정은 많은 노력과 시간을 필요로하기 때문에 개발 과정에서
-필요한 정보들과, 개발자들이 자주 마주하는 오류들에 대한 해결 방법을 체계적으로 모아둔 웹사이트
-Enadu를 구축하고자 하였다. Enadu는 개발에 필요한 검증된 정보들을 체계적으로 정리하여
-개발자들의 개발과 공부 과정에서 편리함을 제공하고 더나아가, ai 답변과 타 개발자들과의
-일대일 채팅 공간을 제공하여 사용자의 개발 환경을 발전시키는 것을  목표로 하였다.
+
+### 체계적인 지식 관리 서비스
+- Wiki + QnA + Blog 3가지 기능을 하나로 통합한 개발자 지식 공유 플랫폼
+
+  개발을 하다 보면 다양한 문제와 오류에 직면 하게 된다. 이 때 개발자들은 AI, 블로그 등등의 다양한 웹 서비스를 이용하지만, 각기 다른 사이트를 방문해야 하는 번거로움이 존재하곤 한다.<br>
+  이러한 정보들을 하나의 사이트에서 관리 하여 개발자들이 효율적으로 문제를 해결하고 공유하며, 공유된 지식들을 체계적으로 관리하기위해 Enadu 서비스를 구축하였다.
+  - **WIKI**<br>
+    유저들이 프로그래밍 언어별 정보, 최신 기술에 관한 지식을 자유롭게 공유하고, 이를 체계적으로 관리할 수 있는 서비스를 제공한다.
+  - **QnA**<br>
+    개발자들이 직면한 문제와 에러를 질문하고, 답변을 얻을 수 있는 서비스를 제공한다.
+  - **ErrorArcive**<br>
+    단순히 문제를 해결하는 것에 그치지 않고, 해결 과정을 블로그 형태로 정리하고, 공유한다.
+
 
 ---
 ## 🤳 프로젝트 목표
 ---
-어쩌구 저쩌구~~~~~~~
+
+- 통합 지식 관리: 개발자들이 하나의 플랫폼에서 프로그래밍 관련 지식, 문제 해결 방법, 최신 기술 정보를 체계적으로 관리할 수 있도록 지원한다.<br>
+
+- 효율적인 문제 해결: 직면한 문제와 에러를 즉시 질문하고, 답변을 통해 문제를 해결할 수 있는 QnA 기능을 통해 개발 효율성을 높인다.<br>
+
+- 지식 아카이빙: 해결된 문제를 블로그 형태로 정리하여, 단순히 문제 해결에 그치지 않고 과정을 기록함으로써 개발자들이 참고할 수 있는 ErrorArchive를 제공한다.<br>
+
+- 커뮤니티 형성: 개발자들 간의 지식 공유를 통해 협력 문화를 조성하고, 개발 커뮤니티의 성장과 발전을 도모한다.
+
 
 <br>
 
@@ -98,8 +142,7 @@ Enadu를 구축하고자 하였다. Enadu는 개발에 필요한 검증된 정�
 </details>
 
 
-### 2. 화면설계서
-<a href="https://www.figma.com/design/m7hJQ7xwdigDITERHFxOaO/%EC%97%90%EB%82%98%EB%91%90-%ED%99%94%EB%A9%B4-%EC%84%A4%EA%B3%84%EC%84%9C?node-id=4700-2135&node-type=frame&t=qAb7mtL2BFA6NjKI-0">에나두 화면설계서</a>
+### [2. 에나두 화면설계서 바로가기](https://www.figma.com/design/m7hJQ7xwdigDITERHFxOaO/%EC%97%90%EB%82%98%EB%91%90-%ED%99%94%EB%A9%B4-%EC%84%A4%EA%B3%84%EC%84%9C?node-id=4700-2135&node-type=frame&t=qAb7mtL2BFA6NjKI-0")</a>
 
 ### 3. CI/CD
 
