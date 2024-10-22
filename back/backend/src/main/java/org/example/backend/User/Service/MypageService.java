@@ -81,7 +81,6 @@ public class MypageService {
                             qnaBoard.getCategory().getSuperCategory().getCategoryName() : null)
                     .subCategoryName(qnaBoard.getCategory() != null ?
                             qnaBoard.getCategory().getCategoryName() : null)
-                    .subCategoryName(qnaBoard.getCategory().getCategoryName())
                     .nickname(qnaBoard.getUser().getNickname())
                     .profileImage(qnaBoard.getUser().getProfileImg())
                     .grade(qnaBoard.getUser().getGrade())
