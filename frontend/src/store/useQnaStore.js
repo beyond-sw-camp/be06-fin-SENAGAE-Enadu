@@ -83,8 +83,6 @@ export const useQnaStore = defineStore("qna", {
             try {
                 let res = await axios.get(backend + "/qna/detail?qnaBoardId=" + id, {withCredentials: true});
                 if (!res.data.isSuccess) {
-                    console.log(res.data);
-                    console.log(res.data.message);
                     alert(res.data.message);
                     router.push('/exception');
                     return false;
@@ -93,21 +91,21 @@ export const useQnaStore = defineStore("qna", {
                 this.qnaAnswers = res.data.result.answers;
                 this.adoptedAnswerId = res.data.result.adoptedAnswerId;
             } catch (error) {
+                alert(error.message);
                 return false;
             }
         },
-        async getQnaEditDetail(id, router) {
+        async getQnaEditDetail(id) {
             try {
                 let res = await axios.get(backend + "/qna/edit-detail?qnaBoardId=" + id, {withCredentials: true});
                 if (!res.data.isSuccess) {
-                    console.log(res.data);
-                    console.log(res.data.message);
                     alert(res.data.message);
-                    router.push('/exception');
                     return false;
                 }
                 this.qnaEditDetail = res.data.result;
+                return true;
             } catch (error) {
+                alert(error.message);
                 return false;
             }
         },
