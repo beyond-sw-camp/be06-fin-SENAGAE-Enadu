@@ -146,7 +146,7 @@ https://www.enadu.kro.kr <br>
 ---
 ### [📃 Frontend]() <br>
 ### [📃 Backend]() <br>
-### [📃 CICD]()
+### [📃 CICD](cicd/readme.md)
 <br>
 
 
