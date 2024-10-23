@@ -1,54 +1,31 @@
-<h1 align="center"> Enadu  CICD </h1>
 <br>
+  
+<h1 align="center"> 지식 관리 시스템   Enadu </h1>
 <br>
-
->   
-> 팀 SENAGAE
-
-## 🎁팀원 소개
-
-
-
-<table align="center">
- <tr>
-    <td align="center"><a href="https://github.com/dyun23"><img src="https://avatars.githubusercontent.com/dyun23" width="150px;" alt=""></td>
-    <td align="center"><a href="https://github.com/sue06004"><img src="https://avatars.githubusercontent.com/sue06004" width="150px;" alt=""></td>
-    <td align="center"><a href="https://github.com/jimnyy"><img src="https://avatars.githubusercontent.com/jimnyy" width="150px;" alt=""></td>
-    <td align="center"><a href="https://github.com/dlrkdms125"><img src="https://avatars.githubusercontent.com/dlrkdms125" width="150px;" alt=""></td>
-    <td align="center"><a href="https://github.com/ashd89"><img src="https://avatars.githubusercontent.com/ashd89" width="150px;" alt=""></td>
-  </tr>
-  <tr>
-    <td align="center">🐥<a href="https://github.com/dyun23"><b>김다윤</b></td>
-    <td align="center">🦊<a href="https://github.com/sue06004"><b>김우혁</b></td>
-    <td align="center">😼<a href="https://github.com/jimnyy"><b>도지민</b></td>
-    <td align="center">🐰<a href="https://github.com/dlrkdms125"><b>이가은</b></td>
-    <td align="center">🐻<a href="https://github.com/ashd89"><b>이재룡</b></td>
-  </tr>
-  </table>
-<br><br>
-
+<div align="center">
+<img src="https://github.com/user-attachments/assets/3f6df515-9e11-4b63-b4e1-c35d22176721" style="width: 60%;">
+</div>
+<br>
 
 ### 목차
 - [CI/CD 의 기대효과](#-cicd-의-기대효과)
 - [Enadu 운영 환경](#-운영-환경)
 - [배포 방식](#-bluegreen-배포-방식-사용-이유)
-- [CI/CD 배포 시나리오](#-cicd-시나리오)
-
+- [모니터링 방식](#-모니터링-시스템)
+- [CI/CD 배포 시나리오](#-enadu-backend-cicd-시나리오)
+- [CI/CD 테스트 및 결과](#-cicd-테스트-및-결과)
 <br><br>
 
 
 
 ## 🛠 기술 스택
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white&color=black"></a></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=Git&logoColor=white&color=ffa500"></a></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=black&color=blue"/></a></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=Kubernetes&logoColor=blue&color=skyblue"/></a></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/Jenkins-D24939?style=flat&logo=jenkins&logoColor=white"/></a></a>
-<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/vuejs-%2335495e.svg?style=flat&logo=vuedotjs&logoColor=%234FC08D"/></a>
-&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/SpringBoot-181717?style=flat&logo=SpringBoot&logoColor=6DB33F&color=white"></a>
-<br><br><br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/kubernates-326CE5?style=for-the-badge&logo=Kubernates&logoColor=white" style="border-radius: 5px;">
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" style="border-radius: 5px;">
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/discord-326CE5?style=for-the-badge&logo=discord&logoColor=white" style="border-radius: 5px;">
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white" style="border-radius: 5px;">
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white" style="border-radius: 5px;">
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white" style="border-radius: 5px;">
+<br><br>
 
 
 ## 🔎 CI/CD 의 기대효과 
@@ -102,7 +79,7 @@
 
 ### 📁시스템 아키텍처
   
-![시스템아키텍처](https://github.com/user-attachments/assets/22bd100a-c41b-4d09-a2d4-2262ec68994b)
+![시스템아키텍처 drawio](https://github.com/user-attachments/assets/d8be0030-19cc-432c-a73d-b89e5b1648a8)
 
 
 <br>
@@ -123,32 +100,6 @@
 Prometheus는 k8s 클러스터 내부의 각 pod의 데이터를 수집하여 
 Grafana를 통해 CPU 및 메모리 사용량, 네트워크 트래픽 등을 시각화하여 클러스터의 상태를 실시간으로 확인 가능하다.
 <br><br><br> 
-
-## 🎞 Enadu Backend CI/CD 시나리오
-
-
-#### 1. github에 be-dev 최신 버전 프로젝트를 머지
-
-#### 2. github는 젠킨스에게 webhook을 통해서 젠킨스에게 이벤트 전달
-
-#### 3. 젠킨스는 파이프라인에 저장된 절차 실행
-- a. 젠킨스는 github에서 최신 코드를 clone한다.
-- b. backend 혹은 common(repository 관련 모듈) 모듈의 변화를 인식 
-- c. 단위 테스트 실행 후 전체 테스트 성공 시 
-- d. 클론된 코드를 기반으로 빌드 작업 수행
-- e. 빌드를 통해 도커 이미지 생성 및 도커 허브에 push
-    
-#### 4. 쿠버네티스 마스터에 SSH 접속 후 쉘스크립트 실행
-  1) 현재 실행 중인 디플로이먼트가 blue라면 green으로 디플로이먼트 생성
- - a. 젠킨스에서 도커 허브에 푸쉬한 이미지로 컨테이너 실행
-  2) rollout명령어를 활용하여 생성한 디플로이먼트내의 프로그램이 정상 작동인지 확인
-  3) 정상 작동중이라면 서비스를 신버전 디플로이먼트의 파드들과 연결하도록 수정
-  4) 구버전 디플로이먼트 삭제
-
-#### 5. webhook을 통해 Discode에게 파이프라인 결과 전달
-- a. 젠킨스에 설치한 Discode 플러그인을 통해 파이프라인 제목, 결과, 실행 시간이 담긴 Post를 Discode에 보냄
-- b. Discode봇이 데이터를 받아 지정한 Discode 서버에 실행 결과를 전송
-
 
 ## 🎞 Enadu Backend CI/CD 시나리오
 
