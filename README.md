@@ -145,7 +145,7 @@ https://www.enadu.kro.kr <br>
 ## 📂 개발 폴더 바로가기
 ---
 ### [📃 Frontend]() <br>
-### [📃 Backend]() <br>
+### [📃 Backend](https://github.com/beyond-sw-camp/be06-fin-SENAGAE-Enadu/blob/develop/back/README.md) <br>
 ### [📃 CICD](cicd/readme.md)
 <br>
 
