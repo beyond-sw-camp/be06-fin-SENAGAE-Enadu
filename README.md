@@ -88,7 +88,6 @@
 <br>
 
 ---
-
 ## 📚 Enadu 사이트 바로가기
 ---
 <div style="text-align: center;">
@@ -102,39 +101,26 @@ https://www.enadu.kro.kr <br>
 ---
 <img src= "https://github.com/user-attachments/assets/2a07b47d-e074-4821-b5ac-3b445c6a9f1a">
 
-### 체계적인 지식 관리 서비스
-- Wiki + QnA + Blog 3가지 기능을 하나로 통합한 개발자 지식 공유 플랫폼
+### 프로젝트 배경
 
-  개발을 하다 보면 다양한 문제와 오류에 직면 하게 된다. 이 때 개발자들은 AI, 블로그 등등의 다양한 웹 서비스를 이용하지만, 각기 다른 사이트를 방문해야 하는 번거로움이 존재하곤 한다.<br>
+ - 체계적인 지식 관리 서비스 <br>
+ - Wiki + QnA + Blog 3가지 기능을 하나로 통합한 개발자 지식 공유 플랫폼<br>
+   개발을 하다 보면 다양한 문제와 오류에 직면 하게 된다. 이 때 개발자들은 AI, 블로그 등등의 다양한 웹 서비스를 이용하지만, 각기 다른 사이트를 방문해야 하는 번거로움이 존재하곤 한다.<br>
   이러한 정보들을 하나의 사이트에서 관리 하여 개발자들이 효율적으로 문제를 해결하고 공유하며, 공유된 지식들을 체계적으로 관리하기위해 Enadu 서비스를 구축하였다.
-  - **WIKI**<br>
+
+### 주요기능
+
+  - **1. WIKI**<br>
     유저들이 프로그래밍 언어별 정보, 최신 기술에 관한 지식을 자유롭게 공유하고, 이를 체계적으로 관리할 수 있는 서비스를 제공한다.
-  - **QnA**<br>
+  - **2. QnA**<br>
     개발자들이 직면한 문제와 에러를 질문하고, 답변을 얻을 수 있는 서비스를 제공한다.
-  - **ErrorArcive**<br>
+  - **3. ErrorArcive**<br>
     단순히 문제를 해결하는 것에 그치지 않고, 해결 과정을 블로그 형태로 정리하고, 공유한다.
-
-
----
-## 🤳 프로젝트 목표
----
-
-- 통합 지식 관리: 개발자들이 하나의 플랫폼에서 프로그래밍 관련 지식, 문제 해결 방법, 최신 기술 정보를 체계적으로 관리할 수 있도록 지원한다.<br>
-
-- 효율적인 문제 해결: 직면한 문제와 에러를 즉시 질문하고, 답변을 통해 문제를 해결할 수 있는 QnA 기능을 통해 개발 효율성을 높인다.<br>
-
-- 지식 아카이빙: 해결된 문제를 블로그 형태로 정리하여, 단순히 문제 해결에 그치지 않고 과정을 기록함으로써 개발자들이 참고할 수 있는 ErrorArchive를 제공한다.<br>
-
-- 커뮤니티 형성: 개발자들 간의 지식 공유를 통해 협력 문화를 조성하고, 개발 커뮤니티의 성장과 발전을 도모한다.
-
-
-<br>
-
+    
+    <br>
 ---
 ## 📈 프로젝트 설계
-
-어쩌구 <br>
-저쩌구 <br>
+---
 
 <details>
 <summary><h3>1. ERD</h3></summary>
@@ -144,18 +130,23 @@ https://www.enadu.kro.kr <br>
 
 ### [2. 에나두 화면설계서 바로가기](https://www.figma.com/design/m7hJQ7xwdigDITERHFxOaO/%EC%97%90%EB%82%98%EB%91%90-%ED%99%94%EB%A9%B4-%EC%84%A4%EA%B3%84%EC%84%9C?node-id=4700-2135&node-type=frame&t=qAb7mtL2BFA6NjKI-0")</a>
 
-### 3. CI/CD
 
 <details>
-<summary><h3>4. 시스템 아키텍처</h3></summary>
+<summary><h3>3. 시스템 아키텍처</h3></summary>
 <img src="https://github.com/user-attachments/assets/20d4bd81-5a44-453e-9315-6fdfa33e2f4d">
 </details>
 
----
-## ⌛프로젝트 기능 및 일정
----
-어쩌구 저쩌구
+### [4. 요구사항 정의서](https://docs.google.com/spreadsheets/d/10twxxTMI7e_H_zHhxfUHqkkvaU0XMbR9/edit?usp=sharing&ouid=109538896843972820204&rtpof=true&sd=true)</a>
+
+###  [5. API 명세서](https://www.notion.so/senagae/API-bdb3513bb144442dabac5eff74894707?pvs=4)
 <br>
+
+---
+## 📂 개발 폴더 바로가기
+---
+### [📃 Frontend]() <br>
+### [📃 Backend]() <br>
+### [📃 CICD]()
 <br>
 
 
