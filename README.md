@@ -132,10 +132,6 @@ https://www.enadu.kro.kr <br>
 
 ---
 ## 📈 프로젝트 설계
-
-어쩌구 <br>
-저쩌구 <br>
-
 <details>
 <summary><h3>1. ERD</h3></summary>
 <img src="https://github.com/user-attachments/assets/a6e74e9f-1666-47de-9388-d9352ae4f158">
