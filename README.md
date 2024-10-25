@@ -51,7 +51,9 @@
 
 ## 4. Batch
 <img width="617" alt="image" src="https://github.com/user-attachments/assets/b80ec394-995f-4ea4-9b49-2ce0854156b2"> <br>
-- 외부 api로부터 가져온 데이터들을 데이터베이스에 저장하는 작업을 Spring Batch를 통해 구현하고, 해당 작업을 Kubernetes의 CronJob을 통해 주기적으로 수행한다.
-  - 
-
+- 외부 api로부터 가져온 데이터들을 데이터베이스에 저장하는 작업을 Spring Batch를 통해 구현하고, 해당 작업을 Kubernetes의 CronJob을 통해 주기적으로 설정한 일을 수행한다. <br>
+- 스프링 배치는 작업할 때 청크 기반으로 데이터를 나누어 처리하기 때문에 데이터를 더 효율적으로 처리한다. <br>
+  - 일간 랭킹 및 주간 랭킹 <br>
+  - AI 답변 시스템 <br>
+  - 미답변 질문 처리 시스템 <br>
 
