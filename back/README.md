@@ -29,10 +29,10 @@
 ---
 
 ## 1. Search
-<img width="684" alt="image" src="https://github.com/user-attachments/assets/60052995-3e25-43b6-8008-6a73c6910904"> <br>
+<img width="617" alt="image" src="https://github.com/user-attachments/assets/fa399aaf-dbd0-4e43-8cf4-204a329442e1"> <br>
 - 엘라스틱 서치는 역색인 방식으로, 키워드 기반으로 검색을 수행하여 검색을 매우 빠르게 할 수 있다 <br>
 - 역색인 방식은 document들이 indexing되어 (text, documents)란 key, value 형태로 mapping 되는 방식이다 <br>
-<img width="684" alt="image" src="https://github.com/user-attachments/assets/fb6f6aff-b793-43ba-9ed1-91e999abb54e"> <br>
+<img width="617" alt="image" src="https://github.com/user-attachments/assets/37483c40-01b4-48d7-81ae-552b3183a2fe"> <br>
 - 기존의 db에서 logstash가 1분마다 데이터를 조회하고 elastic search에 저장한다
 ## 2. Chat <br>
 <img width="613" alt="image" src="https://github.com/user-attachments/assets/4e3eb6f1-795a-4bab-980a-4607a6e54f50"> <br>
