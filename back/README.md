@@ -35,12 +35,10 @@
 <img width="684" alt="image" src="https://github.com/user-attachments/assets/fb6f6aff-b793-43ba-9ed1-91e999abb54e"> <br>
 - 기존의 db에서 logstash가 1분마다 데이터를 조회하고 elastic search에 저장한다.
 ## 2. Chat
-<img width="684" alt="image" src="https://github.com/user-attachments/assets/ef793580-3b7a-43d8-8200-3ea201d2a1ab"> <br>
-<img width="684" alt="image" src="https://github.com/user-attachments/assets/e4387a01-29c1-4d5f-8661-e6ff174450cb"> <br>
-<img width="684" alt="image" src="https://github.com/user-attachments/assets/8ec8103b-46af-4f2c-bb82-c06b56514f19"> <br>
+<img width="546" alt="image" src="https://github.com/user-attachments/assets/dd9a7426-f27b-44f4-9ba0-13baa84ccaee">
 서버 이중화로 인한 데이터 동기화 문제로 채팅에 외부 메시지 브로커를 추가하였다.
-<img width="684" alt="image" src="https://github.com/user-attachments/assets/ab20958e-3994-4b4a-bbde-c9a15d675929"> <br>
-<img width="684" alt="image" src="https://github.com/user-attachments/assets/7415db3e-b697-49d0-8f4b-fcd25101dc45"> <br>
+<img width="640" alt="image" src="https://github.com/user-attachments/assets/8e16a5b1-fbf3-4bc6-b41a-5181199359ff">
+
 
 
 
