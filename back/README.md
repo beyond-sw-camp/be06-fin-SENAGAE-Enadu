@@ -44,6 +44,8 @@
   - 웹소켓 위에서 pub/sub 위에서 모델로 동작하는 문자 기반 메시징 프로토콜 <br>
 <img width="640" alt="image" src="https://github.com/user-attachments/assets/68067bf5-fac9-438c-b25e-ecde5a4b5e18"> <br>
 - 카프카
+  - 메시지 브로커와 이벤트 스트리밍 플랫폼 모두 이벤트를 수신하고, 이것을 consumer에게 전달한다.
+  - 
   
 
 
