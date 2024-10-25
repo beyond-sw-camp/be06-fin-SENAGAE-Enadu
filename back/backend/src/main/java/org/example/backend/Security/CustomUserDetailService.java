@@ -24,7 +24,7 @@ public class CustomUserDetailService implements UserDetailsService {
         userService.checkEmailPattern(username);
 
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new InvalidUserException(BaseResponseStatus.USER_NOT_FOUND));
+                .orElse(null);
 
         return new CustomUserDetails(user);
     }
