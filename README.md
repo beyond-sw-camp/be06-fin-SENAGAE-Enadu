@@ -140,9 +140,9 @@
 <br>
 
 ## 📂 개발 폴더 바로가기
-### [📃 Frontend](https://github.com/beyond-sw-camp/be06-fin-SENAGAE-Enadu/blob/develop/front/README.md) <br>
-### [📃 Backend](https://github.com/beyond-sw-camp/be06-fin-SENAGAE-Enadu/blob/develop/back/README.md) <br>
-### [📃 CICD](cicd/readme.md)
+### [📃 Frontend](front/README.md) <br>
+### [📃 Backend](back/README.md) <br>
+### [📃 CICD](cicd/README.md)
 <br>
 
 
