@@ -31,10 +31,19 @@
 ## 1. Search
 <img width="684" alt="image" src="https://github.com/user-attachments/assets/60052995-3e25-43b6-8008-6a73c6910904"> <br>
 - 엘라스틱 서치는 역색인 방식으로, 키워드 기반으로 검색을 수행하여 검색을 매우 빠르게 할 수 있다. <br>
-- 역색인 방식은 document들이 indexing되어 (text, documents)란 key, value 형태로 mapping 되는 방식이다.
+- 역색인 방식은 document들이 indexing되어 (text, documents)란 key, value 형태로 mapping 되는 방식이다. <br>
 <img width="684" alt="image" src="https://github.com/user-attachments/assets/fb6f6aff-b793-43ba-9ed1-91e999abb54e"> <br>
 - 기존의 db에서 logstash가 1분마다 데이터를 조회하고 elastic search에 저장한다.
 ## 2. Chat
+<img width="684" alt="image" src="https://github.com/user-attachments/assets/ef793580-3b7a-43d8-8200-3ea201d2a1ab"> <br>
+<img width="684" alt="image" src="https://github.com/user-attachments/assets/e4387a01-29c1-4d5f-8661-e6ff174450cb"> <br>
+<img width="684" alt="image" src="https://github.com/user-attachments/assets/8ec8103b-46af-4f2c-bb82-c06b56514f19"> <br>
+서버 이중화로 인한 데이터 동기화 문제로 채팅에 외부 메시지 브로커를 추가하였다.
+<img width="684" alt="image" src="https://github.com/user-attachments/assets/ab20958e-3994-4b4a-bbde-c9a15d675929"> <br>
+<img width="684" alt="image" src="https://github.com/user-attachments/assets/7415db3e-b697-49d0-8f4b-fcd25101dc45"> <br>
+
+
+
 
 ## 3. AOP
 
