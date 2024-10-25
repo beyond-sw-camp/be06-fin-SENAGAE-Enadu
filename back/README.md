@@ -32,8 +32,8 @@
 - 엘라스틱 서치는 역색인 방식으로, 키워드 기반으로 검색을 수행하여 검색을 매우 빠르게 할 수 있다 <br>
 - 역색인 방식은 document들이 indexing되어 (text, documents)란 key, value 형태로 mapping 되는 방식이다 <br>
 <img width="617" alt="image" src="https://github.com/user-attachments/assets/37483c40-01b4-48d7-81ae-552b3183a2fe"> <br>
-- 기존의 db에서 logstash가 1분마다 데이터를 조회하고 elastic search에 저장한다
-<br>
+- 기존의 db에서 logstash가 1분마다 데이터를 조회하고 elastic search에 저장한다 <br>
+
 ## 2. Chat <br>
 <img width="613" alt="image" src="https://github.com/user-attachments/assets/4e3eb6f1-795a-4bab-980a-4607a6e54f50"> <br>
 - Pub/Sub 구조 <br>
@@ -45,14 +45,14 @@
 <img width="640" alt="image" src="https://github.com/user-attachments/assets/68067bf5-fac9-438c-b25e-ecde5a4b5e18"> <br>
 - 카프카
   - 메시지 브로커와 이벤트 스트리밍 플랫폼 모두 이벤트를 수신하고, 이것을 consumer에게 전달한다.
-  - 고가용성의 설계를 가진 애플리케이션을 위해 트래픽이 많고, 장애가 생겼을때 대응할 수 있는 포인트가 조금 더 명확한 Kafka를 사용하기로 결정하였다.
-<br>
+  - 고가용성의 설계를 가진 애플리케이션을 위해 트래픽이 많고, 장애가 생겼을때 대응할 수 있는 포인트가 조금 더 명확한 Kafka를 사용하기로 결정하였다. <br>
+
 ## 3. AOP
 <img width="660" alt="image" src="https://github.com/user-attachments/assets/f972256c-37c6-4616-9e41-5d168b8157e5"> <br>
 - AOP는 애플리케이션의 핵심 비즈니스 로직과 관련 없는 부가적인 기능들을 모듈화하여 코드의 중복을 줄이고 유지보수성을 향상시킨다.
   - 게시글을 등록하거나, 답변을 작성하는 등 사이트에 기여할 때 포인트를 지급하는 방식을 도입하였다.
-  - 이전 작업이 정상적으로 처리된 후에 포인트가 부여되므로, 포인트가 잘못 지급되는 문제를 방지할 수 있다.
-<br>
+  - 이전 작업이 정상적으로 처리된 후에 포인트가 부여되므로, 포인트가 잘못 지급되는 문제를 방지할 수 있다. <br>
+
 
 ## 4. Batch
 <img width="617" alt="image" src="https://github.com/user-attachments/assets/b80ec394-995f-4ea4-9b49-2ce0854156b2"> <br>
