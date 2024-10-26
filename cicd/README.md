@@ -1,6 +1,6 @@
 <br>
   
-<h1 align="center"> 지식 관리 시스템   Enadu </h1>
+<h1 align="center"> 개발자 지식 공유 플랫폼 Enadu - CICD </h1>
 <br>
 <div align="center">
 <img src="https://github.com/user-attachments/assets/3f6df515-9e11-4b63-b4e1-c35d22176721" style="width: 60%;">
