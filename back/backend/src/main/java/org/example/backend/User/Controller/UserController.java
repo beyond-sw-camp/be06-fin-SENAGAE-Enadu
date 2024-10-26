@@ -63,7 +63,14 @@ public class UserController {
     @PostMapping("/logout")
     public BaseResponse<String> logout(HttpServletResponse response) {
         Cookie expiredCookie = jwtUtil.removeCookie();
+        Cookie jsessionCookie = new Cookie("JSESSIONID", null);
+        jsessionCookie.setHttpOnly(true);
+        jsessionCookie.setSecure(true);
+        jsessionCookie.setPath("/");
+        jsessionCookie.setMaxAge(0);
+
         response.addCookie(expiredCookie);
+        response.addCookie(jsessionCookie);
         return new BaseResponse<>();
     }
 

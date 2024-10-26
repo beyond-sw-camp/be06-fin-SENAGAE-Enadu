@@ -39,6 +39,9 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public boolean isEnabled() {
+        if (user == null){
+            return false;
+        }
         return user.getEnable();
     }
 
