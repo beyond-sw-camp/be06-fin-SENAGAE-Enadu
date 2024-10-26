@@ -43,16 +43,15 @@
 ## 🌌 운영 환경
 #### - 클러스터 노드 구성
 💻 Master 1대<br>
-💻 Worker 4대의 클러스터 구성 (Galera Cluster)
+💻 Worker 3대의 클러스터 구성 
 
-> Calico CNI를 활용한 클러스터 내부 pod들의 통신망 구성
 <br>
 
 
 ### 쿠버네티스 선택 이유  ⚙ 
 #### 1. Automated Deployment
     
- 애플리케이션의 자동 배포, 업데이트, 롤백을 지원하므로, 점진적 업데이트를 통해 무중단 배포 수행 가능하다
+ 애플리케이션의 자동 배포, 롤백을 지원하므로 안정적인 무중단 배포가 가능하다
     
 #### 2. Scaling and Autoscaling
     
@@ -68,7 +67,7 @@
 ### 젠킨스 선택 이유 ⚙ 
 #### 1. CI/CD
     
- 코드 변경 사항을 자동으로 빌드하고 테스트하는 CI/CD 파이프라인을 쉽게 구성할 수 있는 기능을 제공하고, 배포를 자동화하여 개발 주기를 단축시킨다
+ 코드 변경 사항을 자동으로 빌드하고 테스트하는 CI/CD 파이프라인을 쉽게 구성할 수 있는 기능을 제공하고, 배포를 자동화하여 개발자가 개발에만 집중할 수 있는 환경을 제공한다.
     
 #### 2. Flexibility
     
@@ -89,7 +88,7 @@
 
 ## 📘📗 Blue/Green 배포 방식 사용 이유
 
-우리팀은 다운 타임이 없는 무중단 배포 방식 중 Blue/Green 배포 방식을 적용하였다.
+다운 타임이 없는 무중단 배포 방식 중 Blue/Green 배포 방식을 적용하였다.
 - 블루그린 배포 방식은 지속적 배포 방식 중 하나로 신 버전을 배포가 완료되면 구 버전을 바라보던 서비스가 신 버전으로 일제히 전환하도록 하는 방식이다.
 - 신속한 업데이트와 동시에 서버 안정성이 좋기 때문에 이 방식을 선택했다.
 <br><br><br>
@@ -186,12 +185,18 @@ Grafana를 통해 CPU 및 메모리 사용량, 네트워크 트래픽 등을 시
 
 
 ### 젠킨스 파이프라인
-![](https://github.com/user-attachments/assets/ca2edd94-d1a3-4afc-9380-2426f8962d6a)
+![제목-없는-동영상-Clipchamp로-제작-_1_](https://github.com/user-attachments/assets/e486d25f-95e0-47cc-917f-84b03b9ebac0)
 
 ### K8S Blue/Green 배포 
-![](https://github.com/user-attachments/assets/b8d2d959-975c-4892-8406-010534a62ed1)
+![be-pipeline](https://github.com/user-attachments/assets/a84781dd-68e2-409b-bd11-30d2be10c55c)
+
+### 백엔드 테스트 
+![image](https://github.com/user-attachments/assets/8d1a19c3-83e9-448f-a272-d88d4597fe7b)
+
 
 ### 디스코드 알림
-<img width="450" alt="스크린샷 2024-08-29 오후 2 36 56" src="https://github.com/user-attachments/assets/5c524497-12fc-4cad-acd3-ce86fd331641">
+<img width="250" alt="스크린샷 2024-08-29 오후 2 36 56" src="https://github.com/user-attachments/assets/cc10f0ae-ea29-4db2-9c9c-e2b06a0b3acc">
+<img width="250" alt="스크린샷 2024-08-29 오후 2 36 56" src="https://github.com/user-attachments/assets/9d3a27ce-4d4c-443b-8491-af940166f602">
+
 <br>
 <br>
