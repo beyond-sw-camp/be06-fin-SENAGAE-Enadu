@@ -14,6 +14,7 @@
 ---
 &nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"/> <img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white" /> ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D) <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"/> <img src="https://img.shields.io/badge/pinia-gold?style=for-the-badge&logo=Pinia&logoColor=white"/> <img src="https://img.shields.io/badge/kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white">
+![무제](https://github.com/user-attachments/assets/d9f850da-4852-49f2-9e75-4c825d30bad9)
 
 ---
 
@@ -124,6 +125,10 @@
 <details>
 <summary>좋아요 / 싫어요, 스크랩</summary>
 
+![스크랩](https://github.com/user-attachments/assets/d9f850da-4852-49f2-9e75-4c825d30bad9)
+> 로그인한 유저는 게시판별로 좋아요/싫어요, 스크랩이 가능
+> 위키는 공유문서이기 때문에 스크랩만 가능
+> 스크랩한 문서들은 마이페이지에서 확인 가능
 </details>
 
 <details>
