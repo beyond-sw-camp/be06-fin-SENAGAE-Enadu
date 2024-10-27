@@ -138,7 +138,7 @@
 <br>
 
 ## 📂 개발 폴더 바로가기
-### [📃 Frontend](front/README.md) <br>
+### [📃 Frontend](frontend/README.md) <br>
 ### [📃 Backend](back/README.md) <br>
 ### [📃 CICD](cicd/README.md)
 <br>
