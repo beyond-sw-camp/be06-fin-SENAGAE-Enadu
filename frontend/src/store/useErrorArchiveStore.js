@@ -32,12 +32,12 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     // 에러 아카이브 등록 기능
     async registerErrorArchive(errorarchive) {
       try {
-        const response = await axios.post(backend + "/errorarchive", errorarchive ,{
+        const response = await axios.post(backend + "/errorarchive", errorarchive, {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
         // 서버 응답 확인
-        console.log('응답 데이터 로그로 확인'+response.data); // 응답 데이터 로그로 확인
+        console.log('응답 데이터 로그로 확인' + response.data); // 응답 데이터 로그로 확인
         // 응답 구조 로그 출력
         console.log('API 응답:', response.data);
 
@@ -50,7 +50,8 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           console.error('응답 데이터에 isSuccess가 없거나 실패한 경우:', response.data);
           throw new Error('응답 데이터에 isSuccess가 없거나 실패한 경우.');
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error('등록 중 오류 발생:', error);
         throw error;
       }
@@ -58,7 +59,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     // 에러 아카이브 수정 기능
     async updateErrorArchive(errorarchive) {
       try {
-        const response = await axios.patch(backend+"/errorarchive", errorarchive, {
+        const response = await axios.patch(backend + "/errorarchive", errorarchive, {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
@@ -71,7 +72,8 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         } else {
           throw new Error("수정 실패: " + response.data.message);
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error("에러 아카이브 수정 중 오류 발생:", error);
         if (error.response) {
           console.error("응답 데이터:", error.response.data); // 응답 데이터 확인
@@ -80,7 +82,7 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
     },
     async deleteErrorArchive(id) {
       try {
-        const response = await axios.patch(`${backend}/errorarchive/removal`,{id:id} , {
+        const response = await axios.patch(`${backend}/errorarchive/removal`, { id: id }, {
           withCredentials: true,
         });
 
@@ -93,7 +95,8 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         } else {
           throw new Error("삭제 실패: " + response.data.message);
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error("에러 아카이브 삭제 중 오류 발생:", error);
         if (error.response) {
           console.error("응답 데이터:", error.response.data);
@@ -123,7 +126,8 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
           }
           throw new Error("에러아카이브 상세 조회 실패: " + response.data.message);
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error("에러아카이브 상세 조회 중 오류 발생:", error);
       }
     },
@@ -137,9 +141,10 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
       // 응답의 유효성 검사
       if (response.data.isSuccess) {
         this.errorArchiveDetail = response.data.result;
-        return response.data.result; // 결과를 반환
+        return response.data.result;
       } else {
-        return response.data.message;
+        alert(response.data.message);
+        return false;
       }
     },
     async getErrorArchiveList(sort, page) {
@@ -149,22 +154,24 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         size: 16
       };
       try {
-        const response = await axios.get(backend+"/errorarchive/list", {
+        const response = await axios.get(backend + "/errorarchive/list", {
           params: params,
-          withCredentials: true });
-        this.errorarchiveCards  = response.data.result;
+          withCredentials: true
+        });
+        this.errorarchiveCards = response.data.result;
         console.log(this.errorarchiveCards);
-      } catch(error) {
-        console.error("error fetching errorarchive list:",  error);
+      }
+      catch (error) {
+        console.error("error fetching errorarchive list:", error);
       }
     },
-    async likeErrorArchive(id, like){
+    async likeErrorArchive(id, like) {
       const request = {
         id: id,
         isLike: like
       }
       try {
-        const response = await axios.post(`${backend}/errorarchive/like`,request, {
+        const response = await axios.post(`${backend}/errorarchive/like`, request, {
           withCredentials: true,
         });
 
@@ -173,36 +180,38 @@ export const useErrorArchiveStore = defineStore('errorarchive', {
         } else {
           throw new Error(response.data.message);
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
       }
     },
-    async scrapErrorArchive(id){
+    async scrapErrorArchive(id) {
       console.log(id);
       const scrapReq = {
         id: id,
       }
       try {
-        const response = await axios.post(`${backend}/errorarchive/scrap`,scrapReq, {
+        const response = await axios.post(`${backend}/errorarchive/scrap`, scrapReq, {
           withCredentials: true,
         });
 
         if (response.data.isSuccess) {
-          return response.data.result.result;
+          return response.data.result;
         } else {
           throw new Error(response.data.message);
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error("에러아카이브 좋아요/싫어요 중 오류 발생:", error);
       }
     },
-    async searchErrorArchive(request){
-      request.size= 16;
-      const response = await axios.get(backend+"/errorarchive/search", {
+    async searchErrorArchive(request) {
+      request.size = 16;
+      const response = await axios.get(backend + "/errorarchive/search", {
         params: request
       });
-      if (response.data.result){
-        this.errorarchiveCards  = response.data.result;
+      if (response.data.result) {
+        this.errorarchiveCards = response.data.result;
       } else {
         this.errorarchiveCards = [];
       }

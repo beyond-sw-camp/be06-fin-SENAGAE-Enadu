@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div v-if="!isLoading && totalPages > 0" class="qna-bottom">
+    <div v-if="!pageLoading" class="qna-bottom">
       <PaginationComponent @updatePage="handlePageUpdate" :nowPage="selectedPage"
                            :totalPage="totalPages"/>
     </div>
@@ -55,6 +55,7 @@ export default {
     return {
       isLoading: false,
       isSearched: false,
+      pageLoading: true,
 
       selectedSort: "latest",
       selectedPage: 0,
@@ -72,9 +73,8 @@ export default {
   computed: {
     ...mapStores(useQnaStore),
   },
-  mounted() {
+  async mounted() {
     if (this.$route.query.keyword) {
-      console.log(this.$route.query.keyword);
       this.selectedPage = 1;
       this.selectedSolvedStatus = "ALL"
       this.isSearched = true;
@@ -85,12 +85,12 @@ export default {
         selectedSubCategoryId: 0,
         selectedType: "tc",
       }
-      this.handleSearch(query);
+      await this.handleSearch(query);
     } else {
       this.selectedPage = 1;
       this.selectedSolvedStatus = "ALL"
       this.isSearched = false;
-      this.fetchQnaList();
+      await this.fetchQnaList();
       this.selectedSort = "latest";
     }
 
@@ -124,6 +124,8 @@ export default {
         }
         this.isSearched = true;
         this.isLoading = true;
+        this.pageLoading = true;
+        this.selectedPage = 1;
 
         const { searchQuery, selectedSuperCategoryId, selectedSubCategoryId, selectedType } = data;
 
@@ -133,9 +135,6 @@ export default {
         this.selectedType = selectedType;
 
         this.categoryId = (this.selectedSubCategoryId > 0) ? this.selectedSubCategoryId : this.selectedSuperCategoryId;
-        console.log("super" + this.selectedSuperCategoryId);
-        console.log("sub" + this.selectedSubCategoryId);
-        console.log("main" + this.categoryId);
 
         await useQnaStore().qnaSearch(this.searchQuery,
             this.categoryId,
@@ -146,6 +145,7 @@ export default {
 
         this.totalPages = await useQnaStore().searchedTotalPage || 1;
         this.isLoading = false;
+        this.pageLoading = false;
         this.$router.push("/qna/list")
       }
     },
@@ -166,14 +166,18 @@ export default {
         this.totalPages = useQnaStore().searchedTotalPage || 1;
       }
       this.isLoading = false;
+      this.pageLoading = false;
     },
   },
   watch: {
     async selectedSort() {
+      this.pageLoading = true;
+      this.selectedPage = 1;
       await this.fetchQnaList();
     },
     async selectedSolvedStatus() {
       this.isLoading = true;
+      this.pageLoading = true;
       this.selectedPage = 1;
       if (!this.isSearched) {
         await useQnaStore().getQnaList(this.selectedSort,
@@ -190,6 +194,7 @@ export default {
         this.totalPages = useQnaStore().searchedTotalPage || 1;
       }
       this.isLoading = false;
+      this.pageLoading = false;
     },
   },
   components: {
