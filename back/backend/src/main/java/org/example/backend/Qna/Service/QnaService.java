@@ -112,6 +112,7 @@ public class QnaService {
                         qnaBoard.getCategory().getCategoryName() : null)
                 .likeCnt(qnaBoard.getLikeCount())
                 .hateCnt(qnaBoard.getHateCount())
+                .answerCnt(qnaBoard.getAnswerCount())
                 .checkLikeOrHate(isQuestionLikeORHate(qnaBoard, user))
                 .checkScrap(isQuestionScarp(qnaBoard, user))
                 .nickname(qnaBoard.getUser().getNickname())
@@ -137,6 +138,11 @@ public class QnaService {
                 .orElseThrow(() -> new InvalidQnaException(BaseResponseStatus.QNA_QUESTION_NOT_FOUND));
         if (user != qnaBoard.getUser()){
             throw new InvalidQnaException(BaseResponseStatus.QNA_NO_EDIT_PERMISSION);
+        }
+        // ai답변을 제외한 답변이 달려있는 경우
+        if (qnaBoard.getAnswerCount() > 1 ||
+                (qnaBoard.getAnswerCount() == 1 && qnaBoard.getAnswerList().get(0).getUser().getId() != 0)){
+            throw new InvalidQnaException(BaseResponseStatus.QNA_ANSWERED_EDIT);
         }
 
         return GetQuestionEditDetailRes.builder()

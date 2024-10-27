@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.Config.Filter.JwtFilter;
 import org.example.backend.Config.Filter.LoginFilter;
 import org.example.backend.Exception.CustomAuthenticationEntryPoint;
+import org.example.backend.Exception.CustomAuthenticationFailureHandler;
 import org.example.backend.Security.OAuth2LoginFailureHandler;
 import org.example.backend.Security.OAuth2LoginSuccessHandler;
 import org.example.backend.Util.JwtUtil;
@@ -32,14 +33,15 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     @Value("${frontend.url}")
     private String FRONT_URL;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        http.sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않음
-        );
+//        http.sessionManagement(session -> session
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않음
+//        );
         http.csrf(csrf -> csrf.disable());
         http.httpBasic(basic -> basic.disable());
         http.formLogin((formLogin) ->
@@ -78,7 +80,10 @@ public class SecurityConfig {
         http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)); // 인가되지 않은 사용자가 요청을 보냈을 때 처리하는 handler
 
         http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAt(new LoginFilter(jwtUtil, authenticationManager), UsernamePasswordAuthenticationFilter.class);
+
+        LoginFilter loginFilter = new LoginFilter(jwtUtil, authenticationManager);
+        loginFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
+        http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
