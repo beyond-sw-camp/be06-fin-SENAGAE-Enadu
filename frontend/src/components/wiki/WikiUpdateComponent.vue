@@ -114,13 +114,24 @@ export default {
     }
     this.isLoading = false;
   },
-  mounted() {
-    if (this.wikiStore.grade === null || this.wikiStore.grade === "뉴비") {
-      alert("견습 등급 이상만 위키 수정이 가능합니다.");
-      this.$router.go(-1);
-    }
+  async mounted() {
+    await this.checkGrade();
   },
   methods: {
+    async checkGrade() {
+      try {
+        const success = await this.wikiStore.fetchUserDetails();
+        if (!success) {
+          this.$router.go(-1);
+          return;
+        }
+        if (this.wikiStore.grade === "뉴비") {
+          this.$router.go(-1);
+        }
+      } catch (error) {
+        this.$router.go(-1);
+      }
+    },
     async fetchWikiDetail(id) {
       this.isLoading = true;
       try {
@@ -183,8 +194,3 @@ export default {
 }
 </style>
 
-<style scoped>
-#rowGapZero {
-  row-gap: 0;
-}
-</style>

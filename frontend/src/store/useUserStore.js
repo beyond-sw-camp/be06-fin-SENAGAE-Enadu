@@ -22,24 +22,23 @@ export const useUserStore = defineStore('user', {
         });
 
         if (!response || !response.data) {
+          alert("서버로부터 유효하지 않은 응답입니다.");
           throw new Error("Invalid response from server");
+        } else if (response.status !== 200) {
+          alert("로그인 중 오류가 발생했습니다");
+          throw new Error();
         }
 
         this.userId = response.data.userId;
         this.isLoggedIn = true;
-        console.log("로그인 성공, 사용자 ID:", this.userId);
         return true;
 
-      }
-      catch (error) {
-        if (error.response) {
-          console.error("서버 응답 에러:", error.response.data);
-        } else if (error.request) {
-          console.error("응답 없음:", error.request);
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.error) {
+          alert(error.response.data.error);
         } else {
-          console.error("에러 메시지:", error.message);
+          alert("로그인 중 알 수 없는 오류가 발생했습니다.");
         }
-        console.error("전체 에러 객체:", error);
         return false;
       }
     },

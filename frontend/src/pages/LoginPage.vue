@@ -49,8 +49,6 @@ export default {
         const loginSuccess = await this.userStore.login(user);
         if (loginSuccess) {
           this.$router.push('/');
-        } else {
-          alert('로그인 실패');
         }
       }
       catch (error) {

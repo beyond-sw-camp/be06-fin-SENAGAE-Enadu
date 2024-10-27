@@ -99,7 +99,6 @@ import {mapStores} from "pinia";
 import {useQnaStore} from "@/store/useQnaStore";
 import SuperCategoryModal from "@/components/Category/SuperCategoryModal.vue";
 import SubCategoryModal from "@/components/Category/SubCategoryModal.vue";
-import router from "@/router";
 import {useCommonStore} from "@/store/useCommonStore";
 import LoadingComponent from '@/components/Common/LoadingComponent.vue';
 
@@ -134,7 +133,10 @@ export default {
     },
   },
   async mounted() {
-    await this.enter();
+    const res = await this.enter();
+    if (!res){
+        return;
+    }
     this.isLoading = false;
     this.myTitle = useQnaStore().qnaEditDetail.title;
     this.myText = useQnaStore().qnaEditDetail.content;
@@ -155,12 +157,12 @@ export default {
   },
   methods: {
     async enter() {
-      if (useQnaStore().qnaDetail !== undefined && useQnaStore().qnaDetail.answerCnt !== 0) {
-        alert('이미 입력된 답변이 있습니다. 허가되지 않은 접근 방식입니다.');
-        this.$router.push({path: "/exception"})
-        return;
+      const result = await useQnaStore().getQnaEditDetail(this.$route.params.id);
+      if(!result){
+          this.$router.push("/exception");
+          return false;
       }
-      await useQnaStore().getQnaEditDetail(this.$route.params.id, router);
+      return true;
     },
     async click() {
       if (!this.myTitle || !this.myText || !this.myCategory) {
