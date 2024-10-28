@@ -1,0 +1,100 @@
+pipeline {
+    agent any
+    stages {
+        stage('git clone') {
+                steps {
+                        git branch: 'fe-dev', url: 'https://github.com/beyond-sw-camp/be06-fin-SENAGAE-Enadu'
+                }
+        }
+        stage('Install Dependencies') {
+            steps {
+                dir('./frontend') {
+                    sh 'npm install'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('./frontend') {
+                    sh 'rm -rf ./dist'
+                    sh 'npm run build'
+                }
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                script {
+                    sh 'docker build --tag senagae/enadu-fe:1.$BUILD_ID ./frontend'
+                }
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                script {
+                    sh "docker login -u $DOCKER_ID -p $DOCKER_PW"
+                    sh 'docker push senagae/enadu-fe:1.$BUILD_ID'
+                }
+            }
+        }
+        stage('SSH transfer') {
+            steps {
+                sshPublisher(
+                    continueOnError: false,
+                    failOnError: true,
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: "jenkins-k8s",
+                            verbose: true,
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: "cicd/front/frontend-deployment.yaml",
+                                    remoteDirectory: "/home/test",
+                                    execCommand: '''
+                                        sed -i "s/latest/1.$BUILD_ID/g" cicd/front/frontend-deployment.yaml
+                                    '''
+                                ),
+                                sshTransfer(
+                                    sourceFiles: "cicd/front/frontend-service.yaml",
+                                    remoteDirectory: "/home/test",
+                                ),
+                                sshTransfer(
+                                    sourceFiles: "cicd/front/frontend.sh",
+                                    remoteDirectory: "/home/test",
+                                    execCommand: '''
+                                        bash cicd/front/frontend.sh
+                                    '''
+                                )
+                            ]
+                        )
+                    ]
+                )
+            }
+        }
+    }
+    post {
+        success {
+            withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
+                        discordSend description: """
+                        제목 : ${currentBuild.displayName}
+                        결과 : ${currentBuild.result}
+                        실행 시간 : ${currentBuild.duration / 1000}s
+                        """,
+                        link: env.BUILD_URL, result: currentBuild.currentResult,
+                        title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
+                        webhookURL: "$DISCORD"
+            }
+        }
+        failure {
+            withCredentials([string(credentialsId: 'Discord', variable: 'DISCORD')]) {
+                        discordSend description: """
+                        제목 : ${currentBuild.displayName}
+                        결과 : ${currentBuild.result}
+                        실행 시간 : ${currentBuild.duration / 1000}s
+                        """,
+                        link: env.BUILD_URL, result: currentBuild.currentResult,
+                        title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
+                        webhookURL: "$DISCORD"
+            }
+        }
+    }
+}

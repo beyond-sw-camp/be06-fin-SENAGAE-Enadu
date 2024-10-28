@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: weeklyranking-batch-job
+  namespace: batch-weeklyranking
+spec:
+  schedule: "0 15 * * 0"
+  startingDeadlineSeconds: 300
+  concurrencyPolicy : Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: weeklyranking-batch
+              image: senagae/enadu-batch:latest
+              env:
+                - name: BATCH_JOB_NAME
+                  value: weeklyRankingJob
+                - name: BATCH_DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: BATCH_DB_HOST
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: DB_HOST
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: DB_PASSWORD
+                - name: DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: DB_USERNAME
+                - name: GCLOUD_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: GCLOUD_ID
+                - name: GEMINI_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: GEMINI_KEY
+          restartPolicy: OnFailure
+      backoffLimit: 5

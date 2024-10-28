@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: aianswer-batch-job
+  namespace: batch-aianswer
+spec:
+  schedule: "0 * * * *"
+  startingDeadlineSeconds: 300
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: aianswer-batch
+              image: senagae/enadu-batch:latest
+              env:
+                - name: BATCH_JOB_NAME
+                  value: aiAnswerJob
+                - name: BATCH_DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: BATCH_DB_HOST
+                - name: DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: DB_HOST
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: DB_PASSWORD
+                - name: DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: DB_USERNAME
+                - name: GCLOUD_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: GCLOUD_ID
+                - name: GEMINI_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: batch-env-secrets
+                      key: GEMINI_KEY
+                - name: GOOGLE_APPLICATION_CREDENTIALS
+                  value: /etc/gcp/sa_credentials.json
+              volumeMounts:
+                - name: service-account-credentials-volume
+                  mountPath: /etc/gcp
+                  readOnly: true
+          volumes:
+            - name: service-account-credentials-volume
+              secret:
+                secretName: gcloud-key
+                items:
+                  - key: sa_json
+                    path: sa_credentials.json
+          restartPolicy: OnFailure
+      backoffLimit: 5
