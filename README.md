@@ -85,7 +85,7 @@
 
 
 ## 📚 Enadu 사이트 바로가기
-### [Enadu website](www.enadu.kro.kr)</a>
+### [Enadu website](https://enadu.o-r.kr)</a>
 <br><br>
 ## 🎨 Enadu 서비스 소개
 <img src= "https://github.com/user-attachments/assets/2a07b47d-e074-4821-b5ac-3b445c6a9f1a">
